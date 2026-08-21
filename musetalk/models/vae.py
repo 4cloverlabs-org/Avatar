@@ -21,7 +21,7 @@ class VAE():
         :param use_float16: Whether to use float16 precision.
         """
         self.model_path = model_path
-        self.vae = AutoencoderKL.from_pretrained(self.model_path)
+        self.vae = AutoencoderKL.from_pretrained(self.model_path, use_safetensors=False)
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.vae.to(self.device)

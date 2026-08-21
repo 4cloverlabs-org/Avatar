@@ -522,6 +522,17 @@ class VFHQDataset(FaceDataset):
         super().__init__(cfg, list_paths, root_path, repeats)
         print('VFHQDataset: ', len(self))
         
+class CustomDataset(FaceDataset):
+    """Custom dataset class"""
+    def __init__(self, cfg):
+        root_path = './dataset/custom/meta'
+        list_paths = [
+            './dataset/custom/train.txt',
+        ]
+        repeats = [10]
+        super().__init__(cfg, list_paths, root_path, repeats)
+        print('CustomDataset: ', len(self))
+
 def PortraitDataset(cfg=None):
     """Return dataset based on configuration
     
@@ -535,6 +546,8 @@ def PortraitDataset(cfg=None):
         return ConcatDataset([HDTFDataset(cfg)])
     elif cfg["dataset_key"] == "VFHQ":
         return ConcatDataset([VFHQDataset(cfg)])
+    elif cfg["dataset_key"] == "custom":
+        return ConcatDataset([CustomDataset(cfg)])
     else:  
         print("############ use all dataset ############ ")
         return ConcatDataset([HDTFDataset(cfg), VFHQDataset(cfg)])

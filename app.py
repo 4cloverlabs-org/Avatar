@@ -2,6 +2,8 @@ import os
 import time
 import pdb
 import re
+import uuid
+import json
 
 import gradio as gr
 import numpy as np
@@ -85,8 +87,10 @@ def debug_inpainting(video_path, bbox_shift, extra_margin=10, parsing_mode="jaw"
     
     # Process first frame
     x1, y1, x2, y2 = bbox
-    y2 = y2 + args.extra_margin
-    y2 = min(y2, frame.shape[0])
+    x1 = max(0, int(x1))
+    y1 = max(0, int(y1))
+    x2 = min(frame.shape[1], int(x2))
+    y2 = min(frame.shape[0], int(y2) + args.extra_margin)
     crop_frame = frame[y1:y2, x1:x2]
     crop_frame = cv2.resize(crop_frame,(256,256),interpolation = cv2.INTER_LANCZOS4)
     
@@ -182,7 +186,7 @@ def fast_check_ffmpeg():
 
 @torch.no_grad()
 def inference(audio_path, video_path, bbox_shift, extra_margin=10, parsing_mode="jaw", 
-              left_cheek_width=90, right_cheek_width=90, progress=gr.Progress(track_tqdm=True)):
+              left_cheek_width=90, right_cheek_width=90, use_gfpgan=True, gfpgan_weight=0.5, progress=gr.Progress(track_tqdm=True)):
     # Set default parameters, aligned with inference.py
     args_dict = {
         "result_dir": './results/output', 
@@ -206,6 +210,17 @@ def inference(audio_path, video_path, bbox_shift, extra_margin=10, parsing_mode=
 
     input_basename = os.path.basename(video_path).split('.')[0]
     audio_basename = os.path.basename(audio_path).split('.')[0]
+
+    # Force video to 25 FPS before processing
+    if get_file_type(video_path) == "video":
+        original_fps = get_video_fps(video_path)
+        if abs(original_fps - 25) > 0.5:
+            print(f"Converting video from {original_fps} fps to 25 fps...")
+            new_video_path = os.path.join(args.result_dir, f"{input_basename}_25fps.mp4")
+            subprocess.run(["ffmpeg", "-y", "-i", video_path, "-r", "25", new_video_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            video_path = new_video_path
+            input_basename = f"{input_basename}_25fps"
+
     output_basename = f"{input_basename}_{audio_basename}"
     
     # Create temporary directory
@@ -215,6 +230,10 @@ def inference(audio_path, video_path, bbox_shift, extra_margin=10, parsing_mode=
     # Set result save path
     result_img_save_path = os.path.join(temp_dir, output_basename)
     crop_coord_save_path = os.path.join(args.result_dir, "../", input_basename+".pkl")
+    
+    import shutil
+    if os.path.exists(result_img_save_path):
+        shutil.rmtree(result_img_save_path)
     os.makedirs(result_img_save_path, exist_ok=True)
 
     if args.output_vid_name == "":
@@ -225,6 +244,8 @@ def inference(audio_path, video_path, bbox_shift, extra_margin=10, parsing_mode=
     ############################################## extract frames from source video ##############################################
     if get_file_type(video_path) == "video":
         save_dir_full = os.path.join(temp_dir, input_basename)
+        if os.path.exists(save_dir_full):
+            shutil.rmtree(save_dir_full)
         os.makedirs(save_dir_full, exist_ok=True)
         # Read video
         reader = imageio.get_reader(video_path)
@@ -278,10 +299,16 @@ def inference(audio_path, video_path, bbox_shift, extra_margin=10, parsing_mode=
         if bbox == coord_placeholder:
             continue
         x1, y1, x2, y2 = bbox
-        y2 = y2 + args.extra_margin
-        y2 = min(y2, frame.shape[0])
-        crop_frame = frame[y1:y2, x1:x2]
-        crop_frame = cv2.resize(crop_frame,(256,256),interpolation = cv2.INTER_LANCZOS4)
+        x1 = max(0, int(x1))
+        y1 = max(0, int(y1))
+        x2 = min(frame.shape[1], int(x2))
+        y2 = min(frame.shape[0], int(y2) + args.extra_margin)
+        if x1 >= x2 or y1 >= y2:
+            print(f"Warning: Empty crop frame for bbox {bbox}, using a blank frame.")
+            crop_frame = np.zeros((256, 256, 3), dtype=np.uint8)
+        else:
+            crop_frame = frame[y1:y2, x1:x2]
+            crop_frame = cv2.resize(crop_frame,(256,256),interpolation = cv2.INTER_LANCZOS4)
         latents = vae.get_latents_for_unet(crop_frame)
         input_latent_list.append(latents)
 
@@ -328,10 +355,11 @@ def inference(audio_path, video_path, bbox_shift, extra_margin=10, parsing_mode=
         # Use v15 version blending
         combine_frame = get_image(ori_frame, res_frame, [x1, y1, x2, y2], mode=args.parsing_mode, fp=fp)
             
+        if use_gfpgan and 'gfpganer' in globals() and gfpganer is not None:
+            _, _, combine_frame = gfpganer.enhance(combine_frame, has_aligned=False, only_center_face=True, paste_back=True, weight=gfpgan_weight)
+
         cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png",combine_frame)
         
-    # Frame rate
-    fps = 25
     # Output video path
     output_video = 'temp.mp4'
 
@@ -396,6 +424,20 @@ vae, unet, pe = load_all_model(
     device=device
 )
 
+# Initialize GFPGANer
+try:
+    from gfpgan import GFPGANer
+    gfpganer = GFPGANer(
+        model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth',
+        upscale=1,
+        arch='clean',
+        channel_multiplier=2,
+        bg_upsampler=None)
+    print("GFPGAN initialized successfully.")
+except ImportError:
+    gfpganer = None
+    print("GFPGAN not installed. Run `pip install gfpgan basicsr facexlib` to enable enhancement.")
+
 # Parse command line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("--ffmpeg_path", type=str, default=r"ffmpeg-master-latest-win64-gpl-shared\bin", help="Path to ffmpeg executable")
@@ -427,6 +469,177 @@ audio_processor = AudioProcessor(feature_extractor_path="./models/whisper")
 whisper = WhisperModel.from_pretrained("./models/whisper")
 whisper = whisper.to(device=device, dtype=weight_dtype).eval()
 whisper.requires_grad_(False)
+
+from transformers import pipeline
+# Load a tiny whisper model for automatic transcription
+print("Loading Whisper-tiny for text transcription...")
+transcriber = pipeline("automatic-speech-recognition", model="openai/whisper-tiny")
+
+def transcribe_audio(audio_path):
+    if not audio_path:
+        return ""
+    try:
+        result = transcriber(audio_path)
+        return result.get("text", "").strip()
+    except Exception as e:
+        print(f"Transcription error: {e}")
+        return ""
+
+
+@torch.no_grad()
+def prepare_avatar(video_path, bbox_shift, extra_margin=10, parsing_mode="jaw", 
+              left_cheek_width=90, right_cheek_width=90, progress=gr.Progress(track_tqdm=True)):
+    args_dict = {
+        "result_dir": './results/output', 
+        "fps": 25, 
+        "batch_size": 8, 
+        "output_vid_name": '', 
+        "use_saved_coord": False,
+        "audio_padding_length_left": 2,
+        "audio_padding_length_right": 2,
+        "version": "v15",
+        "extra_margin": extra_margin,
+        "parsing_mode": parsing_mode,
+        "left_cheek_width": left_cheek_width,
+        "right_cheek_width": right_cheek_width
+    }
+    args = Namespace(**args_dict)
+    if not fast_check_ffmpeg():
+        print("Warning: Unable to find ffmpeg")
+    avatar_id = str(uuid.uuid4())
+    avatar_dir = os.path.join("./results/avatars", avatar_id)
+    os.makedirs(avatar_dir, exist_ok=True)
+    input_basename = os.path.basename(video_path).split('.')[0]
+    if get_file_type(video_path) == "video":
+        original_fps = get_video_fps(video_path)
+        if abs(original_fps - 25) > 0.5:
+            new_video_path = os.path.join(avatar_dir, f"{input_basename}_25fps.mp4")
+            subprocess.run(["ffmpeg", "-y", "-i", video_path, "-r", "25", new_video_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            video_path = new_video_path
+            input_basename = f"{input_basename}_25fps"
+    save_dir_full = os.path.join(avatar_dir, "full_imgs")
+    os.makedirs(save_dir_full, exist_ok=True)
+    if get_file_type(video_path) == "video":
+        reader = imageio.get_reader(video_path)
+        for i, im in enumerate(reader):
+            imageio.imwrite(f"{save_dir_full}/{i:08d}.png", im)
+        input_img_list = sorted(glob.glob(os.path.join(save_dir_full, '*.[jpJP][pnPN]*[gG]')))
+        fps = get_video_fps(video_path)
+    else: 
+        input_img_list = glob.glob(os.path.join(video_path, '*.[jpJP][pnPN]*[gG]'))
+        input_img_list = sorted(input_img_list, key=lambda x: int(os.path.splitext(os.path.basename(x))[0]))
+        fps = args.fps
+    coord_list, frame_list = get_landmark_and_bbox(input_img_list, bbox_shift)
+    bbox_shift_text = get_bbox_range(input_img_list, bbox_shift)
+    fp = FaceParsing(left_cheek_width=args.left_cheek_width, right_cheek_width=args.right_cheek_width)
+    input_latent_list = []
+    for bbox, frame in zip(coord_list, frame_list):
+        if bbox == coord_placeholder:
+            if len(input_latent_list) > 0:
+                input_latent_list.append(input_latent_list[-1])
+            else:
+                crop_frame = np.zeros((256, 256, 3), dtype=np.uint8)
+                latents = vae.get_latents_for_unet(crop_frame)
+                input_latent_list.append(latents)
+            continue
+        x1, y1, x2, y2 = bbox
+        x1, y1 = max(0, int(x1)), max(0, int(y1))
+        x2, y2 = min(frame.shape[1], int(x2)), min(frame.shape[0], int(y2) + args.extra_margin)
+        if x1 >= x2 or y1 >= y2:
+            crop_frame = np.zeros((256, 256, 3), dtype=np.uint8)
+        else:
+            crop_frame = frame[y1:y2, x1:x2]
+            crop_frame = cv2.resize(crop_frame,(256,256),interpolation = cv2.INTER_LANCZOS4)
+        latents = vae.get_latents_for_unet(crop_frame)
+        input_latent_list.append(latents)
+    frame_list_cycle = frame_list + frame_list[::-1]
+    coord_list_cycle = coord_list + coord_list[::-1]
+    input_latent_list_cycle = input_latent_list + input_latent_list[::-1]
+    with open(os.path.join(avatar_dir, 'coords.pkl'), 'wb') as f:
+        pickle.dump(coord_list_cycle, f)
+    torch.save(input_latent_list_cycle, os.path.join(avatar_dir, 'latents.pt'))
+    with open(os.path.join(avatar_dir, 'frames.pkl'), 'wb') as f:
+        pickle.dump(frame_list_cycle, f)
+    meta = {"fps": fps, "args": args_dict, "bbox_shift_text": bbox_shift_text}
+    with open(os.path.join(avatar_dir, 'meta.json'), 'w') as f:
+        json.dump(meta, f)
+    return avatar_id
+
+@torch.no_grad()
+def generate_from_avatar(avatar_id, audio_path, use_gfpgan=True, gfpgan_weight=0.5, progress=gr.Progress(track_tqdm=True)):
+    avatar_dir = os.path.join("./results/avatars", avatar_id)
+    if not os.path.exists(avatar_dir):
+        raise FileNotFoundError(f"Avatar ID {avatar_id} not found.")
+    with open(os.path.join(avatar_dir, 'meta.json'), 'r') as f:
+        meta = json.load(f)
+    fps = meta["fps"]
+    args = Namespace(**meta["args"])
+    with open(os.path.join(avatar_dir, 'coords.pkl'), 'rb') as f:
+        coord_list_cycle = pickle.load(f)
+    input_latent_list_cycle = torch.load(os.path.join(avatar_dir, 'latents.pt'))
+    with open(os.path.join(avatar_dir, 'frames.pkl'), 'rb') as f:
+        frame_list_cycle = pickle.load(f)
+    fp = FaceParsing(left_cheek_width=args.left_cheek_width, right_cheek_width=args.right_cheek_width)
+    whisper_input_features, librosa_length = audio_processor.get_audio_feature(audio_path)
+    whisper_chunks = audio_processor.get_whisper_chunk(
+        whisper_input_features, device, weight_dtype, whisper, librosa_length, fps=fps,
+        audio_padding_length_left=args.audio_padding_length_left, audio_padding_length_right=args.audio_padding_length_right,
+    )
+    video_num = len(whisper_chunks)
+    batch_size = args.batch_size
+    gen = datagen(whisper_chunks=whisper_chunks, vae_encode_latents=input_latent_list_cycle, batch_size=batch_size, delay_frame=0, device=device)
+    res_frame_list = []
+    for i, (whisper_batch,latent_batch) in enumerate(tqdm(gen,total=int(np.ceil(float(video_num)/batch_size)))):
+        audio_feature_batch = pe(whisper_batch)
+        latent_batch = latent_batch.to(dtype=weight_dtype)
+        pred_latents = unet.model(latent_batch, timesteps, encoder_hidden_states=audio_feature_batch).sample
+        recon = vae.decode_latents(pred_latents)
+        for res_frame in recon:
+            res_frame_list.append(res_frame)
+    temp_dir = os.path.join(avatar_dir, "output")
+    os.makedirs(temp_dir, exist_ok=True)
+    result_img_save_path = os.path.join(temp_dir, "frames")
+    if os.path.exists(result_img_save_path):
+        import shutil
+        shutil.rmtree(result_img_save_path)
+    os.makedirs(result_img_save_path, exist_ok=True)
+    for i, res_frame in enumerate(tqdm(res_frame_list)):
+        bbox = coord_list_cycle[i%(len(coord_list_cycle))]
+        ori_frame = copy.deepcopy(frame_list_cycle[i%(len(frame_list_cycle))])
+        if bbox == coord_placeholder:
+            cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png", ori_frame)
+            continue
+            
+        x1, y1, x2, y2 = bbox
+        y2 = min(y2 + args.extra_margin, ori_frame.shape[0])
+        try:
+            res_frame = cv2.resize(res_frame.astype(np.uint8),(x2-x1,y2-y1))
+        except:
+            cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png", ori_frame)
+            continue
+        combine_frame = get_image(ori_frame, res_frame, [x1, y1, x2, y2], mode=args.parsing_mode, fp=fp)
+        if use_gfpgan and 'gfpganer' in globals() and gfpganer is not None:
+            _, _, combine_frame = gfpganer.enhance(combine_frame, has_aligned=False, only_center_face=True, paste_back=True, weight=gfpgan_weight)
+        cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png",combine_frame)
+    output_video = os.path.join(temp_dir, 'temp.mp4')
+    images = []
+    def is_valid_image(file):
+        import re
+        pattern = re.compile(r'\d{8}\.png')
+        return pattern.match(file)
+    files = [file for file in os.listdir(result_img_save_path) if is_valid_image(file)]
+    files.sort(key=lambda x: int(x.split('.')[0]))
+    for file in files:
+        images.append(imageio.imread(os.path.join(result_img_save_path, file)))
+    imageio.mimwrite(output_video, images, 'FFMPEG', fps=fps, codec='libx264', pixelformat='yuv420p')
+    audio_basename = os.path.basename(audio_path).split('.')[0]
+    final_output = os.path.join(temp_dir, f"final_{audio_basename}.mp4")
+    video_clip = VideoFileClip(output_video)
+    audio_clip = AudioFileClip(audio_path)
+    video_clip = video_clip.set_audio(audio_clip)
+    video_clip.write_videofile(final_output, codec='libx264', audio_codec='aac',fps=25)
+    os.remove(output_video)
+    return final_output
 
 
 def check_video(video):
@@ -474,50 +687,218 @@ def check_video(video):
 
 
 
-css = """#input_img {max-width: 1024px !important} #output_vid {max-width: 1024px; max-height: 576px}"""
+css = """
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
-with gr.Blocks(css=css) as demo:
-    gr.Markdown(
-        """<div align='center'> <h1>MuseTalk: Real-Time High-Fidelity Video Dubbing via Spatio-Temporal Sampling</h1> \
-                    <h2 style='font-weight: 450; font-size: 1rem; margin: 0rem'>\
-                    </br>\
-                    Yue Zhang <sup>*</sup>,\
-                    Zhizhou Zhong <sup>*</sup>,\
-                    Minhao Liu<sup>*</sup>,\
-                    Zhaokang Chen,\
-                    Bin Wu<sup>†</sup>,\
-                    Yubin Zeng,\
-                    Chao Zhang,\
-                    Yingjie He,\
-                    Junxin Huang,\
-                    Wenjiang Zhou <br>\
-                    (<sup>*</sup>Equal Contribution, <sup>†</sup>Corresponding Author, benbinwu@tencent.com)\
-                    Lyra Lab, Tencent Music Entertainment\
-                </h2> \
-                <a style='font-size:18px;color: #000000' href='https://github.com/TMElyralab/MuseTalk'>[Github Repo]</a>\
-                <a style='font-size:18px;color: #000000' href='https://github.com/TMElyralab/MuseTalk'>[Huggingface]</a>\
-                <a style='font-size:18px;color: #000000' href='https://arxiv.org/abs/2410.10122'> [Technical report] </a>"""
-    )
+#input_img {max-width: 1024px !important} 
+#output_vid {max-width: 1024px; max-height: 576px}
 
-    with gr.Row():
-        with gr.Column():
-            audio = gr.Audio(label="Drving Audio",type="filepath")
-            video = gr.Video(label="Reference Video",sources=['upload'])
-            bbox_shift = gr.Number(label="BBox_shift value, px", value=0)
-            extra_margin = gr.Slider(label="Extra Margin", minimum=0, maximum=40, value=10, step=1)
-            parsing_mode = gr.Radio(label="Parsing Mode", choices=["jaw", "raw"], value="jaw")
-            left_cheek_width = gr.Slider(label="Left Cheek Width", minimum=20, maximum=160, value=90, step=5)
-            right_cheek_width = gr.Slider(label="Right Cheek Width", minimum=20, maximum=160, value=90, step=5)
-            bbox_shift_scale = gr.Textbox(label="'left_cheek_width' and 'right_cheek_width' parameters determine the range of left and right cheeks editing when parsing model is 'jaw'. The 'extra_margin' parameter determines the movement range of the jaw. Users can freely adjust these three parameters to obtain better inpainting results.")
+body, .gradio-container {
+    font-family: 'Inter', sans-serif !important;
+    background-color: #0a0a0a !important; /* Main workspace canvas background */
+}
 
+/* Hide Gradio Branding */
+footer { display: none !important; }
+
+/* Dashboard Panels */
+.dashboard-panel {
+    background: #181818 !important;
+    border-radius: 12px !important;
+    border: 1px solid #2a2a2a !important;
+    padding: 15px !important;
+    height: 100% !important;
+}
+
+#header-bar {
+    background: #181818 !important;
+    border-bottom: 1px solid #2a2a2a !important;
+    padding: 8px 15px !important;
+    margin-bottom: 10px !important;
+    display: flex;
+    align-items: center;
+}
+
+#icon-sidebar {
+    background: #181818 !important;
+    border-left: 1px solid #2a2a2a !important;
+    border-radius: 0 !important;
+    padding: 10px 0 !important;
+    text-align: center;
+}
+.sidebar-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #888 !important;
+    font-size: 14px !important;
+    margin-bottom: 15px !important;
+    box-shadow: none !important;
+}
+.sidebar-btn:hover {
+    color: #fff !important;
+}
+
+/* Script Textarea styling */
+#script-area textarea {
+    background: transparent !important;
+    border: none !important;
+    color: #ededed !important;
+    font-size: 14px !important;
+    min-height: 150px !important;
+}
+
+/* Timeline */
+#timeline-panel {
+    background: #181818 !important;
+    border-radius: 12px !important;
+    border: 1px solid #2a2a2a !important;
+    padding: 10px !important;
+    margin-top: 10px !important;
+}
+
+/* Sliders and Toggles */
+input[type='range']::-webkit-slider-thumb {
+    background: #00d2ff !important;
+}
+input[type='radio']:checked + span {
+    background: #00d2ff !important;
+    border-color: #00d2ff !important;
+}
+
+/* Specific button styles */
+#primary-action-btn {
+    background: #00d2ff !important;
+    color: #000 !important;
+    font-weight: 600 !important;
+    border: none !important;
+    border-radius: 20px !important;
+}
+"""
+
+theme = gr.themes.Base(
+    primary_hue="cyan",
+    secondary_hue="slate",
+    neutral_hue="slate",
+    font=[gr.themes.GoogleFont("Inter"), "sans-serif"]
+).set(
+    body_background_fill="#0a0a0a",
+    body_text_color="#ededed",
+    body_text_color_subdued="#888888",
+    background_fill_primary="#181818",
+    background_fill_secondary="#0a0a0a",
+    border_color_primary="#2a2a2a",
+    border_color_accent="#00d2ff",
+    block_background_fill="#181818",
+    block_border_width="1px",
+    block_label_background_fill="#181818",
+    block_label_text_color="#ededed",
+    block_title_text_color="#ededed",
+    input_background_fill="#121212",
+    input_border_color="#333333",
+    button_primary_background_fill="#00d2ff",
+    button_primary_text_color="#000000",
+    button_secondary_background_fill="#222222",
+    button_secondary_text_color="#ededed",
+    button_secondary_border_color="#333333",
+    panel_background_fill="#181818",
+    slider_color="#00d2ff",
+    accordion_text_color="#ededed"
+)
+
+with gr.Blocks(theme=theme, css=css, title="AI Video Studio") as demo:
+    # 1. Top Bar
+    with gr.Row(elem_id="header-bar"):
+        with gr.Column(scale=4):
+            gr.Markdown("#### 🔵 Home | &nbsp;&nbsp; ≡ &nbsp;&nbsp; 1 🔲 💻 &nbsp;&nbsp; ↩️ ↪️")
+        with gr.Column(scale=4):
+            gr.Markdown("<div style='text-align:center;'>⚪ Brand System</div>")
+        with gr.Column(scale=4, min_width=200):
             with gr.Row():
-                debug_btn = gr.Button("1. Test Inpainting ")
-                btn = gr.Button("2. Generate")
-        with gr.Column():
-            debug_image = gr.Image(label="Test Inpainting Result (First Frame)")
-            debug_info = gr.Textbox(label="Parameter Information", lines=5)
-            out1 = gr.Video()
-    
+                btn = gr.Button("✨ Generate", variant="primary", elem_id="primary-action-btn")
+                gr.Button("Ask Orby", variant="secondary")
+                gr.Button("👤", variant="secondary")
+                
+    # Main 4-Column Structure
+    with gr.Row():
+        
+        # COLUMN 1: Left Panel (Script & Audio)
+        with gr.Column(scale=3, min_width=300, elem_classes="dashboard-panel"):
+            gr.Markdown("#### Script &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ⌨️ 📄")
+            script_text = gr.Textbox(value="LPG shortage in India? Reports of supply concerns are creating uncertainty. What's really happening, and should consumers be worried? Let's break down the facts in under a minute.", lines=8, show_label=False, elem_id="script-area")
+            gr.Markdown("▶ Delivery style ⌄ &nbsp;&nbsp; ✨ Improved")
+            audio = gr.Audio(label="Driving Audio", type="filepath")
+            with gr.Row():
+                gr.Button("+ Add scene", variant="secondary")
+                gr.Button("🎤", variant="secondary", size="sm")
+
+        # COLUMN 2: Center Canvas (Video & Timeline)
+        with gr.Column(scale=5, min_width=450):
+            with gr.Tabs():
+                with gr.TabItem("Canvas"):
+                    video = gr.Video(label="Reference Video", sources=['upload'])
+                with gr.TabItem("Result"):
+                    out1 = gr.Video(label="Output")
+            
+            # Timeline Panel
+            with gr.Row(elem_id="timeline-panel"):
+                gr.Markdown("▶ 00:00 / 00:10 &nbsp;&nbsp; 1x ⌄ &nbsp;&nbsp; 🔊")
+                gr.Markdown("🖼️ +")
+                
+        # COLUMN 3: Right Panel (Settings)
+        with gr.Column(scale=3, min_width=300, elem_classes="dashboard-panel"):
+            gr.Markdown("#### Avatar & Voice (Scene 1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ✕")
+            
+            with gr.Group():
+                gr.Markdown("**Avatar**\n\n👤 **Ashiesh**\nMan in light blue sweater &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; >")
+            
+            with gr.Group():
+                gr.Markdown("**Voice**\n\n▶ Hallmark Treasor")
+                
+            with gr.Accordion("Motion Engine", open=True):
+                gr.Markdown("🔮 Avatar V ⌄ &nbsp;&nbsp; ⚙️")
+                bbox_shift = gr.Number(label="BBox Shift Value", value=0)
+            
+            with gr.Group():
+                gr.Markdown("**Avatar Background**")
+                with gr.Row():
+                    gr.Button("🔲\nCustomize", variant="secondary")
+                    gr.Button("👤\nRemove", variant="secondary")
+                    gr.Button("🟦\nColor", variant="secondary")
+                
+            with gr.Group():
+                gr.Markdown("**Layout**")
+                with gr.Row():
+                    gr.Button("Original", variant="primary")
+                    gr.Button("Circle", variant="secondary")
+                    
+            with gr.Accordion("Face Parameters", open=True):
+                parsing_mode = gr.Radio(label="Parsing Mode", choices=["jaw", "raw"], value="jaw")
+                extra_margin = gr.Slider(label="Radius", minimum=0, maximum=40, value=0, step=1)
+                left_cheek_width = gr.Slider(label="Zoom", minimum=20, maximum=160, value=100, step=5)
+                right_cheek_width = gr.Slider(label="Right Cheek (Debug)", minimum=20, maximum=160, value=90, step=5)
+                use_gfpgan = gr.Checkbox(label="Use GFPGAN Enhancement", value=True)
+                gfpgan_weight = gr.Slider(label="GFPGAN Weight (Lower = less comic/smoother, Higher = sharper)", minimum=0.0, maximum=1.0, value=0.5, step=0.1)
+                
+            bbox_shift_scale = gr.Textbox(label="Status", value="✓ Scene rendered", interactive=False)
+            debug_btn = gr.Button("Test Render (First Frame)", variant="secondary")
+            
+            with gr.Accordion("Debug Data", open=False):
+                debug_image = gr.Image(label="Test Inpainting Result")
+                debug_info = gr.Textbox(label="Test Information", lines=2, interactive=False)
+
+        # COLUMN 4: Far Right Sidebar (Icons)
+        with gr.Column(scale=1, min_width=60, elem_id="icon-sidebar"):
+            gr.Button("👤\nAvatar", elem_classes="sidebar-btn")
+            gr.Button("✨\nAI tools", elem_classes="sidebar-btn")
+            gr.Button("🖼️\nMedia", elem_classes="sidebar-btn")
+            gr.Button("💠\nElements", elem_classes="sidebar-btn")
+            gr.Button("🎵\nMusic", elem_classes="sidebar-btn")
+            gr.Button("💬\nCaptions", elem_classes="sidebar-btn")
+            gr.Button("⏺️\nScreen Recorder", elem_classes="sidebar-btn")
+            gr.Button("📑\nTemplates", elem_classes="sidebar-btn")
+            gr.Button("📚\nLayers", elem_classes="sidebar-btn")
+            gr.Button("🔄\nInteractivity", elem_classes="sidebar-btn")
+
     video.change(
         fn=check_video, inputs=[video], outputs=[video]
     )
@@ -530,9 +911,12 @@ with gr.Blocks(css=css) as demo:
             extra_margin,
             parsing_mode,
             left_cheek_width,
-            right_cheek_width
+            right_cheek_width,
+            use_gfpgan,
+            gfpgan_weight
         ],
-        outputs=[out1,bbox_shift_scale]
+        outputs=[out1, bbox_shift_scale],
+        api_name="inference"
     )
     debug_btn.click(
         fn=debug_inpainting,
@@ -545,6 +929,45 @@ with gr.Blocks(css=css) as demo:
             right_cheek_width
         ],
         outputs=[debug_image, debug_info]
+    )
+
+    # Hidden buttons for new split APIs
+    avatar_id_output = gr.Textbox(visible=False)
+    prepare_btn = gr.Button("Prepare Avatar", visible=False)
+    prepare_btn.click(
+        fn=prepare_avatar,
+        inputs=[
+            video,
+            bbox_shift,
+            extra_margin,
+            parsing_mode,
+            left_cheek_width,
+            right_cheek_width
+        ],
+        outputs=[avatar_id_output],
+        api_name="prepare_avatar"
+    )
+
+    generate_btn = gr.Button("Generate from Avatar", visible=False)
+    generate_btn.click(
+        fn=generate_from_avatar,
+        inputs=[
+            avatar_id_output,
+            audio,
+            use_gfpgan,
+            gfpgan_weight
+        ],
+        outputs=[out1],
+        api_name="generate_from_avatar"
+    )
+
+    # Hidden button for API transcription
+    transcribe_btn = gr.Button("Transcribe", visible=False)
+    transcribe_btn.click(
+        fn=transcribe_audio,
+        inputs=[audio],
+        outputs=[script_text],
+        api_name="transcribe"
     )
 
 # Check ffmpeg and add to PATH
@@ -563,8 +986,9 @@ if sys.platform == 'win32':
 
 # Start Gradio application
 demo.queue().launch(
-    share=args.share, 
-    debug=True, 
-    server_name=args.ip, 
-    server_port=args.port
+    server_name=args.ip,
+    server_port=args.port,
+    allowed_paths=["./results", "./models"],
+    show_api=True,
+    show_error=True
 )

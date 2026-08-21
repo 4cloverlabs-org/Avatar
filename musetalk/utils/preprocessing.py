@@ -138,6 +138,15 @@ def get_landmark_and_bbox(img_list,upperbondrange =0):
     avg_plus = int(sum(average_range_plus) / len(average_range_plus)) if average_range_plus else 0
     print(f"Total frame: [{len(frames)}] Manually adjust range : [ -{avg_minus}~{avg_plus} ] , the current value: {upperbondrange}")
     print("*************************************************************************************************************************************")
+    
+    # Smooth bounding boxes to prevent jaw shaking/warping across frames
+    if len(coords_list) > 0:
+        import scipy.ndimage
+        coords_arr = np.array(coords_list, dtype=np.float32)
+        for i in range(4):
+            coords_arr[:, i] = scipy.ndimage.gaussian_filter1d(coords_arr[:, i], sigma=1.5)
+        coords_list = [tuple(map(int, c)) for c in coords_arr]
+        
     return coords_list,frames
     
 

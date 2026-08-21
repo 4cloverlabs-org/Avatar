@@ -79,6 +79,16 @@ class AudioProcessor:
             try:
                 audio_index = math.floor(frame_index * whisper_idx_multiplier)
                 audio_clip = whisper_feature[:, audio_index: audio_index + audio_feature_length_per_frame]
+                
+                # Dynamic padding if we exceed bounds (fixes issues with high FPS videos or short audio)
+                if audio_clip.shape[1] < audio_feature_length_per_frame:
+                    pad_len = audio_feature_length_per_frame - audio_clip.shape[1]
+                    # Pad along the sequence length dimension (dim 1)
+                    pad_shape = list(audio_clip.shape)
+                    pad_shape[1] = pad_len
+                    pad_tensor = torch.zeros(pad_shape, device=audio_clip.device, dtype=audio_clip.dtype)
+                    audio_clip = torch.cat([audio_clip, pad_tensor], dim=1)
+                
                 assert audio_clip.shape[1] == audio_feature_length_per_frame
                 audio_prompts.append(audio_clip)
             except Exception as e:
@@ -87,7 +97,7 @@ class AudioProcessor:
                 print(f"audio_clip.shape: {audio_clip.shape}")
                 print(f"num frames: {num_frames}, fps: {fps}, whisper_idx_multiplier: {whisper_idx_multiplier}")
                 print(f"frame_index: {frame_index}, audio_index: {audio_index}-{audio_index + audio_feature_length_per_frame}")
-                exit()
+                raise ValueError("Audio processing failed due to dimension mismatch.")
 
         audio_prompts = torch.cat(audio_prompts, dim=0)  # T, 10, 5, 384
         audio_prompts = rearrange(audio_prompts, 'b c h w -> b (c h) w')

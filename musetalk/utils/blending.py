@@ -3,6 +3,16 @@ import numpy as np
 import cv2
 import copy
 
+def color_transfer(source, target):
+    source_lab = cv2.cvtColor(source, cv2.COLOR_BGR2LAB).astype(np.float32)
+    target_lab = cv2.cvtColor(target, cv2.COLOR_BGR2LAB).astype(np.float32)
+    for i in range(3):
+        mean_s, std_s = source_lab[:,:,i].mean(), source_lab[:,:,i].std()
+        mean_t, std_t = target_lab[:,:,i].mean(), target_lab[:,:,i].std()
+        target_lab[:,:,i] = (target_lab[:,:,i] - mean_t) * (std_s / (std_t + 1e-5)) + mean_s
+    target_lab = np.clip(target_lab, 0, 255).astype(np.uint8)
+    return cv2.cvtColor(target_lab, cv2.COLOR_LAB2BGR)
+
 
 def get_crop_box(box, expand):
     x, y, x1, y1 = box
@@ -47,11 +57,19 @@ def get_image(image, face, face_box, upper_boundary_ratio=0.5, expand=1.5, mode=
     Returns:
         numpy.ndarray: 处理后的图像。
     """
+    x, y, x1, y1 = face_box  # 获取面部边界框的坐标
+    
+    # 颜色迁移修复 grey face 问题
+    ori_face = image[y:y1, x:x1]
+    if ori_face.size > 0:
+        if ori_face.shape != face.shape:
+            ori_face = cv2.resize(ori_face, (face.shape[1], face.shape[0]))
+        face = color_transfer(ori_face, face)
+
     # 将 numpy 数组转换为 PIL 图像
     body = Image.fromarray(image[:, :, ::-1])  # 身体部分图像(整张图)
     face = Image.fromarray(face[:, :, ::-1])  # 面部图像
 
-    x, y, x1, y1 = face_box  # 获取面部边界框的坐标
     crop_box, s = get_crop_box(face_box, expand)  # 计算扩展后的裁剪框
     x_s, y_s, x_e, y_e = crop_box  # 裁剪框的坐标
     face_position = (x, y)  # 面部在原始图像中的位置
@@ -77,10 +95,9 @@ def get_image(image, face, face_box, upper_boundary_ratio=0.5, expand=1.5, mode=
     modified_mask_image.paste(mask_image.crop((0, top_boundary, width, height)), (0, top_boundary))  # 粘贴上半部分掩码
     
     
-    # 对掩码进行高斯模糊，使边缘更平滑
-    blur_kernel_size = int(0.05 * ori_shape[0] // 2 * 2) + 1  # 计算模糊核大小
+    # 对掩码进行高斯模糊，使边缘更平滑 (Increased to 20% for seamless blending)
+    blur_kernel_size = int(0.20 * ori_shape[0] // 2 * 2) + 1  # 计算模糊核大小
     mask_array = cv2.GaussianBlur(np.array(modified_mask_image), (blur_kernel_size, blur_kernel_size), 0)  # 高斯模糊
-    #mask_array = np.array(modified_mask_image)
     mask_image = Image.fromarray(mask_array)  # 将模糊后的掩码转换回 PIL 图像
     
     # 将裁剪的面部图像粘贴回扩展后的面部区域
@@ -131,6 +148,6 @@ def get_image_prepare_material(image, face_box, upper_boundary_ratio=0.5, expand
     modified_mask_image = Image.new('L', ori_shape, 0)
     modified_mask_image.paste(mask_image.crop((0, top_boundary, width, height)), (0, top_boundary))
 
-    blur_kernel_size = int(0.1 * ori_shape[0] // 2 * 2) + 1
+    blur_kernel_size = int(0.20 * ori_shape[0] // 2 * 2) + 1
     mask_array = cv2.GaussianBlur(np.array(modified_mask_image), (blur_kernel_size, blur_kernel_size), 0)
     return mask_array, crop_box
