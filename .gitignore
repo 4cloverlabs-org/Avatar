@@ -16,3 +16,20 @@ ffplay*
 debug
 exp_out
 .gradio.venv*
+
+# Virtual environments
+.venv310/
+venv/
+env/
+
+# Model weights
+*.pth
+gfpgan/weights/
+
+# Temporary media files
+*.wav
+*.mp4
+
+# Logs
+*.txt
+*.log
