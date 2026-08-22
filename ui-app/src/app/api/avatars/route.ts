@@ -14,9 +14,25 @@ export async function GET() {
     // Check which ones have meta.json to ensure they are fully built
     const completedAvatars = dirs.filter(d => fs.existsSync(path.join(avatarsDir, d, 'meta.json')));
     
+    const avatarData = completedAvatars.map(id => {
+      const metaPath = path.join(avatarsDir, id, 'meta.json');
+      let name = 'Custom Avatar';
+      try {
+        const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+        if (meta.name) {
+          name = meta.name;
+        } else {
+          name = id;
+        }
+      } catch (e) {
+        name = id;
+      }
+      return { id, name };
+    });
+
     return NextResponse.json({ 
       success: true, 
-      avatars: completedAvatars 
+      avatars: avatarData 
     });
   } catch (error: any) {
     console.error("API Route Error:", error);

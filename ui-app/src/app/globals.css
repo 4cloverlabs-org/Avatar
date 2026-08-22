@@ -936,7 +936,7 @@ button {
   line-height: 1.5;
 }
 
-/* Synthesia Studio Layout */
+/* Studio Layout */
 .syn-layout {
   display: flex;
   flex-direction: column;
@@ -1025,7 +1025,6 @@ button {
 .syn-video-container {
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
   position: relative;
   display: flex;
   justify-content: center;
@@ -1228,31 +1227,56 @@ button {
 
 /* Custom Scrollbar for Home Dashboard */
 .home-sidebar::-webkit-scrollbar,
-.home-main::-webkit-scrollbar {
-  width: 6px;
+.home-main::-webkit-scrollbar,
+.home-content ::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
 }
 .home-sidebar::-webkit-scrollbar-track,
-.home-main::-webkit-scrollbar-track {
+.home-main::-webkit-scrollbar-track,
+.home-content ::-webkit-scrollbar-track {
   background: transparent;
   margin: 24px 0; /* Keeps scrollbar away from the rounded corners */
 }
 .home-sidebar::-webkit-scrollbar-thumb,
-.home-main::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.4);
+.home-main::-webkit-scrollbar-thumb,
+.home-content ::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.15);
   border-radius: 10px;
 }
 .home-sidebar::-webkit-scrollbar-thumb:hover,
-.home-main::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.7);
+.home-main::-webkit-scrollbar-thumb:hover,
+.home-content ::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.25);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px 0;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.15);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.25);
 }
 
 .home-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
   min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 48px 16px;
-  background: transparent;
 }
 
 .home-search {
@@ -1282,8 +1306,6 @@ button {
 
 .home-content {
   padding: 20px 60px 80px;
-  max-width: 1200px;
-  margin: 0 auto;
   width: 100%;
 }
 

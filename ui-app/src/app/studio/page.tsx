@@ -17,7 +17,7 @@ export default function Dashboard() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPreparing, setIsPreparing] = useState(false);
   const [avatarId, setAvatarId] = useState<string | null>(null);
-  const [availableAvatars, setAvailableAvatars] = useState<string[]>([]);
+  const [availableAvatars, setAvailableAvatars] = useState<any[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [referenceVoice, setReferenceVoice] = useState<File | null>(null);
   const [isGeneratingVoice, setIsGeneratingVoice] = useState(false);
@@ -36,11 +36,59 @@ export default function Dashboard() {
   // Drag and Resize State
   const containerRef = useRef<HTMLDivElement>(null);
   const [videoBox, setVideoBox] = useState({ x: 0, y: 0, width: 100, height: 100 });
-  const [interactionState, setInteractionState] = useState<'none' | 'dragging' | 'resizing'>('none');
+  const [interactionState, setInteractionState] = useState<string>('none');
   const [isSelected, setIsSelected] = useState(false);
   const interactionStartRef = useRef({ startX: 0, startY: 0, initialBox: { x: 0, y: 0, width: 100, height: 100 } });
 
-  const handlePointerDown = (e: React.PointerEvent, type: 'dragging' | 'resizing') => {
+  // Undo/Redo State
+  const [history, setHistory] = useState<any[]>([{
+    videoBox: { x: 0, y: 0, width: 100, height: 100 },
+    projectAspectRatio: '16/9',
+    sceneColor: '#FFFFFF'
+  }]);
+  const [historyIndex, setHistoryIndex] = useState(0);
+  
+  const historyRef = useRef(history);
+  const historyIndexRef = useRef(historyIndex);
+  
+  useEffect(() => {
+    historyRef.current = history;
+    historyIndexRef.current = historyIndex;
+  }, [history, historyIndex]);
+
+  const pushHistory = (partialState: any) => {
+    const currentHistory = historyRef.current;
+    const currentIndex = historyIndexRef.current;
+    
+    const newHistory = currentHistory.slice(0, currentIndex + 1);
+    const currentState = newHistory[newHistory.length - 1];
+    newHistory.push({ ...currentState, ...partialState });
+    
+    setHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
+  };
+
+  const handleUndo = () => {
+    if (historyIndex > 0) {
+      const state = history[historyIndex - 1];
+      setVideoBox(state.videoBox);
+      setProjectAspectRatio(state.projectAspectRatio);
+      setSceneColor(state.sceneColor);
+      setHistoryIndex(historyIndex - 1);
+    }
+  };
+
+  const handleRedo = () => {
+    if (historyIndex < history.length - 1) {
+      const state = history[historyIndex + 1];
+      setVideoBox(state.videoBox);
+      setProjectAspectRatio(state.projectAspectRatio);
+      setSceneColor(state.sceneColor);
+      setHistoryIndex(historyIndex + 1);
+    }
+  };
+
+  const handlePointerDown = (e: React.PointerEvent, type: string) => {
     e.stopPropagation();
     setIsSelected(true);
     setInteractionState(type);
@@ -66,16 +114,37 @@ export default function Dashboard() {
           x: interactionStartRef.current.initialBox.x + deltaX,
           y: interactionStartRef.current.initialBox.y + deltaY,
         });
-      } else if (interactionState === 'resizing') {
-        setVideoBox({
-          ...interactionStartRef.current.initialBox,
-          width: Math.max(10, interactionStartRef.current.initialBox.width + deltaX),
-          height: Math.max(10, interactionStartRef.current.initialBox.height + deltaY),
-        });
+      } else if (interactionState.startsWith('resizing')) {
+        const handle = interactionState.split('-')[1];
+        let { x, y, width, height } = interactionStartRef.current.initialBox;
+        
+        if (handle.includes('n')) {
+          const newHeight = Math.max(10, height - deltaY);
+          y += height - newHeight;
+          height = newHeight;
+        }
+        if (handle.includes('s')) {
+          height = Math.max(10, height + deltaY);
+        }
+        if (handle.includes('w')) {
+          const newWidth = Math.max(10, width - deltaX);
+          x += width - newWidth;
+          width = newWidth;
+        }
+        if (handle.includes('e')) {
+          width = Math.max(10, width + deltaX);
+        }
+        
+        setVideoBox({ x, y, width, height });
       }
     };
     
-    const handlePointerUp = () => setInteractionState('none');
+    const handlePointerUp = () => {
+      if (interactionState !== 'none') {
+        pushHistory({ videoBox });
+      }
+      setInteractionState('none');
+    };
     
     window.addEventListener('pointermove', handlePointerMove);
     window.addEventListener('pointerup', handlePointerUp);
@@ -95,7 +164,7 @@ export default function Dashboard() {
         if (data.success && data.avatars) {
           setAvailableAvatars(data.avatars);
           if (data.avatars.length > 0 && !avatarId) {
-            setAvatarId(data.avatars[data.avatars.length - 1]);
+            setAvatarId(data.avatars[data.avatars.length - 1].id);
           }
         }
       })
@@ -250,8 +319,8 @@ export default function Dashboard() {
 
            <Cloud size={16} color="var(--text-muted)" style={{ marginLeft: 8 }} />
            <div style={{ width: 1, height: 16, background: "var(--panel-border)", margin: "0 12px" }} />
-           <Undo2 size={16} color="var(--text-muted)" style={{ cursor: 'pointer' }} onClick={() => alert("Undo function (Stub)")} />
-           <Redo2 size={16} color="var(--text-muted)" style={{ cursor: 'pointer' }} onClick={() => alert("Redo function (Stub)")} />
+           <Undo2 size={16} color={historyIndex > 0 ? "var(--foreground)" : "var(--text-muted)"} style={{ cursor: historyIndex > 0 ? 'pointer' : 'default', opacity: historyIndex > 0 ? 1 : 0.5 }} onClick={handleUndo} />
+           <Redo2 size={16} color={historyIndex < history.length - 1 ? "var(--foreground)" : "var(--text-muted)"} style={{ cursor: historyIndex < history.length - 1 ? 'pointer' : 'default', opacity: historyIndex < history.length - 1 ? 1 : 0.5, marginLeft: 12 }} onClick={handleRedo} />
          </div>
          
          <div className="syn-header-center">
@@ -309,7 +378,7 @@ export default function Dashboard() {
         {/* CENTER WORKSPACE */}
         <div className="syn-workspace">
            {/* Canvas Area */}
-           <div className="syn-canvas-area" onClick={() => { setIsSelected(false); if (!isGenerating && activeTab === 'canvas' && !videoPreview) videoInputRef.current?.click() }}>
+           <div className="syn-canvas-area" onPointerDown={() => setIsSelected(false)}>
               <div ref={containerRef} className="syn-video-container" style={
                 projectAspectRatio === '9/16' ? { background: sceneColor, width: 'min(100cqw, 100cqh * 9 / 16)', height: 'min(100cqh, 100cqw * 16 / 9)' } :
                 projectAspectRatio === '1/1' ? { background: sceneColor, width: 'min(100cqw, 100cqh)', height: 'min(100cqh, 100cqw)' } :
@@ -322,23 +391,53 @@ export default function Dashboard() {
                      <div style={{ color: '#111827', fontSize: 15, fontWeight: 500 }}>Generating AI Video...</div>
                    </div>
                  ) : activeTab === 'result' && resultVideo ? (
-                   <div style={{ position: 'absolute', left: `${videoBox.x}%`, top: `${videoBox.y}%`, width: `${videoBox.width}%`, height: `${videoBox.height}%`, border: isSelected ? '2px solid #3b82f6' : 'none', cursor: isSelected ? (interactionState === 'dragging' ? 'grabbing' : 'grab') : 'pointer', touchAction: 'none' }} onPointerDown={(e) => handlePointerDown(e, 'dragging')}>
-                     <video src={resultVideo} controls={!isSelected} autoPlay style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: isSelected ? 'none' : 'auto' }} />
-                     {isSelected && <div onPointerDown={(e) => handlePointerDown(e, 'resizing')} style={{ position: 'absolute', right: -6, bottom: -6, width: 12, height: 12, background: '#3b82f6', borderRadius: '50%', cursor: 'nwse-resize' }} />}
-                   </div>
+                    <div style={{ position: 'absolute', left: `${videoBox.x}%`, top: `${videoBox.y}%`, width: `${videoBox.width}%`, height: `${videoBox.height}%`, border: isSelected ? '2px solid #3b82f6' : 'none', cursor: isSelected ? (interactionState.startsWith('dragging') ? 'grabbing' : 'grab') : 'pointer', touchAction: 'none' }} onPointerDown={(e) => handlePointerDown(e, 'dragging')}>
+                      <video src={resultVideo} controls={!isSelected} autoPlay style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: isSelected ? 'none' : 'auto' }} />
+                      {isSelected && (
+                        <>
+                          {/* Corner Brackets */}
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-nw')} style={{ position: 'absolute', left: -2, top: -2, width: 20, height: 20, borderTop: '4px solid #3b82f6', borderLeft: '4px solid #3b82f6', cursor: 'nwse-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-ne')} style={{ position: 'absolute', right: -2, top: -2, width: 20, height: 20, borderTop: '4px solid #3b82f6', borderRight: '4px solid #3b82f6', cursor: 'nesw-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-sw')} style={{ position: 'absolute', left: -2, bottom: -2, width: 20, height: 20, borderBottom: '4px solid #3b82f6', borderLeft: '4px solid #3b82f6', cursor: 'nesw-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-se')} style={{ position: 'absolute', right: -2, bottom: -2, width: 20, height: 20, borderBottom: '4px solid #3b82f6', borderRight: '4px solid #3b82f6', cursor: 'nwse-resize' }} />
+                          {/* Invisible Edge Hitboxes */}
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-n')} style={{ position: 'absolute', left: 18, right: 18, top: -6, height: 12, cursor: 'ns-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-s')} style={{ position: 'absolute', left: 18, right: 18, bottom: -6, height: 12, cursor: 'ns-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-e')} style={{ position: 'absolute', top: 18, bottom: 18, right: -6, width: 12, cursor: 'ew-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-w')} style={{ position: 'absolute', top: 18, bottom: 18, left: -6, width: 12, cursor: 'ew-resize' }} />
+                        </>
+                      )}
+                    </div>
                  ) : videoPreview ? (
-                   <div style={{ position: 'absolute', left: `${videoBox.x}%`, top: `${videoBox.y}%`, width: `${videoBox.width}%`, height: `${videoBox.height}%`, border: isSelected ? '2px solid #3b82f6' : 'none', cursor: isSelected ? (interactionState === 'dragging' ? 'grabbing' : 'grab') : 'pointer', touchAction: 'none' }} onPointerDown={(e) => handlePointerDown(e, 'dragging')}>
+                   <div style={{ position: 'absolute', left: `${videoBox.x}%`, top: `${videoBox.y}%`, width: `${videoBox.width}%`, height: `${videoBox.height}%`, border: isSelected ? '2px solid #3b82f6' : 'none', cursor: isSelected ? (interactionState.startsWith('dragging') ? 'grabbing' : 'grab') : 'pointer', touchAction: 'none' }} onPointerDown={(e) => handlePointerDown(e, 'dragging')}>
                      <video src={videoPreview} controls={!isSelected} style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: isSelected ? 'none' : 'auto' }} />
-                     {isSelected && <div onPointerDown={(e) => handlePointerDown(e, 'resizing')} style={{ position: 'absolute', right: -6, bottom: -6, width: 12, height: 12, background: '#3b82f6', borderRadius: '50%', cursor: 'nwse-resize' }} />}
+                     {isSelected && (
+                        <>
+                          {/* Corner Brackets */}
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-nw')} style={{ position: 'absolute', left: -2, top: -2, width: 20, height: 20, borderTop: '4px solid #3b82f6', borderLeft: '4px solid #3b82f6', cursor: 'nwse-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-ne')} style={{ position: 'absolute', right: -2, top: -2, width: 20, height: 20, borderTop: '4px solid #3b82f6', borderRight: '4px solid #3b82f6', cursor: 'nesw-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-sw')} style={{ position: 'absolute', left: -2, bottom: -2, width: 20, height: 20, borderBottom: '4px solid #3b82f6', borderLeft: '4px solid #3b82f6', cursor: 'nesw-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-se')} style={{ position: 'absolute', right: -2, bottom: -2, width: 20, height: 20, borderBottom: '4px solid #3b82f6', borderRight: '4px solid #3b82f6', cursor: 'nwse-resize' }} />
+                          {/* Invisible Edge Hitboxes */}
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-n')} style={{ position: 'absolute', left: 18, right: 18, top: -6, height: 12, cursor: 'ns-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-s')} style={{ position: 'absolute', left: 18, right: 18, bottom: -6, height: 12, cursor: 'ns-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-e')} style={{ position: 'absolute', top: 18, bottom: 18, right: -6, width: 12, cursor: 'ew-resize' }} />
+                          <div onPointerDown={(e) => handlePointerDown(e, 'resizing-w')} style={{ position: 'absolute', top: 18, bottom: 18, left: -6, width: 12, cursor: 'ew-resize' }} />
+                        </>
+                      )}
                    </div>
                  ) : (
-                   <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#6b7280', background: '#f9fafb' }}>
-                     <Upload size={32} style={{ marginBottom: 15, color: 'var(--accent)' }} />
-                     <div style={{ textAlign: 'center', fontSize: 14 }}>
-                       <span style={{ color: '#111827', fontWeight: 500 }}>Drop Video Here</span><br/><br/>
-                       <span style={{ color: '#9ca3af' }}>- or -</span><br/><br/>
-                       <span style={{ color: 'var(--accent)', cursor: 'pointer', fontWeight: 500 }}>Click to Upload</span>
-                     </div>
+                   <div 
+                      style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'transparent', cursor: 'pointer', opacity: 0.7, transition: 'opacity 0.2s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                      onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
+                      onClick={() => videoInputRef.current?.click()}
+                    >
+                      <div style={{ width: 48, height: 48, background: 'var(--panel-border)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                        <Upload size={20} style={{ color: 'var(--foreground)' }} />
+                      </div>
+                      <span style={{ color: 'var(--foreground)', fontSize: 15, fontWeight: 500, marginBottom: 4 }}>Upload Video</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>Click or drag file here</span>
                    </div>
                  )}
               </div>
@@ -385,7 +484,10 @@ export default function Dashboard() {
                <select 
                  style={{ background: '#fff', border: '1px solid var(--panel-border)', borderRadius: 6, padding: '4px 8px', fontSize: 12, outline: 'none', color: 'var(--foreground)' }}
                  value={projectAspectRatio}
-                 onChange={(e) => setProjectAspectRatio(e.target.value)}
+                 onChange={(e) => {
+                   setProjectAspectRatio(e.target.value);
+                   pushHistory({ projectAspectRatio: e.target.value });
+                 }}
                  onClick={(e) => e.stopPropagation()}
                >
                  <option value="16/9">16:9 Landscape</option>
@@ -398,14 +500,17 @@ export default function Dashboard() {
            <div className="syn-panel-section" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
              <span style={{ fontSize: 13, color: 'var(--foreground)' }}>Color</span>
              <div 
-               style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f4f5f7', padding: '4px 8px', borderRadius: 6, fontSize: 12, border: '1px solid var(--panel-border)', cursor: 'pointer' }}
-               onClick={() => {
-                 const newColor = prompt("Enter a hex color code (e.g. #FFFFFF)", sceneColor);
-                 if (newColor) setSceneColor(newColor);
-               }}
+               style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f4f5f7', padding: '4px 8px', borderRadius: 6, fontSize: 12, border: '1px solid var(--panel-border)', cursor: 'pointer', position: 'relative' }}
              >
+               <input 
+                 type="color" 
+                 value={sceneColor} 
+                 onChange={(e) => setSceneColor(e.target.value)} 
+                 onBlur={() => pushHistory({ sceneColor })}
+                 style={{ opacity: 0, position: 'absolute', inset: 0, width: '100%', height: '100%', cursor: 'pointer' }}
+               />
                <div style={{ width: 14, height: 14, background: sceneColor, border: '1px solid #d1d5db', borderRadius: 2 }} />
-               {sceneColor.replace('#', '')}
+               {sceneColor.toUpperCase().replace('#', '')}
              </div>
            </div>
 
@@ -425,14 +530,39 @@ export default function Dashboard() {
                Avatar Engine <Settings size={14} color="var(--text-muted)" />
              </div>
              
-             {availableAvatars.length > 0 && (
-               <div style={{ marginBottom: 15 }}>
-                 <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>Selected Avatar</div>
-                 <div style={{ background: '#f4f5f7', padding: '8px 12px', borderRadius: 6, fontSize: 12, border: '1px solid var(--panel-border)' }}>
-                   {avatarId ? `Avatar: ${avatarId.substring(0,8)}...` : "Select Avatar (Dropdown)"}
-                 </div>
-               </div>
-             )}
+              {availableAvatars.length > 0 && (
+                <div style={{ marginBottom: 15, position: 'relative' }}>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>Selected Avatar</div>
+                  <div 
+                    style={{ width: '100%', background: '#f4f5f7', padding: '8px 12px', borderRadius: 6, fontSize: 12, border: '1px solid var(--panel-border)', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
+                    {avatarId ? (availableAvatars.find(a => a.id === avatarId)?.name || `Avatar (${avatarId.substring(0,6)})`) : "Select Avatar"}
+                    <ChevronDown size={14} style={{ color: 'var(--text-muted)', transform: isDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+                  </div>
+                  
+                  {isDropdownOpen && (
+                    <div className="custom-scrollbar" style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, background: '#fff', border: '1px solid var(--panel-border)', borderRadius: 6, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, maxHeight: 180, overflowY: 'auto' }}>
+                      {availableAvatars.map(a => (
+                        <div 
+                          key={a.id}
+                          style={{ padding: '8px 12px', fontSize: 12, cursor: 'pointer', background: avatarId === a.id ? '#f3f4f6' : 'transparent', borderBottom: '1px solid #f3f4f6' }}
+                          onClick={() => {
+                            setAvatarId(a.id);
+                            setIsDropdownOpen(false);
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = '#f9fafb'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = avatarId === a.id ? '#f3f4f6' : 'transparent'}
+                        >
+                          <div style={{ fontWeight: avatarId === a.id ? 600 : 400, color: 'var(--foreground)' }}>
+                            {a.name || `Avatar (${a.id.substring(0,6)})`}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>Voice Source</div>
              <div style={{ background: '#f4f5f7', padding: '8px 12px', borderRadius: 6, fontSize: 12, border: '1px dashed var(--panel-border)', cursor: 'pointer', marginBottom: 15 }} onClick={() => audioInputRef.current?.click()}>
