@@ -2,7 +2,7 @@
   --background: #fafafa;
   --foreground: #fff;
 
-  --text-primary: #000;
+  --text-green: #000;
   --text-secondary: #666;
 
   --button-primary-hover: #383838;
@@ -45,7 +45,7 @@
   line-height: 48px;
   letter-spacing: -2.4px;
   text-wrap: balance;
-  color: var(--text-primary);
+  color: var(--text-green);
 }
 
 .intro p {
@@ -58,7 +58,7 @@
 
 .intro a {
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--text-green);
 }
 
 .ctas {
@@ -85,7 +85,7 @@
 }
 
 a.primary {
-  background: var(--text-primary);
+  background: var(--text-green);
   color: var(--background);
   gap: 8px;
 }
@@ -132,11 +132,11 @@ a.secondary {
     --background: #000;
     --foreground: #000;
 
-    --text-primary: #ededed;
+    --text-green: #E2DCC9;
     --text-secondary: #999;
 
     --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
+    --button-secondary-hover: #15170F;
+    --button-secondary-border: #15170F;
   }
 }

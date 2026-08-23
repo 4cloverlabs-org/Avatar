@@ -33,10 +33,11 @@
 			window.__gradio_mode__ = "app";
 			window.iFrameResizer = {
 				heightCalculationMethod: "taggedElement"
-			};
+};
 			window.parent?.postMessage(
-				{ type: "SET_SCROLLING", enabled: false },
-				"*"
+				{ type: "SET_SCROLLING", enabled: false
+},
+"*"
 			);
 		</script>
 		<script
@@ -128,25 +129,43 @@
 			<script>
 				{
 					__sveltekit_o680fy = {
-						base: new URL(".", location).pathname.slice(0, -1)
-					};
+						base: new URL(".", location).pathname.slice(0,
+		-1)
+	};
 
 					const element = document.currentScript.parentElement;
 
-					const data = [{"type":"data","data":null,"uses":{}},{"type":"data","data":{server:"http://0.0.0.0:7860",port:"7860",local_dev_mode:void 0},"uses":{}}];
+					const data = [
+		{
+			"type": "data",
+			"data": null,
+			"uses": {}
+		},
+		{
+			"type": "data",
+			"data": {server: "http://0.0.0.0:7860",port: "7860",local_dev_mode:void 0
+			},
+			"uses": {}
+		}
+	];
 
 					Promise.all([
 						import("./_app/immutable/entry/start.DJv2Cs3S.js"),
 						import("./_app/immutable/entry/app.XkwneLUg.js")
-					]).then(([kit, app]) => {
-						kit.start(app, element, {
-							node_ids: [0, 2],
+	]).then(([kit, app
+	]) => {
+						kit.start(app, element,
+		{
+							node_ids: [
+				0,
+				2
+			],
 							data,
 							form: null,
 							error: null
-						});
-					});
-				}
+		});
+	});
+}
 			</script>
 		</div>
 	</body>

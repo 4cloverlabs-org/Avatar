@@ -23,8 +23,8 @@ export default function LandingHero() {
       <div className="landing-sidebar">
         <div className="logo-box">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-             <rect x="12" y="2" width="10" height="10" transform="rotate(45 12 2)" fill="#111" />
-             <rect x="12" y="6" width="6" height="6" transform="rotate(45 12 6)" fill="#ff6b35" />
+             <rect x="12" y="2" width="10" height="10" transform="rotate(45 12 2)" fill="#15170F" />
+             <rect x="12" y="6" width="6" height="6" transform="rotate(45 12 6)" fill="#3b5d3b" />
           </svg>
         </div>
         <div className="trusted-by-container">
@@ -34,8 +34,8 @@ export default function LandingHero() {
           </div>
           <div className="trusted-logos">
              {/* Abstract logos matching the GIF */}
-             <svg width="28" height="28" viewBox="0 0 24 24" fill="#555"><path d="M4 14l4-4 4 4 4-4 4 4v4H4z"/></svg>
-             <svg width="28" height="28" viewBox="0 0 24 24" fill="#555"><polygon points="12,4 20,12 12,20 4,12" fill="none" stroke="#555" strokeWidth="2"/><polygon points="12,8 16,12 12,16 8,12"/></svg>
+             <svg width="28" height="28" viewBox="0 0 24 24" fill="#63685A"><path d="M4 14l4-4 4 4 4-4 4 4v4H4z"/></svg>
+             <svg width="28" height="28" viewBox="0 0 24 24" fill="#63685A"><polygon points="12,4 20,12 12,20 4,12" fill="none" stroke="#63685A" strokeWidth="2"/><polygon points="12,8 16,12 12,16 8,12"/></svg>
           </div>
         </div>
       </div>

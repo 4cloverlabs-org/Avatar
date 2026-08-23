@@ -28,7 +28,7 @@ export default function Dashboard() {
   const [isBgMediaOn, setIsBgMediaOn] = useState(false);
   const [isMusicOn, setIsMusicOn] = useState(false);
   const [activeTool, setActiveTool] = useState('Avatar');
-  const [sceneColor, setSceneColor] = useState('#FFFFFF');
+  const [sceneColor, setSceneColor] = useState('#ffffff');
   const [documentTitle, setDocumentTitle] = useState('Untitled');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [projectAspectRatio, setProjectAspectRatio] = useState('16/9');
@@ -256,10 +256,11 @@ export default function Dashboard() {
          
          <div className="syn-header-center">
            {['Avatar', 'Text', 'Shape', 'Motion', 'Media', 'Captions', 'Interactivity', 'Record'].map(tool => {
-             const Icon = {
+             const IconMap: Record<string, React.ElementType> = {
                Avatar: User, Text: Type, Shape: Square, Motion: LayoutTemplate,
                Media: ImageIcon, Captions: MessageSquare, Interactivity: MousePointer2, Record: Mic
-             }[tool as keyof typeof Icon];
+             };
+             const Icon = IconMap[tool];
              return (
                <div 
                  key={tool}
@@ -274,7 +275,7 @@ export default function Dashboard() {
          
          <div className="syn-header-right">
            <Play size={18} color="var(--text-muted)" style={{ cursor: 'pointer', marginRight: 8 }} onClick={() => setActiveTab(activeTab === 'canvas' ? 'result' : 'canvas')} />
-           <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#f3e8ff', color: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600 }}>K</div>
+           <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#EDF2E9', color: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600 }}>K</div>
            <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--panel-border)' }} onClick={() => alert("Invite a collaborator (Stub)")}>
              <Plus size={14} /> Invite
            </button>
@@ -294,9 +295,9 @@ export default function Dashboard() {
            </div>
            
            <div style={{ flex: 1, padding: '0 15px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-             <div style={{ background: '#e0e7ff', height: 100, borderRadius: 8, border: '2px solid var(--accent)', position: 'relative', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-               <span style={{ position: 'absolute', top: 6, left: 6, fontSize: 11, fontWeight: 600, color: '#111827', background: 'rgba(255,255,255,0.8)', padding: '2px 6px', borderRadius: 4 }}>1</span>
-               <div style={{ position: 'absolute', bottom: 6, left: 6, background: '#111827', color: '#fff', padding: 4, borderRadius: 4, display: 'flex', alignItems: 'center' }}><User size={12} /></div>
+             <div style={{ background: '#EDF2E9', height: 100, borderRadius: 8, border: '2px solid var(--accent)', position: 'relative', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+               <span style={{ position: 'absolute', top: 6, left: 6, fontSize: 11, fontWeight: 600, color: '#1E2119', background: 'rgba(255,255,255,0.8)', padding: '2px 6px', borderRadius: 4 }}>1</span>
+               <div style={{ position: 'absolute', bottom: 6, left: 6, background: '#1E2119', color: '#fff', padding: 4, borderRadius: 4, display: 'flex', alignItems: 'center' }}><User size={12} /></div>
                {videoPreview && <video src={videoPreview} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
              </div>
            </div>
@@ -318,25 +319,25 @@ export default function Dashboard() {
                  {isGenerating ? (
                    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 15, background: '#fff' }}>
                      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-                     <div style={{ width: 40, height: 40, border: '4px solid #e5e7eb', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                     <div style={{ color: '#111827', fontSize: 15, fontWeight: 500 }}>Generating AI Video...</div>
+                     <div style={{ width: 40, height: 40, border: '4px solid #E2DCC9', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                     <div style={{ color: '#1E2119', fontSize: 15, fontWeight: 500 }}>Generating AI Video...</div>
                    </div>
                  ) : activeTab === 'result' && resultVideo ? (
-                   <div style={{ position: 'absolute', left: `${videoBox.x}%`, top: `${videoBox.y}%`, width: `${videoBox.width}%`, height: `${videoBox.height}%`, border: isSelected ? '2px solid #3b82f6' : 'none', cursor: isSelected ? (interactionState === 'dragging' ? 'grabbing' : 'grab') : 'pointer', touchAction: 'none' }} onPointerDown={(e) => handlePointerDown(e, 'dragging')}>
+                   <div style={{ position: 'absolute', left: `${videoBox.x}%`, top: `${videoBox.y}%`, width: `${videoBox.width}%`, height: `${videoBox.height}%`, border: isSelected ? '2px solid #3B5D3B' : 'none', cursor: isSelected ? (interactionState === 'dragging' ? 'grabbing' : 'grab') : 'pointer', touchAction: 'none' }} onPointerDown={(e) => handlePointerDown(e, 'dragging')}>
                      <video src={resultVideo} controls={!isSelected} autoPlay style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: isSelected ? 'none' : 'auto' }} />
-                     {isSelected && <div onPointerDown={(e) => handlePointerDown(e, 'resizing')} style={{ position: 'absolute', right: -6, bottom: -6, width: 12, height: 12, background: '#3b82f6', borderRadius: '50%', cursor: 'nwse-resize' }} />}
+                     {isSelected && <div onPointerDown={(e) => handlePointerDown(e, 'resizing')} style={{ position: 'absolute', right: -6, bottom: -6, width: 12, height: 12, background: '#3B5D3B', borderRadius: '50%', cursor: 'nwse-resize' }} />}
                    </div>
                  ) : videoPreview ? (
-                   <div style={{ position: 'absolute', left: `${videoBox.x}%`, top: `${videoBox.y}%`, width: `${videoBox.width}%`, height: `${videoBox.height}%`, border: isSelected ? '2px solid #3b82f6' : 'none', cursor: isSelected ? (interactionState === 'dragging' ? 'grabbing' : 'grab') : 'pointer', touchAction: 'none' }} onPointerDown={(e) => handlePointerDown(e, 'dragging')}>
+                   <div style={{ position: 'absolute', left: `${videoBox.x}%`, top: `${videoBox.y}%`, width: `${videoBox.width}%`, height: `${videoBox.height}%`, border: isSelected ? '2px solid #3B5D3B' : 'none', cursor: isSelected ? (interactionState === 'dragging' ? 'grabbing' : 'grab') : 'pointer', touchAction: 'none' }} onPointerDown={(e) => handlePointerDown(e, 'dragging')}>
                      <video src={videoPreview} controls={!isSelected} style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: isSelected ? 'none' : 'auto' }} />
-                     {isSelected && <div onPointerDown={(e) => handlePointerDown(e, 'resizing')} style={{ position: 'absolute', right: -6, bottom: -6, width: 12, height: 12, background: '#3b82f6', borderRadius: '50%', cursor: 'nwse-resize' }} />}
+                     {isSelected && <div onPointerDown={(e) => handlePointerDown(e, 'resizing')} style={{ position: 'absolute', right: -6, bottom: -6, width: 12, height: 12, background: '#3B5D3B', borderRadius: '50%', cursor: 'nwse-resize' }} />}
                    </div>
                  ) : (
-                   <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#6b7280', background: '#f9fafb' }}>
+                   <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#63685A', background: '#F0EBDD' }}>
                      <Upload size={32} style={{ marginBottom: 15, color: 'var(--accent)' }} />
                      <div style={{ textAlign: 'center', fontSize: 14 }}>
-                       <span style={{ color: '#111827', fontWeight: 500 }}>Drop Video Here</span><br/><br/>
-                       <span style={{ color: '#9ca3af' }}>- or -</span><br/><br/>
+                       <span style={{ color: '#1E2119', fontWeight: 500 }}>Drop Video Here</span><br/><br/>
+                       <span style={{ color: '#9C9C8C' }}>- or -</span><br/><br/>
                        <span style={{ color: 'var(--accent)', cursor: 'pointer', fontWeight: 500 }}>Click to Upload</span>
                      </div>
                    </div>
@@ -358,10 +359,10 @@ export default function Dashboard() {
              
              <div className="syn-script-area">
                <div style={{ width: 60, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                 <div style={{ width: 32, height: 32, borderRadius: 16, background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, color: '#111827', cursor: 'pointer' }}>
+                 <div style={{ width: 32, height: 32, borderRadius: 16, background: '#E2DCC9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, color: '#1E2119', cursor: 'pointer' }}>
                    <User size={16} color="var(--text-muted)" />
                  </div>
-                 <div style={{ width: 32, height: 20, borderRadius: 4, background: '#f3f4f6', border: '1px solid #d1d5db', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 600, color: '#4b5563', cursor: 'pointer' }}>EN</div>
+                 <div style={{ width: 32, height: 20, borderRadius: 4, background: '#F0EBDD', border: '1px solid #E2DCC9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 600, color: '#63685A', cursor: 'pointer' }}>EN</div>
                </div>
                <textarea 
                  className="syn-script-textarea"
@@ -377,7 +378,7 @@ export default function Dashboard() {
         <div className="syn-sidebar-right">
            <div className="syn-panel-section">
              <div className="syn-panel-title">Scene layout</div>
-             <button className="btn-secondary" style={{ width: '100%', padding: '8px 0', fontSize: 13, background: '#f4f5f7', border: '1px solid var(--panel-border)', marginBottom: 15 }} onClick={() => videoInputRef.current?.click()}>
+             <button className="btn-secondary" style={{ width: '100%', padding: '8px 0', fontSize: 13, background: '#F8F6F0', border: '1px solid var(--panel-border)', marginBottom: 15 }} onClick={() => videoInputRef.current?.click()}>
                <Undo2 size={12} style={{ display: 'inline', marginRight: 6, transform: 'rotate(180deg)' }} /> Replace
              </button>
              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -398,13 +399,13 @@ export default function Dashboard() {
            <div className="syn-panel-section" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
              <span style={{ fontSize: 13, color: 'var(--foreground)' }}>Color</span>
              <div 
-               style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f4f5f7', padding: '4px 8px', borderRadius: 6, fontSize: 12, border: '1px solid var(--panel-border)', cursor: 'pointer' }}
+               style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#F8F6F0', padding: '4px 8px', borderRadius: 6, fontSize: 12, border: '1px solid var(--panel-border)', cursor: 'pointer' }}
                onClick={() => {
-                 const newColor = prompt("Enter a hex color code (e.g. #FFFFFF)", sceneColor);
+                 const newColor = prompt("Enter a hex color code (e.g. #ffffff)", sceneColor);
                  if (newColor) setSceneColor(newColor);
                }}
              >
-               <div style={{ width: 14, height: 14, background: sceneColor, border: '1px solid #d1d5db', borderRadius: 2 }} />
+               <div style={{ width: 14, height: 14, background: sceneColor, border: '1px solid #E2DCC9', borderRadius: 2 }} />
                {sceneColor.replace('#', '')}
              </div>
            </div>
@@ -428,14 +429,14 @@ export default function Dashboard() {
              {availableAvatars.length > 0 && (
                <div style={{ marginBottom: 15 }}>
                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>Selected Avatar</div>
-                 <div style={{ background: '#f4f5f7', padding: '8px 12px', borderRadius: 6, fontSize: 12, border: '1px solid var(--panel-border)' }}>
+                 <div style={{ background: '#F8F6F0', padding: '8px 12px', borderRadius: 6, fontSize: 12, border: '1px solid var(--panel-border)' }}>
                    {avatarId ? `Avatar: ${avatarId.substring(0,8)}...` : "Select Avatar (Dropdown)"}
                  </div>
                </div>
              )}
 
              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>Voice Source</div>
-             <div style={{ background: '#f4f5f7', padding: '8px 12px', borderRadius: 6, fontSize: 12, border: '1px dashed var(--panel-border)', cursor: 'pointer', marginBottom: 15 }} onClick={() => audioInputRef.current?.click()}>
+             <div style={{ background: '#F8F6F0', padding: '8px 12px', borderRadius: 6, fontSize: 12, border: '1px dashed var(--panel-border)', cursor: 'pointer', marginBottom: 15 }} onClick={() => audioInputRef.current?.click()}>
                <Upload size={14} style={{ display: 'inline', marginRight: 4 }} /> 
                {audioFile ? audioFile.name : "Upload Voice File"}
              </div>
