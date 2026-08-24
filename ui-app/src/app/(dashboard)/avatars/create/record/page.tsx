@@ -62,7 +62,11 @@ export default function RecordAvatarPage() {
     if (!streamRef.current) return;
     
     chunksRef.current = [];
-    const mediaRecorder = new MediaRecorder(streamRef.current, { mimeType: 'video/webm' });
+    let mimeType = 'video/webm;codecs=vp8';
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      mimeType = 'video/webm'; // fallback
+    }
+    const mediaRecorder = new MediaRecorder(streamRef.current, { mimeType });
     mediaRecorderRef.current = mediaRecorder;
 
     mediaRecorder.ondataavailable = (e) => {
@@ -73,6 +77,13 @@ export default function RecordAvatarPage() {
 
     mediaRecorder.onstop = () => {
       const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+      
+      if (blob.size < 10000) { // Less than 10KB means basically empty
+        alert("Your recording was too short! Please make sure to record for at least 3-5 seconds so the AI can track your face.");
+        chunksRef.current = [];
+        return;
+      }
+      
       const url = URL.createObjectURL(blob);
       setRecordedVideoUrl(url);
       
@@ -98,6 +109,38 @@ export default function RecordAvatarPage() {
     startCamera();
   };
 
+
+  const [trackingAvatarId, setTrackingAvatarId] = useState<string | null>(null);
+  const [generationProgress, setGenerationProgress] = useState(0);
+
+  // Poll for progress when tracking an avatar
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (uploadSuccess && trackingAvatarId) {
+      interval = setInterval(async () => {
+        try {
+          const res = await fetch('/api/avatars', { cache: 'no-store' });
+          const data = await res.json();
+          if (data.success && data.avatars) {
+            const avatar = data.avatars.find((a: any) => a.id === trackingAvatarId);
+            if (avatar) {
+              setGenerationProgress(avatar.progress || 0);
+              if (avatar.status === 'ready') {
+                clearInterval(interval);
+                router.push('/avatars');
+              } else if (avatar.status === 'error') {
+                clearInterval(interval);
+                alert("Generation failed!");
+                setUploadSuccess(false);
+              }
+            }
+          }
+        } catch (e) {}
+      }, 2000);
+    }
+    return () => clearInterval(interval);
+  }, [uploadSuccess, trackingAvatarId, router]);
+
   const handleReadyClick = async () => {
     if (selectedFile) {
       setIsUploading(true);
@@ -105,7 +148,6 @@ export default function RecordAvatarPage() {
       formData.append('video', selectedFile);
 
       try {
-        // Upload the video to get a tracking ID immediately
         const res = await fetch('/api/avatars', {
           method: 'POST',
           body: formData,
@@ -115,13 +157,14 @@ export default function RecordAvatarPage() {
         
         const data = await res.json();
         const trackingId = data.avatarId;
+        setTrackingAvatarId(trackingId);
 
         // Fire the request to build the avatar in the background
         fetch(`/api/avatars/${trackingId}/build`, {
           method: 'POST'
         }).catch(err => console.error("Background processing error:", err));
         
-        // Show the success screen immediately so the user doesn't have to wait for the 2-minute processing
+        // Show the success screen immediately so the user can watch the progress
         setIsUploading(false);
         setUploadSuccess(true);
         
@@ -137,21 +180,19 @@ export default function RecordAvatarPage() {
     return (
       <div className="home-content">
         <div style={{ maxWidth: 600, margin: '80px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: '#fff', padding: '64px 32px', borderRadius: 24, boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0' }}>
-          <div style={{ width: 80, height: 80, borderRadius: 40, background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, boxShadow: '0 10px 25px rgba(16, 185, 129, 0.3)' }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <div style={{ width: 80, height: 80, borderRadius: 40, border: '4px solid #e0e7ff', borderTopColor: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, animation: 'spin 1s linear infinite' }}>
+             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
-          <h1 style={{ fontSize: 32, fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>Avatar generation started!</h1>
-          <p style={{ fontSize: 16, color: '#64748b', maxWidth: 400, lineHeight: 1.6, marginBottom: 32 }}>
-            Your custom AI avatar will be ready in about 2 minutes. We'll notify you once it's done.
+          <h1 style={{ fontSize: 32, fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>Cloning your Avatar...</h1>
+          <p style={{ fontSize: 16, color: '#4f46e5', fontWeight: 600, marginBottom: 16 }}>
+            {generationProgress}%
           </p>
-          <button 
-            onClick={() => router.push('/avatars')}
-            style={{ padding: '0 32px', height: 48, background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.2)', transition: 'all 0.2s' }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 12px -2px rgba(79, 70, 229, 0.3)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(79, 70, 229, 0.2)'; }}
-          >
-            Go to Dashboard
-          </button>
+          <div style={{ width: '100%', maxWidth: 400, height: 8, background: '#e2e8f0', borderRadius: 4, overflow: 'hidden', marginBottom: 32 }}>
+            <div style={{ width: `${generationProgress}%`, height: '100%', background: '#4f46e5', transition: 'width 0.5s ease-out' }} />
+          </div>
+          <p style={{ fontSize: 15, color: '#64748b', maxWidth: 400, lineHeight: 1.6 }}>
+            The AI is processing your video and creating a perfect digital clone. You will be redirected to your dashboard automatically when it finishes.
+          </p>
         </div>
       </div>
     );
@@ -268,7 +309,7 @@ export default function RecordAvatarPage() {
               )}
 
               {recordedVideoUrl ? (
-                <video src={recordedVideoUrl} controls style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <video src={recordedVideoUrl} controls autoPlay loop style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : (
                 <video ref={videoRef} autoPlay muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }} />
               )}

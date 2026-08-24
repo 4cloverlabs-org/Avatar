@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -23,9 +25,23 @@ export async function POST(req: Request) {
       fs.mkdirSync(avatarDir, { recursive: true });
     }
     
-    // Save video
+    // Save video temporarily
+    const tempVideoPath = path.join(avatarDir, 'temp_upload.webm');
+    fs.writeFileSync(tempVideoPath, buffer);
+    
+    // Normalize to 25fps standard mp4
     const videoPath = path.join(avatarDir, 'video.mp4');
-    fs.writeFileSync(videoPath, buffer);
+    const { execSync } = require('child_process');
+    try {
+      execSync(`ffmpeg -y -i "${tempVideoPath}" -r 25 -c:v libx264 -c:a aac "${videoPath}"`, { stdio: 'ignore' });
+    } catch (e) {
+      console.error("FFmpeg conversion failed, falling back to original file:", e);
+      fs.renameSync(tempVideoPath, videoPath);
+    }
+    
+    if (fs.existsSync(tempVideoPath)) {
+      try { fs.unlinkSync(tempVideoPath); } catch(e) {}
+    }
     
     // Create meta.json
     const meta = { 
