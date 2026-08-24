@@ -533,7 +533,7 @@ def prepare_avatar(video_path, bbox_shift, extra_margin=10, parsing_mode="jaw",
     bbox_shift_text = get_bbox_range(input_img_list, bbox_shift)
     fp = FaceParsing(left_cheek_width=args.left_cheek_width, right_cheek_width=args.right_cheek_width)
     input_latent_list = []
-    for bbox, frame in zip(coord_list, frame_list):
+    for bbox, frame in tqdm(zip(coord_list, frame_list), total=len(coord_list), desc="Preparing Avatar"):
         if bbox == coord_placeholder:
             if len(input_latent_list) > 0:
                 input_latent_list.append(input_latent_list[-1])

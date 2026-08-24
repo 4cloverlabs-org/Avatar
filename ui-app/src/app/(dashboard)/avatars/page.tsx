@@ -66,6 +66,24 @@ function MyAvatarsUI() {
 
   useEffect(() => {
     fetchAvatars();
+    
+    // Poll every 5 seconds if there are any avatars currently processing
+    const interval = setInterval(() => {
+      setAvatars(currentAvatars => {
+        if (currentAvatars.some(a => a.status === 'processing')) {
+          fetch('/api/avatars')
+            .then(res => res.json())
+            .then(data => {
+              if (data.success && data.avatars) {
+                setAvatars(data.avatars);
+              }
+            });
+        }
+        return currentAvatars;
+      });
+    }, 5000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -156,7 +174,22 @@ function MyAvatarsUI() {
               }}
             >
               <div style={{ aspectRatio: '9/16', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderTopLeftRadius: 10, borderTopRightRadius: 10, overflow: 'hidden' }}>
-                {failedVideos[avatar.id] ? (
+                {avatar.status === 'processing' ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, color: '#4f46e5' }}>
+                    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+                    <div style={{ width: 32, height: 32, border: '3px solid #e0e7ff', borderTopColor: '#4f46e5', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                    <div style={{ fontSize: 13, fontWeight: 500 }}>
+                      {avatar.progress ? `Generating... ${avatar.progress}%` : 'Generating...'}
+                    </div>
+                  </div>
+                ) : avatar.status === 'error' ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, color: '#ef4444' }}>
+                    <div style={{ width: 40, height: 40, background: '#fee2e2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 500 }}>Failed</div>
+                  </div>
+                ) : failedVideos[avatar.id] ? (
                   <img 
                     src={`/api/avatars/${avatar.id}/thumbnail`} 
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }} 

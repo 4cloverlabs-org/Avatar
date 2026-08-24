@@ -12,7 +12,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
     
     const files = fs.readdirSync(avatarDir);
-    const videoFile = files.find(f => f.endsWith('.mp4'));
+    let videoFile = files.find(f => f === 'preview_ai.mp4');
+    if (!videoFile) {
+      videoFile = files.find(f => f.endsWith('.mp4'));
+    }
     
     if (!videoFile) {
       return new NextResponse('No video found', { status: 404 });
