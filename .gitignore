@@ -29,6 +29,7 @@ gfpgan/weights/
 # Temporary media files
 *.wav
 *.mp4
+!ui-app/public/videos/*.mp4
 
 # Logs
 *.txt
