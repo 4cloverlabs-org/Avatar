@@ -22,7 +22,7 @@ export default function Navbar() {
 
         </span>
         <Link href="/login" className="nav-link">Log In</Link>
-        <Link href="/dashboard" className="nav-cta">
+        <Link href="/login" className="nav-cta">
           Start Free
         </Link>
       </div>

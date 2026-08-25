@@ -51,9 +51,9 @@ export default function HowItWorks() {
             <span>AI AVATAR GENERATION</span>
             <span style={{ color: 'var(--text-muted)' }}>PROCESSING</span>
           </div>
-          <div className="dashboard-content" style={{ padding: 0, display: 'flex', flexDirection: 'column', flex: 1 }}>
+          <div className="dashboard-content" style={{ padding: 0, display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'stretch' }}>
             {/* Top Half: Video */}
-            <div style={{ flex: 1, borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minHeight: '250px' }}>
+            <div style={{ flex: 1, borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minHeight: '250px', width: '100%' }}>
               <video
                 autoPlay
                 loop
@@ -67,7 +67,7 @@ export default function HowItWorks() {
             </div>
 
             {/* Bottom Half: Terminal & Waveform */}
-            <div style={{ display: 'flex', flexDirection: 'row', minHeight: '200px' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', minHeight: '200px', width: '100%' }}>
               <TerminalLog />
               <AudioWaveform />
             </div>
