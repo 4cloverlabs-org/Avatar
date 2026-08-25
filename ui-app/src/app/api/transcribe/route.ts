@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     
     return NextResponse.json({ 
       success: true, 
-      text: result.data[0] 
+      text: (result.data as any)[0] 
     });
     
   } catch (error: any) {

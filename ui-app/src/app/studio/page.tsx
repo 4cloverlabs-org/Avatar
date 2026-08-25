@@ -325,10 +325,11 @@ export default function Dashboard() {
          
          <div className="syn-header-center">
            {['Avatar', 'Text', 'Shape', 'Motion', 'Media', 'Captions', 'Interactivity', 'Record'].map(tool => {
-             const Icon = {
+             const iconMap = {
                Avatar: User, Text: Type, Shape: Square, Motion: LayoutTemplate,
                Media: ImageIcon, Captions: MessageSquare, Interactivity: MousePointer2, Record: Mic
-             }[tool as keyof typeof Icon];
+             };
+             const Icon = iconMap[tool as keyof typeof iconMap];
              return (
                <div 
                  key={tool}

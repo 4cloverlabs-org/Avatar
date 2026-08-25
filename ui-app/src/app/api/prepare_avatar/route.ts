@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     
     return NextResponse.json({ 
       success: true, 
-      avatarId: result.data[0] 
+      avatarId: (result.data as any)[0] 
     });
     
   } catch (error: any) {

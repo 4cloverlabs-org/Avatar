@@ -1617,3 +1617,395 @@ button {
     height: 160px;
   }
 }
+
+/* ==========================================================================
+   PERSONALIZATION PAGE STYLES
+   ========================================================================== */
+
+.pers-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pers-header-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.pers-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.pers-stat-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+}
+
+.pers-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  border-color: #cbd5e1;
+}
+
+.pers-stat-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pers-workspace-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+}
+
+.pers-main-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pers-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.pers-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pers-step-badge {
+  font-size: 11px;
+  font-weight: 700;
+  background: #eff6ff;
+  color: #2563eb;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Avatar Selection Grid */
+.pers-avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.pers-avatar-item {
+  border: 2px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+  background: #f8fafc;
+}
+
+.pers-avatar-item:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+}
+
+.pers-avatar-item.selected {
+  border-color: #4f46e5;
+  background: #eef2ff;
+}
+
+.pers-avatar-thumb {
+  height: 90px;
+  border-radius: 6px;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pers-avatar-play-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.pers-avatar-item:hover .pers-avatar-play-overlay {
+  opacity: 1;
+}
+
+/* Script Template Editor */
+.pers-script-area-wrapper {
+  position: relative;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.pers-script-area {
+  width: 100%;
+  height: 120px;
+  border: none;
+  background: transparent;
+  padding: 16px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--foreground);
+  resize: vertical;
+  outline: none;
+  line-height: 1.5;
+}
+
+.pers-script-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #f1f5f9;
+  border-top: 1px solid var(--panel-border);
+}
+
+.pers-variable-tag {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.pers-variable-tag:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+}
+
+/* Lead Table */
+.pers-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.pers-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.pers-table th {
+  background: #f8fafc;
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.pers-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.pers-table tr:last-child td {
+  border-bottom: none;
+}
+
+.pers-table-input {
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  width: 100%;
+  outline: none;
+  color: inherit;
+  transition: all 0.15s;
+}
+
+.pers-table-input:focus {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+/* Dropzone */
+.pers-dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #f8fafc;
+}
+
+.pers-dropzone:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+/* Sidebar Info Card */
+.pers-sidebar-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pers-preview-box {
+  background: #0f172a;
+  border-radius: 8px;
+  color: #ffffff;
+  padding: 16px;
+  font-size: 13px;
+  font-style: italic;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.5;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Console Panel */
+.pers-console {
+  background: #0f172a;
+  color: #38bdf8;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #1e293b;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pers-console-line {
+  line-height: 1.4;
+}
+
+.pers-console-line.success {
+  color: #4ade80;
+}
+
+.pers-console-line.info {
+  color: #94a3b8;
+}
+
+/* Video Grid Results */
+.pers-video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.pers-video-card {
+  border: 1px solid var(--panel-border);
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  transition: transform 0.2s;
+}
+
+.pers-video-card:hover {
+  transform: translateY(-2px);
+}
+
+.pers-video-player {
+  position: relative;
+  background: #000000;
+  aspect-ratio: 16/9;
+}
+
+.pers-video-details {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pers-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.pers-badge.success {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.pers-badge.warning {
+  background: #fef9c3;
+  color: #a16207;
+}
+
+/* Micro-animations */
+@keyframes persPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.pers-anim-pulse {
+  animation: persPulse 2s infinite ease-in-out;
+}
+
