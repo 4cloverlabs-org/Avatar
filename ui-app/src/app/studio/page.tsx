@@ -61,6 +61,35 @@ export default function Dashboard() {
   }, [history, historyIndex]);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const aspect = params.get('aspect');
+      if (aspect) {
+        setProjectAspectRatio(aspect);
+        pushHistory({ projectAspectRatio: aspect });
+      }
+
+      const aiScript = localStorage.getItem('ai_assistant_script');
+      const aiAspect = localStorage.getItem('ai_assistant_aspect');
+      const aiAvatar = localStorage.getItem('ai_assistant_avatar');
+      
+      if (aiScript) {
+        setScriptText(aiScript);
+        localStorage.removeItem('ai_assistant_script');
+      }
+      if (aiAspect) {
+        setProjectAspectRatio(aiAspect);
+        pushHistory({ projectAspectRatio: aiAspect });
+        localStorage.removeItem('ai_assistant_aspect');
+      }
+      if (aiAvatar) {
+        setAvatarId(aiAvatar);
+        localStorage.removeItem('ai_assistant_avatar');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     const handleGlobalClick = () => {
       setIsAspectDropdownOpen(false);
       setIsDropdownOpen(false);
