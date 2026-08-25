@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { 
   Home, Video, Trash, Mic, User, Settings, Sparkles, BookOpen, 
-  LayoutTemplate, Users, Bell, Search, Plus, Menu, X
+  Share2, Users, Bell, Search, Plus, Menu, X
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -52,9 +52,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Link href="/library" style={{ textDecoration: 'none' }}>
             <div className={`home-nav-item ${isActive('/library') ? 'active' : ''}`}><BookOpen size={16} /> Library</div>
           </Link>
-          <Link href="/brand-kits" style={{ textDecoration: 'none' }}>
-            <div className={`home-nav-item ${isActive('/brand-kits') ? 'active' : ''}`} style={{ justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}><LayoutTemplate size={16} /> Brand Kits</div>
+          <Link href="/socials" style={{ textDecoration: 'none' }}>
+            <div className={`home-nav-item ${isActive('/socials') ? 'active' : ''}`} style={{ justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}><Share2 size={16} /> Socials</div>
               <span style={{ fontSize: 9, color: '#10b981', fontWeight: 700 }}>UPGRADE</span>
             </div>
           </Link>
