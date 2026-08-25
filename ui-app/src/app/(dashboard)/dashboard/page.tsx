@@ -1,7 +1,8 @@
 "use client";
+
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Sparkles, LayoutGrid, List, Play, MoreVertical } from 'lucide-react';
+import { Plus, Sparkles, LayoutGrid, List, ChevronRight } from 'lucide-react';
 
 export default function HomeDashboard() {
   const router = useRouter();
@@ -18,11 +19,11 @@ export default function HomeDashboard() {
 
       <div className="home-big-cards">
         <div className="home-big-card" onClick={() => router.push('/studio')}>
-          <div style={{ width: 40, height: 40, background: '#e0e7ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 15 }}>
-            <Plus size={20} color="#4f46e5" />
+          <div style={{ width: 40, height: 40, background: '#EDF2E9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 15 }}>
+            <Plus size={20} color="#2C482C" />
           </div>
           <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>Start a new project</div>
-          <div style={{ fontSize: 13, color: '#6b7280' }}>From template or blank</div>
+          <div style={{ fontSize: 13, color: '#63685A' }}>From template or blank</div>
         </div>
 
         <div className="home-big-card" onClick={() => router.push('/studio')}>
@@ -30,7 +31,7 @@ export default function HomeDashboard() {
             <Sparkles size={20} color="#db2777" />
           </div>
           <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>Start with Assistant</div>
-          <div style={{ fontSize: 13, color: '#6b7280' }}>Prompt a video</div>
+          <div style={{ fontSize: 13, color: '#63685A' }}>Prompt a video</div>
         </div>
       </div>
 
@@ -40,11 +41,11 @@ export default function HomeDashboard() {
           <div 
             style={{ padding: 4, background: viewMode === 'grid' ? '#e2e8f0' : 'transparent', borderRadius: 4, cursor: 'pointer', transition: '0.2s' }}
             onClick={() => setViewMode('grid')}
-          ><LayoutGrid size={16} color={viewMode === 'grid' ? '#0f172a' : '#9ca3af'} /></div>
+          ><LayoutGrid size={16} color={viewMode === 'grid' ? '#1E2119' : '#9C9C8C'} /></div>
           <div 
             style={{ padding: 4, background: viewMode === 'list' ? '#e2e8f0' : 'transparent', borderRadius: 4, cursor: 'pointer', transition: '0.2s' }}
             onClick={() => setViewMode('list')}
-          ><List size={16} color={viewMode === 'list' ? '#0f172a' : '#9ca3af'} /></div>
+          ><List size={16} color={viewMode === 'list' ? '#1E2119' : '#9C9C8C'} /></div>
         </div>
       </div>
 
@@ -52,18 +53,17 @@ export default function HomeDashboard() {
         {/* Recent Project Card */}
         <div className="home-recent-card" onClick={() => router.push('/studio')}>
           <div className="home-recent-img">
-            <div className="home-recent-play"><Play size={24} color="#fff" fill="#fff" /></div>
-            <div className="home-recent-duration">00:15</div>
+            <div style={{ position: 'absolute', top: 8, left: 8, background: '#63685A', color: '#fff', fontSize: 10, padding: '2px 6px', borderRadius: 4, fontWeight: 600 }}>DRAFT</div>
+            <div style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: 10, padding: '2px 4px', borderRadius: 4 }}>00:04</div>
           </div>
           <div className="home-recent-info">
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div className="home-recent-title">Project Q3 Marketing</div>
-              <div className="home-recent-meta">Updated 2h ago</div>
-            </div>
-            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, color: '#9ca3af' }}>
-              <MoreVertical size={16} />
-            </button>
+            <div className="home-recent-title">Untitled</div>
+            <div className="home-recent-meta">Edited 8 minutes ago</div>
           </div>
+        </div>
+
+        <div className="home-recent-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed #E2DCC9', background: 'transparent' }} onClick={() => router.push('/studio')}>
+           <span style={{ fontSize: 14, fontWeight: 500, color: '#63685A', display: 'flex', alignItems: 'center', gap: 6 }}>See more videos <ChevronRight size={14} /></span>
         </div>
       </div>
     </div>
