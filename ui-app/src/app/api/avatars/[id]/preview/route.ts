@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }
     
     const files = fs.readdirSync(avatarDir);
-    let videoFile = files.find(f => f === 'preview_ai.mp4');
+    let videoFile: string | undefined = files.find(f => f === 'preview_ai.mp4');
     if (!videoFile) {
       videoFile = files.find(f => f.endsWith('.mp4'));
     }

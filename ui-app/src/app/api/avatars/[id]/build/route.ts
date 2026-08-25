@@ -5,10 +5,13 @@ import { Client, handle_file } from '@gradio/client';
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  let progressInterval: NodeJS.Timeout | undefined;
+  let trackingId = "";
+  
   try {
-    const trackingId = params.id;
+    trackingId = (await params).id;
     const trackingDir = path.join(process.cwd(), '..', 'results', 'avatars', trackingId);
 
     if (!fs.existsSync(trackingDir)) {
@@ -35,7 +38,7 @@ export async function POST(
     const trackingMetaPath = path.join(trackingDir, 'meta.json');
     let simulatedProgress = 5;
     
-    const progressInterval = setInterval(() => {
+    progressInterval = setInterval(() => {
       if (simulatedProgress < 99) {
         simulatedProgress += Math.floor(Math.random() * 3) + 1; // Slower increment to span both tasks
         if (simulatedProgress > 99) simulatedProgress = 99;
@@ -58,7 +61,7 @@ export async function POST(
     try {
       // This blocks until python finishes
       const result = await client.predict("/prepare_avatar", [ 
-        { video: handle_file(videoFile) },
+        { video: handle_file(videoPath) },
         bboxShift,
         extraMargin,
         parsingMode,
@@ -66,12 +69,14 @@ export async function POST(
         rightCheekWidth
       ]);
       
-      realAvatarId = result.data[0] as string;
-    } finally {
+      realAvatarId = (result.data as any)[0] as string;
+    } catch (e) {
       clearInterval(progressInterval);
+      throw e;
     }
 
     if (!realAvatarId) {
+      clearInterval(progressInterval);
       throw new Error("Did not receive avatar ID from backend");
     }
 
@@ -111,7 +116,7 @@ export async function POST(
       const mergedMeta = {
         ...trackingMeta,
         ...realMeta,
-        status: 'ready',
+        status: 'processing', // Keep it processing until AI generation is done
         id: trackingId // Keep the tracking ID as the actual ID now
       };
       
@@ -123,37 +128,66 @@ export async function POST(
     
     console.log(`[Avatar Build] Preparing preview video for ${trackingId}...`);
     try {
-      const audioPath = path.join(process.cwd(), '..', 'data', 'audio', 'yongen.wav');
-      const audioBuffer = fs.readFileSync(audioPath);
-      const audioFile = new File([audioBuffer], 'yongen.wav', { type: 'audio/wav' });
+      const { execSync } = require('child_process');
+      const audioPath = path.join(trackingDir, 'original_audio.wav');
+      
+      // Extract audio from the video.mp4
+      console.log(`[Avatar Build] Extracting audio from ${videoPath}...`);
+      try {
+        execSync(`ffmpeg -y -i "${videoPath}" -vn -acodec pcm_s16le -ar 16000 -ac 1 "${audioPath}"`, { stdio: 'ignore' });
+      } catch (err) {
+        console.error("[Avatar Build] FFmpeg audio extraction failed, falling back to yongen.wav");
+        fs.copyFileSync(path.join(process.cwd(), '..', 'data', 'audio', 'yongen.wav'), audioPath);
+      }
 
+      console.log(`[Avatar Build] Generating AI avatar with extracted audio...`);
       await client.predict("/generate_from_avatar", [
         trackingId, // Using trackingId because we merged the files into the tracking directory
-        handle_file(audioFile),
+        handle_file(audioPath),
         true, // use_gfpgan
         0.5   // gfpgan_weight
       ]);
       
-      const genPath = path.join(trackingDir, 'output', 'final_yongen.mp4');
-      if (fs.existsSync(genPath)) {
-        fs.copyFileSync(genPath, path.join(trackingDir, 'preview_ai.mp4'));
+      const outputDir = path.join(trackingDir, 'output');
+      if (fs.existsSync(outputDir)) {
+        const outFiles = fs.readdirSync(outputDir);
+        const finalVideo = outFiles.find(f => f.startsWith('final_') && f.endsWith('.mp4'));
+        if (finalVideo) {
+          fs.copyFileSync(path.join(outputDir, finalVideo), path.join(trackingDir, 'preview_ai.mp4'));
+        }
       }
+
+      // Mark as fully ready now!
+      const trackingMetaPath = path.join(trackingDir, 'meta.json');
+      if (fs.existsSync(trackingMetaPath)) {
+        const meta = JSON.parse(fs.readFileSync(trackingMetaPath, 'utf8'));
+        meta.status = 'ready';
+        meta.progress = 100;
+        fs.writeFileSync(trackingMetaPath, JSON.stringify(meta, null, 2));
+      }
+
     } catch(e) {
       console.error("[Avatar Build] Failed to generate AI preview:", e);
+      throw e; // Throw it so the outer catch block sets the status to error
     }
 
     console.log(`[Avatar Build] Finished entirely for ${trackingId}`);
+    clearInterval(progressInterval);
     
     return NextResponse.json({ success: true, avatarId: trackingId });
   } catch (error: any) {
+    // Make sure we clear the interval if an error occurs
+    clearInterval(progressInterval);
     console.error("[Avatar Build] API Route Error:", error);
     // Mark as failed if possible
     try {
-      const trackingMetaPath = path.join(process.cwd(), '..', 'results', 'avatars', params.id, 'meta.json');
-      if (fs.existsSync(trackingMetaPath)) {
-        const meta = JSON.parse(fs.readFileSync(trackingMetaPath, 'utf8'));
-        meta.status = 'error';
-        fs.writeFileSync(trackingMetaPath, JSON.stringify(meta, null, 2));
+      if (trackingId) {
+        const trackingMetaPath = path.join(process.cwd(), '..', 'results', 'avatars', trackingId, 'meta.json');
+        if (fs.existsSync(trackingMetaPath)) {
+          const meta = JSON.parse(fs.readFileSync(trackingMetaPath, 'utf8'));
+          meta.status = 'error';
+          fs.writeFileSync(trackingMetaPath, JSON.stringify(meta, null, 2));
+        }
       }
     } catch (e) {}
     

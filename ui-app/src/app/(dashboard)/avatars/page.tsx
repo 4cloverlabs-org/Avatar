@@ -54,11 +54,12 @@ function MyAvatarsUI() {
   const [editName, setEditName] = useState("");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const fetchAvatars = () => {
-    fetch('/api/avatars')
+    fetch('/api/avatars', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.success && data.avatars) {
-          setAvatars(data.avatars);
+          // Only show fully ready avatars on the dashboard
+          setAvatars(data.avatars.filter((a: any) => a.status === 'ready'));
         }
       })
       .finally(() => setIsLoading(false));
@@ -174,41 +175,30 @@ function MyAvatarsUI() {
               }}
             >
               <div style={{ aspectRatio: '9/16', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderTopLeftRadius: 10, borderTopRightRadius: 10, overflow: 'hidden' }}>
-                {avatar.status === 'processing' ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, color: '#4f46e5' }}>
+                <video 
+                  src={`/api/avatars/${avatar.id}/preview#t=0.001`} 
+                  loop muted playsInline preload="metadata"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  onError={() => setFailedVideos(prev => ({ ...prev, [avatar.id]: true }))}
+                />
+                
+                {avatar.status === 'processing' && (
+                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(4px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#4f46e5', gap: 12, zIndex: 10 }}>
                     <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
                     <div style={{ width: 32, height: 32, border: '3px solid #e0e7ff', borderTopColor: '#4f46e5', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                    <div style={{ fontSize: 13, fontWeight: 500 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>
                       {avatar.progress ? `Generating... ${avatar.progress}%` : 'Generating...'}
                     </div>
                   </div>
-                ) : avatar.status === 'error' ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, color: '#ef4444' }}>
+                )}
+                
+                {avatar.status === 'error' && (
+                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(255, 255, 255, 0.8)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#ef4444', gap: 12, zIndex: 10 }}>
                     <div style={{ width: 40, height: 40, background: '#fee2e2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                     </div>
-                    <div style={{ fontSize: 13, fontWeight: 500 }}>Failed</div>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>Failed</div>
                   </div>
-                ) : failedVideos[avatar.id] ? (
-                  <img 
-                    src={`/api/avatars/${avatar.id}/thumbnail`} 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      if (e.currentTarget.parentElement) {
-                        e.currentTarget.parentElement.style.background = '#f1f5f9';
-                        e.currentTarget.parentElement.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
-                      }
-                    }}
-                    alt="Avatar Thumbnail"
-                  />
-                ) : (
-                  <video 
-                    src={`/api/avatars/${avatar.id}/preview#t=0.001`} 
-                    loop muted playsInline preload="metadata"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                    onError={() => setFailedVideos(prev => ({ ...prev, [avatar.id]: true }))}
-                  />
                 )}
               </div>
               <div style={{ padding: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottomLeftRadius: 10, borderBottomRightRadius: 10 }} onClick={(e) => e.stopPropagation()}>
