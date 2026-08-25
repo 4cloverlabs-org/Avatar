@@ -46,8 +46,17 @@ export default function HeroSection() {
 
           </div>
           <div className="dashboard-content panel-dark" style={{ border: 'none', flexDirection: 'column', padding: '2rem' }}>
-            <div style={{ flex: 1, width: '100%', border: '1px solid var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem', minHeight: '200px' }}>
-              <span className="mono-text">[ LARGE TALKING AVATAR VIDEO ]</span>
+            <div style={{ flex: 1, width: '100%', border: '1px solid var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem', minHeight: '200px', overflow: 'hidden' }}>
+              <video 
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              >
+                <source src="/videos/hero_section.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
             <p className="mono-text mb-4" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center' }}>
               Live preview — script generated from "productivity tips"
