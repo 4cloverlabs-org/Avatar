@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { 
   Menu, Undo2, Redo2, Cloud, Play, Plus, Image as ImageIcon,
   User, Type, Square, LayoutTemplate, Film, MessageSquare, MousePointer2,
-  Mic, Settings, Upload, Check, Volume2, Wand2, X, ChevronDown, ArrowLeft, Video, Music, Layers, Keyboard, FileText
+  Mic, Settings, Upload, Check, Volume2, Wand2, X, ChevronDown, ArrowLeft, Video, Music, Layers, Keyboard, FileText, Trash
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -23,6 +23,7 @@ export default function Dashboard() {
   const [isGeneratingVoice, setIsGeneratingVoice] = useState(false);
   const [audioMode, setAudioMode] = useState<'upload' | 'clone'>('upload');
   const [isRecording, setIsRecording] = useState(false);
+  const [scriptMode, setScriptMode] = useState<'text' | 'audio'>('text');
   
   // New UI States
   const [isBgMediaOn, setIsBgMediaOn] = useState(false);
@@ -32,6 +33,9 @@ export default function Dashboard() {
   const [documentTitle, setDocumentTitle] = useState('Untitled');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [projectAspectRatio, setProjectAspectRatio] = useState('16/9');
+  const [isAspectDropdownOpen, setIsAspectDropdownOpen] = useState(false);
+  const [isAspectHovered, setIsAspectHovered] = useState(false);
+  const [isAvatarHovered, setIsAvatarHovered] = useState(false);
 
   // Drag and Resize State
   const containerRef = useRef<HTMLDivElement>(null);
@@ -55,6 +59,15 @@ export default function Dashboard() {
     historyRef.current = history;
     historyIndexRef.current = historyIndex;
   }, [history, historyIndex]);
+
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      setIsAspectDropdownOpen(false);
+      setIsDropdownOpen(false);
+    };
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, []);
 
   const pushHistory = (partialState: any) => {
     const currentHistory = historyRef.current;
@@ -196,6 +209,8 @@ export default function Dashboard() {
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
         const file = new File([blob], 'recorded_voice.webm', { type: 'audio/webm' });
+        setAudioFile(file);
+        setAudioPreview(URL.createObjectURL(file));
         setReferenceVoice(file);
         stream.getTracks().forEach(track => track.stop());
       };
@@ -324,10 +339,10 @@ export default function Dashboard() {
          </div>
          
          <div className="syn-header-center">
-           {['Avatar', 'Text', 'Shape', 'Motion', 'Media', 'Captions', 'Interactivity', 'Record'].map(tool => {
+           {['Avatar', 'Text', 'Shape', 'Motion', 'Media', 'Captions'].map(tool => {
              const iconMap = {
                Avatar: User, Text: Type, Shape: Square, Motion: LayoutTemplate,
-               Media: ImageIcon, Captions: MessageSquare, Interactivity: MousePointer2, Record: Mic
+               Media: ImageIcon, Captions: MessageSquare
              };
              const Icon = iconMap[tool as keyof typeof iconMap];
              return (
@@ -355,21 +370,284 @@ export default function Dashboard() {
       </header>
 
       <div className="syn-main">
-        {/* LEFT SIDEBAR */}
-        <div className="syn-sidebar-left">
-           <div style={{ padding: 15 }}>
-             <button className="btn-secondary" style={{ width: '100%', padding: '8px 0', fontSize: 13, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, border: '1px solid var(--panel-border)' }} onClick={() => alert("Add a new scene (Stub)")}>
-               <Plus size={14} /> Add scene
-             </button>
+        {/* LEFT SIDEBAR (Script input workspace) */}
+        <div className="syn-sidebar-left" style={{ display: 'flex', flexDirection: 'column' }}>
+           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--panel-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+             <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--foreground)' }}>Script / Voice</div>
            </div>
-           
-           <div style={{ flex: 1, padding: '0 15px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-             <div style={{ background: '#e0e7ff', height: 100, borderRadius: 8, border: '2px solid var(--accent)', position: 'relative', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-               <span style={{ position: 'absolute', top: 6, left: 6, fontSize: 11, fontWeight: 600, color: '#111827', background: 'rgba(255,255,255,0.8)', padding: '2px 6px', borderRadius: 4 }}>1</span>
-               <div style={{ position: 'absolute', bottom: 6, left: 6, background: '#111827', color: '#fff', padding: 4, borderRadius: 4, display: 'flex', alignItems: 'center' }}><User size={12} /></div>
-               {videoPreview && <video src={videoPreview} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-             </div>
-           </div>
+
+            {/* Toggle Tabs (Segmented Control) */}
+            <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--panel-border)', background: '#ffffff' }}>
+              <div style={{ display: 'flex', background: 'var(--background)', padding: 3, borderRadius: 8, gap: 4 }}>
+                <button
+                  onClick={() => setScriptMode('text')}
+                  style={{
+                    flex: 1,
+                    padding: '6px 0',
+                    fontSize: 12,
+                    fontWeight: scriptMode === 'text' ? 600 : 500,
+                    border: 'none',
+                    borderRadius: 6,
+                    background: scriptMode === 'text' ? '#ffffff' : 'transparent',
+                    boxShadow: scriptMode === 'text' ? '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)' : 'none',
+                    color: scriptMode === 'text' ? '#0f172a' : '#64748b',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out'
+                  }}
+                >
+                  Text Script
+                </button>
+                <button
+                  onClick={() => setScriptMode('audio')}
+                  style={{
+                    flex: 1,
+                    padding: '6px 0',
+                    fontSize: 12,
+                    fontWeight: scriptMode === 'audio' ? 600 : 500,
+                    border: 'none',
+                    borderRadius: 6,
+                    background: scriptMode === 'audio' ? '#ffffff' : 'transparent',
+                    boxShadow: scriptMode === 'audio' ? '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)' : 'none',
+                    color: scriptMode === 'audio' ? '#0f172a' : '#64748b',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out'
+                  }}
+                >
+                  Upload Audio
+                </button>
+              </div>
+            </div>
+            
+            <div style={{ flex: 1, padding: 20, display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto' }}>
+              {scriptMode === 'text' ? (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 32, height: 32, borderRadius: 16, background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, color: '#475569', cursor: 'pointer' }}>
+                      <User size={16} />
+                    </div>
+                    <div style={{ width: 32, height: 20, borderRadius: 4, background: 'var(--background)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 600, color: '#475569', cursor: 'pointer' }}>EN</div>
+                  </div>
+                  
+                  <textarea 
+                    className="syn-script-textarea"
+                    placeholder="Type your script here. To keep this scene with no voice-over, add a pause."
+                    value={scriptText}
+                    onChange={(e) => setScriptText(e.target.value)}
+                    style={{
+                      flex: 1,
+                      minHeight: 180,
+                      resize: 'none',
+                      border: '1px solid var(--panel-border)',
+                      borderRadius: 8,
+                      padding: '12px 16px',
+                      fontSize: 13,
+                      lineHeight: 1.6,
+                      outline: 'none',
+                      color: '#334155',
+                      background: '#ffffff',
+                      transition: 'all 0.2s ease-in-out',
+                      fontFamily: 'inherit'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--accent)';
+                      e.currentTarget.style.boxShadow = '0 0 0 2px rgba(37,99,235,0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--panel-border)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  />
+
+                  <button 
+                    onClick={handleGenerateVoice} 
+                    disabled={isGeneratingVoice || !scriptText.trim()}
+                    style={{
+                      width: '100%',
+                      padding: '10px 0',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      background: 'var(--accent)',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: 6,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: 8,
+                      cursor: (isGeneratingVoice || !scriptText.trim()) ? 'not-allowed' : 'pointer',
+                      opacity: !scriptText.trim() ? 0.6 : 1,
+                      boxShadow: '0 2px 4px rgba(37,99,235,0.15)',
+                      transition: 'all 0.2s ease-in-out'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (scriptText.trim() && !isGeneratingVoice) {
+                        e.currentTarget.style.background = 'var(--accent-hover)';
+                        e.currentTarget.style.transform = 'translateY(-1px)';
+                        e.currentTarget.style.boxShadow = '0 4px 6px rgba(37,99,235,0.2)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'var(--accent)';
+                      e.currentTarget.style.transform = 'none';
+                      e.currentTarget.style.boxShadow = '0 2px 4px rgba(37,99,235,0.15)';
+                    }}
+                  >
+                    {isGeneratingVoice ? (
+                      <>
+                        <div style={{ width: 12, height: 12, border: '2px solid #ffffff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} /> Generating Voice...
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 size={14} /> Generate TTS Voice
+                      </>
+                    )}
+                  </button>
+                </>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {/* Option 1: File Uploader */}
+                  <div 
+                    onClick={() => audioInputRef.current?.click()}
+                    style={{
+                      border: '2px dashed var(--panel-border)',
+                      borderRadius: 12,
+                      padding: '24px 16px',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      background: '#f8fafc',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                      transition: 'all 0.2s ease-in-out'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--accent)';
+                      e.currentTarget.style.background = '#f0f7ff';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--panel-border)';
+                      e.currentTarget.style.background = '#f8fafc';
+                    }}
+                  >
+                    <Upload size={20} style={{ color: '#64748b', marginBottom: 2 }} />
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1e293b' }}>Upload Audio File</div>
+                    <div style={{ fontSize: 11, color: '#64748b' }}>Drag & drop or browse (MP3, WAV, M4A)</div>
+                  </div>
+
+                  {/* Option 2: Record Voice */}
+                  <div 
+                    style={{
+                      border: '1px solid var(--panel-border)',
+                      borderRadius: 12,
+                      padding: '24px 16px',
+                      textAlign: 'center',
+                      background: isRecording ? '#fef2f2' : '#ffffff',
+                      borderColor: isRecording ? '#fecaca' : 'var(--panel-border)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 8,
+                      transition: 'all 0.2s ease-in-out'
+                    }}
+                  >
+                    {isRecording ? (
+                      <>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', animation: 'pulse 1.2s infinite' }} />
+                          <span style={{ fontSize: 13, fontWeight: 600, color: '#ef4444' }}>Recording Voice...</span>
+                        </div>
+                        <style>{`
+                          @keyframes pulse {
+                            0% { opacity: 0.3; transform: scale(0.9); }
+                            50% { opacity: 1; transform: scale(1.1); }
+                            100% { opacity: 0.3; transform: scale(0.9); }
+                          }
+                        `}</style>
+                        <button 
+                          onClick={stopRecording}
+                          style={{
+                            background: '#ef4444',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: 6,
+                            padding: '8px 16px',
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            marginTop: 6,
+                            boxShadow: '0 2px 4px rgba(239,68,68,0.15)',
+                            transition: 'background-color 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ef4444'}
+                        >
+                          Stop Recording
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Mic size={20} style={{ color: '#64748b', marginBottom: 2 }} />
+                        <div style={{ fontSize: 13, fontWeight: 600, color: '#1e293b' }}>Record Voice</div>
+                        <div style={{ fontSize: 11, color: '#64748b', marginBottom: 4 }}>Record your voice track live</div>
+                        <button 
+                          onClick={startRecording}
+                          style={{
+                            background: 'var(--accent)',
+                            color: '#ffffff',
+                            border: 'none',
+                            borderRadius: 6,
+                            padding: '6px 14px',
+                            fontSize: 11,
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 4px rgba(37,99,235,0.1)',
+                            transition: 'all 0.2s ease-in-out'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'var(--accent-hover)';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'var(--accent)';
+                            e.currentTarget.style.transform = 'none';
+                          }}
+                        >
+                          Start Recording
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Audio Preview block */}
+              {audioFile && (
+                <div style={{ marginTop: 16, background: '#f8fafc', padding: '12px 16px', borderRadius: 10, border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: 10, boxShadow: '0 1px 2px rgba(0,0,0,0.02)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, overflow: 'hidden' }}>
+                      <FileText size={16} color="#64748b" style={{ flexShrink: 0 }} />
+                      <span style={{ fontSize: 12, fontWeight: 600, color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 140 }}>
+                        {audioFile.name}
+                      </span>
+                    </div>
+                    <button 
+                      onClick={() => { setAudioFile(null); setAudioPreview(''); }} 
+                      style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#ef4444', padding: 4, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background-color 0.2s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fee2e2'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      <Trash size={14} />
+                    </button>
+                  </div>
+                  {audioPreview && (
+                    <audio src={audioPreview} controls style={{ width: '100%', height: 28, borderRadius: 4 }} />
+                  )}
+                </div>
+              )}
+            </div>
 
            <div style={{ padding: 15, borderTop: '1px solid var(--panel-border)', fontSize: 13, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }} onClick={() => alert("Help Center (Stub)")}>
              <div style={{ border: '1px solid currentColor', borderRadius: '50%', width: 14, height: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>?</div> Help
@@ -444,7 +722,7 @@ export default function Dashboard() {
               </div>
            </div>
 
-           {/* Timeline & Script Area */}
+           {/* Timeline & Horizontal Scenes Track */}
            <div className="syn-timeline-area">
              <div className="syn-timeline-header">
                <div style={{ display: 'flex', alignItems: 'center', gap: 15, borderRight: '1px solid var(--panel-border)', paddingRight: 15 }}>
@@ -456,47 +734,109 @@ export default function Dashboard() {
                </div>
              </div>
              
-             <div className="syn-script-area">
-               <div style={{ width: 60, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-                 <div style={{ width: 32, height: 32, borderRadius: 16, background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, color: '#111827', cursor: 'pointer' }}>
-                   <User size={16} color="var(--text-muted)" />
-                 </div>
-                 <div style={{ width: 32, height: 20, borderRadius: 4, background: '#f3f4f6', border: '1px solid #d1d5db', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 600, color: '#4b5563', cursor: 'pointer' }}>EN</div>
+             {/* Horizontal scenes filmstrip */}
+             <div style={{ flex: 1, padding: '12px 20px', display: 'flex', gap: 16, overflowX: 'auto', alignItems: 'center' }}>
+               <button className="btn-secondary" style={{ height: 80, width: 80, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 4, flexShrink: 0, border: '1px dashed var(--panel-border)', borderRadius: 8, fontSize: 11, cursor: 'pointer' }} onClick={() => alert("Add a new scene (Stub)")}>
+                 <Plus size={14} /> Add scene
+               </button>
+               
+               <div style={{ height: 80, width: 140, background: '#e0e7ff', borderRadius: 8, border: '2px solid var(--accent)', position: 'relative', overflow: 'hidden', flexShrink: 0, boxShadow: '0 2px 4px rgba(0,0,0,0.05)', cursor: 'pointer' }}>
+                 <span style={{ position: 'absolute', top: 4, left: 6, fontSize: 10, fontWeight: 600, color: '#111827', background: 'rgba(255,255,255,0.8)', padding: '1px 4px', borderRadius: 3 }}>1</span>
+                 <div style={{ position: 'absolute', bottom: 4, left: 6, background: '#111827', color: '#fff', padding: 2, borderRadius: 3, display: 'flex', alignItems: 'center' }}><User size={10} /></div>
+                 {videoPreview && <video src={videoPreview} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                </div>
-               <textarea 
-                 className="syn-script-textarea"
-                 placeholder="Type your script here. To keep this scene with no voice-over, add a pause."
-                 value={scriptText}
-                 onChange={(e) => setScriptText(e.target.value)}
-               />
              </div>
            </div>
         </div>
 
         {/* RIGHT SIDEBAR */}
         <div className="syn-sidebar-right">
-           <div className="syn-panel-section">
-             <div className="syn-panel-title">Scene layout</div>
-             <button className="btn-secondary" style={{ width: '100%', padding: '8px 0', fontSize: 13, background: '#f4f5f7', border: '1px solid var(--panel-border)', marginBottom: 15 }} onClick={() => videoInputRef.current?.click()}>
-               <Undo2 size={12} style={{ display: 'inline', marginRight: 6, transform: 'rotate(180deg)' }} /> Replace
-             </button>
-             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-               <span style={{ fontSize: 13, color: 'var(--foreground)' }}>Aspect Ratio</span>
-               <select 
-                 style={{ background: '#fff', border: '1px solid var(--panel-border)', borderRadius: 6, padding: '4px 8px', fontSize: 12, outline: 'none', color: 'var(--foreground)' }}
-                 value={projectAspectRatio}
-                 onChange={(e) => {
-                   setProjectAspectRatio(e.target.value);
-                   pushHistory({ projectAspectRatio: e.target.value });
-                 }}
-                 onClick={(e) => e.stopPropagation()}
-               >
-                 <option value="16/9">16:9 Landscape</option>
-                 <option value="9/16">9:16 Portrait</option>
-                 <option value="1/1">1:1 Square</option>
-               </select>
-             </div>
-           </div>
+            <div className="syn-panel-section" style={{ position: 'relative' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 13, color: 'var(--foreground)' }}>Aspect Ratio</span>
+                
+                <div style={{ position: 'relative', width: '130px' }}>
+                  <div 
+                    style={{ 
+                      width: '100%', 
+                      background: '#ffffff', 
+                      padding: '6px 12px', 
+                      borderRadius: 6, 
+                      fontSize: 12, 
+                      border: (isAspectDropdownOpen || isAspectHovered) ? '1px solid var(--accent)' : '1px solid var(--panel-border)', 
+                      boxShadow: isAspectDropdownOpen ? '0 0 0 2px rgba(37,99,235,0.1)' : 'none',
+                      cursor: 'pointer', 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      color: 'var(--foreground)',
+                      fontWeight: 500,
+                      transition: 'all 0.2s ease-in-out'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsAspectDropdownOpen(!isAspectDropdownOpen);
+                    }}
+                    onMouseEnter={() => setIsAspectHovered(true)}
+                    onMouseLeave={() => setIsAspectHovered(false)}
+                  >
+                    {projectAspectRatio === '16/9' ? '16:9' :
+                     projectAspectRatio === '9/16' ? '9:16' :
+                     projectAspectRatio === '1/1' ? '1:1' : '16:9'}
+                    <ChevronDown size={12} style={{ color: 'var(--text-muted)', transform: isAspectDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+                  </div>
+                  
+                  {isAspectDropdownOpen && (
+                    <div 
+                      style={{ 
+                        position: 'absolute', 
+                        top: '100%', 
+                        right: 0, 
+                        width: '140px',
+                        marginTop: 4, 
+                        background: '#ffffff', 
+                        border: '1px solid var(--panel-border)', 
+                        borderRadius: 6, 
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)', 
+                        zIndex: 100, 
+                        overflow: 'hidden' 
+                      }}
+                    >
+                      {[
+                        { val: '16/9', label: '16:9 Landscape' },
+                        { val: '9/16', label: '9:16 Portrait' },
+                        { val: '1/1', label: '1:1 Square' }
+                      ].map(opt => (
+                        <div 
+                          key={opt.val}
+                          style={{ 
+                            padding: '8px 12px', 
+                            fontSize: 12, 
+                            cursor: 'pointer', 
+                            background: projectAspectRatio === opt.val ? '#f1f5f9' : 'transparent',
+                            color: projectAspectRatio === opt.val ? 'var(--foreground)' : '#475569',
+                            fontWeight: projectAspectRatio === opt.val ? 600 : 400
+                          }}
+                          onClick={() => {
+                            setProjectAspectRatio(opt.val);
+                            pushHistory({ projectAspectRatio: opt.val });
+                            setIsAspectDropdownOpen(false);
+                          }}
+                          onMouseEnter={(e) => {
+                            if (projectAspectRatio !== opt.val) e.currentTarget.style.background = '#f8fafc';
+                          }}
+                          onMouseLeave={(e) => {
+                            if (projectAspectRatio !== opt.val) e.currentTarget.style.background = 'transparent';
+                          }}
+                        >
+                          {opt.label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
            
            <div className="syn-panel-section" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
              <span style={{ fontSize: 13, color: 'var(--foreground)' }}>Color</span>
@@ -525,57 +865,57 @@ export default function Dashboard() {
              <div className={`syn-toggle-switch ${isMusicOn ? 'on' : ''}`} onClick={() => setIsMusicOn(!isMusicOn)} />
            </div>
 
-           {/* Avatar Generation Integration (Collapsible) */}
-           <div className="syn-panel-section">
-             <div className="syn-panel-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-               Avatar Engine <Settings size={14} color="var(--text-muted)" />
+           {availableAvatars.length > 0 && (
+             <div className="syn-panel-section" style={{ position: 'relative' }}>
+               <div style={{ fontSize: 13, color: 'var(--foreground)', marginBottom: 8 }}>Selected Avatar</div>
+               <div 
+                 style={{ 
+                   width: '100%', 
+                   background: '#ffffff', 
+                   padding: '8px 12px', 
+                   borderRadius: 6, 
+                   fontSize: 12, 
+                   border: (isDropdownOpen || isAvatarHovered) ? '1px solid var(--accent)' : '1px solid var(--panel-border)', 
+                   boxShadow: isDropdownOpen ? '0 0 0 2px rgba(37,99,235,0.1)' : 'none',
+                   cursor: 'pointer', 
+                   display: 'flex', 
+                   justifyContent: 'space-between', 
+                   alignItems: 'center',
+                   transition: 'all 0.2s ease-in-out'
+                 }}
+                 onClick={(e) => {
+                   e.stopPropagation();
+                   setIsDropdownOpen(!isDropdownOpen);
+                 }}
+                 onMouseEnter={() => setIsAvatarHovered(true)}
+                 onMouseLeave={() => setIsAvatarHovered(false)}
+               >
+                 {avatarId ? (availableAvatars.find(a => a.id === avatarId)?.name || `Avatar (${avatarId.substring(0,6)})`) : "Select Avatar"}
+                 <ChevronDown size={14} style={{ color: 'var(--text-muted)', transform: isDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+               </div>
+               
+               {isDropdownOpen && (
+                 <div className="custom-scrollbar" style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, background: '#fff', border: '1px solid var(--panel-border)', borderRadius: 6, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, maxHeight: 180, overflowY: 'auto' }}>
+                   {availableAvatars.map(a => (
+                     <div 
+                       key={a.id}
+                       style={{ padding: '8px 12px', fontSize: 12, cursor: 'pointer', background: avatarId === a.id ? '#f3f4f6' : 'transparent', borderBottom: '1px solid #f3f4f6' }}
+                       onClick={() => {
+                         setAvatarId(a.id);
+                         setIsDropdownOpen(false);
+                       }}
+                       onMouseEnter={(e) => e.currentTarget.style.background = '#f9fafb'}
+                       onMouseLeave={(e) => e.currentTarget.style.background = avatarId === a.id ? '#f3f4f6' : 'transparent'}
+                     >
+                       <div style={{ fontWeight: avatarId === a.id ? 600 : 400, color: 'var(--foreground)' }}>
+                         {a.name || `Avatar (${a.id.substring(0,6)})`}
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+               )}
              </div>
-             
-              {availableAvatars.length > 0 && (
-                <div style={{ marginBottom: 15, position: 'relative' }}>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>Selected Avatar</div>
-                  <div 
-                    style={{ width: '100%', background: '#f4f5f7', padding: '8px 12px', borderRadius: 6, fontSize: 12, border: '1px solid var(--panel-border)', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  >
-                    {avatarId ? (availableAvatars.find(a => a.id === avatarId)?.name || `Avatar (${avatarId.substring(0,6)})`) : "Select Avatar"}
-                    <ChevronDown size={14} style={{ color: 'var(--text-muted)', transform: isDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-                  </div>
-                  
-                  {isDropdownOpen && (
-                    <div className="custom-scrollbar" style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, background: '#fff', border: '1px solid var(--panel-border)', borderRadius: 6, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 100, maxHeight: 180, overflowY: 'auto' }}>
-                      {availableAvatars.map(a => (
-                        <div 
-                          key={a.id}
-                          style={{ padding: '8px 12px', fontSize: 12, cursor: 'pointer', background: avatarId === a.id ? '#f3f4f6' : 'transparent', borderBottom: '1px solid #f3f4f6' }}
-                          onClick={() => {
-                            setAvatarId(a.id);
-                            setIsDropdownOpen(false);
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.background = '#f9fafb'}
-                          onMouseLeave={(e) => e.currentTarget.style.background = avatarId === a.id ? '#f3f4f6' : 'transparent'}
-                        >
-                          <div style={{ fontWeight: avatarId === a.id ? 600 : 400, color: 'var(--foreground)' }}>
-                            {a.name || `Avatar (${a.id.substring(0,6)})`}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-             <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>Voice Source</div>
-             <div style={{ background: '#f4f5f7', padding: '8px 12px', borderRadius: 6, fontSize: 12, border: '1px dashed var(--panel-border)', cursor: 'pointer', marginBottom: 15 }} onClick={() => audioInputRef.current?.click()}>
-               <Upload size={14} style={{ display: 'inline', marginRight: 4 }} /> 
-               {audioFile ? audioFile.name : "Upload Voice File"}
-             </div>
-             
-             <button className="btn-secondary" style={{ width: '100%', padding: '8px 0', fontSize: 13, background: 'var(--panel-bg)' }} onClick={handlePrepareAvatar} disabled={isPreparing}>
-               <User size={14} style={{ display: 'inline', marginRight: 4 }} />
-               {isPreparing ? "Building Avatar..." : "Build Avatar"}
-             </button>
-           </div>
+           )}
         </div>
 
       </div>
@@ -605,7 +945,9 @@ export default function Dashboard() {
       }} />
       <input type="file" hidden ref={audioInputRef} accept="audio/*" onChange={(e) => {
         if (e.target.files?.[0]) {
-          setAudioFile(e.target.files[0]);
+          const file = e.target.files[0];
+          setAudioFile(file);
+          setAudioPreview(URL.createObjectURL(file));
         }
       }} />
     </div>
