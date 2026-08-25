@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import {
   Plus, Sparkles, LayoutGrid, List, Play, MoreVertical,
   Clock, Video, X, Monitor, Smartphone, Square, ArrowRight,
-  User, Mic, Settings, ChevronDown
+  User, Mic, Settings, ChevronDown, Trash
 } from 'lucide-react';
 
 export default function HomeDashboard() {
@@ -406,8 +406,26 @@ export default function HomeDashboard() {
                     <Clock size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} /> Generated video
                   </div>
                 </div>
-                <button onClick={(e) => { e.stopPropagation(); alert("Video Options Menu (Stub)"); }} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, color: '#94a3b8' }}>
-                  <MoreVertical size={16} />
+                <button 
+                  onClick={async (e) => { 
+                    e.stopPropagation(); 
+                    if (confirm("Move this video to trash?")) {
+                      try {
+                        const res = await fetch(`/api/videos/${vid.filename}`, { method: 'DELETE' });
+                        if (res.ok) {
+                          setVideos(videos.filter(v => v.filename !== vid.filename));
+                        } else {
+                          alert('Failed to delete video');
+                        }
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }
+                  }} 
+                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, color: '#94a3b8' }}
+                  title="Move to Trash"
+                >
+                  <Trash size={16} />
                 </button>
               </div>
             </div>
@@ -421,33 +439,6 @@ export default function HomeDashboard() {
             <div>Duration</div>
             <div>Status</div>
             <div>Actions</div>
-          </div>
-
-          {/* Default list item */}
-          <div
-            onClick={() => router.push('/studio')}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '2fr 1fr 1fr auto',
-              padding: '16px 20px',
-              borderBottom: '2px solid #F5F5F5',
-              alignItems: 'center',
-              fontSize: 13,
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontWeight: 600, color: '#0f172a' }}>
-              <Video size={16} color="var(--accent)" />
-              Project Q3 Marketing
-            </div>
-            <div style={{ color: '#475569' }}>00:15</div>
-            <div style={{ color: '#64748b' }}>Updated 2h ago</div>
-            <button onClick={(e) => { e.stopPropagation(); alert("Options (Stub)"); }} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, color: '#94a3b8' }}>
-              <MoreVertical size={16} />
-            </button>
           </div>
 
           {/* Dynamic list items */}
@@ -474,8 +465,26 @@ export default function HomeDashboard() {
               </div>
               <div style={{ color: '#475569' }}>00:15</div>
               <div style={{ color: '#64748b' }}>Generated video</div>
-              <button onClick={(e) => { e.stopPropagation(); alert("Options (Stub)"); }} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, color: '#94a3b8' }}>
-                <MoreVertical size={16} />
+              <button 
+                onClick={async (e) => { 
+                  e.stopPropagation(); 
+                  if (confirm("Move this video to trash?")) {
+                    try {
+                      const res = await fetch(`/api/videos/${vid.filename}`, { method: 'DELETE' });
+                      if (res.ok) {
+                        setVideos(videos.filter(v => v.filename !== vid.filename));
+                      } else {
+                        alert('Failed to delete video');
+                      }
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }
+                }} 
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, color: '#94a3b8' }}
+                title="Move to Trash"
+              >
+                <Trash size={16} />
               </button>
             </div>
           ))}

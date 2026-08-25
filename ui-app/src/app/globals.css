@@ -1230,6 +1230,7 @@ button {
   margin: 0;
   border: 2px solid #F5F5F5;
   overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 /* Custom Scrollbar for Home Dashboard */
@@ -2538,5 +2539,8 @@ button {
   right: 0;
 }
 
-
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
 

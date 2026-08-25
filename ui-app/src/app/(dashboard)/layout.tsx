@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { authClient } from '../../lib/auth-client';
 import { 
   Home, Video, Trash, Mic, User, Settings, Sparkles, BookOpen, 
   Share2, Users, Bell, Search, Plus, Menu, X, PanelLeftClose, PanelLeftOpen, BarChart2
@@ -12,6 +13,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { data: session, isPending: isSessionLoading } = authClient.useSession();
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
+  // Cached user for instant avatar display while session loads
+  const [cachedUser, setCachedUser] = useState<{ name: string; email: string; image?: string } | null>(null);
+
+  // Load cached user from localStorage on mount
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem('cached-user');
+      if (cached) setCachedUser(JSON.parse(cached));
+    } catch {}
+  }, []);
+
+  // Update cache when fresh session arrives
+  useEffect(() => {
+    if (session?.user) {
+      const userData = { name: session.user.name, email: session.user.email, image: session.user.image || undefined };
+      setCachedUser(userData);
+      try { localStorage.setItem('cached-user', JSON.stringify(userData)); } catch {}
+    }
+  }, [session]);
+
+  const handleLogout = async () => {
+    try { localStorage.removeItem('cached-user'); } catch {}
+    router.push('/');
+    authClient.signOut();
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
@@ -288,7 +317,137 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               Create
             </button>
             <Bell size={20} color="#6b7280" />
-            <div style={{ width: 32, height: 32, background: '#d1d5db', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 600 }}>K</div>
+            {(() => {
+              const displayUser = session?.user || cachedUser;
+              if (isSessionLoading && !cachedUser) {
+                return <div style={{ width: 32, height: 32, background: 'linear-gradient(110deg, #e2e8f0 30%, #f1f5f9 50%, #e2e8f0 70%)', backgroundSize: '200% 100%', borderRadius: '50%', animation: 'shimmer 1.5s infinite' }} />;
+              }
+              if (!displayUser) {
+                return <div style={{ width: 32, height: 32, background: '#d1d5db', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 600 }}>U</div>;
+              }
+              return (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, position: 'relative' }}>
+                <button 
+                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    cursor: 'pointer',
+                    outline: 'none',
+                    boxShadow: 'none'
+                  }}
+                >
+                  <div style={{ 
+                    width: 32, 
+                    height: 32, 
+                    background: '#4f46e5', 
+                    color: '#fff', 
+                    borderRadius: '50%', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    fontSize: 13, 
+                    fontWeight: 600,
+                    overflow: 'hidden'
+                  }}>
+                    {displayUser.image ? (
+                       <img src={displayUser.image} alt={displayUser.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                       (displayUser.name || 'U').charAt(0).toUpperCase()
+                    )}
+                  </div>
+                </button>
+
+                {/* Dropdown Menu */}
+                {isProfileDropdownOpen && (
+                  <>
+                    <div 
+                      onClick={() => setIsProfileDropdownOpen(false)}
+                      style={{ position: 'fixed', inset: 0, zIndex: 998, background: 'transparent' }} 
+                    />
+                    <div style={{
+                      position: 'absolute',
+                      right: 0,
+                      top: '40px',
+                      width: '240px',
+                      background: '#ffffff',
+                      border: '1px solid #e2e8f0',
+                      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '12px',
+                      padding: '12px',
+                      zIndex: 999,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '4px'
+                    }}>
+                      <div style={{ padding: '6px 8px' }}>
+                        <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {displayUser.name}
+                        </div>
+                        <div style={{ color: '#64748b', fontSize: '11px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '2px' }}>
+                          {displayUser.email}
+                        </div>
+                      </div>
+                      
+                      <div style={{ height: '1px', background: '#f1f5f9', margin: '6px 0' }} />
+
+                      <Link
+                        href="/settings"
+                        onClick={() => setIsProfileDropdownOpen(false)}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#334155',
+                          padding: '8px 10px',
+                          textAlign: 'left',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          transition: 'background-color 0.15s ease',
+                          textDecoration: 'none'
+                        }}
+                      >
+                        <Settings size={15} color="#475569" />
+                        Account Settings
+                      </Link>
+
+                      <button
+                        onClick={() => {
+                          setIsProfileDropdownOpen(false);
+                          handleLogout();
+                        }}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          color: '#ef4444',
+                          padding: '8px 10px',
+                          textAlign: 'left',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          transition: 'background-color 0.15s ease'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      >
+                        <Trash size={15} />
+                        Log Out
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+              );
+            })()}
           </div>
         </div>
 

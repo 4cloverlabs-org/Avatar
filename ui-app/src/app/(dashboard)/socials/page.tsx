@@ -42,29 +42,70 @@ export default function SocialsPage() {
   const [videos, setVideos] = useState<VideoFile[]>([]);
   const [loadingVideos, setLoadingVideos] = useState(true);
   const [selectedVideoFile, setSelectedVideoFile] = useState<string>('');
+  const [loadingAccounts, setLoadingAccounts] = useState(true);
 
-  // Persist connection state
+  // Persist connection state — fetch from API
   useEffect(() => {
-    const yt = localStorage.getItem('yt_connected') === 'true';
-    const ig = localStorage.getItem('ig_connected') === 'true';
-    if (yt) {
-      setYtConnected(true);
-      setYtChannel({
-        name: 'Workspace Avatar AI Creator',
-        subs: '14.8K subscribers',
-        views: '240.5K lifetime views',
-        avatar: '/youtube-avatar'
-      });
+    // 1. Try to load from cache instantly
+    try {
+      const cached = localStorage.getItem('socials_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed.yt) {
+          setYtConnected(true);
+          setYtChannel(parsed.yt);
+        }
+        if (parsed.ig) {
+          setIgConnected(true);
+          setIgAccount(parsed.ig);
+        }
+        setLoadingAccounts(false);
+      }
+    } catch(e) {}
+
+    // 2. Fetch fresh from server
+    async function fetchConnectedAccounts() {
+      try {
+        const res = await fetch('/api/socials/accounts');
+        const data = await res.json();
+        if (data.success && data.accounts) {
+          let ytData = null;
+          let igData = null;
+
+          for (const acc of data.accounts) {
+            if (acc.platform === 'youtube') {
+              setYtConnected(true);
+              const meta = acc.metadata || {};
+              ytData = {
+                name: acc.accountName,
+                subs: `${Number(meta.subscribers || 0).toLocaleString()} subscribers`,
+                views: `${Number(meta.views || 0).toLocaleString()} lifetime views`,
+                avatar: acc.accountAvatar || ''
+              };
+              setYtChannel(ytData);
+            }
+            if (acc.platform === 'instagram') {
+              setIgConnected(true);
+              const meta = acc.metadata || {};
+              igData = {
+                handle: acc.accountName,
+                followers: `${Number(meta.followers || 0).toLocaleString()} followers`,
+                posts: `${Number(meta.posts || 0).toLocaleString()} posts`,
+                avatar: acc.accountAvatar || ''
+              };
+              setIgAccount(igData);
+            }
+          }
+          // Update cache
+          localStorage.setItem('socials_cache', JSON.stringify({ yt: ytData, ig: igData }));
+        }
+      } catch (err) {
+        console.error('Failed to fetch social accounts:', err);
+      } finally {
+        setLoadingAccounts(false);
+      }
     }
-    if (ig) {
-      setIgConnected(true);
-      setIgAccount({
-        handle: '@workspace_avatar_ai',
-        followers: '8,420 followers',
-        posts: '86 posts',
-        avatar: '/instagram-avatar'
-      });
-    }
+    fetchConnectedAccounts();
   }, []);
 
   // Publishing form state
@@ -129,56 +170,46 @@ export default function SocialsPage() {
     fetchVideos();
   }, []);
 
-  // Connect Simulation
+  // Connect — redirect to real OAuth
   const handleConnect = (platform: 'youtube' | 'instagram') => {
-    setAuthModal(platform);
-    setModalLoading(false);
+    if (platform === 'youtube') {
+      window.location.href = '/api/socials/youtube/connect';
+    } else if (platform === 'instagram') {
+      window.location.href = '/api/socials/instagram/connect';
+    }
   };
 
-  const handleDisconnect = (platform: 'youtube' | 'instagram') => {
-    if (confirm(`Are you sure you want to disconnect your ${platform === 'youtube' ? 'YouTube' : 'Instagram'} account?`)) {
-      if (platform === 'youtube') {
-        localStorage.setItem('yt_connected', 'false');
-        setYtConnected(false);
-        setYtChannel({ name: '', subs: '', views: '', avatar: '' });
+  const handleDisconnect = async (platform: 'youtube' | 'instagram') => {
+    if (!confirm(`Are you sure you want to disconnect your ${platform === 'youtube' ? 'YouTube' : 'Instagram'} account?`)) return;
+    
+    try {
+      const res = await fetch(`/api/socials/${platform}/disconnect`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        if (platform === 'youtube') {
+          setYtConnected(false);
+          setYtChannel({ name: '', subs: '', views: '', avatar: '' });
+        } else {
+          setIgConnected(false);
+          setIgAccount({ handle: '', followers: '', posts: '', avatar: '' });
+        }
       } else {
-        localStorage.setItem('ig_connected', 'false');
-        setIgConnected(false);
-        setIgAccount({ handle: '', followers: '', posts: '', avatar: '' });
+        alert('Failed to disconnect: ' + (data.error || 'Unknown error'));
       }
+    } catch (err) {
+      alert('Failed to disconnect. Please try again.');
     }
   };
 
   const submitAuth = async () => {
+    // This is only used for Instagram (simulated for now)
     setModalLoading(true);
-    // Simulate OAuth handshake
     await new Promise(resolve => setTimeout(resolve, 1800));
-
-    if (authModal === 'youtube') {
-      localStorage.setItem('yt_connected', 'true');
-      setYtConnected(true);
-      setYtChannel({
-        name: 'Workspace Avatar AI Creator',
-        subs: '14.8K subscribers',
-        views: '240.5K lifetime views',
-        avatar: '/youtube-avatar' // Staged image fallback
-      });
-    } else if (authModal === 'instagram') {
-      localStorage.setItem('ig_connected', 'true');
-      setIgConnected(true);
-      setIgAccount({
-        handle: '@workspace_avatar_ai',
-        followers: '8,420 followers',
-        posts: '86 posts',
-        avatar: '/instagram-avatar'
-      });
-    }
-    
     setModalLoading(false);
     setAuthModal(null);
   };
 
-  // Publish video simulation
+  // Publish video — real YouTube upload
   const handlePublish = async () => {
     if (!ytConnected && platformType === 'youtube') {
       alert("Please connect your YouTube account first.");
@@ -203,57 +234,63 @@ export default function SocialsPage() {
 
     setIsPublishing(true);
     setPublishProgress(0);
-    setPublishStep('Preparing video file for export...');
+    setPublishStep('Preparing video file for upload...');
 
-    // Progress bar milestones
-    const steps = [
-      { prg: 20, txt: 'Initializing API connections and setting metadata...' },
-      { prg: 50, txt: 'Uploading video payload to server (CDN cache)...' },
-      { prg: 80, txt: 'Processing video compression and stabilization...' },
-      { prg: 95, txt: 'Submitting metadata and publishing post live...' },
-      { prg: 100, txt: 'Video published successfully!' }
-    ];
+    try {
+      if (platformType === 'youtube' || platformType === 'both') {
+        setPublishProgress(20);
+        setPublishStep('Uploading video to YouTube...');
 
-    for (const step of steps) {
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      setPublishProgress(step.prg);
-      setPublishStep(step.txt);
+        const res = await fetch('/api/socials/youtube/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            videoFilename: selectedVideoFile,
+            title: title,
+            description: caption || '',
+            tags: '',
+          }),
+        });
+
+        const data = await res.json();
+
+        setPublishProgress(90);
+        setPublishStep('Finalizing YouTube upload...');
+
+        if (data.success) {
+          const dateStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+          setPublications(prev => [{
+            id: `pub-yt-${Date.now()}`,
+            title: title,
+            platform: 'youtube',
+            account: ytChannel.name || 'YouTube Channel',
+            date: dateStr,
+            status: 'Live',
+            link: data.youtubeUrl || `https://youtube.com/shorts/${data.videoId}`
+          }, ...prev]);
+        } else {
+          alert('YouTube upload failed: ' + (data.error || 'Unknown error'));
+        }
+      }
+
+      if (platformType === 'instagram' || platformType === 'both') {
+        // Instagram upload not yet implemented
+        setPublishProgress(95);
+        setPublishStep('Instagram upload not yet configured...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      setPublishProgress(100);
+      setPublishStep('Done!');
+    } catch (err: any) {
+      alert('Upload failed: ' + (err.message || 'Unknown error'));
+    } finally {
+      setTimeout(() => {
+        setIsPublishing(false);
+        setTitle('');
+        setCaption('');
+      }, 1500);
     }
-
-    // Add to publications history
-    const newPubs: Publication[] = [];
-    const dateStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
-
-    const videoTitle = videos.find(v => v.filename === selectedVideoFile)?.title || 'Custom Video';
-
-    if (platformType === 'youtube' || platformType === 'both') {
-      newPubs.push({
-        id: `pub-yt-${Date.now()}`,
-        title: title || videoTitle,
-        platform: 'youtube',
-        account: ytChannel.name || 'Workspace Creator',
-        date: dateStr,
-        status: 'Live',
-        link: 'https://youtube.com/shorts/simulated_upload'
-      });
-    }
-
-    if (platformType === 'instagram' || platformType === 'both') {
-      newPubs.push({
-        id: `pub-ig-${Date.now()}`,
-        title: caption.substring(0, 30) || videoTitle,
-        platform: 'instagram',
-        account: igAccount.handle || '@workspace_creator',
-        date: dateStr,
-        status: 'Live',
-        link: 'https://instagram.com/reel/simulated_upload'
-      });
-    }
-
-    setPublications(prev => [...newPubs, ...prev]);
-    setIsPublishing(false);
-    setTitle('');
-    setCaption('');
   };
 
   return (
@@ -273,8 +310,40 @@ export default function SocialsPage() {
         {/* STEP 1: CHANNELS */}
         <div className="soc-grid">
           
-          {/* YOUTUBE CARD */}
-          <div className="soc-card">
+          {loadingAccounts ? (
+            <>
+              {/* SKELETON YOUTUBE */}
+              <div className="soc-card" style={{ opacity: 0.7 }}>
+                <div className="soc-platform-bg"><Youtube size={120} /></div>
+                <div className="soc-card-header">
+                  <div className="soc-platform-title">
+                    <div className="soc-platform-icon youtube"><Youtube size={20} /></div>
+                    YouTube Integration
+                  </div>
+                </div>
+                <div className="soc-card-body" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div className="shimmer" style={{ height: 20, width: 120, borderRadius: 4 }}></div>
+                </div>
+              </div>
+
+              {/* SKELETON INSTAGRAM */}
+              <div className="soc-card" style={{ opacity: 0.7 }}>
+                <div className="soc-platform-bg"><Instagram size={120} /></div>
+                <div className="soc-card-header">
+                  <div className="soc-platform-title">
+                    <div className="soc-platform-icon instagram"><Instagram size={20} /></div>
+                    Instagram Business
+                  </div>
+                </div>
+                <div className="soc-card-body" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div className="shimmer" style={{ height: 20, width: 120, borderRadius: 4 }}></div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* YOUTUBE CARD */}
+              <div className="soc-card">
             <div className="soc-platform-bg"><Youtube size={120} /></div>
             <div className="soc-card-header">
               <div className="soc-platform-title">
@@ -391,7 +460,9 @@ export default function SocialsPage() {
                 </button>
               )}
             </div>
-          </div>
+            </div>
+            </>
+          )}
 
         </div>
 

@@ -35,9 +35,17 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     const { id } = await params;
     const avatarsDir = path.join(process.cwd(), '..', 'results', 'avatars');
     const targetDir = path.join(avatarsDir, id);
-    
     if (fs.existsSync(targetDir)) {
-      fs.rmSync(targetDir, { recursive: true, force: true });
+      const trashDir = path.join(process.cwd(), '..', 'results', 'trash');
+      if (!fs.existsSync(trashDir)) {
+        fs.mkdirSync(trashDir, { recursive: true });
+      }
+      
+      const timestamp = Date.now();
+      const trashPath = path.join(trashDir, `avatar___${id}___${timestamp}`);
+      
+      // Move to trash
+      fs.renameSync(targetDir, trashPath);
     }
     
     return NextResponse.json({ success: true });

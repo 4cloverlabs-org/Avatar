@@ -105,3 +105,37 @@ export const accountRelations = relations(account, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+// ── Social Media Connected Accounts ──────────────────────────────────
+export const socialAccount = pgTable(
+  "social_account",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    platform: text("platform").notNull(), // "youtube" | "instagram"
+    platformAccountId: text("platform_account_id").notNull(),
+    accountName: text("account_name").notNull(),
+    accountAvatar: text("account_avatar"),
+    accessToken: text("access_token").notNull(),
+    refreshToken: text("refresh_token"),
+    tokenExpiresAt: timestamp("token_expires_at"),
+    metadata: text("metadata"), // JSON string for subs/followers etc.
+    connectedAt: timestamp("connected_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("social_account_userId_idx").on(table.userId),
+    uniqueIndex("social_account_platform_userId_uidx").on(
+      table.platform,
+      table.userId,
+    ),
+  ],
+);
+
+export const socialAccountRelations = relations(socialAccount, ({ one }) => ({
+  user: one(user, {
+    fields: [socialAccount.userId],
+    references: [user.id],
+  }),
+}));
