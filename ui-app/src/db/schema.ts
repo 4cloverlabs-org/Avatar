@@ -139,3 +139,27 @@ export const socialAccountRelations = relations(socialAccount, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+// ── Notifications ────────────────────────────────────────────────────
+export const notification = pgTable(
+  "notification",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    message: text("message").notNull(),
+    type: text("type").notNull(), // 'video', 'system', 'account', 'avatar'
+    read: boolean("read").default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("notification_userId_idx").on(table.userId)]
+);
+
+export const notificationRelations = relations(notification, ({ one }) => ({
+  user: one(user, {
+    fields: [notification.userId],
+    references: [user.id],
+  }),
+}));

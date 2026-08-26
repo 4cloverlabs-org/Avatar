@@ -15,6 +15,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { data: session, isPending: isSessionLoading } = authClient.useSession();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   // Cached user for instant avatar display while session loads
   const [cachedUser, setCachedUser] = useState<{ name: string; email: string; image?: string } | null>(null);
@@ -25,7 +27,45 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const cached = localStorage.getItem('cached-user');
       if (cached) setCachedUser(JSON.parse(cached));
     } catch {}
+    
+    fetchNotifications();
   }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await fetch('/api/notifications');
+      const data = await res.json();
+      if (data.success) {
+        setNotifications(data.notifications);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleMarkAsRead = async (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    
+    // Optimistic UI update
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    
+    try {
+      await fetch(`/api/notifications/${id}/read`, { method: 'PATCH' });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    // Optimistic UI update
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    
+    try {
+      await fetch('/api/notifications/mark-all-read', { method: 'POST' });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Update cache when fresh session arrives
   useEffect(() => {
@@ -41,6 +81,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     router.push('/');
     authClient.signOut();
   };
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   useEffect(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
@@ -316,7 +358,108 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <button className="home-pill" style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '8px 16px' }} onClick={() => router.push('/studio')}>
               Create
             </button>
-            <Bell size={20} color="#6b7280" />
+            
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <button 
+                onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px', borderRadius: '50%', outline: 'none' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                <div style={{ position: 'relative' }}>
+                  <Bell size={20} color="#64748b" />
+                  {unreadCount > 0 && (
+                    <div style={{ position: 'absolute', top: -2, right: -2, width: 8, height: 8, background: '#ef4444', borderRadius: '50%', border: '2px solid #ffffff' }} />
+                  )}
+                </div>
+              </button>
+
+              {isNotificationDropdownOpen && (
+                <>
+                  <div onClick={() => setIsNotificationDropdownOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 998, background: 'rgba(15, 23, 42, 0.2)', backdropFilter: 'blur(2px)', transition: 'opacity 0.3s' }} />
+                  <div style={{
+                    position: 'fixed',
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: '380px',
+                    background: '#ffffff',
+                    boxShadow: '-10px 0 25px rgba(0, 0, 0, 0.1)',
+                    zIndex: 999,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    animation: 'slideInRight 0.3s ease-out forwards'
+                  }}>
+                    <style>{`
+                      @keyframes slideInRight {
+                        from { transform: translateX(100%); }
+                        to { transform: translateX(0); }
+                      }
+                    `}</style>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: '1px solid #f1f5f9' }}>
+                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '18px' }}>Notifications</div>
+                      <button onClick={() => setIsNotificationDropdownOpen(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', borderRadius: '50%' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                        <X size={20} />
+                      </button>
+                    </div>
+                    
+                    <div style={{ flex: 1, overflowY: 'auto' }}>
+                      <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Recent</div>
+                        {unreadCount > 0 && (
+                          <button onClick={handleMarkAllAsRead} style={{ background: 'transparent', border: 'none', fontSize: '13px', color: 'var(--accent)', cursor: 'pointer', fontWeight: 500 }}>
+                            Mark all as read
+                          </button>
+                        )}
+                      </div>
+
+                      {notifications.length === 0 ? (
+                        <div style={{ padding: '40px 24px', textAlign: 'center', color: '#94a3b8' }}>
+                          You have no notifications.
+                        </div>
+                      ) : (
+                        notifications.map(notif => {
+                          const isUnread = !notif.read;
+                          return (
+                            <div 
+                              key={notif.id}
+                              onClick={(e) => isUnread ? handleMarkAsRead(notif.id, e) : null}
+                              style={{ 
+                                padding: '16px 24px', 
+                                borderBottom: '1px solid #f1f5f9', 
+                                background: isUnread ? '#eff6ff' : 'transparent', 
+                                display: 'flex', 
+                                gap: '16px', 
+                                cursor: isUnread ? 'pointer' : 'default',
+                                transition: 'background-color 0.2s'
+                              }}
+                              onMouseEnter={(e) => { if (!isUnread) e.currentTarget.style.backgroundColor = '#f8fafc' }}
+                              onMouseLeave={(e) => { if (!isUnread) e.currentTarget.style.backgroundColor = 'transparent' }}
+                            >
+                              <div style={{ 
+                                width: 40, height: 40, 
+                                background: isUnread ? '#bfdbfe' : '#f1f5f9', 
+                                borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, 
+                                color: isUnread ? '#2563eb' : '#64748b' 
+                              }}>
+                                {notif.type === 'video' ? <Video size={20} /> : notif.type === 'avatar' ? <User size={20} /> : <Sparkles size={20} />}
+                              </div>
+                              <div>
+                                <div style={{ fontSize: '14px', fontWeight: isUnread ? 600 : 500, color: '#0f172a', marginBottom: '4px' }}>{notif.title}</div>
+                                <div style={{ fontSize: '13px', color: '#475569', lineHeight: '1.4' }}>{notif.message}</div>
+                                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '8px', fontWeight: 500 }}>
+                                  {new Date(notif.createdAt).toLocaleDateString()}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
             {(() => {
               const displayUser = session?.user || cachedUser;
               if (isSessionLoading && !cachedUser) {
