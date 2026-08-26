@@ -163,3 +163,75 @@ export const notificationRelations = relations(notification, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+// ── Workspaces ───────────────────────────────────────────────────────
+export const workspace = pgTable(
+  "workspace",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    plan: text("plan").default('FREE').notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("workspace_userId_idx").on(table.userId)]
+);
+
+export const workspaceRelations = relations(workspace, ({ one }) => ({
+  user: one(user, {
+    fields: [workspace.userId],
+    references: [user.id],
+  }),
+}));
+
+// ── Campaigns & Analytics ────────────────────────────────────────────
+export const campaign = pgTable(
+  "campaign",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    status: text("status").default('Draft').notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("campaign_userId_idx").on(table.userId)]
+);
+
+export const campaignRelations = relations(campaign, ({ one, many }) => ({
+  user: one(user, {
+    fields: [campaign.userId],
+    references: [user.id],
+  }),
+  leads: many(campaignLead),
+}));
+
+export const campaignLead = pgTable(
+  "campaign_lead",
+  {
+    id: text("id").primaryKey(),
+    campaignId: text("campaign_id")
+      .notNull()
+      .references(() => campaign.id, { onDelete: "cascade" }),
+    firstName: text("first_name").notNull(),
+    company: text("company").notNull(),
+    email: text("email").notNull(),
+    status: text("status").default('Idle').notNull(),
+    videoUrl: text("video_url"),
+    deliveredAt: timestamp("delivered_at"),
+    viewedAt: timestamp("viewed_at"),
+    clickedAt: timestamp("clicked_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("campaign_lead_campaignId_idx").on(table.campaignId)]
+);
+
+export const campaignLeadRelations = relations(campaignLead, ({ one }) => ({
+  campaign: one(campaign, {
+    fields: [campaignLead.campaignId],
+    references: [campaign.id],
+  }),
+}));

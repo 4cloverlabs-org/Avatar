@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { AlertTriangle } from 'lucide-react';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -11,6 +12,7 @@ export default function SettingsPage() {
   // Profile Form State
   const [name, setName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
 
@@ -303,9 +305,13 @@ export default function SettingsPage() {
             label="Avatar" 
             value={
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'linear-gradient(45deg, var(--accent), #9333ea)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '18px', fontWeight: 600 }}>
-                  {user.name?.charAt(0).toUpperCase() || 'U'}
-                </div>
+                {user.image ? (
+                  <img src={user.image} alt="User Avatar" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'linear-gradient(45deg, var(--accent), #9333ea)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '18px', fontWeight: 600 }}>
+                    {user.name?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                )}
               </div>
             }
             action={<ActionButton variant="secondary">Edit</ActionButton>} 
@@ -394,12 +400,93 @@ export default function SettingsPage() {
           <SettingsRow 
             label="Delete AvatarApp Account" 
             value="Permanently remove your account and all associated data." 
-            action={<ActionButton variant="danger">Delete Account</ActionButton>} 
+            action={<ActionButton variant="danger" onClick={() => setShowDeleteModal(true)}>Delete Account</ActionButton>} 
             hideBorder={true}
           />
         </Section>
 
       </div>
+
+      {showDeleteModal && (
+        <>
+          <div 
+            onClick={() => setShowDeleteModal(false)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(4px)', zIndex: 9998, transition: 'opacity 0.2s' }} 
+          />
+          <div style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: '#ffffff',
+            borderRadius: '16px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            width: '90%',
+            maxWidth: '480px',
+            zIndex: 9999,
+            padding: '32px',
+            animation: 'modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}>
+            <style>{`
+              @keyframes modalPop {
+                0% { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
+                100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+              }
+            `}</style>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <AlertTriangle size={24} color="#ef4444" />
+              </div>
+              <div>
+                <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: '#0f172a' }}>Delete Account</h2>
+                <p style={{ margin: '4px 0 0 0', fontSize: '14px', color: '#64748b' }}>This action cannot be undone.</p>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '14px', color: '#475569', lineHeight: '1.6', marginBottom: '24px' }}>
+              Are you absolutely sure you want to permanently delete your AvatarApp account? 
+              All your generated avatars, voices, personalized campaigns, and API integrations will be immediately and irrevocably destroyed.
+            </p>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '12px' }}>
+              <button 
+                onClick={() => setShowDeleteModal(false)}
+                style={{
+                  padding: '10px 16px',
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0',
+                  background: '#ffffff',
+                  color: '#475569',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  alert("Account deletion logic goes here.");
+                  setShowDeleteModal(false);
+                }}
+                style={{
+                  padding: '10px 16px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: '#ef4444',
+                  color: '#ffffff',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                Yes, delete my account
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
