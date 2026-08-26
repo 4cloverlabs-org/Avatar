@@ -62,10 +62,10 @@ export default function AudioWaveform() {
               height: ['20%', `${Math.random() * 60 + 40}%`, '20%']
             }}
             transition={{
-              duration: Math.random() * 0.5 + 0.5,
+              duration: Math.random() * 1.5 + 1.5,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: Math.random() * -1
+              delay: Math.random() * -2
             }}
           />
         ))}

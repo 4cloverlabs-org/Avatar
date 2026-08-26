@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bubblegum_Sans, Open_Sans } from "next/font/google";
+import { Bubblegum_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 
 const bubblegumSans = Bubblegum_Sans({
@@ -8,8 +8,9 @@ const bubblegumSans = Bubblegum_Sans({
   subsets: ["latin"],
 });
 
-const openSans = Open_Sans({
-  variable: "--font-open-sans",
+const poppins = Poppins({
+  variable: "--font-poppins",
+  weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
@@ -24,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${bubblegumSans.variable} ${openSans.variable}`}>
+    <html lang="en" className={`${bubblegumSans.variable} ${poppins.variable}`}>
       <body>{children}</body>
     </html>
   );
