@@ -257,6 +257,12 @@ export default function AutopilotSection() {
               <span>LINKEDIN</span>
               <span style={{ color: 'var(--text-muted)' }}>OFFLINE</span>
            </motion.div>
+
+           <motion.div variants={platformVariants} style={{ marginTop: '0.5rem' }}>
+             <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+               We only request the permissions needed to publish on your behalf. <a href="/privacy#data-sharing" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>View details</a>
+             </span>
+           </motion.div>
         </motion.div>
 
         <motion.div 
