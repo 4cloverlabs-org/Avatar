@@ -8,7 +8,7 @@ export default function Footer() {
       <footer className="grid-container" style={{ padding: '4rem 2rem 2rem' }}>
          <div className="col-4">
             <Link href="/" className="nav-logo" style={{ marginBottom: '1rem', display: 'block' }}>
-               ContentAI.
+               AnClone.
             </Link>
             <p className="mono-text" style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>SYSTEM v1.0.0</p>
             <div style={{ display: 'flex', gap: '1rem' }}>
@@ -47,13 +47,13 @@ export default function Footer() {
          <div className="col-2">
             <h4 className="mono-text mb-2">LEGAL</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>PRIVACY</Link>
+               <Link href="/privacy" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>PRIVACY</Link>
                <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>TERMS</Link>
             </div>
          </div>
 
          <div className="col-12 mt-4" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-            <span className="mono-text" style={{ color: 'var(--text-muted)' }}>© 2026 CONTENTAI.</span>
+            <span className="mono-text" style={{ color: 'var(--text-muted)' }}>© 2026 ANCLONE.</span>
          </div>
       </footer>
    );

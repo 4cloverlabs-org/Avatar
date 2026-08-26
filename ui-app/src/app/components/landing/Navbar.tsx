@@ -7,7 +7,7 @@ export default function Navbar() {
   return (
     <nav className="brutalist-nav">
       <Link href="/" className="nav-logo">
-        ContentAI.
+        AnClone.
       </Link>
 
       <div className="nav-links" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
