@@ -1,9 +1,8 @@
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import { auth } from '../../lib/auth';
-import ClientLayout from './ClientLayout';
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function StudioLayout({ children }: { children: React.ReactNode }) {
   const session = await auth.api.getSession({
     headers: await headers()
   });
@@ -12,5 +11,5 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect('/login');
   }
 
-  return <ClientLayout>{children}</ClientLayout>;
+  return <>{children}</>;
 }

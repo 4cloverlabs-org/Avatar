@@ -48,3 +48,32 @@ export async function GET(request: Request, { params }: { params: Promise<{ file
     return new NextResponse('Internal Error', { status: 500 });
   }
 }
+
+export async function DELETE(request: Request, { params }: { params: Promise<{ filename: string }> }) {
+  try {
+    const { filename } = await params;
+    
+    if (!filename || filename.includes('..')) {
+      return NextResponse.json({ success: false, error: 'Invalid filename' }, { status: 400 });
+    }
+
+    const filePath = path.join(process.cwd(), '..', 'results', 'output', filename);
+    
+    if (fs.existsSync(filePath)) {
+      const trashDir = path.join(process.cwd(), '..', 'results', 'trash');
+      if (!fs.existsSync(trashDir)) {
+        fs.mkdirSync(trashDir, { recursive: true });
+      }
+      
+      const timestamp = Date.now();
+      const trashPath = path.join(trashDir, `video___${filename}___${timestamp}`);
+      
+      fs.renameSync(filePath, trashPath);
+    }
+    
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error("Video DELETE Error:", error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
