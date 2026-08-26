@@ -4,6 +4,7 @@ import { db } from "./db";
 import { dash } from "@better-auth/infra";
 
 export const auth = betterAuth({
+  appName: "AnClone",
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
@@ -18,8 +19,20 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     "http://localhost:3000",
-    "https://hypnotist-quality-splashy.ngrok-free.dev"
+    "https://hypnotist-quality-splashy.ngrok-free.dev",
+    "https://dash.better-auth.com"
   ],
+  onAPIError: {
+    errorURL: "/login",
+  },
+  advanced: {
+    ipAddress: {
+      ipAddressHeaders: ["x-forwarded-for"],
+    },
+    database: {
+      joins: true,
+    }
+  },
   plugins: [
     dash()
   ]
