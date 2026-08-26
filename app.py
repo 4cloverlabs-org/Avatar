@@ -510,20 +510,45 @@ def prepare_avatar(video_path, bbox_shift, extra_margin=10, parsing_mode="jaw",
     avatar_dir = os.path.join("./results/avatars", avatar_id)
     os.makedirs(avatar_dir, exist_ok=True)
     input_basename = os.path.basename(video_path).split('.')[0]
+    with open(os.path.join(avatar_dir, "debug.log"), "w") as f:
+        f.write(f"prepare_avatar started. video_path: {video_path}, type: {get_file_type(video_path)}\n")
+        
     if get_file_type(video_path) == "video":
-        original_fps = get_video_fps(video_path)
-        if abs(original_fps - 25) > 0.5:
-            new_video_path = os.path.join(avatar_dir, f"{input_basename}_25fps.mp4")
-            subprocess.run(["ffmpeg", "-y", "-i", video_path, "-r", "25", new_video_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            video_path = new_video_path
-            input_basename = f"{input_basename}_25fps"
-    save_dir_full = os.path.join(avatar_dir, "full_imgs")
-    os.makedirs(save_dir_full, exist_ok=True)
-    if get_file_type(video_path) == "video":
-        reader = imageio.get_reader(video_path)
-        for i, im in enumerate(reader):
-            imageio.imwrite(f"{save_dir_full}/{i:08d}.png", im)
-        input_img_list = sorted(glob.glob(os.path.join(save_dir_full, '*.[jpJP][pnPN]*[gG]')))
+        with open(os.path.join(avatar_dir, "debug.log"), "a") as f:
+            if not video_path.lower().endswith((".mp4", ".mov", ".avi", ".webm")):
+                new_video_path = os.path.join(avatar_dir, f"{input_basename}.mp4")
+                import shutil
+                shutil.copyfile(video_path, new_video_path)
+                video_path = new_video_path
+                f.write(f"Renamed extensionless file to {video_path}\n")
+
+            original_fps = get_video_fps(video_path)
+            f.write(f"original_fps: {original_fps}\n")
+            if abs(original_fps - 25) > 0.5:
+                new_video_path = os.path.join(avatar_dir, f"{input_basename}_25fps.mp4")
+                f.write(f"Running ffmpeg to convert to 25fps: {new_video_path}\n")
+                subprocess.run(["ffmpeg", "-y", "-i", video_path, "-r", "25", new_video_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                video_path = new_video_path
+                input_basename = f"{input_basename}_25fps"
+                
+        save_dir_full = os.path.join(avatar_dir, "full_imgs")
+        os.makedirs(save_dir_full, exist_ok=True)
+        
+        with open(os.path.join(avatar_dir, "debug.log"), "a") as f:
+            f.write(f"Calling imageio.get_reader on {video_path}\n")
+            try:
+                reader = imageio.get_reader(video_path, format='ffmpeg')
+                frame_count = 0
+                for i, im in enumerate(reader):
+                    imageio.imwrite(f"{save_dir_full}/{i:08d}.png", im)
+                    frame_count += 1
+                f.write(f"Wrote {frame_count} frames to {save_dir_full}\n")
+            except Exception as e:
+                f.write(f"Exception reading frames: {e}\n")
+                
+            input_img_list = sorted(glob.glob(os.path.join(save_dir_full, '*.[jpJP][pnPN]*[gG]')))
+            f.write(f"input_img_list length: {len(input_img_list)}\n")
+            
         fps = get_video_fps(video_path)
     else: 
         input_img_list = glob.glob(os.path.join(video_path, '*.[jpJP][pnPN]*[gG]'))
@@ -533,7 +558,7 @@ def prepare_avatar(video_path, bbox_shift, extra_margin=10, parsing_mode="jaw",
     bbox_shift_text = get_bbox_range(input_img_list, bbox_shift)
     fp = FaceParsing(left_cheek_width=args.left_cheek_width, right_cheek_width=args.right_cheek_width)
     input_latent_list = []
-    for bbox, frame in zip(coord_list, frame_list):
+    for bbox, frame in tqdm(zip(coord_list, frame_list), total=len(coord_list), desc="Preparing Avatar"):
         if bbox == coord_placeholder:
             if len(input_latent_list) > 0:
                 input_latent_list.append(input_latent_list[-1])
@@ -985,10 +1010,10 @@ if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 # Start Gradio application
-demo.queue().launch(
-    server_name=args.ip,
-    server_port=args.port,
-    allowed_paths=["./results", "./models"],
-    show_api=True,
-    show_error=True
-)
+if __name__ == "__main__":
+    demo.queue().launch(
+        server_name="0.0.0.0",
+        server_port=7860,
+        share=False,
+        debug=True,
+    )

@@ -35,9 +35,11 @@ def get_file_type(video_path):
 
     if ext.lower() in ['.jpg', '.jpeg', '.png', '.bmp', '.tif', '.tiff']:
         return 'image'
-    elif ext.lower() in ['.avi', '.mp4', '.mov', '.flv', '.mkv']:
+    elif ext.lower() in ['.avi', '.mp4', '.mov', '.flv', '.mkv', '.webm']:
         return 'video'
     else:
+        if os.path.isfile(video_path):
+            return 'video'
         return 'unsupported'
 
 def get_video_fps(video_path):
