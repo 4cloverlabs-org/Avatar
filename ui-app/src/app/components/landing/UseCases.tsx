@@ -28,15 +28,15 @@ export default function UseCases() {
       </div>
 
       <div className="col-12">
-        <div className="dashboard-placeholder panel-dark" style={{ border: 'none', padding: '0', display: 'flex', flexDirection: 'column' }}>
-           <div className="dashboard-bar" style={{ borderBottom: '1px solid var(--bg-primary)' }}>
+        <div className="dashboard-placeholder" style={{ padding: '0', display: 'flex', flexDirection: 'column' }}>
+           <div className="dashboard-bar" style={{ borderBottom: '1px solid var(--border-color)' }}>
               <span>SELECT YOUR INDUSTRY</span>
               <span>OUTPUT PREVIEW</span>
            </div>
            
            <div style={{ display: 'flex', flexDirection: 'row' }}>
              {/* Left sidebar: Niche List */}
-             <div style={{ flex: '0 0 250px', borderRight: '1px solid var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
+             <div style={{ flex: '0 0 250px', borderRight: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
                {niches.map(niche => (
                  <button 
                    key={niche.id}
@@ -45,7 +45,7 @@ export default function UseCases() {
                      background: activeNiche === niche.id ? 'var(--accent)' : 'transparent',
                      color: activeNiche === niche.id ? '#fff' : 'var(--text-main)',
                      border: 'none',
-                     borderBottom: '1px solid var(--bg-primary)',
+                     borderBottom: '1px solid var(--border-color)',
                      padding: '1.25rem 1rem',
                      textAlign: 'left',
                      fontFamily: 'monospace',

@@ -17,8 +17,8 @@ export default function FeaturesGrid() {
       </div>
 
       <div className="col-12">
-        <div className="dashboard-placeholder panel-dark" style={{ border: 'none', padding: '0' }}>
-           <div className="dashboard-bar" style={{ borderBottom: '1px solid var(--bg-primary)' }}>
+        <div className="dashboard-placeholder" style={{ padding: '0' }}>
+           <div className="dashboard-bar" style={{ borderBottom: '1px solid var(--border-color)' }}>
               <span>PROCESS: GENERATION PIPELINE</span>
               <span style={{ color: 'var(--text-muted)' }}>AVG. TOTAL TIME: 3 MIN 40S</span>
            </div>
@@ -32,7 +32,7 @@ export default function FeaturesGrid() {
                   style={{ 
                     background: niche === 'tech' ? 'var(--accent)' : 'transparent', 
                     color: niche === 'tech' ? '#fff' : 'var(--text-main)',
-                    border: '1px solid var(--bg-primary)',
+                    border: '1px solid var(--border-color)',
                     padding: '0.5rem 1rem',
                     fontFamily: 'monospace',
                     cursor: 'pointer'
@@ -45,7 +45,7 @@ export default function FeaturesGrid() {
                   style={{ 
                     background: niche === 'fitness' ? 'var(--accent)' : 'transparent', 
                     color: niche === 'fitness' ? '#fff' : 'var(--text-main)',
-                    border: '1px solid var(--bg-primary)',
+                    border: '1px solid var(--border-color)',
                     padding: '0.5rem 1rem',
                     fontFamily: 'monospace',
                     cursor: 'pointer'
@@ -61,7 +61,7 @@ export default function FeaturesGrid() {
                  <span className="mono-text">{niche === 'tech' ? '"Top 5 AI Tools..."' : '"3 core exercises..."'}</span>
               </div>
               
-              <div style={{ height: '40px', width: '2px', background: 'var(--bg-primary)', margin: '0.5rem 0' }}></div>
+              <div style={{ height: '40px', width: '2px', background: 'var(--border-color)', margin: '0.5rem 0' }}></div>
               
               {/* Pipeline Step 2 */}
               <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--bg-primary)', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -69,7 +69,7 @@ export default function FeaturesGrid() {
                  <span className="mono-text">SYNTHESIS: 100%</span>
               </div>
               
-              <div style={{ height: '40px', width: '2px', background: 'var(--bg-primary)', margin: '0.5rem 0' }}></div>
+              <div style={{ height: '40px', width: '2px', background: 'var(--border-color)', margin: '0.5rem 0' }}></div>
               
               {/* Pipeline Step 3 */}
               <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--bg-primary)', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -77,10 +77,10 @@ export default function FeaturesGrid() {
                  <span className="mono-text">RENDERING...</span>
               </div>
               
-              <div style={{ height: '40px', width: '2px', background: 'var(--bg-primary)', margin: '0.5rem 0' }}></div>
+              <div style={{ height: '40px', width: '2px', background: 'var(--border-color)', margin: '0.5rem 0' }}></div>
               
               {/* Pipeline Step 4 */}
-              <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--accent)', color: '#fff', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--accent)', color: '#fff', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                  <span className="mono-text" style={{ fontWeight: 700 }}>04. VIDEO OUTPUT</span>
                  <span className="mono-text">READY ↗</span>
               </div>
