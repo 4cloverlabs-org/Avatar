@@ -283,7 +283,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       >
         {!isCollapsed ? (
           <div style={{ position: 'relative', margin: '0 12px 12px' }}>
-            <button 
+            <div 
               onClick={() => setIsWorkspaceDropdownOpen(!isWorkspaceDropdownOpen)}
               style={{ 
                 display: 'flex', 
@@ -324,7 +324,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <X size={20} color="#4b5563" />
                 </button>
               </div>
-            </button>
+            </div>
 
             {isWorkspaceDropdownOpen && (
               <>
