@@ -2,17 +2,19 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import PrivacyPolicyContent from '../components/PrivacyPolicyContent';
 import '../landing.css';
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   return (
     <div className="landing-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-primary)' }}>
       {/* Simple Nav for Login Page */}
       <nav className="brutalist-nav">
         <Link href="/" className="nav-logo">
-          ContentAI.
+          AnClone.
         </Link>
         <Link href="/" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -91,6 +93,15 @@ export default function LoginPage() {
               >
                 {isLogin ? 'Sign In' : 'Sign Up'}
               </button>
+
+              {!isLogin && (
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginTop: '0.5rem' }}>
+                  <input type="checkbox" id="accept-privacy" style={{ marginTop: '0.1rem', cursor: 'pointer' }} />
+                  <label htmlFor="accept-privacy" className="mono-text" style={{ fontSize: '0.65rem', color: 'var(--text-muted)', lineHeight: '1.4', cursor: 'pointer' }}>
+                    I agree to the <button type="button" onClick={() => setShowPrivacyModal(true)} style={{ color: 'inherit', textDecoration: 'underline', background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer' }}>Privacy Policy</button> and <Link href="/terms" style={{ color: 'inherit', textDecoration: 'underline' }}>Terms of Service</Link>.
+                  </label>
+                </div>
+              )}
             </form>
 
             <div style={{ textAlign: 'center', marginTop: '1rem' }}>
@@ -107,6 +118,21 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
+      {showPrivacyModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+          <div style={{ backgroundColor: 'var(--bg-primary)', width: '100%', maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto', border: '1px solid var(--border-color)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ position: 'sticky', top: 0, backgroundColor: 'var(--bg-primary)', borderBottom: '1px solid var(--border-color)', padding: '1rem 2rem', display: 'flex', justifyContent: 'flex-end', zIndex: 10 }}>
+              <button type="button" onClick={() => setShowPrivacyModal(false)} style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-color)', color: 'var(--text-main)', padding: '0.5rem 1rem', cursor: 'pointer', fontFamily: 'monospace', fontWeight: 'bold' }}>
+                CLOSE [X]
+              </button>
+            </div>
+            <div style={{ padding: '2rem' }}>
+              <PrivacyPolicyContent />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

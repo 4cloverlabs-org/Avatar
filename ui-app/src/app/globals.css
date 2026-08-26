@@ -109,11 +109,16 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-open-sans), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   display: flex;
   flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6,
+.hero-title, .accordion-title, .header-title, .panel-title, .trusted-text {
+  font-family: var(--font-bubblegum-sans), cursive;
 }
 
 * {
@@ -127,7 +132,7 @@ a {
 
 button {
   cursor: pointer;
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-open-sans), sans-serif;
 }
 
 .dashboard-layout {
@@ -374,7 +379,7 @@ button {
   background-color: #ffffff;
   min-height: 100vh;
   display: flex;
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-open-sans), sans-serif;
   color: #1E2119;
   /* overflow: hidden removed to allow scrolling */
 }
@@ -1095,7 +1100,7 @@ button {
   background-color: var(--background);
   color: var(--foreground);
   overflow: hidden;
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-open-sans), sans-serif;
 }
 
 .syn-header {
@@ -1231,7 +1236,7 @@ button {
   font-size: 14px;
   line-height: 1.6;
   color: var(--foreground);
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-open-sans), sans-serif;
 }
 
 .syn-sidebar-right {
@@ -1318,7 +1323,7 @@ button {
   gap: 24px;
   background: #F8F6F0;
   color: #1E2119;
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-open-sans), sans-serif;
   overflow: hidden;
 }
 

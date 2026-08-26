@@ -6,6 +6,7 @@ import {
   User, Type, Square, LayoutTemplate, Film, MessageSquare, MousePointer2,
   Mic, Settings, Upload, Check, Volume2, Wand2, X, ChevronDown, ArrowLeft, Video, Music, Layers, Keyboard, FileText
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -445,6 +446,10 @@ export default function Dashboard() {
                <User size={14} style={{ display: 'inline', marginRight: 4 }} />
                {isPreparing ? "Building Avatar..." : "Build Avatar"}
              </button>
+             
+             <div style={{ marginTop: '0.75rem', fontSize: '10px', color: 'var(--text-muted)', textAlign: 'center' }}>
+               Your video is used only to generate your avatar. See how we handle your data → <Link href="/privacy" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Privacy Policy</Link>
+             </div>
            </div>
         </div>
 
