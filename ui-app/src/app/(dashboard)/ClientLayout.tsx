@@ -452,7 +452,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           )}
           <NavItem href="/avatars" icon={Users} label="Avatars" />
           <NavItem href="/voices" icon={Mic} label="Voices" />
-          <NavItem href="/socials" icon={Share2} label="Socials" badge="UPGRADE" badgeColor="#10b981" />
+          <NavItem href="/socials" icon={Share2} label="Socials" />
           <NavItem href="/library" icon={BookOpen} label="Library" />
           <NavItem href="/trash" icon={Trash} label="Trash" />
         </div>
