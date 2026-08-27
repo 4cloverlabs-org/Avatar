@@ -515,10 +515,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <input type="text" placeholder="Search" />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
-            <button className="home-pill" style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '8px 16px' }} onClick={() => router.push('/studio')}>
-              Create
-            </button>
-            
+
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <button 
                 onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
