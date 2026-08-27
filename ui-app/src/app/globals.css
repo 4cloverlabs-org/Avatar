@@ -1152,9 +1152,11 @@ button {
 }
 
 .syn-sidebar-left {
-  width: 250px;
+  width: 220px;
   background: var(--panel-bg);
   border-right: 1px solid var(--panel-border);
+  box-shadow: 2px 0 12px rgba(0,0,0,0.02);
+  z-index: 10;
   display: flex;
   flex-direction: column;
 }
@@ -1243,12 +1245,28 @@ button {
 }
 
 .syn-sidebar-right {
-  width: 280px;
+  width: 255px;
   background: var(--panel-bg);
   border-left: 1px solid var(--panel-border);
+  box-shadow: -2px 0 12px rgba(0,0,0,0.02);
+  z-index: 10;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+}
+
+.syn-sidebar-right::-webkit-scrollbar {
+  width: 5px;
+}
+.syn-sidebar-right::-webkit-scrollbar-track {
+  background: transparent;
+}
+.syn-sidebar-right::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+.syn-sidebar-right::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .syn-panel-section {
@@ -2751,4 +2769,13 @@ button {
   100% {
     background-position: 200% 0;
   }
+}
+/* Hide number input spin buttons for cleaner UI */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
 }
