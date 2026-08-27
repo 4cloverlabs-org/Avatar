@@ -2306,7 +2306,85 @@ button {
 .soc-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  min-height: 100%;
+  margin-left: -32px;
+}
+
+.soc-page-layout {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.soc-internal-sidebar {
+  width: 220px;
+  background: var(--panel-bg);
+  border-right: 1px solid var(--panel-border);
+  padding: 24px 16px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: calc(100vh - 200px);
+}
+
+.soc-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin: 0 0 0 -12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.soc-sidebar-item:hover {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.soc-sidebar-item.active {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.soc-sidebar-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #94a3b8;
+  margin: 16px 0 8px 0;
+  letter-spacing: 0.5px;
+}
+
+.soc-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 24px;
+  min-width: 0;
+}
+
+.soc-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.soc-analytics-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .soc-grid {
@@ -2478,7 +2556,7 @@ button {
 /* Publisher Form */
 .soc-publisher-layout {
   display: grid;
-  grid-template-columns: 1fr 360px;
+  grid-template-columns: minmax(0, 1fr) 360px;
   gap: 24px;
 }
 
@@ -2503,6 +2581,9 @@ button {
   font-size: 13px;
   outline: none;
   color: #1e293b;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   transition: border-color 0.2s;
 }
 
@@ -2511,7 +2592,7 @@ button {
 }
 
 .soc-textarea {
-  padding: 10px 14px;
+  padding: 12px 14px;
   border-radius: 8px;
   border: 1px solid var(--panel-border);
   background: #ffffff;
@@ -2520,6 +2601,10 @@ button {
   color: #1e293b;
   min-height: 100px;
   resize: vertical;
+  line-height: 1.5;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   transition: border-color 0.2s;
 }
 
@@ -2536,6 +2621,12 @@ button {
   outline: none;
   color: #1e293b;
   cursor: pointer;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 /* OAuth Modal */

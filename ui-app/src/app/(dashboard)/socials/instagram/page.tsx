@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   ArrowLeft, Instagram, Heart, MessageSquare, Eye, Users, 
-  BarChart2, X, ExternalLink, Play, Calendar, UserCheck
+  BarChart2, X, ExternalLink, Play, Calendar, UserCheck, Upload
 } from 'lucide-react';
+import PublisherWidget from '../components/PublisherWidget';
 
 interface InstagramPost {
   id: string;
@@ -99,10 +100,12 @@ export default function InstagramProfilePage() {
     <div className="home-content">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         
-        {/* BACK NAVIGATION */}
-        <button onClick={() => router.push('/socials')} className="soc-back-btn">
-          <ArrowLeft size={14} /> Back to Socials
-        </button>
+        {/* TOP NAVIGATION */}
+        <div>
+          <button onClick={() => router.push('/socials')} className="soc-back-btn">
+            <ArrowLeft size={14} /> Back to Socials
+          </button>
+        </div>
 
         {/* INSTAGRAM PROFILE SUMMARY BANNER */}
         <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 12, padding: 32 }}>
@@ -188,6 +191,22 @@ export default function InstagramProfilePage() {
               <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--foreground)' }}>18.4K</div>
             </div>
           </div>
+        </div>
+
+        {/* PUBLISHER WIDGET */}
+        <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 12, padding: 24 }}>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--foreground)', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Instagram size={18} color="var(--accent)" /> Instagram Publisher
+          </h2>
+          <PublisherWidget 
+            lockedPlatform="instagram" 
+            ytConnected={false} 
+            igConnected={true}
+            onPublishSuccess={(pub) => {
+              // Optionally handle new publications here
+              alert("Reel published successfully!");
+            }}
+          />
         </div>
 
         {/* INSIGHTS GRID OF POSTS */}

@@ -36,10 +36,65 @@ export default function AvatarsView() {
 }
 
 function FromUsAvatarsUI() {
+  const systemAvatars = [
+    { id: 'sys-1', name: 'Professional Anna', video: '/videos/hero_section.mp4' },
+    { id: 'sys-2', name: 'Casual Mark', video: '/videos/avatar_split.mp4' },
+    { id: 'sys-3', name: 'Tech Reviewer', video: '/videos/AI_coding_setup_is_bad_202605302317.mp4' }
+  ];
+
   return (
-    <div style={{ textAlign: 'center', padding: 60, color: '#9ca3af', background: '#f8fafc', borderRadius: 12, border: '2px dashed #e2e8f0' }}>
-      <div style={{ fontWeight: 600, color: '#475569', marginBottom: 4 }}>System Avatars</div>
-      <div style={{ fontSize: 14 }}>Coming soon...</div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 24 }}>
+      {systemAvatars.map(avatar => (
+        <div 
+          key={avatar.id} 
+          style={{ border: '2px solid #F3F3F3', borderRadius: 12, background: '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative', display: 'flex', flexDirection: 'column' }}
+          onMouseEnter={(e) => {
+            const video = e.currentTarget.querySelector('video');
+            if (video) {
+              const playPromise = video.play();
+              if (playPromise !== undefined) {
+                playPromise.catch(() => {});
+              }
+            }
+          }}
+          onMouseLeave={(e) => {
+            const video = e.currentTarget.querySelector('video');
+            if (video) {
+              video.pause();
+              video.currentTime = 0.001;
+            }
+          }}
+        >
+          <div style={{ aspectRatio: '9/16', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderTopLeftRadius: 10, borderTopRightRadius: 10, overflow: 'hidden' }}>
+            <video 
+              src={`${avatar.video}#t=0.001`} 
+              loop muted playsInline preload="metadata"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+            />
+          </div>
+          <div style={{ padding: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottomLeftRadius: 10, borderBottomRightRadius: 10, borderTop: '2px dashed #F3F3F3' }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div 
+                style={{ fontWeight: 600, fontSize: 14, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '2px 4px', marginLeft: '-4px', borderRadius: 4 }}
+              >
+                {avatar.name}
+              </div>
+              <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>System Avatar</div>
+            </div>
+            
+            <button 
+              style={{ background: '#e0e7ff', color: '#4f46e5', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                // Simulating creating a project from system avatar
+                alert(`Started new project using ${avatar.name}`);
+              }}
+            >
+              Use
+            </button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

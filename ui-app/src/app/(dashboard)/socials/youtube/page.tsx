@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   ArrowLeft, Youtube, Users, Eye, Clock, BarChart2, 
-  ExternalLink, Play, ChevronRight, X, Heart, MessageSquare, Info
+  ExternalLink, Play, ChevronRight, X, Heart, MessageSquare, Info, Upload
 } from 'lucide-react';
+import PublisherWidget from '../components/PublisherWidget';
 
 interface YouTubeVideo {
   id: string;
@@ -69,10 +70,12 @@ export default function YouTubeChannelPage() {
     <div className="home-content">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         
-        {/* BACK NAVIGATION */}
-        <button onClick={() => router.push('/socials')} className="soc-back-btn">
-          <ArrowLeft size={14} /> Back to Socials
-        </button>
+        {/* TOP NAVIGATION */}
+        <div>
+          <button onClick={() => router.push('/socials')} className="soc-back-btn">
+            <ArrowLeft size={14} /> Back to Socials
+          </button>
+        </div>
 
         {/* CHANNEL PROFILE HEADER */}
         <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 12, padding: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -110,6 +113,22 @@ export default function YouTubeChannelPage() {
               <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--foreground)' }}>{channelData?.views || '--'}</div>
             </div>
           </div>
+        </div>
+
+        {/* PUBLISHER WIDGET */}
+        <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 12, padding: 24 }}>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--foreground)', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Youtube size={18} color="var(--accent)" /> YouTube Publisher
+          </h2>
+          <PublisherWidget 
+            lockedPlatform="youtube" 
+            ytConnected={true} 
+            igConnected={false}
+            onPublishSuccess={(pub) => {
+              // Optionally handle new publications here
+              alert("Video published successfully!");
+            }}
+          />
         </div>
 
         {/* PUBLISHED VIDEOS FEED */}

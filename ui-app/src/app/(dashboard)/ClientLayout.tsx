@@ -450,10 +450,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ) : (
             <div style={{ height: 1, background: '#f1f5f9', margin: '6px 6px' }} />
           )}
-          <NavItem href="/library" icon={BookOpen} label="Library" />
-          <NavItem href="/socials" icon={Share2} label="Socials" badge="UPGRADE" badgeColor="#10b981" />
           <NavItem href="/avatars" icon={Users} label="Avatars" />
           <NavItem href="/voices" icon={Mic} label="Voices" />
+          <NavItem href="/socials" icon={Share2} label="Socials" badge="UPGRADE" badgeColor="#10b981" />
+          <NavItem href="/library" icon={BookOpen} label="Library" />
           <NavItem href="/trash" icon={Trash} label="Trash" />
         </div>
 
