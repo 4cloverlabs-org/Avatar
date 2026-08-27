@@ -28,28 +28,28 @@ export default function Pricing() {
             <li>1 VOICE CLONE</li>
             <li>1 PLATFORM CONNECTION</li>
          </ul>
-         <button className="nav-cta" style={{ width: '100%', textAlign: 'center' }}>GET STARTED</button>
+         <button className="btn-primary" style={{ width: '100%', textAlign: 'center' }}>GET STARTED</button>
       </div>
 
       {/* Creator */}
-      <div className="col-3 panel-dark" style={{ display: 'flex', flexDirection: 'column' }}>
+      <div className="col-3 card-dark" style={{ display: 'flex', flexDirection: 'column' }}>
          <div className="panel-header" style={{ borderBottomColor: 'var(--bg-primary)' }}>
-            CREATOR <span style={{ color: 'var(--accent)' }}>[POPULAR]</span>
+            CREATOR <span style={{ background: 'var(--accent-yellow)', color: 'var(--text-main)', padding: '2px 8px', fontSize: '0.65rem', marginLeft: '0.5rem', display: 'inline-block', transform: 'translateY(-2px)' }}>POPULAR</span>
          </div>
          <div className="mono-text" style={{ fontSize: '0.75rem', marginTop: '0.5rem', opacity: 0.8 }}>Best for solo creators posting weekly</div>
-         <div className="editorial-h2" style={{ fontSize: '3rem', margin: '1.5rem 0', color: 'var(--accent)' }}>
-           {isYearly && <span style={{ fontSize: '1.5rem', color: 'var(--text-muted)', textDecoration: 'line-through', marginRight: '0.5rem' }}>$89</span>}
+         <div className="editorial-h2" style={{ fontSize: '3rem', margin: '1.5rem 0', color: 'var(--accent-green-light)' }}>
+           {isYearly && <span style={{ fontSize: '1.5rem', color: 'rgba(248, 246, 240, 0.5)', textDecoration: 'line-through', marginRight: '0.5rem' }}>$89</span>}
            ${isYearly ? '69' : '89'}
          </div>
          <ul className="mono-text" style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem 0', display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
-            <li style={{ color: 'var(--accent)' }}>EVERYTHING IN STARTER, PLUS:</li>
+            <li style={{ color: 'var(--accent-green-light)' }}>EVERYTHING IN STARTER, PLUS:</li>
             <li>120 MINS VIDEO/MO</li>
             <li>3 CUSTOM AVATARS</li>
             <li>3 PLATFORM CONNECTIONS</li>
             <li>AUTO-PUBLISHING</li>
             <li>NO WATERMARK</li>
          </ul>
-         <button className="nav-cta" style={{ width: '100%', textAlign: 'center', background: 'var(--accent)', color: 'var(--bg-primary)', borderColor: 'var(--accent)' }}>START FREE TRIAL</button>
+         <button className="btn-secondary" style={{ width: '100%', textAlign: 'center' }}>START FREE TRIAL</button>
       </div>
 
       {/* Pro */}
@@ -67,7 +67,7 @@ export default function Pricing() {
             <li>WHITE-LABEL</li>
             <li>PRIORITY RENDER</li>
          </ul>
-         <button className="nav-cta" style={{ width: '100%', textAlign: 'center' }}>GET STARTED</button>
+         <button className="btn-primary" style={{ width: '100%', textAlign: 'center' }}>GET STARTED</button>
       </div>
 
       {/* Enterprise */}
@@ -81,7 +81,7 @@ export default function Pricing() {
             <li>SSO SECURITY</li>
             <li>ACCOUNT MANAGER</li>
          </ul>
-         <button className="nav-cta" style={{ width: '100%', textAlign: 'center' }}>CONTACT SALES</button>
+         <button className="btn-primary" style={{ width: '100%', textAlign: 'center' }}>CONTACT SALES</button>
       </div>
     </section>
   );

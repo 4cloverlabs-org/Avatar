@@ -68,17 +68,17 @@ export default function Analytics() {
   const reducedMotion = useReducedMotion();
 
   const barsData = [
-    { height: "40%", opacity: 0.2, finalBg: "var(--border-color)", delay: 0.5, labelDelay: 1.0 },
-    { height: "60%", opacity: 0.5, finalBg: "var(--border-color)", delay: 0.62, labelDelay: 1.12 },
-    { height: "80%", opacity: 0.8, finalBg: "var(--border-color)", delay: 0.74, labelDelay: 1.24 },
-    { height: "100%", opacity: 1, finalBg: "var(--accent)", delay: 0.86, labelDelay: 1.36, isFinal: true },
+    { height: "40%", opacity: 0.4, finalBg: "var(--accent-green-primary)", delay: 0.5, labelDelay: 1.0 },
+    { height: "60%", opacity: 0.6, finalBg: "var(--accent-green-primary)", delay: 0.62, labelDelay: 1.12 },
+    { height: "80%", opacity: 0.8, finalBg: "var(--accent-green-primary)", delay: 0.74, labelDelay: 1.24 },
+    { height: "100%", opacity: 1, finalBg: "var(--accent-green-primary)", delay: 0.86, labelDelay: 1.36, isFinal: true },
   ];
 
   const statsData = [
-    { label: "WATCH TIME", from: 0, to: 42, prefix: "+", suffix: "%", color: "var(--accent)", subtitle: "vs. last 30 days", delay: 0.65 },
-    { label: "ENGAGEMENT", from: 0, to: 18, prefix: "+", suffix: "%", color: "var(--accent)", subtitle: "vs. last 30 days", delay: 0.75 },
-    { label: "VIDEOS", from: 0, to: 27, prefix: "", suffix: "", color: "inherit", subtitle: "this month", delay: 0.85 },
-    { label: "TIME SAVED", from: 0, to: 18, prefix: "", suffix: "h", color: "inherit", subtitle: "estimated / mo", delay: 0.95 },
+    { label: "WATCH TIME", from: 0, to: 42, prefix: "+", suffix: "%", color: "var(--text-main)", subtitle: "vs. last 30 days", delay: 0.65 },
+    { label: "ENGAGEMENT", from: 0, to: 18, prefix: "+", suffix: "%", color: "var(--text-main)", subtitle: "vs. last 30 days", delay: 0.75 },
+    { label: "VIDEOS", from: 0, to: 27, prefix: "", suffix: "", color: "var(--text-main)", subtitle: "this month", delay: 0.85 },
+    { label: "TIME SAVED", from: 0, to: 18, prefix: "", suffix: "h", color: "var(--text-main)", subtitle: "estimated / mo", delay: 0.95 },
   ];
 
   return (
@@ -110,7 +110,7 @@ export default function Analytics() {
         animate={inView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <div className="dashboard-placeholder" style={{ padding: '2rem', height: '100%', minHeight: '300px' }}>
+        <div className="dashboard-placeholder" style={{ padding: '2rem', height: '100%', minHeight: '300px', background: 'var(--accent-yellow)' }}>
            <div className="flex-between mb-1">
              <span className="mono-text">CONTENT PERFORMANCE</span>
              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -172,7 +172,7 @@ export default function Analytics() {
         animate={inView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ delay: reducedMotion ? 0 : 0.15, duration: 0.5, ease: "easeOut" }}
       >
-        <div className="panel" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1.5rem', padding: '1.5rem' }}>
+        <div className="panel" style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1.5rem', padding: '1.5rem', background: 'var(--accent-yellow)' }}>
            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
              <StatBlock {...statsData[0]} inView={inView} reducedMotion={reducedMotion} />
              <StatBlock {...statsData[1]} inView={inView} reducedMotion={reducedMotion} />

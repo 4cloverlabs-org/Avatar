@@ -1,11 +1,15 @@
 .landing-container {
-  --bg-primary: #F8F6F0; /* Light beige */
-  --bg-secondary: #E4DCC5; /* Darker beige */
-  --text-main: #1E2119; /* Dark */
+  --bg-primary: #F8F6F0; /* Cream */
+  --bg-secondary: #EFEEE5; /* Tinted cream */
+  --text-main: #23271D; /* Near-black */
   --text-muted: #63685A;
-  --accent: #5D8E5D; /* Brighter Brand green for better contrast */
-  --accent-hover: #4A734A;
-  --border-color: #1E2119; /* Sharp dark borders for brutalism */
+  --accent-green-primary: #5D8E5D;
+  --accent-green-dark: #3F613F;
+  --accent-green-light: #A8BE9F;
+  --accent-yellow: #E8D96B;
+  
+  --accent: var(--accent-green-primary); 
+  --border-color: var(--text-main);
   
   --grid-gap: 1rem;
 }
@@ -244,4 +248,81 @@ body {
   height: 100%;
   background: var(--text-main);
   width: 75%; /* Example width */
+}
+
+/* New Button Hierarchy */
+.btn-primary {
+  background: var(--text-main);
+  color: var(--bg-primary);
+  padding: 0.5rem 1.25rem;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  border: 1px solid var(--text-main);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background: var(--bg-primary);
+  color: var(--text-main);
+}
+
+.btn-secondary {
+  background: var(--accent-green-primary);
+  color: var(--bg-primary);
+  padding: 0.5rem 1.25rem;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  border: 1px solid var(--accent-green-primary);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-secondary:hover {
+  background: var(--bg-primary);
+  color: var(--accent-green-primary);
+}
+
+.btn-highlight {
+  background: var(--accent-yellow);
+  color: var(--text-main);
+  padding: 0.5rem 1.25rem;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  border: 1px solid var(--text-main);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-highlight:hover {
+  background: var(--bg-primary);
+  color: var(--text-main);
+}
+
+/* New Card Styles */
+.card-green {
+  background: var(--accent-green-primary);
+  color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 2rem;
+  position: relative;
+  border-radius: 0;
+}
+.card-green .text-muted {
+  color: rgba(248, 246, 240, 0.7); /* Lightened cream for muted text on green */
+}
+
+.card-dark {
+  background: var(--accent-green-dark);
+  color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 2rem;
+  position: relative;
+  border-radius: 0;
+}
+.card-dark .text-muted {
+  color: rgba(248, 246, 240, 0.7);
 }

@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 const niches = [
-  { id: 'fitness', label: 'FITNESS', example: '["5 MINUTE AB BLASTER...", "FORM CHECK: DEADLIFTS..."]' },
-  { id: 'finance', label: 'FINANCE', example: '["CRYPTO MARKET UPDATE...", "INDEX FUNDS EXPLAINED..."]' },
-  { id: 'realestate', label: 'REAL ESTATE', example: '["HOUSE TOUR: $1.2M...", "FIRST TIME BUYER TIPS..."]' },
-  { id: 'saas', label: 'SAAS', example: '["NEW FEATURE DROP...", "HOW TO AUTOMATE CRM..."]' },
-  { id: 'ecommerce', label: 'E-COMMERCE', example: '["TOP 5 SUMMER FINDS...", "BEHIND THE SCENES PACKING..."]' },
-  { id: 'coaching', label: 'COACHING', example: '["MINDSET SHIFT FOR 2024...", "OVERCOMING BURNOUT..."]' }
+  { id: 'fitness', label: 'FITNESS', example: '["5 MINUTE AB BLASTER...", "FORM CHECK: DEADLIFTS..."]', color: 'var(--accent-green-primary)' },
+  { id: 'finance', label: 'FINANCE', example: '["CRYPTO MARKET UPDATE...", "INDEX FUNDS EXPLAINED..."]', color: 'var(--accent-green-light)' },
+  { id: 'realestate', label: 'REAL ESTATE', example: '["HOUSE TOUR: $1.2M...", "FIRST TIME BUYER TIPS..."]', color: 'var(--accent-yellow)' },
+  { id: 'saas', label: 'SAAS', example: '["NEW FEATURE DROP...", "HOW TO AUTOMATE CRM..."]', color: 'var(--text-main)' },
+  { id: 'ecommerce', label: 'E-COMMERCE', example: '["TOP 5 SUMMER FINDS...", "BEHIND THE SCENES PACKING..."]', color: 'var(--accent-green-dark)' },
+  { id: 'coaching', label: 'COACHING', example: '["MINDSET SHIFT FOR 2024...", "OVERCOMING BURNOUT..."]', color: 'var(--text-muted)' }
 ];
 
 export default function UseCases() {
@@ -42,8 +42,8 @@ export default function UseCases() {
                    key={niche.id}
                    onClick={() => setActiveNiche(niche.id)}
                    style={{
-                     background: activeNiche === niche.id ? 'var(--accent)' : 'transparent',
-                     color: activeNiche === niche.id ? '#fff' : 'var(--text-main)',
+                     background: activeNiche === niche.id ? 'var(--bg-secondary)' : 'transparent',
+                     color: 'var(--text-main)',
                      border: 'none',
                      borderBottom: '1px solid var(--border-color)',
                      padding: '1.25rem 1rem',
@@ -51,9 +51,13 @@ export default function UseCases() {
                      fontFamily: 'monospace',
                      fontSize: '0.9rem',
                      cursor: 'pointer',
-                     transition: 'all 0.2s ease'
+                     transition: 'all 0.2s ease',
+                     display: 'flex',
+                     alignItems: 'center',
+                     gap: '0.75rem'
                    }}
                  >
+                   <span style={{ width: '8px', height: '8px', background: niche.color, borderRadius: '2px' }} />
                    [ {niche.label} ]
                  </button>
                ))}

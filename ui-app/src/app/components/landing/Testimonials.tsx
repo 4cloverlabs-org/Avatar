@@ -4,14 +4,15 @@ import React from 'react';
 
 export default function Testimonials() {
   return (
-    <section className="brutalist-section grid-container">
-      <div className="col-12 panel-header" style={{ borderBottom: 'none', marginBottom: '0' }}>
-        <span>06</span>
-      </div>
-      <div className="col-12 mb-4">
-        <hr className="h-rule" style={{ marginBottom: '1rem' }} />
-        <h2 className="editorial-h2">PROOF OF WORK</h2>
-      </div>
+    <section className="brutalist-section" style={{ background: 'var(--accent-green-dark)', color: 'var(--bg-primary)', borderBottom: 'none' }}>
+      <div className="grid-container">
+        <div className="col-12 panel-header" style={{ borderBottom: 'none', marginBottom: '0', color: 'var(--bg-primary)' }}>
+          <span>06</span>
+        </div>
+        <div className="col-12 mb-4">
+          <hr className="h-rule" style={{ marginBottom: '1rem', background: 'rgba(248, 246, 240, 0.2)' }} />
+          <h2 className="editorial-h2" style={{ color: 'var(--bg-primary)' }}>PROOF OF WORK</h2>
+        </div>
 
       <div className="col-12" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
         
@@ -48,6 +49,7 @@ export default function Testimonials() {
           </p>
         </div>
         
+      </div>
       </div>
     </section>
   );

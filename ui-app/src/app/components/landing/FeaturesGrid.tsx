@@ -17,7 +17,7 @@ export default function FeaturesGrid() {
       </div>
 
       <div className="col-12">
-        <div className="dashboard-placeholder" style={{ padding: '0' }}>
+        <div className="dashboard-placeholder" style={{ padding: '0', background: 'var(--bg-secondary)' }}>
            <div className="dashboard-bar" style={{ borderBottom: '1px solid var(--border-color)' }}>
               <span>PROCESS: GENERATION PIPELINE</span>
               <span style={{ color: 'var(--text-muted)' }}>AVG. TOTAL TIME: 3 MIN 40S</span>
@@ -56,7 +56,7 @@ export default function FeaturesGrid() {
               </div>
 
               {/* Pipeline Step 1 */}
-              <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--bg-primary)', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--accent-green-light)', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                  <span className="mono-text" style={{ fontWeight: 700 }}>01. SCRIPT</span>
                  <span className="mono-text">{niche === 'tech' ? '"Top 5 AI Tools..."' : '"3 core exercises..."'}</span>
               </div>
@@ -64,7 +64,7 @@ export default function FeaturesGrid() {
               <div style={{ height: '40px', width: '2px', background: 'var(--border-color)', margin: '0.5rem 0' }}></div>
               
               {/* Pipeline Step 2 */}
-              <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--bg-primary)', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--accent-yellow)', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                  <span className="mono-text" style={{ fontWeight: 700 }}>02. VOICE</span>
                  <span className="mono-text">SYNTHESIS: 100%</span>
               </div>
@@ -72,7 +72,7 @@ export default function FeaturesGrid() {
               <div style={{ height: '40px', width: '2px', background: 'var(--border-color)', margin: '0.5rem 0' }}></div>
               
               {/* Pipeline Step 3 */}
-              <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--bg-primary)', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--accent-green-primary)', color: 'var(--bg-primary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                  <span className="mono-text" style={{ fontWeight: 700 }}>03. AVATAR</span>
                  <span className="mono-text">RENDERING...</span>
               </div>
@@ -80,7 +80,7 @@ export default function FeaturesGrid() {
               <div style={{ height: '40px', width: '2px', background: 'var(--border-color)', margin: '0.5rem 0' }}></div>
               
               {/* Pipeline Step 4 */}
-              <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--accent)', color: '#fff', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="panel" style={{ width: '100%', maxWidth: '600px', background: 'var(--accent-green-dark)', color: 'var(--bg-primary)', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                  <span className="mono-text" style={{ fontWeight: 700 }}>04. VIDEO OUTPUT</span>
                  <span className="mono-text">READY ↗</span>
               </div>

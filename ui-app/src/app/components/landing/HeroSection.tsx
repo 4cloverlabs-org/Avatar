@@ -20,10 +20,10 @@ export default function HeroSection() {
         </p>
 
         <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
-          <a href="/dashboard" className="nav-cta">
+          <a href="/dashboard" className="btn-primary">
             CREATE AVATAR
           </a>
-          <button style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-main)', padding: '0.5rem 1.25rem', fontFamily: 'monospace', textTransform: 'uppercase', cursor: 'pointer' }}>
+          <button className="btn-secondary" style={{ fontFamily: 'monospace' }}>
             WATCH DEMO
           </button>
         </div>
@@ -45,8 +45,12 @@ export default function HeroSection() {
             <span>AVATAR ENGINE</span>
 
           </div>
-          <div className="dashboard-content panel-dark" style={{ border: 'none', flexDirection: 'column', padding: '2rem' }}>
-            <div style={{ flex: 1, width: '100%', border: '1px solid var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem', minHeight: '200px', overflow: 'hidden' }}>
+          <div className="dashboard-content card-dark" style={{ border: 'none', flexDirection: 'column', padding: '2rem' }}>
+            <div style={{ position: 'relative', flex: 1, width: '100%', border: '1px solid var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem', minHeight: '200px', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'var(--accent-yellow)', color: 'var(--text-main)', padding: '2px 8px', fontSize: '0.65rem', fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center', zIndex: 10 }}>
+                <span style={{ display: 'inline-block', width: '6px', height: '6px', background: 'var(--text-main)', borderRadius: '50%', marginRight: '4px' }}></span>
+                GENERATING
+              </div>
               <video 
                 autoPlay 
                 loop 

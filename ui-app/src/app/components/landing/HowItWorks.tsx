@@ -21,22 +21,22 @@ export default function HowItWorks() {
           We map your exact facial movements, micro-expressions, and vocal tone to create a 1:1 digital twin.
         </p>
 
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontFamily: 'monospace', textTransform: 'uppercase' }}>
-          <li style={{ borderBottom: '1px solid var(--border-color)', padding: '1rem 0' }}>
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontFamily: 'monospace', textTransform: 'uppercase', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <li className="card-green" style={{ padding: '1rem' }}>
             ✓ Face Mapping <br />
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'none' }}>468-point facial landmark tracking</span>
+            <span className="text-muted" style={{ fontSize: '0.75rem', textTransform: 'none' }}>468-point facial landmark tracking</span>
           </li>
-          <li style={{ borderBottom: '1px solid var(--border-color)', padding: '1rem 0' }}>
+          <li className="card-green" style={{ padding: '1rem' }}>
             ✓ Voice Cloning <br />
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'none' }}>Natural tone from 60 seconds of audio</span>
+            <span className="text-muted" style={{ fontSize: '0.75rem', textTransform: 'none' }}>Natural tone from 60 seconds of audio</span>
           </li>
-          <li style={{ borderBottom: '1px solid var(--border-color)', padding: '1rem 0' }}>
+          <li className="card-green" style={{ padding: '1rem' }}>
             ✓ Expression Sync <br />
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'none' }}>Micro-expressions matched frame by frame</span>
+            <span className="text-muted" style={{ fontSize: '0.75rem', textTransform: 'none' }}>Micro-expressions matched frame by frame</span>
           </li>
-          <li style={{ borderBottom: '1px solid var(--border-color)', padding: '1rem 0' }}>
+          <li className="card-green" style={{ padding: '1rem' }}>
             ✓ Motion Capture <br />
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'none' }}>Head tilts, blinks, and gestures preserved</span>
+            <span className="text-muted" style={{ fontSize: '0.75rem', textTransform: 'none' }}>Head tilts, blinks, and gestures preserved</span>
           </li>
         </ul>
 

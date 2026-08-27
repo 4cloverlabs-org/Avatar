@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const ConnectedStatus = () => (
-  <span style={{ color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+  <span style={{ color: 'var(--accent-yellow)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
     <motion.span
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
@@ -14,7 +14,7 @@ const ConnectedStatus = () => (
         width: '6px',
         height: '6px',
         borderRadius: '50%',
-        backgroundColor: 'var(--accent)',
+        backgroundColor: 'var(--accent-yellow)',
         position: 'relative'
       }}
     >
@@ -25,7 +25,7 @@ const ConnectedStatus = () => (
           position: 'absolute',
           top: 0, left: 0, right: 0, bottom: 0,
           borderRadius: '50%',
-          backgroundColor: 'var(--accent)',
+          backgroundColor: 'var(--accent-yellow)',
         }}
       />
     </motion.span>
@@ -41,9 +41,9 @@ const PipelineNode = ({ label, index, isActive, isLast, annotation }: { label: s
       <div style={{ position: 'absolute', top: '50%', left: '0', display: 'flex', alignItems: 'center', transform: 'translateY(-50%)', zIndex: 5 }}>
          <div style={{ 
            width: '8px', height: '8px', borderRadius: '50%', 
-           background: isLast ? 'var(--accent)' : '#666'
+           background: isLast ? 'var(--accent-yellow)' : 'rgba(248, 246, 240, 0.4)'
          }} />
-         <span style={{ marginLeft: '0.75rem', fontFamily: 'monospace', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+         <span style={{ marginLeft: '0.75rem', fontFamily: 'monospace', fontSize: '0.75rem', color: 'rgba(248, 246, 240, 0.7)' }}>
            0{index + 1}
          </span>
       </div>
@@ -53,19 +53,19 @@ const PipelineNode = ({ label, index, isActive, isLast, annotation }: { label: s
           animate={isActive ? { 
             height: 96,
             scale: 1.05, 
-            boxShadow: isLast ? '0 0 25px var(--accent)' : '0 0 15px rgba(255,255,255,0.3)', 
-            borderColor: isLast ? 'var(--accent)' : '#fff' 
+            boxShadow: isLast ? '0 0 25px var(--accent-yellow)' : '0 0 15px rgba(248,246,240,0.1)', 
+            borderColor: isLast ? 'var(--accent-yellow)' : 'var(--accent-green-primary)' 
           } : { 
             height: 44,
             scale: 1, 
             boxShadow: '0 0 0px rgba(0,0,0,0)', 
-            borderColor: isLast ? 'var(--accent)' : (index % 2 !== 0 ? 'var(--text-main)' : 'rgba(0,0,0,0)')
+            borderColor: isLast ? 'var(--accent-yellow)' : (index % 2 !== 0 ? 'var(--bg-primary)' : 'rgba(0,0,0,0)')
           }}
           transition={{ duration: 0.25, ease: "easeOut" }}
           style={{
-            background: isLast ? 'var(--accent)' : (index % 2 === 0 ? 'var(--text-main)' : 'rgba(0,0,0,0)'),
-            color: isLast ? '#fff' : (index % 2 === 0 ? 'var(--bg-primary)' : 'var(--text-main)'),
-            border: `1px solid ${isLast ? 'var(--accent)' : 'var(--text-main)'}`,
+            background: isLast ? 'var(--accent-yellow)' : (index % 2 === 0 ? 'var(--bg-primary)' : 'rgba(0,0,0,0)'),
+            color: isLast ? 'var(--text-main)' : (index % 2 === 0 ? 'var(--text-main)' : 'var(--bg-primary)'),
+            border: `1px solid ${isLast ? 'var(--accent-yellow)' : 'var(--bg-primary)'}`,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -117,8 +117,8 @@ const PipelineNode = ({ label, index, isActive, isLast, annotation }: { label: s
 
         {/* Right Annotation */}
         <div style={{ position: 'absolute', top: '50%', left: '100%', display: 'flex', alignItems: 'center', transform: 'translateY(-50%)', zIndex: 1 }}>
-           <div style={{ width: '30px', height: '1px', borderTop: '1px dashed var(--border-color)', opacity: 0.5 }} />
-           <span style={{ marginLeft: '0.5rem', whiteSpace: 'nowrap', fontFamily: 'monospace', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 400 }}>
+           <div style={{ width: '30px', height: '1px', borderTop: '1px dashed rgba(248, 246, 240, 0.3)' }} />
+           <span style={{ marginLeft: '0.5rem', whiteSpace: 'nowrap', fontFamily: 'monospace', fontSize: '0.75rem', color: 'rgba(248, 246, 240, 0.7)', fontWeight: 400 }}>
               {annotation}
            </span>
         </div>
@@ -133,16 +133,16 @@ const PipelineLine = ({ index, linesDrawn }: { index: number, linesDrawn: boolea
   return (
     <div style={{ position: 'relative', height: '80px', display: 'flex', justifyContent: 'center', width: '100%' }}>
       {/* Left Rail Connector */}
-      <div style={{ position: 'absolute', top: 0, left: '3px', bottom: 0, width: '2px', background: 'var(--border-color)', opacity: 0.3 }} />
+      <div style={{ position: 'absolute', top: 0, left: '3px', bottom: 0, width: '2px', background: 'rgba(248, 246, 240, 0.2)' }} />
       
       {/* Center Animated Line */}
-      <div style={{ position: 'relative', width: '2px', height: '100%', background: 'var(--border-color)', opacity: 0.3 }}>
+      <div style={{ position: 'relative', width: '2px', height: '100%', background: 'rgba(248, 246, 240, 0.2)' }}>
         <motion.div
           initial={{ scaleY: 0 }}
           whileInView={{ scaleY: 1 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5, delay: 0.2 + index * 0.5, ease: "easeInOut" }}
-          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--text-main)', transformOrigin: 'top' }}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'var(--accent-green-primary)', transformOrigin: 'top' }}
         />
       </div>
     </div>
@@ -208,17 +208,18 @@ export default function AutopilotSection() {
   ];
 
   return (
-    <section className="brutalist-section grid-container">
-      <div className="col-12 panel-header" style={{ borderBottom: 'none', marginBottom: '0' }}>
-        <span>03</span>
-      </div>
-      <div className="col-12 mb-4">
-        <hr className="h-rule" style={{ marginBottom: '1rem' }} />
-        <h2 className="editorial-h2">AUTOPILOT</h2>
-      </div>
+    <section className="brutalist-section" style={{ background: 'var(--accent-green-dark)', color: 'var(--bg-primary)', borderBottom: 'none' }}>
+      <div className="grid-container">
+        <div className="col-12 panel-header" style={{ borderBottom: 'none', marginBottom: '0', color: 'var(--bg-primary)' }}>
+          <span>03</span>
+        </div>
+        <div className="col-12 mb-4">
+          <hr className="h-rule" style={{ marginBottom: '1rem', background: 'rgba(248, 246, 240, 0.2)' }} />
+          <h2 className="editorial-h2" style={{ color: 'var(--bg-primary)' }}>AUTOPILOT</h2>
+        </div>
 
-      <div className="col-5">
-        <p className="mono-text mb-4" style={{ color: 'var(--text-muted)' }}>
+        <div className="col-5">
+        <p className="mono-text mb-4" style={{ color: 'rgba(248, 246, 240, 0.8)' }}>
           Connect your platforms once. The engine generates and publishes content while you sleep.
         </p>
         
@@ -229,38 +230,38 @@ export default function AutopilotSection() {
           viewport={{ once: true, margin: "-100px" }}
           style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontFamily: 'monospace', fontSize: '0.85rem' }}
         >
-           <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
+           <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid rgba(248, 246, 240, 0.2)', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                  <span>INSTAGRAM REELS</span>
                  <ConnectedStatus />
               </div>
-              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.ig} min ago</span>
+              <span style={{ fontSize: '0.65rem', color: 'rgba(248, 246, 240, 0.6)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.ig} min ago</span>
            </motion.div>
            
-           <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
+           <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid rgba(248, 246, 240, 0.2)', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                  <span>YOUTUBE SHORTS</span>
                  <ConnectedStatus />
               </div>
-              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.yt} min ago</span>
+              <span style={{ fontSize: '0.65rem', color: 'rgba(248, 246, 240, 0.6)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.yt} min ago</span>
            </motion.div>
            
-           <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
+           <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid rgba(248, 246, 240, 0.2)', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                  <span>TIKTOK</span>
                  <ConnectedStatus />
               </div>
-              <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.tt} min ago</span>
+              <span style={{ fontSize: '0.65rem', color: 'rgba(248, 246, 240, 0.6)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.tt} min ago</span>
            </motion.div>
            
-           <motion.div variants={platformVariants} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
+           <motion.div variants={platformVariants} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(248, 246, 240, 0.2)', paddingBottom: '0.75rem' }}>
               <span>LINKEDIN</span>
-              <span style={{ color: 'var(--text-muted)' }}>OFFLINE</span>
+              <span style={{ color: 'rgba(248, 246, 240, 0.4)' }}>OFFLINE</span>
            </motion.div>
 
            <motion.div variants={platformVariants} style={{ marginTop: '0.5rem' }}>
-             <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
-               We only request the permissions needed to publish on your behalf. <a href="/privacy#data-sharing" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>View details</a>
+             <span style={{ fontSize: '0.65rem', color: 'rgba(248, 246, 240, 0.6)' }}>
+               We only request the permissions needed to publish on your behalf. <a href="/privacy#data-sharing" style={{ color: 'var(--accent-green-primary)', textDecoration: 'underline' }}>View details</a>
              </span>
            </motion.div>
         </motion.div>
@@ -270,25 +271,25 @@ export default function AutopilotSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          style={{ marginTop: '2rem', padding: '1.25rem', border: '1px solid var(--border-color)', fontFamily: 'monospace', fontSize: '0.8rem' }}
+          style={{ marginTop: '2rem', padding: '1.25rem', border: '1px solid rgba(248, 246, 240, 0.2)', fontFamily: 'monospace', fontSize: '0.8rem' }}
         >
            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
               <span>POSTING SCHEDULE</span>
-              <span style={{ color: 'var(--text-muted)' }}>3X/WEEK, MON/WED/FRI 9AM</span>
+              <span style={{ color: 'rgba(248, 246, 240, 0.7)' }}>3X/WEEK, MON/WED/FRI 9AM</span>
            </div>
            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
               <span>AUTO-PUBLISH</span>
-              <span style={{ color: 'var(--accent)' }}>ON</span>
+              <span style={{ color: 'var(--accent-green-primary)' }}>ON</span>
            </div>
            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>REVIEW REQUIRED</span>
-              <span style={{ color: 'var(--text-muted)' }}>OFF</span>
+              <span style={{ color: 'rgba(248, 246, 240, 0.5)' }}>OFF</span>
            </div>
         </motion.div>
       </div>
 
       <div className="col-7">
-        <div className="dashboard-placeholder" style={{ 
+        <div style={{ 
           padding: '3rem 2rem', 
           display: 'flex', 
           flexDirection: 'column', 
@@ -315,6 +316,7 @@ export default function AutopilotSection() {
              </React.Fragment>
            ))}
         </div>
+      </div>
       </div>
     </section>
   );
