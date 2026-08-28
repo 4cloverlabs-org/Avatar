@@ -235,3 +235,64 @@ export const campaignLeadRelations = relations(campaignLead, ({ one }) => ({
     references: [campaign.id],
   }),
 }));
+
+// ── Content Strategy Planner ─────────────────────────────────────────
+export const contentStrategy = pgTable(
+  "content_strategy",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    niche: text("niche").notNull(),
+    durationValue: text("duration_value").notNull(),
+    durationUnit: text("duration_unit").notNull(),
+    contentStyle: text("content_style").notNull(),
+    frequency: text("frequency").notNull(),
+    platforms: text("platforms").notNull(), // JSON string array of platforms
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("content_strategy_userId_idx").on(table.userId)]
+);
+
+export const contentStrategyRelations = relations(contentStrategy, ({ one }) => ({
+  user: one(user, {
+    fields: [contentStrategy.userId],
+    references: [user.id],
+  }),
+}));
+
+// ── Generated Videos ─────────────────────────────────────────────────
+export const video = pgTable(
+  "video",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    strategyId: text("strategy_id")
+      .references(() => contentStrategy.id, { onDelete: "set null" }),
+    title: text("title").notNull(),
+    platform: text("platform").notNull(),
+    status: text("status").default('Scheduled').notNull(), // Published, Scheduled
+    views: text("views").default('0').notNull(), // text to handle strings like '1.2M' easily for the demo, or just integer. Let's use integer for real analytics.
+    likes: text("likes").default('0').notNull(),
+    shares: text("shares").default('0').notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("video_userId_idx").on(table.userId),
+    index("video_strategyId_idx").on(table.strategyId)
+  ]
+);
+
+export const videoRelations = relations(video, ({ one }) => ({
+  user: one(user, {
+    fields: [video.userId],
+    references: [user.id],
+  }),
+  strategy: one(contentStrategy, {
+    fields: [video.strategyId],
+    references: [contentStrategy.id],
+  }),
+}));
