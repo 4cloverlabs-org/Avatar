@@ -4,10 +4,10 @@ import React from 'react';
 
 export default function Testimonials() {
   return (
-    <section className="brutalist-section" style={{ background: 'var(--accent-green-dark)', color: 'var(--bg-primary)', borderBottom: 'none' }}>
+    <section className="brutalist-section" style={{ background: '#15170F', color: 'var(--bg-primary)', borderBottom: 'none' }}>
       <div className="grid-container">
         <div className="col-12 panel-header" style={{ borderBottom: 'none', marginBottom: '0', color: 'var(--bg-primary)' }}>
-          <span>06</span>
+          <span>05</span>
         </div>
         <div className="col-12 mb-4">
           <hr className="h-rule" style={{ marginBottom: '1rem', background: 'rgba(248, 246, 240, 0.2)' }} />

@@ -84,7 +84,7 @@ export default function Analytics() {
   return (
     <section ref={ref} className="brutalist-section grid-container">
       <div className="col-12 panel-header" style={{ borderBottom: 'none', marginBottom: '0' }}>
-        <span>05</span>
+        <span>04</span>
       </div>
       <div className="col-12 mb-4">
         <motion.hr 

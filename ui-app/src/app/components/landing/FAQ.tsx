@@ -21,9 +21,9 @@ export default function FAQ() {
   ];
 
   return (
-    <section className="brutalist-section grid-container">
+    <section id="faq" className="brutalist-section grid-container">
       <div className="col-12 panel-header" style={{ borderBottom: 'none', marginBottom: '0' }}>
-        <span>07</span>
+        <span>06</span>
       </div>
       <div className="col-12 mb-4">
         <hr className="h-rule" style={{ marginBottom: '1rem' }} />

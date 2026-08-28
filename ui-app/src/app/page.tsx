@@ -4,7 +4,6 @@ import './landing.css';
 import Navbar from './components/landing/Navbar';
 import HeroSection from './components/landing/HeroSection';
 import HowItWorks from './components/landing/HowItWorks';
-import FeaturesGrid from './components/landing/FeaturesGrid';
 import AutopilotSection from './components/landing/AutopilotSection';
 import Analytics from './components/landing/Analytics';
 import Pricing from './components/landing/Pricing';
@@ -26,9 +25,6 @@ export default function Home() {
         <hr className="h-rule" />
         
         <HowItWorks />
-        <hr className="h-rule" />
-        
-        <FeaturesGrid />
         <hr className="h-rule" />
         
         <AutopilotSection />

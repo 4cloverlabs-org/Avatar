@@ -14,6 +14,10 @@
   --grid-gap: 1rem;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: var(--bg-primary);
   color: var(--text-main);

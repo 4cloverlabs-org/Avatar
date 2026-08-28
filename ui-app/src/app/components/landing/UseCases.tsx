@@ -20,7 +20,7 @@ export default function UseCases() {
   return (
     <section className="brutalist-section grid-container" id="use-cases">
       <div className="col-12 panel-header" style={{ borderBottom: 'none', marginBottom: '0' }}>
-        <span>04</span>
+        <span>03</span>
       </div>
       <div className="col-12 mb-4">
         <hr className="h-rule" style={{ marginBottom: '1rem' }} />
