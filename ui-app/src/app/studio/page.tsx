@@ -1375,6 +1375,25 @@ export default function Dashboard() {
                 <span style={{ fontSize: 13, fontWeight: 500 }}>Upload Media</span>
               </button>
 
+              <button 
+                onClick={async () => {
+                  try {
+                    const res = await fetch('/api/assets');
+                    const data = await res.json();
+                    if (data.success && data.assets) {
+                      data.assets.forEach((asset: any) => {
+                        const isVid = asset.type === 'video';
+                        setMediaLibrary(prev => prev.some(m => m.src === asset.url) ? prev : [...prev, { src: asset.url, isVideo: isVid }]);
+                      });
+                    }
+                  } catch (e) { console.error(e); }
+                }}
+                style={{ width: '100%', padding: '12px', border: '1px solid var(--panel-border)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: 'var(--surface-color)', color: 'var(--foreground)', cursor: 'pointer', marginBottom: 15 }}
+              >
+                <BookOpen size={16} />
+                <span style={{ fontSize: 13, fontWeight: 500 }}>Load My Assets</span>
+              </button>
+
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <input type="text" id="media-url-input" placeholder="Or paste URL..." style={{ flex: 1, padding: '8px', borderRadius: 4, border: '1px solid var(--panel-border)', background: 'transparent', color: 'var(--foreground)', fontSize: 13, outline: 'none' }} onKeyDown={(e) => {
                   if (e.key === 'Enter') {

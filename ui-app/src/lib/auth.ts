@@ -19,6 +19,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     "http://localhost:3000",
+    "http://10.171.188.44:3000",
     "https://hypnotist-quality-splashy.ngrok-free.dev",
     "https://dash.better-auth.com"
   ],

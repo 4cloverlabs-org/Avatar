@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Target, Calendar, Clock, Activity, ArrowRight, ChevronDown, Plus, Trash2 } from 'lucide-react';
 
 type StrategyConfig = {
@@ -14,6 +15,21 @@ type StrategyConfig = {
 };
 
 export default function ContentSchedulerPage() {
+  const router = useRouter();
+  const [connectedPlatforms, setConnectedPlatforms] = useState<string[]>([]);
+  const [showConnectModal, setShowConnectModal] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/socials/accounts')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.accounts) {
+          setConnectedPlatforms(data.accounts.map((acc: any) => acc.platform));
+        }
+      })
+      .catch(console.error);
+  }, []);
+
   const [strategies, setStrategies] = useState<StrategyConfig[]>([{
     id: 'strat-1',
     niche: 'Technology & Gadgets',
@@ -22,7 +38,7 @@ export default function ContentSchedulerPage() {
     contentStyle: 'Educational',
     frequency: '1 video per day',
     uploadTimes: ['12:00'],
-    platforms: ['TikTok', 'YouTube Shorts']
+    platforms: []
   }]);
   
   const [isGenerating, setIsGenerating] = useState(false);
@@ -74,9 +90,20 @@ export default function ContentSchedulerPage() {
   };
 
   const togglePlatform = (id: string, plat: string) => {
+    let internalPlat = '';
+    if (plat === 'YouTube Shorts') internalPlat = 'youtube';
+    if (plat === 'Instagram Reels') internalPlat = 'instagram';
+    if (plat === 'TikTok') internalPlat = 'tiktok';
+
+    const isConnected = connectedPlatforms.includes(internalPlat);
+    
     setStrategies(prev => prev.map(s => {
       if (s.id === id) {
         const has = s.platforms.includes(plat);
+        if (!has && !isConnected) {
+          setShowConnectModal(plat);
+          return s;
+        }
         return { ...s, platforms: has ? s.platforms.filter(p => p !== plat) : [...s.platforms, plat] };
       }
       return s;
@@ -616,6 +643,29 @@ export default function ContentSchedulerPage() {
           )}
         </button>
       </div>
+      {showConnectModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ background: '#fff', padding: 32, borderRadius: 12, width: 400, maxWidth: '90%', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+            <div style={{ width: 64, height: 64, background: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <Target size={32} color="#64748b" />
+            </div>
+            <h3 style={{ fontSize: 20, fontWeight: 600, color: '#0f172a', marginBottom: 8 }}>Account Not Connected</h3>
+            <p style={{ fontSize: 14, color: '#64748b', marginBottom: 24, lineHeight: 1.5 }}>
+              You need to connect your <strong>{showConnectModal}</strong> account in the Socials tab before you can automatically schedule content to it.
+            </p>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button 
+                onClick={() => setShowConnectModal(null)}
+                style={{ flex: 1, padding: '10px 0', borderRadius: 8, background: '#f1f5f9', color: '#475569', fontWeight: 600, border: 'none', cursor: 'pointer' }}
+              >Cancel</button>
+              <button 
+                onClick={() => router.push('/socials')}
+                style={{ flex: 1, padding: '10px 0', borderRadius: 8, background: 'var(--accent)', color: '#fff', fontWeight: 600, border: 'none', cursor: 'pointer' }}
+              >Connect Now</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

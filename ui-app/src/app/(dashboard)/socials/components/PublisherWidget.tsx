@@ -153,7 +153,7 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
     <div className="soc-publisher-layout">
       {/* Publisher Form fields */}
       <div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
           {/* Video selector */}
           <div className="soc-field-group">
             <label>Select Generated Video</label>
@@ -178,13 +178,15 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  background: 'var(--panel-border)', 
-                  padding: '0 16px', 
-                  borderRadius: 6, 
+                  background: '#f8fafc', 
+                  border: '1px solid #e2e8f0',
+                  padding: '0 20px', 
+                  borderRadius: '8px', 
                   cursor: isUploadingLocal ? 'not-allowed' : 'pointer',
                   fontWeight: 600,
-                  fontSize: 13,
-                  color: 'var(--foreground)',
+                  fontSize: '14px',
+                  color: '#334155',
+                  transition: 'all 0.2s',
                   opacity: isUploadingLocal ? 0.6 : 1
                 }}>
                   {isUploadingLocal ? (
@@ -293,27 +295,29 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
           onClick={handlePublish}
           disabled={isPublishing || (lockedPlatform === 'youtube' && !ytConnected) || (lockedPlatform === 'instagram' && !igConnected) || (!lockedPlatform && !ytConnected && !igConnected)}
           style={{
-            background: 'var(--accent)',
-            color: '#1E2119',
+            background: '#d86450',
+            color: '#ffffff',
             border: 'none',
-            borderRadius: '6px',
-            padding: '10px 24px',
-            fontSize: 13,
+            borderRadius: '8px',
+            padding: '12px 24px',
+            fontSize: '14px',
             fontWeight: 600,
             cursor: (isPublishing || (lockedPlatform === 'youtube' && !ytConnected) || (lockedPlatform === 'instagram' && !igConnected) || (!lockedPlatform && !ytConnected && !igConnected)) ? 'not-allowed' : 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: 8,
+            justifyContent: 'center',
+            gap: '8px',
+            transition: 'all 0.2s',
             opacity: ((lockedPlatform === 'youtube' && !ytConnected) || (lockedPlatform === 'instagram' && !igConnected) || (!lockedPlatform && !ytConnected && !igConnected)) ? 0.5 : 1
           }}
         >
           {isPublishing ? (
             <>
-              <RefreshCw className="pers-anim-pulse" size={14} /> Publishing...
+              <RefreshCw className="pers-anim-pulse" size={16} /> Publishing...
             </>
           ) : (
             <>
-              <Share2 size={14} /> Publish Video Now
+              <Share2 size={16} /> Publish Video Now
             </>
           )}
         </button>
@@ -335,15 +339,21 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
       </div>
 
       {/* Video preview pane */}
-      <div style={{ borderLeft: '1px solid var(--panel-border)', paddingLeft: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Selected Video Preview</div>
-        <div style={{ background: '#000000', borderRadius: 8, aspectRatio: '9/16', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-          <Play size={40} color="#ffffff" fill="#ffffff" style={{ opacity: 0.8, cursor: 'pointer', zIndex: 2 }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 1 }}></div>
-          <div style={{ position: 'absolute', bottom: 12, left: 12, right: 12, zIndex: 2, color: '#fff', fontSize: 11, background: 'rgba(0,0,0,0.6)', padding: '6px 10px', borderRadius: 4 }}>
-            <div style={{ fontWeight: 600 }}>{videos.find(v => v.filename === selectedVideoFile)?.title || 'Video Title'}</div>
-            <div style={{ opacity: 0.8, marginTop: 2, fontSize: 10 }}>{selectedVideoFile}</div>
-          </div>
+      <div style={{ borderLeft: '1px solid #e2e8f0', paddingLeft: 32, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: '#334155' }}>Selected Video Preview</div>
+        <div style={{ background: '#0f172a', borderRadius: 12, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', border: '1px solid #e2e8f0' }}>
+          {selectedVideoFile ? (
+            <video 
+              src={`/api/videos/${selectedVideoFile}`}
+              controls 
+              style={{ width: '100%', height: 'auto', maxHeight: '70vh', objectFit: 'contain' }}
+              playsInline
+            />
+          ) : (
+            <div style={{ color: '#475569', fontSize: 13, textAlign: 'center', padding: 20 }}>
+              No video selected.
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -185,7 +185,23 @@ export default function SocialsPage() {
 
 
   return (
-    <div className="home-content">
+    <div style={{ 
+      padding: '0px 40px 40px 40px',
+      marginTop: '-16px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+      width: '100%',
+      minHeight: '100%',
+      backgroundColor: '#ffffff',
+      borderRadius: '32px',
+      animation: 'fadeIn 0.5s ease-out',
+      color: '#111'
+    }}>
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
       <div className="soc-container">
         
         

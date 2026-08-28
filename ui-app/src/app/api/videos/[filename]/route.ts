@@ -9,9 +9,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ file
     return new NextResponse('Invalid filename', { status: 400 });
   }
 
-  const filePath = path.join(process.cwd(), '..', 'results', 'output', filename);
+  const outputFilePath = path.join(process.cwd(), '..', 'results', 'output', filename);
+  const publicFilePath = path.join(process.cwd(), 'public', 'videos', filename);
 
-  if (!fs.existsSync(filePath)) {
+  let filePath = '';
+  if (fs.existsSync(outputFilePath)) {
+    filePath = outputFilePath;
+  } else if (fs.existsSync(publicFilePath)) {
+    filePath = publicFilePath;
+  } else {
     return new NextResponse('Video not found', { status: 404 });
   }
 

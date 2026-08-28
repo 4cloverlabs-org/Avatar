@@ -296,3 +296,19 @@ export const videoRelations = relations(video, ({ one }) => ({
     references: [contentStrategy.id],
   }),
 }));
+
+// ── Session Handoff ──────────────────────────────────────────────────
+export const sessionHandoff = pgTable(
+  "session_handoff",
+  {
+    id: text("id").primaryKey(),
+    token: text("token").notNull().unique(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("session_handoff_token_idx").on(table.token)]
+);
+
