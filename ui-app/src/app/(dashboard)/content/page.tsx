@@ -3,6 +3,39 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Target, Calendar, Clock, Activity, ArrowRight, ChevronDown, Plus, Trash2 } from 'lucide-react';
 
+const TikTokIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+    <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z" fill="#25F4EE" transform="translate(-10, -10)"/>
+    <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z" fill="#FE2C55" transform="translate(10, 10)"/>
+    <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z" fill="#000000"/>
+  </svg>
+);
+
+const InstagramIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="20" height="20" rx="6" fill="url(#ig-grad)"/>
+    <circle cx="12" cy="12" r="5" stroke="white" strokeWidth="2"/>
+    <circle cx="17.5" cy="6.5" r="1.5" fill="white"/>
+    <rect x="2" y="2" width="20" height="20" rx="6" stroke="white" strokeWidth="2"/>
+    <defs>
+      <linearGradient id="ig-grad" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#F58529"/>
+        <stop offset="0.3" stopColor="#FEDA77"/>
+        <stop offset="0.6" stopColor="#DD2A7B"/>
+        <stop offset="0.8" stopColor="#8134AF"/>
+        <stop offset="1" stopColor="#515BD4"/>
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+const YouTubeIcon = ({ size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.582 6.186a2.706 2.706 0 0 0-1.904-1.916C17.999 3.8 12 3.8 12 3.8s-5.999 0-7.678.47a2.706 2.706 0 0 0-1.904 1.916C1.948 7.878 1.948 12 1.948 12s0 4.122.47 5.814a2.706 2.706 0 0 0 1.904 1.916c1.679.47 7.678.47 7.678.47s5.999 0 7.678-.47a2.706 2.706 0 0 0 1.904-1.916c.47-1.692.47-5.814.47-5.814s0-4.122-.47-5.814z" fill="#FF0000"/>
+    <path d="M9.945 15.49L15.228 12 9.945 8.51v6.98z" fill="white"/>
+  </svg>
+);
+
 type StrategyConfig = {
   id: string;
   niche: string;
@@ -646,8 +679,11 @@ export default function ContentSchedulerPage() {
       {showConnectModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: '#fff', padding: 32, borderRadius: 12, width: 400, maxWidth: '90%', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
-            <div style={{ width: 64, height: 64, background: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <Target size={32} color="#64748b" />
+            <div style={{ width: 64, height: 64, background: '#f8fafc', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              {showConnectModal === 'TikTok' && <TikTokIcon size={32} />}
+              {showConnectModal === 'YouTube Shorts' && <YouTubeIcon size={32} />}
+              {showConnectModal === 'Instagram Reels' && <InstagramIcon size={32} />}
+              {!['TikTok', 'YouTube Shorts', 'Instagram Reels'].includes(showConnectModal || '') && <Target size={32} color="#64748b" />}
             </div>
             <h3 style={{ fontSize: 20, fontWeight: 600, color: '#0f172a', marginBottom: 8 }}>Account Not Connected</h3>
             <p style={{ fontSize: 14, color: '#64748b', marginBottom: 24, lineHeight: 1.5 }}>

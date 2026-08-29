@@ -306,7 +306,7 @@ export default function SettingsPage() {
             value={
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px' }}>
                 {user.image ? (
-                  <img src={user.image} alt="User Avatar" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} />
+                  <img src={user.image} alt="User Avatar" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} referrerPolicy="no-referrer" />
                 ) : (
                   <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'linear-gradient(45deg, var(--accent), #9333ea)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '18px', fontWeight: 600 }}>
                     {user.name?.charAt(0).toUpperCase() || 'U'}

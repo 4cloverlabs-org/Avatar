@@ -153,7 +153,7 @@ export default function RecordAvatarPage() {
         } else if (canvasRef.current) {
           // Fallback: draw raw video if MediaPipe isn't ready yet
           const ctx = canvasRef.current.getContext('2d');
-          if (ctx) {
+          if (ctx && videoRef.current.videoWidth > 0 && videoRef.current.videoHeight > 0) {
             canvasRef.current.width = videoRef.current.videoWidth;
             canvasRef.current.height = videoRef.current.videoHeight;
             ctx.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -289,7 +289,7 @@ export default function RecordAvatarPage() {
     if (isCameraOff) {
       // Turn it back on by requesting a new video track
       try {
-        const newStream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
+        const newStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
         const newVideoTrack = newStream.getVideoTracks()[0];
         
         // Recreate the entire MediaStream so the HTMLMediaElement detects the change
@@ -333,13 +333,21 @@ export default function RecordAvatarPage() {
     setRecordedVideoUrl(null);
     setSelectedFile(null);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      // Explicitly ask for facingMode: 'user' to help iOS Safari select the correct camera
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
       streamRef.current = stream;
       setIsMicMuted(false);
       setIsCameraOff(false);
       if (videoRef.current) {
         setHasCameraPassed(true);
+        // Force muted and playsinline directly on the DOM node for strict iOS Safari compliance
+        videoRef.current.muted = true;
+        videoRef.current.defaultMuted = true;
+        videoRef.current.setAttribute('playsinline', 'true');
+        videoRef.current.setAttribute('autoplay', 'true');
         videoRef.current.srcObject = stream;
+        // iOS Safari strictly requires an explicit play() call for media streams, autoPlay is not enough
+        videoRef.current.play().catch(e => console.error('Play error on startCamera:', e));
       }
     } catch (err) {
       console.error("Error accessing media devices.", err);
@@ -584,7 +592,7 @@ export default function RecordAvatarPage() {
                   <video src={recordedVideoUrl} controls style={{ width: '100%', height: '100%', objectFit: 'cover', transform: activeCameraView === 'Close Up' ? 'scale(1.3) translateY(5%)' : activeCameraView === 'Side View' ? 'scale(1.1) translateX(5%)' : 'scale(1)', transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)', filter: computedFilter }} />
                 ) : (
                   <>
-                    <video ref={videoRef} autoPlay muted playsInline style={{ display: 'none' }} />
+                    <video ref={videoRef} autoPlay muted playsInline style={{ position: 'absolute', top: '-9999px', left: '-9999px', width: 16, height: 16, zIndex: -1 }} />
                     <canvas ref={canvasRef} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scaleX(-1) ${activeCameraView === 'Close Up' ? 'scale(1.3) translateY(5%)' : activeCameraView === 'Side View' ? 'scale(1.1) translateX(-5%)' : 'scale(1)'}`, filter: computedFilter, transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }} />
                   </>
                 )}

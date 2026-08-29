@@ -28,6 +28,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   // Cached user for instant avatar display while session loads
   const [cachedUser, setCachedUser] = useState<{ name: string; email: string; image?: string } | null>(null);
+  const [avatarError, setAvatarError] = useState(false);
 
   // Load cached user from localStorage on mount
   useEffect(() => {
@@ -653,10 +654,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     fontWeight: 600,
                     overflow: 'hidden'
                   }}>
-                    {displayUser.image ? (
-                       <img src={displayUser.image} alt={displayUser.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    {displayUser.image && !avatarError ? (
+                       <img 
+                         src={displayUser.image} 
+                         alt={displayUser.name} 
+                         style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                         referrerPolicy="no-referrer"
+                         onError={() => setAvatarError(true)}
+                       />
                     ) : (
-                       (displayUser.name || 'U').charAt(0).toUpperCase()
+                       <User size={18} strokeWidth={2.5} />
                     )}
                   </div>
                 </button>
