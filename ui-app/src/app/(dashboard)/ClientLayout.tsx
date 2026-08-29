@@ -39,7 +39,36 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     
     fetchNotifications();
     fetchWorkspaces();
+    fetchPreferences();
   }, []);
+
+  const fetchPreferences = async () => {
+    try {
+      const res = await fetch('/api/settings/preferences');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.preferences) {
+          const { dashboardTheme, highContrastMode } = data.preferences;
+          if (dashboardTheme === 'light') {
+            document.documentElement.classList.add('light-theme');
+            localStorage.setItem('dashboard-theme', 'light');
+          } else {
+            document.documentElement.classList.remove('light-theme');
+            localStorage.setItem('dashboard-theme', 'dark');
+          }
+          if (highContrastMode) {
+            document.documentElement.classList.add('high-contrast');
+            localStorage.setItem('high-contrast', 'true');
+          } else {
+            document.documentElement.classList.remove('high-contrast');
+            localStorage.setItem('high-contrast', 'false');
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load preferences globally", err);
+    }
+  };
 
   const fetchWorkspaces = async () => {
     try {
@@ -270,7 +299,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   return (
-    <div className="home-layout light-theme">
+    <div className="home-layout">
       {/* LEFT SIDEBAR */}
       <div 
         className={`home-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}

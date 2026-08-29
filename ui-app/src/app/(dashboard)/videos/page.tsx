@@ -16,7 +16,7 @@ export default function VideosView() {
       .then(res => res.json())
       .then(data => {
         if (data.success && data.videos) {
-          setVideos(data.videos);
+          setVideos(data.videos.filter((v: any) => v.status !== 'UPLOADED'));
         }
       })
       .finally(() => setIsLoading(false));

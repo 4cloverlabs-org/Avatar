@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { db } from "./db";
 import { dash } from "@better-auth/infra";
+import { twoFactor } from "better-auth/plugins";
 
 export const auth = betterAuth({
   appName: "AnClone",
@@ -35,7 +36,14 @@ export const auth = betterAuth({
     }
   },
   plugins: [
-    dash()
+    dash(),
+    twoFactor({
+      issuer: "AvatarApp",
+      totpOptions: {
+        issuer: "AvatarApp"
+      },
+      allowPasswordless: true
+    })
   ]
 });
 export type Auth = typeof auth;

@@ -45,6 +45,15 @@ export default function Dashboard() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
+  useEffect(() => {
+    // Check for an avatar image passed from the avatars page
+    const params = new URLSearchParams(window.location.search);
+    const avatarUrl = params.get('avatar');
+    if (avatarUrl) {
+      setVideoPreview(avatarUrl);
+    }
+  }, []);
+
   const toggleRecording = async () => {
     if (isRecording) {
       mediaRecorderRef.current?.stop();
@@ -569,7 +578,11 @@ export default function Dashboard() {
                 </div>
               ) : videoPreview ? (
                 <div style={{ position: 'absolute', left: `${videoBox.x}%`, top: `${videoBox.y}%`, width: `${videoBox.width}%`, height: `${videoBox.height}%`, border: selectedId === 'main_video' ? '2px solid #3B5D3B' : 'none', cursor: selectedId === 'main_video' ? (interactionState === 'dragging' ? 'grabbing' : 'grab') : 'pointer', touchAction: 'none' }} onPointerDown={(e) => handlePointerDown(e, 'dragging', 'main_video')} onClick={(e) => e.stopPropagation()}>
-                  <video id="main_video_element" src={videoPreview} controls={selectedId !== 'main_video'} style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: selectedId === 'main_video' ? 'none' : 'auto' }} />
+                  {isVideoUrl(videoPreview) ? (
+                    <video id="main_video_element" src={videoPreview} controls={selectedId !== 'main_video'} style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: selectedId === 'main_video' ? 'none' : 'auto' }} />
+                  ) : (
+                    <img id="main_video_element" src={videoPreview} alt="Selected Avatar" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: selectedId === 'main_video' ? 'none' : 'auto' }} />
+                  )}
                   {selectedId === 'main_video' && ['nw', 'n', 'ne', 'w', 'e', 'sw', 's', 'se'].map(dir => {
                     const isN = dir.includes('n'); const isS = dir.includes('s');
                     const isW = dir.includes('w'); const isE = dir.includes('e');
@@ -865,7 +878,11 @@ export default function Dashboard() {
               <div style={{ width: 120, height: 68, flexShrink: 0, background: '#EDF2E9', borderRadius: 8, border: '2px solid var(--accent)', position: 'relative', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', cursor: 'pointer' }}>
                 <span style={{ position: 'absolute', top: 4, left: 4, fontSize: 10, fontWeight: 600, color: '#1E2119', background: 'rgba(255,255,255,0.8)', padding: '2px 4px', borderRadius: 4 }}>1</span>
                 <div style={{ position: 'absolute', bottom: 4, left: 4, background: '#1E2119', color: '#fff', padding: 3, borderRadius: 4, display: 'flex', alignItems: 'center' }}><User size={10} /></div>
-                {videoPreview && <video src={videoPreview} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                {videoPreview && (
+                  isVideoUrl(videoPreview) ? 
+                    <video src={videoPreview} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> :
+                    <img src={videoPreview} alt="Thumbnail" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                )}
               </div>
 
               {/* Add Scene Button */}

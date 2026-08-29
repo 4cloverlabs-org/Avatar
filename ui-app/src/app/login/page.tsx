@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import PrivacyPolicyContent from '../components/PrivacyPolicyContent';
 import { authClient } from '../../lib/auth-client';
@@ -17,6 +17,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Calling getSession will trigger the twoFactorClient interceptor 
+    // if the user's session requires 2FA (e.g. returning from Google OAuth)
+    authClient.getSession().catch(() => {});
+  }, []);
 
   const handleGoogleLogin = async () => {
     setGoogleLoading(true);

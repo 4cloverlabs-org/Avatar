@@ -145,7 +145,7 @@ export default function TrashPage() {
         }}>
           <Trash2 size={48} opacity={0.2} style={{ marginBottom: '16px' }} />
           <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '8px' }}>Trash is empty</h3>
-          <p style={{ fontSize: '14px' }}>Items you delete will appear here for 7 days before being permanently removed.</p>
+          <p style={{ fontSize: '14px' }}>Deleted items will appear here.</p>
         </div>
       ) : (
         <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: '12px', overflow: 'hidden' }}>

@@ -36,39 +36,28 @@ export default function AvatarsView() {
 }
 
 function FromUsAvatarsUI() {
-  const systemAvatars = [
-    { id: 'sys-1', name: 'Professional Anna', video: '/videos/hero_section.mp4' },
-    { id: 'sys-2', name: 'Casual Mark', video: '/videos/avatar_split.mp4' },
-    { id: 'sys-3', name: 'Tech Reviewer', video: '/videos/AI_coding_setup_is_bad_202605302317.mp4' }
+  const router = useRouter();
+  const avatars = [
+    { id: 'sys-1', name: 'Professional Anna', image: '/avatars/anna.jpg' },
+    { id: 'sys-2', name: 'Casual Mark', image: '/avatars/mark.jpg' },
+    { id: 'sys-3', name: 'Tech Reviewer', image: '/avatars/reviewer_v2.jpg' },
+    { id: 'sys-4', name: 'Friendly Sarah', image: '/avatars/sarah.jpg' },
+    { id: 'sys-5', name: 'Corporate David', image: '/avatars/david.jpg' },
+    { id: 'sys-6', name: 'Creative Designer', image: '/avatars/mia.jpg' },
+    { id: 'sys-7', name: 'Support Agent', image: '/avatars/alex.jpg' }
   ];
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 24 }}>
-      {systemAvatars.map(avatar => (
+      {avatars.map(avatar => (
         <div 
           key={avatar.id} 
           style={{ border: '2px solid #F3F3F3', borderRadius: 12, background: '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative', display: 'flex', flexDirection: 'column' }}
-          onMouseEnter={(e) => {
-            const video = e.currentTarget.querySelector('video');
-            if (video) {
-              const playPromise = video.play();
-              if (playPromise !== undefined) {
-                playPromise.catch(() => {});
-              }
-            }
-          }}
-          onMouseLeave={(e) => {
-            const video = e.currentTarget.querySelector('video');
-            if (video) {
-              video.pause();
-              video.currentTime = 0.001;
-            }
-          }}
         >
           <div style={{ aspectRatio: '9/16', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderTopLeftRadius: 10, borderTopRightRadius: 10, overflow: 'hidden' }}>
-            <video 
-              src={`${avatar.video}#t=0.001`} 
-              loop muted playsInline preload="metadata"
+            <img 
+              src={avatar.image} 
+              alt={avatar.name}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
             />
           </div>
@@ -86,8 +75,7 @@ function FromUsAvatarsUI() {
               style={{ background: '#e0e7ff', color: '#4f46e5', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
               onClick={(e) => {
                 e.stopPropagation();
-                // Simulating creating a project from system avatar
-                alert(`Started new project using ${avatar.name}`);
+                router.push(`/studio?avatar=${encodeURIComponent(avatar.image)}`);
               }}
             >
               Use

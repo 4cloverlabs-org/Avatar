@@ -4,6 +4,7 @@ import {
   text,
   timestamp,
   boolean,
+  integer,
   index,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
@@ -14,6 +15,8 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
+  twoFactorEnabled: boolean("two_factor_enabled").default(false).notNull(),
+  totpSecret: text("totp_secret"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
@@ -87,9 +90,49 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const twoFactor = pgTable(
+  "two_factor",
+  {
+    id: text("id").primaryKey(),
+    secret: text("secret").notNull(),
+    backupCodes: text("backup_codes").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    verified: boolean("verified").default(true),
+    failedVerificationCount: integer("failed_verification_count").default(0),
+    lockedUntil: timestamp("locked_until"),
+  },
+  (table) => [
+    index("twoFactor_secret_idx").on(table.secret),
+    index("twoFactor_userId_idx").on(table.userId),
+  ],
+);
+
+export const gitCredential = pgTable(
+  "git_credential",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    token: text("token").notNull(),
+    provider: text("provider").default("github"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index("gitCredential_userId_idx").on(table.userId)],
+);
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  twoFactors: many(twoFactor),
+  gitCredentials: many(gitCredential),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -102,6 +145,20 @@ export const sessionRelations = relations(session, ({ one }) => ({
 export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, {
     fields: [account.userId],
+    references: [user.id],
+  }),
+}));
+
+export const twoFactorRelations = relations(twoFactor, ({ one }) => ({
+  user: one(user, {
+    fields: [twoFactor.userId],
+    references: [user.id],
+  }),
+}));
+
+export const gitCredentialRelations = relations(gitCredential, ({ one }) => ({
+  user: one(user, {
+    fields: [gitCredential.userId],
     references: [user.id],
   }),
 }));
@@ -160,6 +217,50 @@ export const notification = pgTable(
 export const notificationRelations = relations(notification, ({ one }) => ({
   user: one(user, {
     fields: [notification.userId],
+    references: [user.id],
+  }),
+}));
+
+// ── Settings & Preferences ───────────────────────────────────────────
+export const userPreferences = pgTable(
+  "user_preferences",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    dashboardTheme: text("dashboard_theme").default("dark").notNull(),
+    logExplorerTheme: text("log_explorer_theme").default("match").notNull(),
+    highContrastMode: boolean("high_contrast_mode").default(false).notNull(),
+  },
+  (table) => [index("user_preferences_userId_idx").on(table.userId)]
+);
+
+export const userPreferencesRelations = relations(userPreferences, ({ one }) => ({
+  user: one(user, {
+    fields: [userPreferences.userId],
+    references: [user.id],
+  }),
+}));
+
+export const apiKey = pgTable(
+  "api_key",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    keyHash: text("key_hash").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    lastUsedAt: timestamp("last_used_at"),
+  },
+  (table) => [index("api_key_userId_idx").on(table.userId)]
+);
+
+export const apiKeyRelations = relations(apiKey, ({ one }) => ({
+  user: one(user, {
+    fields: [apiKey.userId],
     references: [user.id],
   }),
 }));

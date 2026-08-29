@@ -434,7 +434,7 @@ export default function ContentSchedulerPage() {
 
       <div>
         <h1 className="header-title">
-          Content Strategy <span>Planner</span>
+          Content <span>Planner</span>
         </h1>
         <p className="header-subtitle">
           Design your automated video publishing schedule with AI.

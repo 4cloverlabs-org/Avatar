@@ -25,7 +25,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${bubblegumSans.variable} ${poppins.variable}`}>
+    <html lang="en" className={`${bubblegumSans.variable} ${poppins.variable}`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('dashboard-theme') || 'light';
+                const highContrast = localStorage.getItem('high-contrast');
+                if (theme === 'light') {
+                  document.documentElement.classList.add('light-theme');
+                } else {
+                  document.documentElement.classList.remove('light-theme');
+                }
+                if (highContrast === 'true') {
+                  document.documentElement.classList.add('high-contrast');
+                } else {
+                  document.documentElement.classList.remove('high-contrast');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

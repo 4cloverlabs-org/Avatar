@@ -77,7 +77,7 @@ function MyVoicesUI() {
             Clone your voice in minutes. Pair it with any Avatar to make videos that sound just like you.
           </p>
           <button style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
-            Create Voice
+            Clone New Voice
           </button>
         </div>
       </div>
