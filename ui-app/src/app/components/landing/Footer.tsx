@@ -2,58 +2,65 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { Twitter, Youtube, Instagram } from 'lucide-react';
 
 export default function Footer() {
    return (
-      <footer className="grid-container" style={{ padding: '4rem 2rem 2rem' }}>
+      <footer className="grid-container" style={{ padding: '6rem 2rem 2rem', background: '#FFFFFF' }}>
          <div className="col-4">
-            <Link href="/" className="nav-logo" style={{ marginBottom: '1rem', display: 'block' }}>
-               AnClone.
+            <Link href="/" className="nav-logo" style={{ marginBottom: '1rem', display: 'block', fontSize: '1.5rem', fontWeight: 700 }}>
+               AnClone
             </Link>
-            <p className="mono-text" style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>SYSTEM v1.0.0</p>
+            <p className="mono-text" style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '0.9rem' }}>The premier AI video generation platform for modern creators.</p>
             <div style={{ display: 'flex', gap: '1rem' }}>
-               <a href="#" className="mono-text" style={{ color: 'var(--text-main)', textDecoration: 'none' }}>[X]</a>
-               <a href="#" className="mono-text" style={{ color: 'var(--text-main)', textDecoration: 'none' }}>[YT]</a>
-               <a href="#" className="mono-text" style={{ color: 'var(--text-main)', textDecoration: 'none' }}>[IG]</a>
+               <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.2s' }}>
+                 <Twitter size={20} />
+               </a>
+               <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.2s' }}>
+                 <Youtube size={20} />
+               </a>
+               <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.2s' }}>
+                 <Instagram size={20} />
+               </a>
             </div>
          </div>
 
          <div className="col-2">
-            <h4 className="mono-text mb-2">PRODUCT</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>AVATARS</Link>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>VOICE</Link>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>AUTOMATION</Link>
+            <h4 style={{ fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-main)', fontSize: '0.95rem' }}>Product</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Avatars</Link>
+               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Voice</Link>
+               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Automation</Link>
             </div>
          </div>
 
          <div className="col-2">
-            <h4 className="mono-text mb-2">COMPANY</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>ABOUT</Link>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>CAREERS</Link>
+            <h4 style={{ fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-main)', fontSize: '0.95rem' }}>Company</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>About</Link>
+               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Careers</Link>
             </div>
          </div>
 
          <div className="col-2">
-            <h4 className="mono-text mb-2">RESOURCES</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>HELP CENTER</Link>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>DOCS</Link>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>CONTACT</Link>
+            <h4 style={{ fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-main)', fontSize: '0.95rem' }}>Resources</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Help Center</Link>
+               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Docs</Link>
+               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Contact</Link>
             </div>
          </div>
 
          <div className="col-2">
-            <h4 className="mono-text mb-2">LEGAL</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-               <Link href="/privacy" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>PRIVACY</Link>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)' }}>TERMS</Link>
+            <h4 style={{ fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-main)', fontSize: '0.95rem' }}>Legal</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+               <Link href="/privacy" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Privacy</Link>
+               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Terms</Link>
             </div>
          </div>
 
-         <div className="col-12 mt-4" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '2rem', display: 'flex', justifyContent: 'space-between' }}>
-            <span className="mono-text" style={{ color: 'var(--text-muted)' }}>© 2026 ANCLONE.</span>
+         <div className="col-12 mt-4" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '2rem', marginTop: '4rem', display: 'flex', justifyContent: 'space-between' }}>
+            <span className="mono-text" style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>© 2026 AnClone. All rights reserved.</span>
          </div>
       </footer>
    );

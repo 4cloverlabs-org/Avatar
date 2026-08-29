@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const ConnectedStatus = () => (
-  <span style={{ color: 'var(--accent-yellow)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+  <span style={{ color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 500 }}>
     <motion.span
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
@@ -14,7 +14,7 @@ const ConnectedStatus = () => (
         width: '6px',
         height: '6px',
         borderRadius: '50%',
-        backgroundColor: 'var(--accent-yellow)',
+        backgroundColor: '#000000', // Green indicator
         position: 'relative'
       }}
     >
@@ -25,11 +25,11 @@ const ConnectedStatus = () => (
           position: 'absolute',
           top: 0, left: 0, right: 0, bottom: 0,
           borderRadius: '50%',
-          backgroundColor: 'var(--accent-yellow)',
+          backgroundColor: '#000000',
         }}
       />
     </motion.span>
-    CONNECTED
+    Connected
   </span>
 );
 
@@ -39,26 +39,27 @@ const CycleNode = ({ label, index, isActive, isLast, annotation }: { label: stri
         <motion.div
           animate={isActive ? { 
             scale: 1.05, 
-            boxShadow: isLast ? '0 0 25px var(--accent-green-primary)' : '0 0 15px rgba(248,246,240,0.1)', 
-            borderColor: isLast ? 'var(--accent-green-primary)' : 'var(--bg-primary)' 
+            boxShadow: 'var(--shadow-float)', 
+            borderColor: '#1A1A1A' 
           } : { 
             scale: 1, 
-            boxShadow: '0 0 0px rgba(0,0,0,0)', 
-            borderColor: isLast ? 'var(--accent-green-primary)' : (index % 2 !== 0 ? 'var(--bg-primary)' : 'rgba(0,0,0,0)')
+            boxShadow: 'var(--shadow-soft)', 
+            borderColor: 'var(--border-subtle)'
           }}
           transition={{ duration: 0.25, ease: "easeOut" }}
           style={{
             height: isActive ? 80 : 60,
-            background: isLast ? 'var(--accent-green-primary)' : (index % 2 === 0 ? 'var(--bg-primary)' : 'rgba(0,0,0,0)'),
-            color: isLast ? 'var(--bg-primary)' : (index % 2 === 0 ? 'var(--text-main)' : 'var(--bg-primary)'),
-            border: `1px solid ${isLast ? 'var(--accent-green-primary)' : 'var(--bg-primary)'}`,
+            background: isActive ? '#1A1A1A' : '#FFFFFF',
+            color: isActive ? '#FFFFFF' : 'var(--text-main)',
+            border: `1px solid var(--border-subtle)`,
+            borderRadius: 'var(--radius-lg)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
             padding: '0 1rem',
-            fontFamily: 'monospace',
-            fontWeight: 700,
+            fontFamily: 'var(--font-body)',
+            fontWeight: 600,
             zIndex: 2,
             position: 'relative',
             width: '140px',
@@ -83,8 +84,8 @@ const CycleNode = ({ label, index, isActive, isLast, annotation }: { label: stri
                fontWeight: 400
             }}
           >
-              {index === 0 && <span style={{ fontSize: '0.55rem', whiteSpace: 'nowrap' }}>5 morning habits that...</span>}
-              {index === 1 && <span style={{ fontSize: '0.55rem', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>Generating<motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 0.8 }}>_</motion.span></span>}
+              {index === 0 && <span style={{ fontSize: '0.65rem', whiteSpace: 'nowrap' }}>5 morning habits that...</span>}
+              {index === 1 && <span style={{ fontSize: '0.65rem', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>Generating<motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 0.8 }}>_</motion.span></span>}
               {index === 2 && (
                 <div style={{ display: 'flex', gap: '2px', height: '8px', alignItems: 'flex-end', justifyContent: 'center' }}>
                   {[1, 2, 3, 4].map(i => (
@@ -97,14 +98,14 @@ const CycleNode = ({ label, index, isActive, isLast, annotation }: { label: stri
                   ))}
                 </div>
               )}
-              {index === 3 && <span style={{ fontSize: '0.55rem', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px' }}><span>✓</span> Published</span>}
+              {index === 3 && <span style={{ fontSize: '0.65rem', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px' }}><span>✓</span> Published</span>}
           </motion.div>
         </motion.div>
         
         {isActive && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            style={{ position: 'absolute', top: '100%', left: '0', width: '100%', textAlign: 'center', marginTop: '0.5rem', fontSize: '0.65rem', color: 'rgba(248,246,240,0.7)', fontFamily: 'monospace' }}
+            style={{ position: 'absolute', top: '100%', left: '0', width: '100%', textAlign: 'center', marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}
           >
             {annotation}
           </motion.div>
@@ -119,22 +120,22 @@ const CycleDiagram = ({ activeNode }: { activeNode: number }) => {
       
       {/* SVG Track */}
       <svg style={{ position: 'absolute', top: '45px', left: '80px', width: '220px', height: '180px', zIndex: 0, overflow: 'visible' }}>
-        <rect x="0" y="0" width="220" height="180" rx="24" fill="none" stroke="rgba(248,246,240,0.1)" strokeWidth="2" strokeDasharray="4 4" />
+        <rect x="0" y="0" width="220" height="180" rx="32" fill="none" stroke="var(--border-subtle)" strokeWidth="2" strokeDasharray="4 4" />
         
         {/* Animated Active Line */}
         <motion.rect 
-           x="0" y="0" width="220" height="180" rx="24" fill="none" 
-           stroke="var(--accent-green-primary)" strokeWidth="2"
+           x="0" y="0" width="220" height="180" rx="32" fill="none" 
+           stroke="#1A1A1A" strokeWidth="2.5"
            strokeDasharray="800"
            animate={{ strokeDashoffset: [800, 0] }}
            transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
         />
         
         {/* Static Arrowheads */}
-        <polygon points="105,-6 115,0 105,6" fill="var(--accent-green-primary)" />
-        <polygon points="226,85 220,95 214,85" fill="var(--accent-green-primary)" />
-        <polygon points="115,186 105,180 115,174" fill="var(--accent-green-primary)" />
-        <polygon points="-6,95 0,85 6,95" fill="var(--accent-green-primary)" />
+        <polygon points="105,-6 115,0 105,6" fill="#1A1A1A" />
+        <polygon points="226,85 220,95 214,85" fill="#1A1A1A" />
+        <polygon points="115,186 105,180 115,174" fill="#1A1A1A" />
+        <polygon points="-6,95 0,85 6,95" fill="#1A1A1A" />
       </svg>
 
       {/* Node 0: IDEA */}
@@ -166,32 +167,33 @@ const UpcomingPosts = ({ settingsVariants }: { settingsVariants: any }) => (
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true, margin: "-100px" }}
-    style={{ marginTop: '1rem', padding: '1.25rem', border: '1px solid rgba(248, 246, 240, 0.2)', fontFamily: 'monospace', fontSize: '0.8rem' }}
+    className="premium-glass-card"
+    style={{ marginTop: '1rem', padding: '1.5rem' }}
   >
-    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem', color: 'rgba(248, 246, 240, 0.5)', borderBottom: '1px solid rgba(248,246,240,0.1)', paddingBottom: '0.5rem' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem', fontWeight: 500, fontSize: '0.85rem' }}>
       <span>UPCOMING QUEUE</span>
       <span>3 SCHEDULED</span>
     </div>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ color: 'var(--bg-primary)' }}>TODAY, 9:00 AM</span>
+        <span style={{ color: 'var(--text-main)', fontWeight: 500, fontSize: '0.9rem' }}>Today, 9:00 AM</span>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-           <span style={{ color: 'rgba(248, 246, 240, 0.5)', fontSize: '0.7rem' }}>IG, YT, TT</span>
-           <span style={{ color: 'var(--accent-yellow)', fontSize: '0.7rem', width: '70px', textAlign: 'right' }}>GENERATING</span>
+           <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>IG, YT, TT</span>
+           <span style={{ color: '#F59E0B', fontSize: '0.75rem', width: '80px', textAlign: 'right', fontWeight: 600 }}>GENERATING</span>
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ color: 'var(--bg-primary)' }}>WED, 9:00 AM</span>
+        <span style={{ color: 'var(--text-main)', fontWeight: 500, fontSize: '0.9rem' }}>Wed, 9:00 AM</span>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-           <span style={{ color: 'rgba(248, 246, 240, 0.5)', fontSize: '0.7rem' }}>IG, YT, TT</span>
-           <span style={{ color: 'rgba(248, 246, 240, 0.5)', fontSize: '0.7rem', width: '70px', textAlign: 'right' }}>QUEUED</span>
+           <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>IG, YT, TT</span>
+           <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', width: '80px', textAlign: 'right', fontWeight: 600 }}>QUEUED</span>
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ color: 'var(--bg-primary)' }}>FRI, 9:00 AM</span>
+        <span style={{ color: 'var(--text-main)', fontWeight: 500, fontSize: '0.9rem' }}>Fri, 9:00 AM</span>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-           <span style={{ color: 'rgba(248, 246, 240, 0.5)', fontSize: '0.7rem' }}>IG, YT, TT</span>
-           <span style={{ color: 'rgba(248, 246, 240, 0.5)', fontSize: '0.7rem', width: '70px', textAlign: 'right' }}>QUEUED</span>
+           <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>IG, YT, TT</span>
+           <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', width: '80px', textAlign: 'right', fontWeight: 600 }}>QUEUED</span>
         </div>
       </div>
     </div>
@@ -235,18 +237,14 @@ export default function AutopilotSection() {
   };
 
   return (
-    <section className="brutalist-section" style={{ background: 'var(--accent-green-dark)', color: 'var(--bg-primary)', borderBottom: 'none' }}>
+    <section className="editorial-section" style={{ background: '#F0F0F0', position: 'relative' }}>
       <div className="grid-container">
-        <div className="col-12 panel-header" style={{ borderBottom: 'none', marginBottom: '0', color: 'var(--bg-primary)' }}>
-          <span>02</span>
-        </div>
         <div className="col-12 mb-4">
-          <hr className="h-rule" style={{ marginBottom: '1rem', background: 'rgba(248, 246, 240, 0.2)' }} />
-          <h2 className="editorial-h2" style={{ color: 'var(--bg-primary)' }}>AUTOPILOT</h2>
+          <h2 className="editorial-h2" style={{ textAlign: 'center' }}>Autopilot</h2>
         </div>
 
-        <div className="col-7">
-          <p className="mono-text mb-4" style={{ color: 'rgba(248, 246, 240, 0.8)' }}>
+        <div className="col-6">
+          <p className="mono-text mb-4" style={{ color: 'var(--text-main)', fontSize: '1.1rem', lineHeight: '1.6' }}>
             Connect your platforms once. The engine generates and publishes content while you sleep.
           </p>
           
@@ -255,41 +253,36 @@ export default function AutopilotSection() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontFamily: 'monospace', fontSize: '0.85rem' }}
+            className="premium-glass-card"
+            style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem', padding: '1.5rem' }}
           >
-             <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid rgba(248, 246, 240, 0.2)', paddingBottom: '0.75rem' }}>
+             <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                   <span>INSTAGRAM REELS</span>
+                   <span style={{ fontWeight: 600 }}>Instagram Reels</span>
                    <ConnectedStatus />
                 </div>
-                <span style={{ fontSize: '0.65rem', color: 'rgba(248, 246, 240, 0.6)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.ig} min ago</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.ig} min ago</span>
              </motion.div>
              
-             <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid rgba(248, 246, 240, 0.2)', paddingBottom: '0.75rem' }}>
+             <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                   <span>YOUTUBE SHORTS</span>
+                   <span style={{ fontWeight: 600 }}>YouTube Shorts</span>
                    <ConnectedStatus />
                 </div>
-                <span style={{ fontSize: '0.65rem', color: 'rgba(248, 246, 240, 0.6)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.yt} min ago</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.yt} min ago</span>
              </motion.div>
              
-             <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid rgba(248, 246, 240, 0.2)', paddingBottom: '0.75rem' }}>
+             <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                   <span>TIKTOK</span>
+                   <span style={{ fontWeight: 600 }}>TikTok</span>
                    <ConnectedStatus />
                 </div>
-                <span style={{ fontSize: '0.65rem', color: 'rgba(248, 246, 240, 0.6)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.tt} min ago</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.tt} min ago</span>
              </motion.div>
              
-             <motion.div variants={platformVariants} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(248, 246, 240, 0.2)', paddingBottom: '0.75rem' }}>
-                <span>LINKEDIN</span>
-                <span style={{ color: 'rgba(248, 246, 240, 0.4)' }}>OFFLINE</span>
-             </motion.div>
-
-             <motion.div variants={platformVariants} style={{ marginTop: '0.5rem' }}>
-               <span style={{ fontSize: '0.65rem', color: 'rgba(248, 246, 240, 0.6)' }}>
-                 We only request the permissions needed to publish on your behalf. <a href="/privacy#data-sharing" style={{ color: 'var(--accent-green-primary)', textDecoration: 'underline' }}>View details</a>
-               </span>
+             <motion.div variants={platformVariants} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem', alignItems: 'center' }}>
+                <span style={{ fontWeight: 600 }}>LinkedIn</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Offline</span>
              </motion.div>
           </motion.div>
 
@@ -298,33 +291,34 @@ export default function AutopilotSection() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            style={{ marginTop: '2rem', padding: '1.25rem', border: '1px solid rgba(248, 246, 240, 0.2)', fontFamily: 'monospace', fontSize: '0.8rem' }}
+            className="premium-glass-card"
+            style={{ marginTop: '2rem', padding: '1.5rem', fontSize: '0.85rem' }}
           >
-             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span>POSTING SCHEDULE</span>
-                <span style={{ color: 'rgba(248, 246, 240, 0.7)' }}>3X/WEEK, MON/WED/FRI 9AM</span>
+             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <span style={{ fontWeight: 600 }}>Posting Schedule</span>
+                <span style={{ color: 'var(--text-muted)' }}>3x/week, Mon/Wed/Fri 9AM</span>
              </div>
-             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <span>AUTO-PUBLISH</span>
-                <span style={{ color: 'var(--accent-green-primary)' }}>ON</span>
+             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <span style={{ fontWeight: 600 }}>Auto-Publish</span>
+                <span style={{ color: '#000000', fontWeight: 600 }}>ON</span>
              </div>
              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>REVIEW REQUIRED</span>
-                <span style={{ color: 'rgba(248, 246, 240, 0.5)' }}>OFF</span>
+                <span style={{ fontWeight: 600 }}>Review Required</span>
+                <span style={{ color: 'var(--text-muted)' }}>OFF</span>
              </div>
           </motion.div>
 
           <UpcomingPosts settingsVariants={settingsVariants} />
         </div>
 
-        <div className="col-5">
+        <div className="col-6">
           <div style={{ 
             display: 'flex', 
             flexDirection: 'column', 
             alignItems: 'center', 
             justifyContent: 'center', 
             height: '100%', 
-            minHeight: '400px'
+            minHeight: '600px'
           }}>
              <CycleDiagram activeNode={activeNode} />
           </div>

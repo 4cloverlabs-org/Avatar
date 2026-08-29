@@ -57,17 +57,19 @@ export default function TerminalLog() {
     <div 
       style={{ 
         flex: 1,
-        backgroundColor: 'var(--bg-secondary)', 
+        backgroundColor: '#FFFFFF', 
         color: 'var(--text-main)', 
         fontFamily: 'monospace',
-        padding: '1.5rem',
+        padding: '2rem',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',
         overflow: 'hidden',
-        borderRight: '1px solid var(--border-color)',
-        fontSize: '0.8rem',
-        textTransform: 'lowercase'
+        borderRight: '1px solid var(--border-subtle)',
+        fontSize: '0.85rem',
+        textTransform: 'lowercase',
+        borderTopLeftRadius: 'var(--radius-lg)',
+        borderBottomLeftRadius: 'var(--radius-lg)'
       }}
     >
       <AnimatePresence>
@@ -82,14 +84,14 @@ export default function TerminalLog() {
             {lines.slice(0, currentLineIndex).map((line, idx) => {
               const isLastLine = idx === lines.length - 1;
               return (
-                <div key={idx} style={{ color: isLastLine ? 'var(--accent)' : 'inherit' }}>
+                <div key={idx} style={{ color: isLastLine ? '#000000' : 'var(--text-muted)' }}>
                   {'> '}{line}
                 </div>
               );
             })}
             
             {currentLineIndex < lines.length && (
-              <div style={{ color: currentLineIndex === lines.length - 1 ? 'var(--accent)' : 'inherit', display: 'flex', alignItems: 'center' }}>
+              <div style={{ color: currentLineIndex === lines.length - 1 ? '#000000' : 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
                 {'> '}{displayedText}
                 <motion.span 
                   animate={{ opacity: [1, 0] }}

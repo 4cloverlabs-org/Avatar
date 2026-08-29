@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function MeetAiVersion() {
   const [sliderPosition, setSliderPosition] = useState(50);
@@ -23,28 +24,32 @@ export default function MeetAiVersion() {
   };
 
   return (
-    <section id="product" className="section">
-      <motion.h2 
-        className="section-title"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-      >
-        Meet the version of you that<br/>never needs a camera.
-      </motion.h2>
-      <motion.p 
-        className="section-subtitle"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: 0.1 }}
-      >
-        Record yourself once. We turn your appearance and voice into a reusable digital identity that can create videos whenever you need them.
-      </motion.p>
+    <section id="product" className="editorial-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className="grid-container" style={{ width: '100%' }}>
+         <div className="col-12" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <motion.h2 
+              className="editorial-h2"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              Meet the version of you that<br/>never needs a camera.
+            </motion.h2>
+            <motion.p 
+              className="mono-text"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '1.5rem auto 0', lineHeight: 1.6 }}
+            >
+              Record yourself once. We turn your appearance and voice into a reusable digital identity that can create videos whenever you need them.
+            </motion.p>
+         </div>
+      </div>
       
       <motion.div 
         ref={containerRef}
-        className="comparison-container"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -52,13 +57,14 @@ export default function MeetAiVersion() {
         style={{
           position: 'relative',
           width: '100%',
-          maxWidth: '800px',
+          maxWidth: '900px',
           aspectRatio: '16/9',
           borderRadius: '24px',
           overflow: 'hidden',
           cursor: 'ew-resize',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-          border: '1px solid #E2DCC9'
+          boxShadow: 'var(--shadow-medium)',
+          border: '1px solid var(--border-subtle)',
+          margin: '0 1rem'
         }}
         onMouseMove={(e) => {
           if (e.buttons === 1) handleDrag(e);
@@ -67,7 +73,7 @@ export default function MeetAiVersion() {
         onClick={handleDrag}
       >
         {/* Real Video Layer */}
-        <div style={{ position: 'absolute', inset: 0, background: '#E4DCC5', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', padding: '4rem', color: '#63685A', fontSize: '2rem' }}>
+        <div style={{ position: 'absolute', inset: 0, background: '#E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', padding: '4rem', color: 'var(--text-muted)', fontSize: '2.5rem', fontWeight: 600, fontFamily: 'var(--font-heading)' }}>
            Real You
         </div>
         
@@ -76,17 +82,19 @@ export default function MeetAiVersion() {
           position: 'absolute', 
           inset: 0, 
           width: `${sliderPosition}%`, 
-          background: 'linear-gradient(135deg, #ffffff, #000)', 
+          background: 'linear-gradient(135deg, #000000, #000000)', 
           overflow: 'hidden',
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'flex-start', 
           padding: '4rem', 
-          color: 'var(--brand-green)', 
-          fontSize: '2rem',
-          borderRight: '2px solid #1E2119'
+          color: '#FFFFFF', 
+          fontSize: '2.5rem',
+          fontWeight: 600,
+          fontFamily: 'var(--font-heading)',
+          borderRight: '1px solid rgba(255,255,255,0.5)'
         }}>
-           <div style={{ width: '800px' }}>AI Version</div>
+           <div style={{ width: '900px' }}>AI Version</div>
         </div>
 
         {/* Slider Handle */}
@@ -95,24 +103,29 @@ export default function MeetAiVersion() {
           top: 0,
           bottom: 0,
           left: `${sliderPosition}%`,
-          width: '4px',
-          background: '#1E2119',
+          width: '2px',
+          background: '#FFFFFF',
           transform: 'translateX(-50%)',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          boxShadow: '0 0 15px rgba(0,0,0,0.2)'
         }}>
           <div style={{
-            width: '40px',
-            height: '40px',
+            width: '48px',
+            height: '48px',
             borderRadius: '50%',
-            background: '#1E2119',
+            background: '#FFFFFF',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 10px rgba(0,0,0,0.5)'
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            border: '1px solid var(--border-subtle)'
           }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1E2119" strokeWidth="2"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3"/></svg>
+            <div style={{ display: 'flex', color: 'var(--text-muted)' }}>
+               <ChevronLeft size={20} style={{ marginRight: '-4px' }} />
+               <ChevronRight size={20} style={{ marginLeft: '-4px' }} />
+            </div>
           </div>
         </div>
       </motion.div>

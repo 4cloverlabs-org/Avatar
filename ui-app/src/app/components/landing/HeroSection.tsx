@@ -37,13 +37,15 @@ export default function HeroSection() {
           grid-column: span 5;
           display: flex;
           flex-direction: column;
-          justify-content: flex-end;
+          justify-content: center;
           padding-bottom: 2rem;
           position: relative;
         }
         .hero-grid-item-video {
           grid-column: span 7;
           grid-row: span 2;
+          display: flex;
+          align-items: center;
         }
         .hero-grid-item-bottom {
           grid-column: span 5;
@@ -56,11 +58,11 @@ export default function HeroSection() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          margin-top: 2rem;
+          margin-top: 4rem;
         }
         
         @media (max-width: 1024px) {
-          .hero-grid-item-top { grid-column: span 8; order: 1; padding-bottom: 1rem; }
+          .hero-grid-item-top { grid-column: span 8; order: 1; padding-bottom: 1rem; justify-content: flex-end; }
           .hero-grid-item-video { grid-column: span 8; grid-row: auto; order: 2; margin-bottom: 2rem; }
           .hero-grid-item-bottom { grid-column: span 8; order: 3; }
           .hero-scroll-indicator { grid-column: span 8; order: 4; }
@@ -72,7 +74,7 @@ export default function HeroSection() {
           }
         }
       `}</style>
-      <section className="brutalist-section grid-container" style={{ minHeight: '80vh', paddingTop: '6rem', position: 'relative' }}>
+      <section className="editorial-section grid-container" style={{ minHeight: '85vh', position: 'relative' }}>
 
         {/* TOP TEXT AREA */}
         <div className="hero-grid-item-top">
@@ -81,62 +83,57 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            CREATE<br />YOUR<br />AI VERSION.
+            Create Your<br />AI Version.
           </motion.h1>
 
-          <p className="mono-text mb-2" style={{ color: 'var(--text-muted)' }}>
-            A digital version of you<br />that creates content on autopilot.
+          <p className="mono-text mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
+            A digital twin that creates<br />content on autopilot.
           </p>
         </div>
 
         {/* VIDEO PANEL */}
         <div className="hero-grid-item-video">
           <motion.div
-            className="dashboard-placeholder"
+            className="product-island w-100"
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            style={{ height: '100%', minHeight: '500px' }}
+            style={{ width: '100%', padding: '0.5rem', background: '#fff' }}
           >
-            <div className="dashboard-bar">
-              <span>AVATAR ENGINE</span>
-            </div>
-            <div className="dashboard-content card-dark" style={{ border: 'none', flexDirection: 'column', padding: '2rem' }}>
-              <div style={{ position: 'relative', flex: 1, width: '100%', border: '1px solid var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem', minHeight: '200px', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'var(--accent-yellow)', color: 'var(--text-main)', padding: '2px 8px', fontSize: '0.65rem', fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center', zIndex: 10 }}>
-                  <motion.span
-                    animate={{ opacity: [1, 0.2, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    style={{ display: 'inline-block', width: '6px', height: '6px', background: 'var(--text-main)', borderRadius: '50%', marginRight: '6px' }}
-                  />
-                  <div style={{ position: 'relative', display: 'flex', alignItems: 'center', minWidth: '70px', height: '1em' }}>
-                    <AnimatePresence mode="wait">
-                      <motion.span
-                        key={pipelineStates[pipelineIndex]}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        style={{ position: 'absolute' }}
-                      >
-                        {pipelineStates[pipelineIndex]}
-                      </motion.span>
-                    </AnimatePresence>
-                  </div>
+            <div style={{ position: 'relative', width: '100%', borderRadius: 'var(--radius-lg)', overflow: 'hidden', minHeight: '450px', backgroundColor: '#f0f0f0' }}>
+              <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(10px)', color: 'var(--text-main)', padding: '6px 12px', fontSize: '0.7rem', fontWeight: '600', borderRadius: '100px', display: 'flex', alignItems: 'center', zIndex: 10, boxShadow: 'var(--shadow-soft)' }}>
+                <motion.span
+                  animate={{ opacity: [1, 0.2, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  style={{ display: 'inline-block', width: '8px', height: '8px', background: '#1A1A1A', borderRadius: '50%', marginRight: '8px' }}
+                />
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', minWidth: '70px', height: '1em' }}>
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={pipelineStates[pipelineIndex]}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15 }}
+                      style={{ position: 'absolute' }}
+                    >
+                      {pipelineStates[pipelineIndex]}
+                    </motion.span>
+                  </AnimatePresence>
                 </div>
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                >
-                  <source src="/videos/hero.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
               </div>
-
-              <div style={{ width: '100%', minHeight: '1.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '450px' }}
+              >
+                <source src="/videos/hero.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              
+              <div className="glass-floating-element" style={{ bottom: '20px', left: '20px', right: '20px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={topics[topicIndex]}
@@ -145,31 +142,13 @@ export default function HeroSection() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                     className="mono-text"
-                    style={{ fontSize: '0.75rem', color: 'rgba(248, 246, 240, 0.7)', textAlign: 'center', margin: 0, width: '100%' }}
+                    style={{ fontSize: '0.8rem', color: 'var(--text-main)', margin: 0, fontWeight: 500 }}
                   >
-                    LIVE PREVIEW — SCRIPT GENERATED FROM "{topics[topicIndex]}"
+                    Generating script: "{topics[topicIndex]}"...
                   </motion.p>
                 </AnimatePresence>
-              </div>
-
-              <div style={{ width: '100%' }}>
-                <div className="flex-between mb-1">
-                  <span className="mono-text" style={{ fontSize: '0.75rem' }}>LIP SYNC ACCURACY</span>
-                  <span className="mono-text" style={{ fontSize: '0.75rem' }}>98%</span>
-                </div>
-                <div className="progress-bar-container mb-2" style={{ borderColor: 'var(--bg-primary)', height: '10px' }}>
-                  <div className="progress-bar-fill" style={{ background: 'var(--accent)', width: '98%' }}></div>
-                </div>
-
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                  <div style={{ flex: 1, border: '1px solid var(--bg-primary)', padding: '0.75rem' }}>
-                    <div className="mono-text" style={{ fontSize: '0.65rem', color: 'rgba(248, 246, 240, 0.7)', marginBottom: '0.25rem' }}>RENDER TIME</div>
-                    <div className="mono-text" style={{ fontSize: '1rem' }}>45s</div>
-                  </div>
-                  <div style={{ flex: 1, border: '1px solid var(--bg-primary)', padding: '0.75rem' }}>
-                    <div className="mono-text" style={{ fontSize: '0.65rem', color: 'rgba(248, 246, 240, 0.7)', marginBottom: '0.25rem' }}>VOICE MATCH</div>
-                    <div className="mono-text" style={{ fontSize: '1rem' }}>96%</div>
-                  </div>
+                <div className="progress-bar-container" style={{ height: '4px' }}>
+                  <div className="progress-bar-fill" style={{ width: '98%' }}></div>
                 </div>
               </div>
             </div>
@@ -178,44 +157,41 @@ export default function HeroSection() {
 
         {/* BOTTOM TEXT AREA */}
         <div className="hero-grid-item-bottom">
-          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
             <a href="/dashboard" className="btn-primary">
-              CREATE AVATAR
+              Create Avatar
             </a>
-            <button className="btn-secondary" style={{ fontFamily: 'monospace' }}>
-              WATCH DEMO
+            <button className="btn-secondary">
+              Watch Demo
             </button>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex' }}>
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: 'var(--bg-secondary)', border: '2px solid var(--bg-primary)', marginLeft: i === 1 ? '0' : '-10px', overflow: 'hidden', zIndex: 10 - i }}>
+                <div key={i} style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#fff', border: '2px solid #FAFAF8', marginLeft: i === 1 ? '0' : '-12px', overflow: 'hidden', zIndex: 10 - i }}>
                   <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
               ))}
             </div>
-            <span className="mono-text" style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>Choose from 50+ avatar styles</span>
+            <span className="mono-text" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Join 1,200+ creators</span>
           </div>
 
           <div>
-            <p className="mono-text" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
-              [ 1,200+ CREATORS GENERATING CONTENT DAILY ]
-            </p>
-            <p className="mono-text" style={{ fontSize: '0.7rem', color: 'var(--text-muted)', opacity: 0.8, margin: 0 }}>
-              [ NO CREDIT CARD REQUIRED ]
+            <p className="mono-text" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', opacity: 0.8, margin: 0 }}>
+              No credit card required. Free 14-day trial.
             </p>
           </div>
         </div>
 
         {/* SCROLL INDICATOR */}
         <div className="hero-scroll-indicator">
-          <span className="mono-text" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem', letterSpacing: '0.1em' }}>[ SCROLL ]</span>
+          <span className="mono-text" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Scroll</span>
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-muted)' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-muted)' }}>
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </motion.div>
