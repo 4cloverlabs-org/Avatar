@@ -33,107 +33,193 @@ export default function HeroSection() {
   return (
     <>
       <style>{`
-        .hero-grid-item-top {
-          grid-column: span 5;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          padding-bottom: 2rem;
+        .hero-layout {
+          display: grid;
+          grid-template-columns: repeat(12, 1fr);
+          gap: 3rem;
+          align-items: center;
+          padding: 8rem 2rem 4rem;
+          max-width: 1280px;
+          margin: 0 auto;
           position: relative;
-        }
-        .hero-grid-item-video {
-          grid-column: span 7;
-          grid-row: span 2;
-          display: flex;
-          align-items: center;
-        }
-        .hero-grid-item-bottom {
-          grid-column: span 5;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
-        }
-        .hero-scroll-indicator {
-          grid-column: span 12;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-top: 4rem;
-        }
-        
-        @media (max-width: 1024px) {
-          .hero-grid-item-top { grid-column: span 8; order: 1; padding-bottom: 1rem; justify-content: flex-end; }
-          .hero-grid-item-video { grid-column: span 8; grid-row: auto; order: 2; margin-bottom: 2rem; }
-          .hero-grid-item-bottom { grid-column: span 8; order: 3; }
-          .hero-scroll-indicator { grid-column: span 8; order: 4; }
+          z-index: 1;
+          min-height: 85vh;
         }
 
-        @media (max-width: 768px) {
-          .hero-grid-item-top, .hero-grid-item-video, .hero-grid-item-bottom, .hero-scroll-indicator {
-            grid-column: span 4 !important;
+        .hero-content-left {
+          grid-column: span 5;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          text-align: left;
+        }
+
+        .hero-content-right {
+          grid-column: span 7;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .avatar-glow {
+          position: absolute;
+          top: 40%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 140%;
+          height: 140%;
+          background: 
+            radial-gradient(
+              ellipse 60% 55% at 50% 20%,
+              rgba(205, 230, 255, 0.9),
+              transparent 70%
+            ),
+            radial-gradient(
+              ellipse 45% 40% at 20% 45%,
+              rgba(225, 215, 255, 0.7),
+              transparent 70%
+            ),
+            radial-gradient(
+              ellipse 45% 40% at 80% 45%,
+              rgba(215, 245, 245, 0.6),
+              transparent 70%
+            );
+          z-index: -1;
+          pointer-events: none;
+          filter: blur(60px);
+          opacity: 0.8;
+        }
+
+        .product-island {
+          z-index: 2;
+          position: relative;
+        }
+
+        @media (max-width: 1024px) {
+          .hero-layout {
+            grid-template-columns: 1fr;
+            text-align: center;
+            padding-top: 6rem;
+            gap: 4rem;
+          }
+          .hero-content-left {
+            grid-column: span 1;
+            align-items: center;
+            text-align: center;
+          }
+          .hero-content-right {
+            grid-column: span 1;
           }
         }
       `}</style>
-      <section className="editorial-section grid-container" style={{ minHeight: '85vh', position: 'relative' }}>
-
-        {/* TOP TEXT AREA */}
-        <div className="hero-grid-item-top">
-          <motion.h1
-            className="editorial-h1 mb-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+      
+      <div 
+        className="hero-wrapper"
+        style={{
+          width: '100%',
+          backgroundImage: 'radial-gradient(circle at -10% -10%, rgba(205, 180, 255, 0.5), transparent 50%), radial-gradient(circle at -10% 40%, rgba(190, 235, 255, 0.5), transparent 60%)',
+          backgroundRepeat: 'no-repeat',
+          overflow: 'hidden'
+        }}
+      >
+        <section className="hero-layout">
+          <div className="hero-content-left">
+            <motion.h1
+              className="editorial-h1 mb-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
           >
-            Create Your<br />AI Version.
+            Create videos with a face that feels real.
           </motion.h1>
 
-          <p className="mono-text mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
-            A digital twin that creates<br />content on autopilot.
-          </p>
+          <motion.p
+            className="mono-text mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            style={{ fontSize: '1.1rem', lineHeight: '1.6', maxWidth: '500px' }}
+          >
+            A digital twin that creates content on autopilot. No studio required.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}
+          >
+            <a href="/dashboard" className="btn-primary">
+              Create Avatar
+            </a>
+            <button className="btn-secondary">
+              Watch Demo
+            </button>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '2.5rem' }}
+          >
+            <div style={{ display: 'flex' }}>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#fff', border: '2px solid #FAFAF8', marginLeft: i === 1 ? '0' : '-12px', overflow: 'hidden', zIndex: 10 - i }}>
+                  <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <span className="mono-text" style={{ fontSize: '0.8rem', color: 'var(--text-main)', fontWeight: 600 }}>Join 1,200+ creators</span>
+              <span className="mono-text" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>No credit card required</span>
+            </div>
+          </motion.div>
         </div>
 
-        {/* VIDEO PANEL */}
-        <div className="hero-grid-item-video">
+        <div className="hero-content-right">
           <motion.div
-            className="product-island w-100"
-            initial={{ opacity: 0, scale: 0.98 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            style={{ width: '100%', padding: '0.5rem', background: '#fff' }}
+            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
           >
-            <div style={{ position: 'relative', width: '100%', borderRadius: 'var(--radius-lg)', overflow: 'hidden', minHeight: '450px', backgroundColor: '#f0f0f0' }}>
-              <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(10px)', color: 'var(--text-main)', padding: '6px 12px', fontSize: '0.7rem', fontWeight: '600', borderRadius: '100px', display: 'flex', alignItems: 'center', zIndex: 10, boxShadow: 'var(--shadow-soft)' }}>
-                <motion.span
-                  animate={{ opacity: [1, 0.2, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  style={{ display: 'inline-block', width: '8px', height: '8px', background: '#1A1A1A', borderRadius: '50%', marginRight: '8px' }}
-                />
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', minWidth: '70px', height: '1em' }}>
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={pipelineStates[pipelineIndex]}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.15 }}
-                      style={{ position: 'absolute' }}
-                    >
-                      {pipelineStates[pipelineIndex]}
-                    </motion.span>
-                  </AnimatePresence>
+            <div className="avatar-glow"></div>
+            <div className="product-island" style={{ padding: '0.5rem', background: 'rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.6)' }}>
+              <div style={{ position: 'relative', width: '100%', borderRadius: 'var(--radius-lg)', overflow: 'hidden', minHeight: '450px', backgroundColor: '#fff', border: '1px solid var(--border-subtle)' }}>
+                <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(10px)', color: 'var(--text-main)', padding: '6px 12px', fontSize: '0.7rem', fontWeight: '600', borderRadius: '100px', display: 'flex', alignItems: 'center', zIndex: 10, boxShadow: 'var(--shadow-soft)' }}>
+                  <motion.span
+                    animate={{ opacity: [1, 0.2, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    style={{ display: 'inline-block', width: '8px', height: '8px', background: '#1A1A1A', borderRadius: '50%', marginRight: '8px' }}
+                  />
+                  <div style={{ position: 'relative', display: 'flex', alignItems: 'center', minWidth: '70px', height: '1em' }}>
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={pipelineStates[pipelineIndex]}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
+                        style={{ position: 'absolute' }}
+                      >
+                        {pipelineStates[pipelineIndex]}
+                      </motion.span>
+                    </AnimatePresence>
+                  </div>
                 </div>
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '500px', display: 'block' }}
+                >
+                  <source src="/videos/hero.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
               </div>
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '450px' }}
-              >
-                <source src="/videos/hero.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              
-              <div className="glass-floating-element" style={{ bottom: '20px', left: '20px', right: '20px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+
+              <div className="glass-floating-element" style={{ position: 'relative', marginTop: '0.5rem', bottom: 'auto', left: 'auto', transform: 'none', width: '100%', maxWidth: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.9)' }}>
                 <AnimatePresence mode="wait">
                   <motion.p
                     key={topics[topicIndex]}
@@ -142,62 +228,20 @@ export default function HeroSection() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                     className="mono-text"
-                    style={{ fontSize: '0.8rem', color: 'var(--text-main)', margin: 0, fontWeight: 500 }}
+                    style={{ fontSize: '0.85rem', color: 'var(--text-main)', margin: 0, fontWeight: 500, textAlign: 'center' }}
                   >
                     Generating script: "{topics[topicIndex]}"...
                   </motion.p>
                 </AnimatePresence>
                 <div className="progress-bar-container" style={{ height: '4px' }}>
-                  <div className="progress-bar-fill" style={{ width: '98%' }}></div>
+                  <div className="progress-bar-fill" style={{ width: '98%', background: 'var(--text-main)' }}></div>
                 </div>
               </div>
             </div>
           </motion.div>
         </div>
-
-        {/* BOTTOM TEXT AREA */}
-        <div className="hero-grid-item-bottom">
-          <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-            <a href="/dashboard" className="btn-primary">
-              Create Avatar
-            </a>
-            <button className="btn-secondary">
-              Watch Demo
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-            <div style={{ display: 'flex' }}>
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#fff', border: '2px solid #FAFAF8', marginLeft: i === 1 ? '0' : '-12px', overflow: 'hidden', zIndex: 10 - i }}>
-                  <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-              ))}
-            </div>
-            <span className="mono-text" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Join 1,200+ creators</span>
-          </div>
-
-          <div>
-            <p className="mono-text" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', opacity: 0.8, margin: 0 }}>
-              No credit card required. Free 14-day trial.
-            </p>
-          </div>
-        </div>
-
-        {/* SCROLL INDICATOR */}
-        <div className="hero-scroll-indicator">
-          <span className="mono-text" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Scroll</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-muted)' }}>
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </motion.div>
-        </div>
-
       </section>
+      </div>
     </>
   );
 }

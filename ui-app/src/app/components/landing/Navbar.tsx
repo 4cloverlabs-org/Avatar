@@ -23,33 +23,46 @@ export default function Navbar() {
     >
       <nav 
         style={{
-          background: 'rgba(255, 255, 255, 0.8)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          border: '1px solid var(--border-subtle)',
+          background: 'rgba(255, 255, 255, 0.02)',
+          backdropFilter: 'blur(80px)',
+          WebkitBackdropFilter: 'blur(80px)',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
           borderRadius: '100px',
           padding: '0.5rem 0.5rem 0.5rem 1.5rem',
           display: 'flex',
           alignItems: 'center',
-          gap: '2.5rem',
+          justifyContent: 'space-between',
+          width: '90%',
+          maxWidth: '1200px',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05)',
           pointerEvents: 'auto'
         }}
       >
-        <Link href="/" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '1.25rem', fontWeight: 700, fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', color: 'var(--text-main)', fontSize: '1.25rem', fontWeight: 600, fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, fill: 'var(--text-main)', stroke: 'none' }}>
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" fill="none" />
+          </svg>
           AnClone
         </Link>
 
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <Link href="#how-it-works" style={{ textDecoration: 'none', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500, transition: 'color 0.2s' }}>How It Works</Link>
-          <Link href="#pricing" style={{ textDecoration: 'none', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500, transition: 'color 0.2s' }}>Pricing</Link>
-          <Link href="#faq" style={{ textDecoration: 'none', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500, transition: 'color 0.2s' }}>FAQ</Link>
+        <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+          <Link href="#features" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            Features <span style={{ fontSize: '0.7em', marginTop: '2px', opacity: 0.7 }}>⌄</span>
+          </Link>
+          <Link href="#solutions" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Solutions</Link>
+          <Link href="#use-cases" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Use cases</Link>
+          <Link href="#pricing" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Pricing</Link>
+          <Link href="#resources" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            Resources <span style={{ fontSize: '0.7em', marginTop: '2px', opacity: 0.7 }}>⌄</span>
+          </Link>
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <Link href="/login" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1rem', borderRadius: '100px', transition: 'background-color 0.2s' }} className="hover-bg-subtle">Log In</Link>
-          <Link href="/login" style={{ textDecoration: 'none', background: 'var(--text-main)', color: '#FFFFFF', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1.25rem', borderRadius: '100px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
-            Start Free
+          <Link href="/login" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1rem', borderRadius: '100px', transition: 'background-color 0.2s' }} className="hover-bg-subtle">
+            Log in
+          </Link>
+          <Link href="/signup" style={{ textDecoration: 'none', background: 'transparent', color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1.25rem', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.15)', transition: 'background-color 0.2s' }}>
+            Sign up
           </Link>
         </div>
       </nav>
