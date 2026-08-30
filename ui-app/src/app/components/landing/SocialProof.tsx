@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function SocialProof() {
   return (
-    <section className="editorial-section" style={{ padding: '4rem 0', borderTop: '1px solid var(--border-subtle)' }}>
+    <section className="editorial-section" style={{ padding: '4rem 0' }}>
       <div style={{ display: 'flex', justifyContent: 'center', gap: '4rem', flexWrap: 'wrap' }}>
         <span className="mono-text" style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>
           1,200+ Creators

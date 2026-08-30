@@ -1,329 +1,439 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
+import { Instagram, Youtube } from 'lucide-react';
 
-const ConnectedStatus = () => (
-  <span style={{ color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 500 }}>
-    <motion.span
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ type: 'spring', delay: 0.5 }}
-      style={{
-        display: 'inline-block',
-        width: '6px',
-        height: '6px',
-        borderRadius: '50%',
-        backgroundColor: '#000000', // Green indicator
-        position: 'relative'
-      }}
-    >
-      <motion.span
-        animate={{ scale: [1, 2.5], opacity: [0.6, 0] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
-        style={{
-          position: 'absolute',
-          top: 0, left: 0, right: 0, bottom: 0,
-          borderRadius: '50%',
-          backgroundColor: '#000000',
-        }}
-      />
-    </motion.span>
-    Connected
-  </span>
+const TikTokIcon = ({ size = 24, color = "currentColor", ...props }: any) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a3 3 0 0 1-3 3v5a4 4 0 0 1-4-4Z" />
+  </svg>
 );
 
-const CycleNode = ({ label, index, isActive, isLast, annotation }: { label: string, index: number, isActive: boolean, isLast?: boolean, annotation: string }) => {
-  return (
-    <div style={{ position: 'relative' }}>
-        <motion.div
-          animate={isActive ? { 
-            scale: 1.05, 
-            boxShadow: 'var(--shadow-float)', 
-            borderColor: '#1A1A1A' 
-          } : { 
-            scale: 1, 
-            boxShadow: 'var(--shadow-soft)', 
-            borderColor: 'var(--border-subtle)'
-          }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-          style={{
-            height: isActive ? 80 : 60,
-            background: isActive ? '#1A1A1A' : '#FFFFFF',
-            color: isActive ? '#FFFFFF' : 'var(--text-main)',
-            border: `1px solid var(--border-subtle)`,
+const ConnectedStatus = () => (
+   <span style={{ color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 500 }}>
+      <motion.span
+         initial={{ scale: 0 }}
+         animate={{ scale: 1 }}
+         transition={{ type: 'spring', delay: 0.5 }}
+         style={{
+            display: 'inline-block',
+            width: '6px',
+            height: '6px',
+            borderRadius: '50%',
+            backgroundColor: '#000000',
+            position: 'relative'
+         }}
+      >
+         <motion.span
+            animate={{ scale: [1, 2.5], opacity: [0.6, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+            style={{
+               position: 'absolute',
+               top: 0, left: 0, right: 0, bottom: 0,
+               borderRadius: '50%',
+               backgroundColor: '#000000',
+            }}
+         />
+      </motion.span>
+      Connected
+   </span>
+);
+
+const PipelineCard = ({ label, desc, activeDesc, isActive }: { label: string, desc: string, activeDesc: string, isActive: boolean }) => {
+   const isPublish = label === 'PUBLISH';
+   const isVideo = label === 'VIDEO';
+
+   return (
+      <motion.div
+         animate={{
+            backgroundColor: isPublish && isActive ? '#000000' : '#FFFFFF',
+            color: isPublish && isActive ? '#FFFFFF' : 'var(--text-main)',
+            borderColor: isActive ? (isPublish ? '#000000' : '#1A1A1A') : 'var(--border-subtle)',
+            scale: isActive ? 1.02 : 1,
+            boxShadow: isActive && !isPublish ? 'var(--shadow-float)' : 'none',
+         }}
+         transition={{ duration: 0.3 }}
+         style={{
+            height: '72px',
             borderRadius: 'var(--radius-lg)',
+            border: '1px solid var(--border-subtle)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            alignItems: 'center',
             padding: '0 1rem',
-            fontFamily: 'var(--font-body)',
-            fontWeight: 600,
-            zIndex: 2,
             position: 'relative',
-            width: '140px',
-            textAlign: 'center',
-            overflow: 'hidden'
-          }}
-        >
-          <div style={{ transform: isActive ? 'translateY(-8px)' : 'translateY(0)', transition: 'transform 0.25s ease-out' }}>
-            {label}
-          </div>
-          
-          <motion.div
-            initial={false}
-            animate={{ opacity: isActive ? 1 : 0 }}
-            transition={{ duration: 0.15, delay: isActive ? 0.1 : 0 }}
-            style={{
-               position: 'absolute',
-               bottom: '12px',
-               width: '100%',
-               display: 'flex',
-               justifyContent: 'center',
-               fontWeight: 400
-            }}
-          >
-              {index === 0 && <span style={{ fontSize: '0.65rem', whiteSpace: 'nowrap' }}>5 morning habits that...</span>}
-              {index === 1 && <span style={{ fontSize: '0.65rem', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>Generating<motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 0.8 }}>_</motion.span></span>}
-              {index === 2 && (
-                <div style={{ display: 'flex', gap: '2px', height: '8px', alignItems: 'flex-end', justifyContent: 'center' }}>
-                  {[1, 2, 3, 4].map(i => (
-                    <motion.div 
-                      key={i}
-                      animate={{ height: ['3px', '8px', '3px'] }}
-                      transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.1 }}
-                      style={{ width: '2px', background: 'currentColor', borderRadius: '1px' }}
-                    />
-                  ))}
-                </div>
-              )}
-              {index === 3 && <span style={{ fontSize: '0.65rem', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px' }}><span>✓</span> Published</span>}
-          </motion.div>
-        </motion.div>
-        
-        {isActive && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            style={{ position: 'absolute', top: '100%', left: '0', width: '100%', textAlign: 'center', marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}
-          >
-            {annotation}
-          </motion.div>
-        )}
-    </div>
-  );
-};
+            overflow: 'hidden',
+            width: '100%',
+            minWidth: '140px',
+            boxSizing: 'border-box'
+         }}
+      >
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.05em', color: isPublish && isActive ? '#FFFFFF' : (isActive ? '#000000' : 'var(--text-muted)') }}>
+               {label}
+            </span>
+            {isActive && !isPublish && (
+               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ display: 'flex', alignItems: 'center' }}>
+                  {isVideo ? (
+                     <div style={{ width: '40px', height: '4px', backgroundColor: 'var(--border-subtle)', borderRadius: '2px', overflow: 'hidden' }}>
+                        <motion.div animate={{ width: ['0%', '72%'] }} transition={{ duration: 1.2, ease: 'easeOut' }} style={{ height: '100%', backgroundColor: '#000000' }} />
+                     </div>
+                  ) : (
+                     <div style={{ display: 'flex', gap: '3px' }}>
+                        <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0 }} style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#000000' }} />
+                        <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.1 }} style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#000000' }} />
+                        <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }} style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#000000' }} />
+                     </div>
+                  )}
+               </motion.div>
+            )}
+         </div>
+         <div style={{ fontSize: '0.75rem', fontWeight: 500, marginTop: '0.3rem', color: isPublish && isActive ? '#FFFFFF' : (isActive ? '#000000' : 'var(--text-main)'), display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>{isActive ? activeDesc : desc}</span>
+            {isPublish && isActive && (
+               <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  style={{ display: 'flex', gap: '0.5rem', fontSize: '0.65rem', opacity: 0.9, alignItems: 'center' }}
+               >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}><Instagram size={10} /> ✓</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}><Youtube size={10} /> ✓</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}><TikTokIcon size={10} /> ✓</span>
+               </motion.div>
+            )}
+         </div>
+      </motion.div>
+   )
+}
 
-const CycleDiagram = ({ activeNode }: { activeNode: number }) => {
-  return (
-    <div style={{ position: 'relative', width: '380px', height: '320px', margin: '0 auto', marginTop: '2rem' }}>
-      
-      {/* SVG Track */}
-      <svg style={{ position: 'absolute', top: '45px', left: '80px', width: '220px', height: '180px', zIndex: 0, overflow: 'visible' }}>
-        <rect x="0" y="0" width="220" height="180" rx="32" fill="none" stroke="var(--border-subtle)" strokeWidth="2" strokeDasharray="4 4" />
-        
-        {/* Animated Active Line */}
-        <motion.rect 
-           x="0" y="0" width="220" height="180" rx="32" fill="none" 
-           stroke="#1A1A1A" strokeWidth="2.5"
-           strokeDasharray="800"
-           animate={{ strokeDashoffset: [800, 0] }}
-           transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-        />
-        
-        {/* Static Arrowheads */}
-        <polygon points="105,-6 115,0 105,6" fill="#1A1A1A" />
-        <polygon points="226,85 220,95 214,85" fill="#1A1A1A" />
-        <polygon points="115,186 105,180 115,174" fill="#1A1A1A" />
-        <polygon points="-6,95 0,85 6,95" fill="#1A1A1A" />
-      </svg>
+const AIEnginePipeline = () => {
+   const [activeStage, setActiveStage] = useState<number | null>(0);
+   const dotProgress = useMotionValue(0);
+   const dotOpacity = useMotionValue(1);
+   const [isMobile, setIsMobile] = useState(false);
 
-      {/* Node 0: IDEA */}
-      <div style={{ position: 'absolute', top: '15px', left: '10px', width: '140px', display: 'flex', justifyContent: 'center' }}>
-        <CycleNode label="IDEA" index={0} isActive={activeNode === 0} annotation="Niche + topic input" />
+   useEffect(() => {
+      const checkMobile = () => setIsMobile(window.innerWidth < 768);
+      checkMobile();
+      window.addEventListener('resize', checkMobile);
+      return () => window.removeEventListener('resize', checkMobile);
+   }, []);
+
+   useEffect(() => {
+      let raf: number;
+      const start = Date.now();
+
+      const loop = () => {
+         const t = (Date.now() - start) % 8000;
+
+         let newStage: number | null = null;
+         if (t < 1500) newStage = 0;
+         else if (t < 2000) newStage = null;
+         else if (t < 3500) newStage = 1;
+         else if (t < 4000) newStage = null;
+         else if (t < 5500) newStage = 2;
+         else if (t < 6000) newStage = null;
+         else if (t < 7500) newStage = 3;
+         else newStage = null;
+
+         setActiveStage(prev => prev !== newStage ? newStage : prev);
+
+         if (t < 1500) { dotProgress.set(0); dotOpacity.set(1); }
+         else if (t < 2000) {
+            const progress = (t - 1500) / 500;
+            const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+            dotProgress.set(ease * 33.33);
+         }
+         else if (t < 3500) { dotProgress.set(33.33); }
+         else if (t < 4000) {
+            const progress = (t - 3500) / 500;
+            const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+            dotProgress.set(33.33 + ease * 33.33);
+         }
+         else if (t < 5500) { dotProgress.set(66.66); }
+         else if (t < 6000) {
+            const progress = (t - 5500) / 500;
+            const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+            dotProgress.set(66.66 + ease * 33.33);
+         }
+         else if (t < 7500) { dotProgress.set(100); dotOpacity.set(1); }
+         else {
+            dotOpacity.set(0);
+         }
+
+         raf = requestAnimationFrame(loop);
+      };
+
+      raf = requestAnimationFrame(loop);
+      return () => cancelAnimationFrame(raf);
+   }, [dotProgress, dotOpacity]);
+
+   return (
+      <div className="premium-glass-card" style={{ display: 'flex', flexDirection: 'column', width: '100%', margin: '0 auto', padding: '2rem', boxSizing: 'border-box' }}>
+         {/* Header */}
+         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '3rem', position: 'relative' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+               <span style={{ fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-main)' }}>AI CONTENT ENGINE</span>
+               <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#10B981', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <motion.span
+                     animate={{ opacity: [1, 0.4, 1] }}
+                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                     style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981' }}
+                  />
+                  ACTIVE
+               </span>
+            </div>
+         </div>
+
+         {/* Pipeline Container */}
+         <div style={{ position: 'relative', width: '100%', margin: '0 auto', paddingBottom: '2rem' }}>
+            {isMobile ? (
+               // Vertical Layout for Mobile
+               <div style={{ display: 'flex', gap: '20px', position: 'relative' }}>
+                  <div style={{ position: 'absolute', top: '36px', bottom: '36px', left: '6px', width: '2px', backgroundColor: 'var(--border-subtle)', transform: 'translateX(-50%)' }} />
+                  <motion.div style={{
+                     position: 'absolute',
+                     top: '36px',
+                     left: '6px',
+                     x: '-50%',
+                     y: useMotionValue(0), // Would need separate calc for vertical, simplifying for now
+                     opacity: dotOpacity,
+                     width: '8px',
+                     height: '8px',
+                     borderRadius: '50%',
+                     backgroundColor: '#000000',
+                     zIndex: 10
+                  }} />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', flex: 1, paddingLeft: '24px' }}>
+                     <PipelineCard label="IDEA" desc="Finding next topic" activeDesc="Generating idea..." isActive={activeStage === 0} />
+                     <PipelineCard label="SCRIPT" desc="Writing hook + script" activeDesc="Writing script..." isActive={activeStage === 1} />
+                     <PipelineCard label="VIDEO" desc="Generating avatar video" activeDesc="Rendering 72%" isActive={activeStage === 2} />
+                     <PipelineCard label="PUBLISH" desc="Publishing everywhere" activeDesc="Published ✓" isActive={activeStage === 3} />
+                  </div>
+               </div>
+            ) : (
+               // Horizontal Layout for Desktop
+               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ position: 'absolute', top: '50%', left: '10%', right: '10%', height: '2px', backgroundColor: 'var(--border-subtle)', transform: 'translateY(-50%)' }} />
+                  <motion.div style={{
+                     position: 'absolute',
+                     top: '50%',
+                     left: '10%',
+                     width: '80%', // Path width
+                     height: '2px',
+                     zIndex: 5
+                  }}>
+                     <motion.div style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: useMotionValue(0),
+                        x: '-50%',
+                        y: '-50%',
+                        opacity: dotOpacity,
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        backgroundColor: '#000000',
+                     }}
+                        // Hack to map progress 0-100 to left %
+                        animate={{ left: `${dotProgress.get()}%` }}
+                        transition={{ duration: 0 }}
+                     />
+                  </motion.div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', width: '100%', zIndex: 10 }}>
+                     <PipelineCard label="IDEA" desc="Finding next topic" activeDesc="Generating idea..." isActive={activeStage === 0} />
+                     <PipelineCard label="SCRIPT" desc="Writing hook + script" activeDesc="Writing script..." isActive={activeStage === 1} />
+                     <PipelineCard label="VIDEO" desc="Generating video" activeDesc="Rendering 72%" isActive={activeStage === 2} />
+                     <PipelineCard label="PUBLISH" desc="Publishing" activeDesc="Published ✓" isActive={activeStage === 3} />
+                  </div>
+               </div>
+            )}
+         </div>
+
+         {/* Footer */}
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', padding: '1rem 0.5rem 0', borderTop: '1px solid var(--border-subtle)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>NEXT RUN</span>
+            <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-main)' }}>Today · 9:00 AM</span>
+         </div>
       </div>
-
-      {/* Node 1: SCRIPT */}
-      <div style={{ position: 'absolute', top: '15px', right: '10px', width: '140px', display: 'flex', justifyContent: 'center' }}>
-        <CycleNode label="SCRIPT" index={1} isActive={activeNode === 1} annotation="AI drafts script" />
-      </div>
-
-      {/* Node 2: VIDEO */}
-      <div style={{ position: 'absolute', top: '195px', right: '10px', width: '140px', display: 'flex', justifyContent: 'center' }}>
-        <CycleNode label="VIDEO" index={2} isActive={activeNode === 2} annotation="Renders avatar" />
-      </div>
-
-      {/* Node 3: PUBLISH */}
-      <div style={{ position: 'absolute', top: '195px', left: '10px', width: '140px', display: 'flex', justifyContent: 'center' }}>
-        <CycleNode label="PUBLISH" index={3} isActive={activeNode === 3} isLast={true} annotation="Posts to platforms" />
-      </div>
-    </div>
-  );
-};
+   );
+}
 
 const UpcomingPosts = ({ settingsVariants }: { settingsVariants: any }) => (
-  <motion.div 
-    variants={settingsVariants}
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true, margin: "-100px" }}
-    className="premium-glass-card"
-    style={{ marginTop: '1rem', padding: '1.5rem' }}
-  >
-    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem', fontWeight: 500, fontSize: '0.85rem' }}>
-      <span>UPCOMING QUEUE</span>
-      <span>3 SCHEDULED</span>
-    </div>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ color: 'var(--text-main)', fontWeight: 500, fontSize: '0.9rem' }}>Today, 9:00 AM</span>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-           <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>IG, YT, TT</span>
-           <span style={{ color: '#F59E0B', fontSize: '0.75rem', width: '80px', textAlign: 'right', fontWeight: 600 }}>GENERATING</span>
-        </div>
+   <motion.div
+      variants={settingsVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      className="premium-glass-card"
+      style={{ padding: '1.5rem', width: '100%', boxSizing: 'border-box' }}
+   >
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+         <span>UPCOMING QUEUE</span>
+         <span>3 SCHEDULED</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ color: 'var(--text-main)', fontWeight: 500, fontSize: '0.9rem' }}>Wed, 9:00 AM</span>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-           <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>IG, YT, TT</span>
-           <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', width: '80px', textAlign: 'right', fontWeight: 600 }}>QUEUED</span>
-        </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ color: 'var(--text-main)', fontWeight: 500, fontSize: '0.9rem' }}>Today · 9:00 AM</span>
+            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+               <div style={{ display: 'flex', gap: '0.4rem', color: 'var(--text-muted)', alignItems: 'center' }}>
+                  <Instagram size={14} />
+                  <Youtube size={14} />
+                  <TikTokIcon size={14} />
+               </div>
+               <span style={{ color: '#F59E0B', fontSize: '0.75rem', width: '80px', textAlign: 'right', fontWeight: 600 }}>GENERATING</span>
+            </div>
+         </div>
+         <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)' }} />
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ color: 'var(--text-main)', fontWeight: 500, fontSize: '0.9rem' }}>Wed · 9:00 AM</span>
+            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+               <div style={{ display: 'flex', gap: '0.4rem', color: 'var(--text-muted)', alignItems: 'center' }}>
+                  <Instagram size={14} />
+                  <Youtube size={14} />
+                  <TikTokIcon size={14} />
+               </div>
+               <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', width: '80px', textAlign: 'right', fontWeight: 600 }}>QUEUED</span>
+            </div>
+         </div>
+         <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)' }} />
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ color: 'var(--text-main)', fontWeight: 500, fontSize: '0.9rem' }}>Fri · 9:00 AM</span>
+            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+               <div style={{ display: 'flex', gap: '0.4rem', color: 'var(--text-muted)', alignItems: 'center' }}>
+                  <Instagram size={14} />
+                  <Youtube size={14} />
+                  <TikTokIcon size={14} />
+               </div>
+               <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', width: '80px', textAlign: 'right', fontWeight: 600 }}>QUEUED</span>
+            </div>
+         </div>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ color: 'var(--text-main)', fontWeight: 500, fontSize: '0.9rem' }}>Fri, 9:00 AM</span>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-           <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>IG, YT, TT</span>
-           <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', width: '80px', textAlign: 'right', fontWeight: 600 }}>QUEUED</span>
-        </div>
-      </div>
-    </div>
-  </motion.div>
+   </motion.div>
 );
 
 export default function AutopilotSection() {
-  const [mins, setMins] = useState({ ig: 2, yt: 12, tt: 5 });
-  const [activeNode, setActiveNode] = useState(0);
+   const [mins, setMins] = useState({ ig: 2, yt: 12, tt: 5 });
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setMins(prev => ({ ig: prev.ig + 1, yt: prev.yt + 1, tt: prev.tt + 1 }));
-    }, 60000);
-    return () => clearInterval(timer);
-  }, []);
+   useEffect(() => {
+      const timer = setInterval(() => {
+         setMins(prev => ({ ig: prev.ig + 1, yt: prev.yt + 1, tt: prev.tt + 1 }));
+      }, 60000);
+      return () => clearInterval(timer);
+   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveNode(current => (current + 1) % 4);
-    }, 2000); // 2 second cycle
-    return () => clearInterval(interval);
-  }, []);
+   const platformVariants = {
+      hidden: { opacity: 0, y: 10 },
+      visible: { opacity: 1, y: 0 }
+   };
 
-  const platformVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 }
-  };
+   const containerVariants = {
+      hidden: { opacity: 0 },
+      visible: {
+         opacity: 1,
+         transition: { staggerChildren: 0.15, delayChildren: 0.2 }
+      }
+   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 }
-    }
-  };
+   const settingsVariants = {
+      hidden: { opacity: 0 },
+      visible: { opacity: 1, transition: { delay: 0.4, duration: 0.8 } }
+   };
 
-  const settingsVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { delay: 0.4, duration: 0.8 } }
-  };
+   return (
+      <section className="editorial-section" style={{ background: '#F0F0F0', position: 'relative', padding: '4rem 1rem' }}>
+         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
-  return (
-    <section className="editorial-section" style={{ background: '#F0F0F0', position: 'relative' }}>
-      <div className="grid-container">
-        <div className="col-12 mb-4">
-          <h2 className="editorial-h2" style={{ textAlign: 'center' }}>Autopilot</h2>
-        </div>
+            {/* Level 1 - Section Intro */}
+            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+               <h2 className="editorial-h2" style={{ marginBottom: '1rem' }}>Autopilot</h2>
+               <p className="mono-text" style={{ color: 'var(--text-main)', fontSize: '1.1rem', lineHeight: '1.6', maxWidth: '600px', margin: '0 auto' }}>
+                  Connect your platforms once. The engine generates and publishes content while you sleep.
+               </p>
+            </div>
 
-        <div className="col-6">
-          <p className="mono-text mb-4" style={{ color: 'var(--text-main)', fontSize: '1.1rem', lineHeight: '1.6' }}>
-            Connect your platforms once. The engine generates and publishes content while you sleep.
-          </p>
-          
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="premium-glass-card"
-            style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem', padding: '1.5rem' }}
-          >
-             <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                   <span style={{ fontWeight: 600 }}>Instagram Reels</span>
-                   <ConnectedStatus />
-                </div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.ig} min ago</span>
-             </motion.div>
-             
-             <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                   <span style={{ fontWeight: 600 }}>YouTube Shorts</span>
-                   <ConnectedStatus />
-                </div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.yt} min ago</span>
-             </motion.div>
-             
-             <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                   <span style={{ fontWeight: 600 }}>TikTok</span>
-                   <ConnectedStatus />
-                </div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>OAuth connected · Last synced {mins.tt} min ago</span>
-             </motion.div>
-             
-             <motion.div variants={platformVariants} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem', alignItems: 'center' }}>
-                <span style={{ fontWeight: 600 }}>LinkedIn</span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Offline</span>
-             </motion.div>
-          </motion.div>
+            {/* Level 2 - AI Content Engine */}
+            <AIEnginePipeline />
 
-          <motion.div 
-            variants={settingsVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="premium-glass-card"
-            style={{ marginTop: '2rem', padding: '1.5rem', fontSize: '0.85rem' }}
-          >
-             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <span style={{ fontWeight: 600 }}>Posting Schedule</span>
-                <span style={{ color: 'var(--text-muted)' }}>3x/week, Mon/Wed/Fri 9AM</span>
-             </div>
-             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <span style={{ fontWeight: 600 }}>Auto-Publish</span>
-                <span style={{ color: '#000000', fontWeight: 600 }}>ON</span>
-             </div>
-             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontWeight: 600 }}>Review Required</span>
-                <span style={{ color: 'var(--text-muted)' }}>OFF</span>
-             </div>
-          </motion.div>
+            {/* Level 3 - Configuration */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
 
-          <UpcomingPosts settingsVariants={settingsVariants} />
-        </div>
+               <motion.div
+                  variants={containerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  className="premium-glass-card"
+                  style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem', padding: '1.5rem', height: '100%' }}
+               >
+                  <div style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>CONNECTED PLATFORMS</div>
 
-        <div className="col-6">
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            height: '100%', 
-            minHeight: '600px'
-          }}>
-             <CycleDiagram activeNode={activeNode} />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+                  <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                           <Instagram size={18} />
+                           <span style={{ fontWeight: 600 }}>Instagram</span>
+                        </div>
+                        <ConnectedStatus />
+                     </div>
+                  </motion.div>
+
+                  <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                           <Youtube size={18} />
+                           <span style={{ fontWeight: 600 }}>YouTube</span>
+                        </div>
+                        <ConnectedStatus />
+                     </div>
+                  </motion.div>
+
+                  <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                           <TikTokIcon size={18} />
+                           <span style={{ fontWeight: 600 }}>TikTok</span>
+                        </div>
+                        <ConnectedStatus />
+                     </div>
+                  </motion.div>
+
+               </motion.div>
+
+               <motion.div
+                  variants={settingsVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  className="premium-glass-card"
+                  style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem', fontSize: '0.9rem', height: '100%' }}
+               >
+                  <div style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>AUTOMATION</div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
+                     <span style={{ fontWeight: 600 }}>Posting schedule</span>
+                     <span style={{ color: 'var(--text-muted)' }}>3x / week</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
+                     <span style={{ fontWeight: 600 }}>Auto-publish</span>
+                     <span style={{ color: '#000000', fontWeight: 600 }}>ON</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                     <span style={{ fontWeight: 600 }}>Review required</span>
+                     <span style={{ color: 'var(--text-muted)' }}>OFF</span>
+                  </div>
+               </motion.div>
+
+            </div>
+
+            {/* Level 4 - Upcoming Queue */}
+            <UpcomingPosts settingsVariants={settingsVariants} />
+
+         </div>
+      </section>
+   );
 }
+

@@ -12,12 +12,7 @@ export default function FAQ() {
     { q: "Can I stop or pause automatic posting anytime?", a: "Yes. You have full control over the autopilot queue. You can pause generation, require manual approval for every post, or disconnect platforms with a single click." },
     { q: "Do I need editing experience?", a: "None at all. If you can type a script or select a topic, our engine handles the rest—including generating the video, syncing the audio, and even publishing." },
     { q: "Is there a limit on how many avatars I can create?", a: "This depends on your plan. Starter includes 1 custom avatar, Creator includes 3, and Pro gives you up to 10 unique avatars for different brands or team members." },
-    { q: "Can someone tell it's AI-generated?", a: "Our engine achieves 98% lip-sync accuracy and captures micro-expressions natively. While experts might notice upon deep inspection, it passes as completely natural on mobile feeds like TikTok and Shorts." },
-    { q: "Can I use my own audio?", a: "Yes! You can upload custom audio tracks, and our engine will perfectly lip-sync your avatar to the provided audio." },
-    { q: "Which platforms are supported?", a: "We support direct auto-publishing to YouTube, TikTok, Instagram, and LinkedIn. You can connect all of them and set platform-specific scheduling." },
-    { q: "What languages are supported?", a: "Currently, our voice synthesis supports over 29 languages, including English, Spanish, French, German, Japanese, and Mandarin, all preserving your original vocal timbre." },
-    { q: "Can I use this for commercial/client work?", a: "Yes. All paid plans include full commercial rights to the generated videos. Pro and Enterprise plans also include white-labeling features for agency use." },
-    { q: "Do you offer refunds if I'm not satisfied?", a: "Yes. We offer a 14-day money-back guarantee. If the avatar quality doesn't meet your expectations within your first 14 days, you get a full refund, no questions asked." }
+    { q: "Can someone tell it's AI-generated?", a: "Our engine achieves 98% lip-sync accuracy and captures micro-expressions natively. While experts might notice upon deep inspection, it passes as completely natural on mobile feeds like TikTok and Shorts." }
   ];
 
   return (
@@ -26,7 +21,7 @@ export default function FAQ() {
         <h2 className="editorial-h2" style={{ textAlign: 'center' }}>FAQ</h2>
       </div>
       
-      <div className="col-12" style={{ display: 'flex', flexDirection: 'column', maxWidth: '800px', margin: '0 auto' }}>
+      <div className="col-12" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
          {faqs.map((faq, i) => (
             <div key={i} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                <button 

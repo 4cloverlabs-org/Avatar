@@ -112,15 +112,7 @@ export default function HeroSection() {
         }
       `}</style>
       
-      <div 
-        className="hero-wrapper"
-        style={{
-          width: '100%',
-          backgroundImage: 'radial-gradient(circle at -10% -10%, rgba(205, 180, 255, 0.5), transparent 50%), radial-gradient(circle at -10% 40%, rgba(190, 235, 255, 0.5), transparent 60%)',
-          backgroundRepeat: 'no-repeat',
-          overflow: 'hidden'
-        }}
-      >
+      <div className="hero-wrapper" style={{ width: '100%', overflow: 'hidden' }}>
         <section className="hero-layout">
           <div className="hero-content-left">
             <motion.h1

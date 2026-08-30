@@ -68,10 +68,10 @@ export default function Analytics() {
   const reducedMotion = useReducedMotion();
 
   const barsData = [
-    { height: "40%", opacity: 0.6, finalBg: "#000000", delay: 0.5, labelDelay: 1.0 },
-    { height: "60%", opacity: 0.7, finalBg: "#000000", delay: 0.62, labelDelay: 1.12 },
-    { height: "80%", opacity: 0.85, finalBg: "#000000", delay: 0.74, labelDelay: 1.24 },
-    { height: "100%", opacity: 1, finalBg: "#000000", delay: 0.86, labelDelay: 1.36, isFinal: true },
+    { height: "80px", opacity: 0.6, finalBg: "#000000", delay: 0.5, labelDelay: 1.0 },
+    { height: "120px", opacity: 0.7, finalBg: "#000000", delay: 0.62, labelDelay: 1.12 },
+    { height: "160px", opacity: 0.85, finalBg: "#000000", delay: 0.74, labelDelay: 1.24 },
+    { height: "200px", opacity: 1, finalBg: "#000000", delay: 0.86, labelDelay: 1.36, isFinal: true },
   ];
 
   const statsData = [
@@ -123,13 +123,13 @@ export default function Analytics() {
              Performance across all connected platforms, auto-tracked.
            </p>
            
-           <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: '1.5rem', borderBottom: '1px solid var(--border-subtle)', padding: '1rem', paddingLeft: 0 }}>
+           <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: '1.5rem', borderBottom: '1px solid var(--border-subtle)', padding: '1rem', paddingLeft: 0, minHeight: '200px' }}>
               {barsData.map((bar, i) => (
                 <motion.div
                   key={i}
-                  initial={{ height: 0, backgroundColor: "#E5E7EB", filter: "brightness(1)" }}
+                  initial={{ height: "0px", backgroundColor: "#E5E7EB", filter: "brightness(1)" }}
                   animate={inView ? { 
-                    height: reducedMotion ? bar.height : [0, bar.height],
+                    height: reducedMotion ? bar.height : ["0px", bar.height],
                     backgroundColor: reducedMotion ? bar.finalBg : ["#E5E7EB", bar.finalBg],
                     filter: (bar.isFinal && !reducedMotion) ? ["brightness(1)", "brightness(1)", "brightness(1.1)", "brightness(1)"] : "brightness(1)"
                   } : {}}

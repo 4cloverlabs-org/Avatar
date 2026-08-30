@@ -34,7 +34,7 @@ export default function Navbar() {
           justifyContent: 'space-between',
           width: '90%',
           maxWidth: '1200px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
           pointerEvents: 'auto'
         }}
       >
