@@ -36,17 +36,22 @@ export default function AudioWaveform() {
       ref={containerRef}
       style={{ 
         flex: 1,
-        backgroundColor: 'var(--text-main)',
-        padding: '1.5rem',
+        backgroundColor: '#FFFFFF',
+        padding: '2rem',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        borderTopRightRadius: 'var(--radius-lg)',
+        borderBottomRightRadius: 'var(--radius-lg)',
+        borderRight: '1px solid var(--border-subtle)',
+        borderTop: '1px solid var(--border-subtle)',
+        borderBottom: '1px solid var(--border-subtle)'
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
-        <span style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: 'var(--bg-primary)', textTransform: 'uppercase' }}>VOCAL TONE: MATCHED</span>
-        <span style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: 'var(--bg-primary)' }}>{percentage}%</span>
+        <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.85rem', color: 'var(--text-main)', textTransform: 'uppercase', fontWeight: 600 }}>Vocal Tone: Matched</span>
+        <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.85rem', color: '#000000', fontWeight: 600 }}>{percentage}%</span>
       </div>
 
       <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '2px', height: '100px' }}>
@@ -55,8 +60,8 @@ export default function AudioWaveform() {
             key={i}
             style={{
               flex: 1,
-              backgroundColor: 'var(--accent)',
-              borderRadius: '1px'
+              backgroundColor: '#000000',
+              borderRadius: '2px'
             }}
             animate={{
               height: ['20%', `${Math.random() * 60 + 40}%`, '20%']
