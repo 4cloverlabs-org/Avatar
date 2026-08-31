@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     console.log("Running prepare_avatar task...");
     
     const result = await client.predict("/prepare_avatar", [ 
-      { video: handle_file(videoFile) },
+      handle_file(videoFile),
       bboxShift,
       extraMargin,
       parsingMode,

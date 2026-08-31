@@ -175,10 +175,11 @@ export default function VideosView() {
       {isLoading ? (
         <div style={{ textAlign: 'center', padding: 60, color: '#9ca3af' }}>Loading generated videos...</div>
       ) : videos.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: 60, color: '#9ca3af', background: '#f8fafc', borderRadius: 12, border: '2px dashed #e2e8f0' }}>
-          <Video size={48} color="#cbd5e1" style={{ margin: '0 auto 16px' }} />
-          <div style={{ fontWeight: 600, color: '#475569', marginBottom: 4 }}>No generated videos found</div>
-          <div style={{ fontSize: 14 }}>Your MuseTalk generations will appear here.</div>
+        <div style={{ textAlign: 'center', padding: '80px 20px', background: '#ffffff', borderRadius: 20, border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 64, height: 64, borderRadius: 32, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+            <Video size={28} color="#94a3b8" strokeWidth={1.5} />
+          </div>
+          <div style={{ color: '#1e293b', fontSize: 17, fontWeight: 600, letterSpacing: '-0.01em' }}>No generated videos found</div>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>

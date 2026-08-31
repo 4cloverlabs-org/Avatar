@@ -39,7 +39,8 @@ export default function HomeDashboard() {
       .then(res => res.json())
       .then(data => {
         if (data.success && data.videos) {
-          setVideos(data.videos);
+          const generatedOnly = data.videos.filter((v: any) => v.status !== 'UPLOADED' && !v.id.startsWith('pub-'));
+          setVideos(generatedOnly);
         }
       })
       .catch(console.error)
@@ -144,7 +145,7 @@ export default function HomeDashboard() {
               background: '#f8fafc',
               border: 'none',
               borderRadius: 8,
-              padding: '6px 14px',
+              padding: '8px 16px',
               fontSize: 12,
               color: '#0f172a',
               cursor: 'pointer',
@@ -158,8 +159,15 @@ export default function HomeDashboard() {
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
           >
-            <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#ffffff', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <User size={12} color="#475569" />
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#ffffff', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
+              <User size={18} color="#475569" style={{ position: 'absolute' }} />
+              {selectedAvatar && (
+                selectedAvatar.includes('tpdne') || selectedAvatar.length < 20 ? (
+                  <img src={`/avatars/${selectedAvatar}.jpg`} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} onError={(e) => e.currentTarget.style.display = 'none'} />
+                ) : (
+                  <video src={`/api/serve_video?type=av&path=${selectedAvatar}#t=0.001`} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} preload="metadata" muted playsInline onError={(e) => e.currentTarget.style.display = 'none'} />
+                )
+              )}
             </div>
             <div>
               <div style={{ fontSize: 9, color: '#64748b', lineHeight: 1 }}>Avatar</div>
@@ -184,7 +192,7 @@ export default function HomeDashboard() {
               background: '#f8fafc',
               border: 'none',
               borderRadius: 8,
-              padding: '6px 14px',
+              padding: '8px 16px',
               fontSize: 12,
               color: '#0f172a',
               cursor: 'pointer',
@@ -202,8 +210,8 @@ export default function HomeDashboard() {
                 }
               }}
             />
-            <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#ffffff', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Mic size={12} color="#475569" />
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#ffffff', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Mic size={18} color="#475569" />
             </div>
             <div>
               <div style={{ fontSize: 9, color: '#64748b', lineHeight: 1 }}>Voice</div>
@@ -222,7 +230,7 @@ export default function HomeDashboard() {
               background: '#f8fafc',
               border: 'none',
               borderRadius: 8,
-              padding: '6px 14px',
+              padding: '8px 16px',
               fontSize: 12,
               color: '#0f172a',
               cursor: 'pointer',
@@ -236,8 +244,8 @@ export default function HomeDashboard() {
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
           >
-            <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#ffffff', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Monitor size={12} color="#475569" />
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#ffffff', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Monitor size={18} color="#475569" />
             </div>
             <div>
               <div style={{ fontSize: 9, color: '#64748b', lineHeight: 1 }}>Aspect Ratio</div>
@@ -265,11 +273,12 @@ export default function HomeDashboard() {
                     onMouseEnter={(e) => { if (selectedAvatar !== a.id) e.currentTarget.style.background = 'var(--background)'; }}
                     onMouseLeave={(e) => { if (selectedAvatar !== a.id) e.currentTarget.style.background = 'transparent'; }}
                   >
-                    <div style={{ width: 24, height: 24, borderRadius: '50%', overflow: 'hidden', background: selectedAvatar === a.id ? 'rgba(255,255,255,0.2)' : '#e2e8f0', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: 24, height: 24, borderRadius: '50%', overflow: 'hidden', background: selectedAvatar === a.id ? 'rgba(255,255,255,0.2)' : '#e2e8f0', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                      <User size={14} color={selectedAvatar === a.id ? '#ffffff' : '#64748b'} style={{ position: 'absolute' }} />
                       {a.id.includes('tpdne') || a.id.length < 20 ? (
-                        <img src={`/avatars/${a.id}.jpg`} alt={a.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => e.currentTarget.style.display = 'none'} />
+                        <img src={`/avatars/${a.id}.jpg`} alt={a.name} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} onError={(e) => e.currentTarget.style.display = 'none'} />
                       ) : (
-                        <User size={14} color={selectedAvatar === a.id ? '#ffffff' : '#64748b'} />
+                        <video src={`/api/serve_video?type=av&path=${a.id}#t=0.001`} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} preload="metadata" muted playsInline onError={(e) => e.currentTarget.style.display = 'none'} />
                       )}
                     </div>
                     <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.name}</div>
@@ -398,43 +407,16 @@ export default function HomeDashboard() {
       </div>
 
       {/* Grid or List content */}
-      {viewMode === 'grid' ? (
-        <div className="home-recents grid">
-          {/* Default/Simulated marketing project card */}
-          <div
-            className="home-recent-card"
-            onClick={() => router.push('/studio')}
-            style={{ minHeight: 240, borderRadius: 8, border: '2px solid #F5F5F5', overflow: 'hidden', transition: 'transform 0.2s ease-in-out, border-color 0.2s ease-in-out' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = 'none';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.borderColor = 'var(--accent)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = 'none';
-              e.currentTarget.style.transform = 'none';
-              e.currentTarget.style.borderColor = '#F5F5F5';
-            }}
-          >
-            <div className="home-recent-img" style={{ background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)' }}>
-              <div className="home-recent-play">
-                <Play size={20} color="#fff" fill="#fff" style={{ marginLeft: 3 }} />
-              </div>
-              <div className="home-recent-duration">00:15</div>
-              <Video size={36} color="#60a5fa" style={{ opacity: 0.8 }} />
-            </div>
-            <div className="home-recent-info">
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="home-recent-title">Project Q3 Marketing</div>
-                <div className="home-recent-meta">
-                  <Clock size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} /> Updated 2h ago
-                </div>
-              </div>
-              <button onClick={(e) => { e.stopPropagation(); alert("Project Options Menu (Stub)"); }} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, color: '#94a3b8' }}>
-                <MoreVertical size={16} />
-              </button>
-            </div>
+      {videos.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '80px 20px', background: '#ffffff', borderRadius: 20, border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 64, height: 64, borderRadius: 32, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+            <Video size={28} color="#94a3b8" strokeWidth={1.5} />
           </div>
+          <div style={{ color: '#1e293b', fontSize: 17, fontWeight: 600, letterSpacing: '-0.01em' }}>No recent videos</div>
+        </div>
+      ) : viewMode === 'grid' ? (
+        <div className="home-recents grid">
+
 
           {/* Dynamic Generated Videos */}
           {videos.map((vid, idx) => (
@@ -454,18 +436,24 @@ export default function HomeDashboard() {
                 e.currentTarget.style.borderColor = '#F5F5F5';
               }}
             >
-              <div className="home-recent-img" style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' }}>
+              <div className="home-recent-img" style={{ background: '#0f172a', position: 'relative' }}>
+                <video 
+                  src={`${vid.url}#t=0.001`} 
+                  preload="metadata" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  muted 
+                  playsInline 
+                />
                 <div className="home-recent-play">
                   <Play size={20} color="#fff" fill="#fff" style={{ marginLeft: 3 }} />
                 </div>
                 <div className="home-recent-duration">00:15</div>
-                <Video size={36} color="#4ade80" style={{ opacity: 0.8 }} />
               </div>
               <div className="home-recent-info">
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="home-recent-title">{vid.filename}</div>
+                  <div className="home-recent-title">{vid.title}</div>
                   <div className="home-recent-meta">
-                    <Clock size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} /> Generated video
+                    <Clock size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} /> AI Generated video
                   </div>
                 </div>
                 <button 
@@ -530,7 +518,7 @@ export default function HomeDashboard() {
                 {vid.filename}
               </div>
               <div style={{ color: '#475569' }}>00:15</div>
-              <div style={{ color: '#64748b' }}>Generated video</div>
+              <div style={{ color: '#64748b' }}>AI Generated video</div>
               <button 
                 onClick={async (e) => { 
                   e.stopPropagation(); 

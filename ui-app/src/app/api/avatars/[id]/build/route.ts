@@ -61,7 +61,7 @@ export async function POST(
     try {
       // This blocks until python finishes
       const result = await client.predict("/prepare_avatar", [ 
-        { video: handle_file(videoPath) },
+        handle_file(videoPath),
         bboxShift,
         extraMargin,
         parsingMode,
@@ -155,6 +155,8 @@ export async function POST(
         if (finalVideo) {
           fs.copyFileSync(path.join(outputDir, finalVideo), path.join(trackingDir, 'preview_ai.mp4'));
         }
+        // Clean up the output directory so this test generation doesn't show up in Recent Videos
+        fs.rmSync(outputDir, { recursive: true, force: true });
       }
 
       // Mark as fully ready now!

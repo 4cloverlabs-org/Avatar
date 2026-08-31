@@ -39,10 +39,23 @@ export async function GET() {
             .filter(file => file.endsWith('.mp4'))
             .map((file, fIndex) => {
               const stats = fs.statSync(path.join(avatarOutputDir, file));
+              let avatarName = 'Custom Avatar';
+              try {
+                const meta = JSON.parse(fs.readFileSync(path.join(avatarsDir, avatarId, 'meta.json'), 'utf8'));
+                if (meta.name) avatarName = meta.name;
+              } catch(e) {}
+              
+              let friendlyTitle = file.replace('.mp4', '');
+              if (file.startsWith('final_')) {
+                friendlyTitle = `Video from ${avatarName}`;
+              } else {
+                friendlyTitle = friendlyTitle.replace('final_', 'Video ');
+              }
+
               return {
                 id: `av-${avatarId}-${fIndex}`,
                 filename: `${avatarId}/output/${file}`,
-                title: file.replace('.mp4', ''),
+                title: friendlyTitle,
                 edited: stats.mtime,
                 sizeBytes: stats.size,
                 status: 'PUBLISHED',

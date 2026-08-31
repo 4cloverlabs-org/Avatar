@@ -37,6 +37,7 @@ export default function AvatarsView() {
 
 function FromUsAvatarsUI() {
   const router = useRouter();
+  const [previewAvatar, setPreviewAvatar] = useState<any>(null);
   const avatars = [
     { id: 'sys-1', name: 'Professional Anna', image: '/avatars/anna.jpg' },
     { id: 'sys-2', name: 'Casual Mark', image: '/avatars/mark.jpg' },
@@ -48,42 +49,73 @@ function FromUsAvatarsUI() {
   ];
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 24 }}>
-      {avatars.map(avatar => (
-        <div 
-          key={avatar.id} 
-          style={{ border: '2px solid #F3F3F3', borderRadius: 12, background: '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative', display: 'flex', flexDirection: 'column' }}
-        >
-          <div style={{ aspectRatio: '9/16', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderTopLeftRadius: 10, borderTopRightRadius: 10, overflow: 'hidden' }}>
-            <img 
-              src={avatar.image} 
-              alt={avatar.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-            />
-          </div>
-          <div style={{ padding: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottomLeftRadius: 10, borderBottomRightRadius: 10, borderTop: '2px dashed #F3F3F3' }}>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div 
-                style={{ fontWeight: 600, fontSize: 14, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '2px 4px', marginLeft: '-4px', borderRadius: 4 }}
-              >
-                {avatar.name}
-              </div>
-              <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>System Avatar</div>
+    <>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 24 }}>
+        {avatars.map(avatar => (
+          <div 
+            key={avatar.id} 
+            style={{ border: '2px solid #F3F3F3', borderRadius: 12, background: '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative', display: 'flex', flexDirection: 'column' }}
+            onClick={() => setPreviewAvatar(avatar)}
+          >
+            <div style={{ aspectRatio: '9/16', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderTopLeftRadius: 10, borderTopRightRadius: 10, overflow: 'hidden' }}>
+              <img 
+                src={avatar.image} 
+                alt={avatar.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+              />
             </div>
-            
-            <button 
-              style={{ background: '#e0e7ff', color: '#4f46e5', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`/studio?avatar=${encodeURIComponent(avatar.image)}`);
-              }}
-            >
-              Use
+            <div style={{ padding: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottomLeftRadius: 10, borderBottomRightRadius: 10, borderTop: '2px dashed #F3F3F3' }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div 
+                  style={{ fontWeight: 600, fontSize: 14, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', padding: '2px 4px', marginLeft: '-4px', borderRadius: 4 }}
+                >
+                  {avatar.name}
+                </div>
+                <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>System Avatar</div>
+              </div>
+              
+              <button 
+                style={{ background: '#e0e7ff', color: '#4f46e5', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/studio?avatar=${encodeURIComponent(avatar.image)}`);
+                }}
+              >
+                Use
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* POPUP PREVIEW for System Avatars */}
+      {previewAvatar && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', padding: 24 }} onClick={() => setPreviewAvatar(null)}>
+          <div style={{ background: '#fff', padding: 20, borderRadius: 16, width: 300, position: 'relative', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }} onClick={e => e.stopPropagation()}>
+            <button style={{ position: 'absolute', top: 12, right: 12, background: '#f1f5f9', border: 'none', cursor: 'pointer', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }} onClick={() => setPreviewAvatar(null)}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
+            <h3 style={{ marginTop: 0, marginBottom: 16, fontSize: 18, fontWeight: 700, color: '#0f172a' }}>{previewAvatar.name}</h3>
+            <div style={{ width: '100%', aspectRatio: '9/16', background: '#f8fafc', borderRadius: 12, overflow: 'hidden', border: '1px solid #e2e8f0', maxHeight: '55vh', display: 'flex', justifyContent: 'center' }}>
+              <img 
+                src={previewAvatar.image} 
+                alt={previewAvatar.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+              />
+            </div>
+            <div style={{ marginTop: 20, display: 'flex', gap: 12 }}>
+              <button 
+                style={{ flex: 1, padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 15, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.2)' }}
+                onClick={() => router.push(`/studio?avatar=${encodeURIComponent(previewAvatar.image)}`)}
+                onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                Use this Avatar
+              </button>
+            </div>
           </div>
         </div>
-      ))}
-    </div>
+      )}
+    </>
   );
 }
 
@@ -96,6 +128,8 @@ function MyAvatarsUI() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [previewAvatar, setPreviewAvatar] = useState<any>(null);
+
   const fetchAvatars = () => {
     fetch('/api/avatars', { cache: 'no-store' })
       .then(res => res.json())
@@ -206,6 +240,7 @@ function MyAvatarsUI() {
             <div 
               key={avatar.id} 
               style={{ border: '2px solid #F3F3F3', borderRadius: 12, background: '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}
+              onClick={() => setPreviewAvatar(avatar)}
               onMouseEnter={(e) => {
                 if (editingId === avatar.id) return;
                 const video = e.currentTarget.querySelector('video');
@@ -322,6 +357,40 @@ function MyAvatarsUI() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* POPUP PREVIEW for My Avatars */}
+      {previewAvatar && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', padding: 24 }} onClick={() => setPreviewAvatar(null)}>
+          <div style={{ background: '#fff', padding: 20, borderRadius: 16, width: 300, position: 'relative', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }} onClick={e => e.stopPropagation()}>
+            <button style={{ position: 'absolute', top: 12, right: 12, background: '#f1f5f9', border: 'none', cursor: 'pointer', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }} onClick={() => setPreviewAvatar(null)}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <h3 style={{ marginTop: 0, marginBottom: 16, fontSize: 18, fontWeight: 700, color: '#0f172a' }}>{previewAvatar.name}</h3>
+            <div style={{ width: '100%', aspectRatio: '9/16', background: '#000', borderRadius: 12, overflow: 'hidden', border: '1px solid #e2e8f0', maxHeight: '55vh', display: 'flex', justifyContent: 'center' }}>
+              <video 
+                src={`/api/avatars/${previewAvatar.id}/preview`} 
+                controls autoPlay loop playsInline
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+              />
+            </div>
+            <div style={{ marginTop: 20, display: 'flex', gap: 12 }}>
+              <button 
+                style={{ flex: 1, padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 15, cursor: previewAvatar.status === 'error' ? 'not-allowed' : 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.2)', opacity: previewAvatar.status === 'error' ? 0.5 : 1 }}
+                onClick={() => {
+                  if (previewAvatar.status !== 'error') {
+                    router.push(`/studio?avatar=${encodeURIComponent(previewAvatar.id)}`);
+                  }
+                }}
+                onMouseOver={(e) => e.currentTarget.style.transform = previewAvatar.status === 'error' ? 'none' : 'translateY(-1px)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                disabled={previewAvatar.status === 'error'}
+              >
+                Use this Avatar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

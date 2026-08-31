@@ -21,6 +21,7 @@ exp_out
 .venv310/
 venv/
 env/
+venv-stable/
 
 # Model weights
 *.pth

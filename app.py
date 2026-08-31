@@ -19,6 +19,12 @@ from omegaconf import OmegaConf
 import numpy as np
 import cv2
 import torch
+import numpy.core.multiarray
+import numpy
+try:
+    torch.serialization.add_safe_globals([numpy.core.multiarray._reconstruct, numpy.ndarray])
+except AttributeError:
+    pass
 import glob
 import pickle
 from tqdm import tqdm

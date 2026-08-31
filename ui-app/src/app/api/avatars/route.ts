@@ -43,10 +43,16 @@ export async function POST(req: Request) {
       try { fs.unlinkSync(tempVideoPath); } catch(e) {}
     }
     
+    let avatarCount = 0;
+    try {
+      const dirs = fs.readdirSync(path.join(process.cwd(), '..', 'results', 'avatars'));
+      avatarCount = dirs.length;
+    } catch (e) {}
+
     // Create meta.json
     const meta = { 
       id: uuid,
-      name: `Custom Avatar ${uuid.substring(0, 4)}`,
+      name: `Untitled ${avatarCount + 1}`,
       createdAt: new Date().toISOString(),
       source: file.name,
       status: 'processing'
