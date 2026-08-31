@@ -16,54 +16,73 @@ export default function FAQ() {
   ];
 
   return (
-    <section id="faq" className="editorial-section grid-container">
-      <div className="col-12 mb-4">
-        <h2 className="editorial-h2" style={{ textAlign: 'center' }}>FAQ</h2>
-      </div>
-      
-      <div className="col-12" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-         {faqs.map((faq, i) => (
-            <div key={i} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-               <button 
-                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                 style={{ 
-                    width: '100%', 
-                    padding: '2rem 0', 
-                    background: 'transparent', 
-                    border: 'none', 
-                    color: 'var(--text-main)', 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    fontSize: '1.25rem',
-                    fontWeight: 500,
-                    textAlign: 'left',
-                    fontFamily: 'var(--font-heading)'
-                 }}
-               >
-                  {faq.q}
-                  <span style={{ fontSize: '1.5rem', color: openIndex === i ? '#000000' : 'var(--text-muted)' }}>
-                    {openIndex === i ? '−' : '+'}
-                  </span>
-               </button>
-               <AnimatePresence>
-                 {openIndex === i && (
-                    <motion.div 
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      style={{ overflow: 'hidden' }}
-                    >
-                      <div className="mono-text" style={{ paddingBottom: '2rem', color: 'var(--text-muted)', lineHeight: 1.6, textTransform: 'none', fontSize: '1rem', fontFamily: 'var(--font-body)' }}>
-                         {faq.a}
-                      </div>
-                    </motion.div>
-                 )}
-               </AnimatePresence>
-            </div>
-         ))}
+    <section id="faq" className="editorial-section" style={{ background: '#111111', color: '#ffffff' }}>
+      <div className="grid-container">
+        <div className="col-5 mb-4" style={{ paddingRight: '2rem' }}>
+          <h2 className="editorial-h2" style={{ color: '#ffffff', textAlign: 'left', lineHeight: '1.1' }}>
+            Frequently asked<br/>questions
+          </h2>
+        </div>
+        
+        <div className="col-7" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+           {faqs.map((faq, i) => (
+              <div key={i} style={{ borderBottom: '1px solid #2a2a2a' }}>
+                 <button 
+                   onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                   style={{ 
+                      width: '100%', 
+                      padding: '1.5rem 0', 
+                      background: 'transparent', 
+                      border: 'none', 
+                      color: '#ffffff', 
+                      display: 'flex', 
+                      justifyContent: 'flex-start', 
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                      fontSize: '1.15rem',
+                      fontWeight: 500,
+                      textAlign: 'left',
+                      fontFamily: 'var(--font-heading)'
+                   }}
+                 >
+                    <span style={{ 
+                      fontSize: '1.5rem', 
+                      color: '#ffffff', 
+                      marginRight: '1rem',
+                      width: '24px',
+                      display: 'inline-block',
+                      textAlign: 'center'
+                    }}>
+                      {openIndex === i ? '−' : '+'}
+                    </span>
+                    {faq.q}
+                 </button>
+                 <AnimatePresence>
+                   {openIndex === i && (
+                      <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        style={{ overflow: 'hidden' }}
+                      >
+                        <div className="mono-text" style={{ 
+                          paddingBottom: '1.5rem', 
+                          paddingLeft: '2.5rem', // Aligned with the text, accounting for icon width + margin
+                          color: '#a1a1aa', 
+                          lineHeight: 1.6, 
+                          textTransform: 'none', 
+                          fontSize: '1rem', 
+                          fontFamily: 'var(--font-body)' 
+                        }}>
+                           {faq.a}
+                        </div>
+                      </motion.div>
+                   )}
+                 </AnimatePresence>
+              </div>
+           ))}
+        </div>
       </div>
     </section>
   );
