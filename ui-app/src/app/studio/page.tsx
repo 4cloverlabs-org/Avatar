@@ -45,6 +45,25 @@ export default function Dashboard() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
+  const pollForVideo = async (targetAvatarId: string, aspect: string) => {
+    // Poll every 10 seconds for up to 60 minutes
+    for (let i = 0; i < 360; i++) {
+      try {
+        const res = await fetch(`/api/check_video?avatarId=${targetAvatarId}&aspect=${encodeURIComponent(aspect)}`);
+        const data = await res.json();
+        if (data.success && data.ready) {
+           setResultVideo(data.url);
+           setActiveTab('result');
+           setIsGenerating(false);
+           return true;
+        }
+      } catch (e) {}
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    }
+    setIsGenerating(false);
+    return false;
+  };
+
   useEffect(() => {
     // Check for an avatar image passed from the avatars page
     const params = new URLSearchParams(window.location.search);
@@ -199,15 +218,87 @@ export default function Dashboard() {
     const script = localStorage.getItem('ai_assistant_script');
     const aspect = localStorage.getItem('ai_assistant_aspect');
     const avatar = localStorage.getItem('ai_assistant_avatar');
+    const autoGen = localStorage.getItem('ai_assistant_auto_generate');
+    const hasCustomVoice = localStorage.getItem('ai_assistant_has_custom_voice');
 
     if (aspect) setProjectAspectRatio(aspect);
     if (script) setScriptText(script);
     if (avatar) setAvatarId(avatar);
 
+    if (autoGen === 'true') {
+      if (hasCustomVoice === 'true') {
+        // Load file from IndexedDB
+        const request = indexedDB.open("VoiceDB", 1);
+        request.onsuccess = (e: any) => {
+          const db = e.target.result;
+          const tx = db.transaction("voice", "readonly");
+          const store = tx.objectStore("voice");
+          const getReq = store.get("dashboardVoice");
+          getReq.onsuccess = () => {
+            const customVoiceFile = getReq.result;
+            if (customVoiceFile) {
+              setAudioFile(customVoiceFile);
+              setAudioPreview(URL.createObjectURL(customVoiceFile));
+            }
+          };
+        };
+      } else if (script) {
+        (async () => {
+          setIsGeneratingVoice(true);
+          try {
+            const formData = new FormData();
+            formData.append('text', script);
+            
+            const res = await fetch('/api/tts', { method: 'POST', body: formData });
+            if (res.ok) {
+              const blob = await res.blob();
+              const file = new File([blob], 'generated_voice.wav', { type: 'audio/wav' });
+              setAudioFile(file);
+              setAudioPreview(URL.createObjectURL(file));
+            } else {
+              const data = await res.json();
+              alert(data.error || "Failed to generate voice");
+            }
+          } catch (e) {
+            alert("Error generating voice");
+          }
+          setIsGeneratingVoice(false);
+        })();
+      }
+    }
+
+    // Fetch Avatars immediately and set preview based on the handed-off avatar
+    fetch('/api/avatars')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.avatars) {
+          const readyAvatars = data.avatars.filter((a: any) => a.status === 'ready');
+          setAvailableAvatars(readyAvatars);
+          
+          const isValidAvatar = avatar && readyAvatars.some((a: any) => a.id === avatar);
+          const targetId = isValidAvatar ? avatar : (readyAvatars.length > 0 ? readyAvatars[readyAvatars.length - 1].id : null);
+          
+          if (targetId) {
+            setAvatarId(targetId);
+            const found = readyAvatars.find((a: any) => a.id === targetId);
+            if (found && found.preview) {
+               setVideoPreview(found.preview);
+            } else if (targetId.length === 36) { // Custom UUID avatar
+               setVideoPreview(`/api/serve_video?type=av&path=${targetId}/video.mp4`);
+            } else {
+               setVideoPreview(`/avatars/${targetId}.jpg`);
+            }
+          }
+        }
+      })
+      .catch(console.error);
+
     // Clear after reading so it doesn't pollute subsequent visits
     localStorage.removeItem('ai_assistant_script');
     localStorage.removeItem('ai_assistant_aspect');
     localStorage.removeItem('ai_assistant_avatar');
+    localStorage.removeItem('ai_assistant_auto_generate');
+    localStorage.removeItem('ai_assistant_has_custom_voice');
   }, []);
 
   useEffect(() => {
@@ -330,19 +421,7 @@ export default function Dashboard() {
     };
   }, [interactionState, videoBox]);
 
-  useEffect(() => {
-    fetch('/api/avatars')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.avatars) {
-          setAvailableAvatars(data.avatars);
-          if (data.avatars.length > 0 && !avatarId) {
-            setAvatarId(data.avatars[data.avatars.length - 1]);
-          }
-        }
-      })
-      .catch(console.error);
-  }, []);
+  // Avatar fetch is now handled in the main initialization effect above
   const [scriptText, setScriptText] = useState("");
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [activeTab, setActiveTab] = useState<'canvas' | 'result'>('canvas');
@@ -414,21 +493,41 @@ export default function Dashboard() {
       const formData = new FormData();
       formData.append('avatarId', avatarId);
       formData.append('audio', audioFile);
+      formData.append('aspectRatio', projectAspectRatio);
 
       const res = await fetch('/api/generate_video', { method: 'POST', body: formData });
       const data = await res.json();
       if (data.success && data.data && data.data[0]) {
         const videoData = data.data[0];
-        const videoUrl = videoData.url || videoData.video?.url || videoData.path || videoData.video?.path || videoData;
+        let videoUrl = videoData.url || videoData.video?.url || videoData.path || videoData.video?.path || videoData;
+        
+        // Convert local absolute paths to the streaming API
+        if (typeof videoUrl === 'string') {
+          // Normalize slashes for reliable splitting
+          const normalizedUrl = videoUrl.replace(/\\/g, '/');
+          
+          if (normalizedUrl.includes('/results/avatars/')) {
+             const parts = normalizedUrl.split('/results/avatars/');
+             if (parts.length > 1) {
+               videoUrl = `/api/serve_video?type=av&path=${encodeURIComponent(parts[1])}`;
+             }
+          } else if (normalizedUrl.includes('/results/output/')) {
+             const parts = normalizedUrl.split('/results/output/');
+             if (parts.length > 1) {
+               videoUrl = `/api/serve_video?type=gen&path=${encodeURIComponent(parts[1])}`;
+             }
+          }
+        }
+        
         setResultVideo(videoUrl);
         setActiveTab('result');
       } else {
         alert(data.error || 'Failed to generate');
       }
     } catch (e) {
-      alert('Error generating video');
+      console.log("Connection closed or timed out, switching to background polling...");
+      await pollForVideo(avatarId, projectAspectRatio);
     }
-    setIsGenerating(false);
   };
 
   return (
@@ -505,17 +604,17 @@ export default function Dashboard() {
 
           <div style={{ flex: 1, padding: 15, display: 'flex', flexDirection: 'column' }}>
             {audioFile ? (
-              <div style={{ background: '#F8F6F0', borderRadius: 8, padding: 15, border: '1px solid var(--panel-border)', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--foreground)' }}>
-                    <Mic size={16} color="var(--accent)" />
-                    <span style={{ fontSize: 13, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 150 }}>{audioFile.name}</span>
+              <div style={{ background: '#F8F6F0', borderRadius: 8, padding: 12, border: '1px solid var(--panel-border)', display: 'flex', flexDirection: 'column', gap: 10, overflow: 'hidden' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: 8 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--foreground)', minWidth: 0, flex: 1 }}>
+                    <Mic size={16} color="var(--accent)" style={{ flexShrink: 0 }} />
+                    <span style={{ fontSize: 13, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block', flex: 1 }}>{audioFile.name}</span>
                   </div>
-                  <button onClick={() => setAudioFile(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                  <button onClick={() => setAudioFile(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 2 }}>
                     <X size={14} />
                   </button>
                 </div>
-                <audio src={URL.createObjectURL(audioFile)} controls style={{ width: '100%', height: 32 }} />
+                <audio src={URL.createObjectURL(audioFile)} controls style={{ width: '100%', height: 32, minWidth: 0 }} />
               </div>
             ) : (
               <textarea
@@ -538,8 +637,11 @@ export default function Dashboard() {
           </div>
 
           <div style={{ padding: 15, borderTop: '1px solid var(--panel-border)', display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <button className="btn-secondary" style={{ width: '100%', padding: '8px 0', fontSize: 13, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, background: '#F8F6F0', border: '1px solid var(--panel-border)' }} onClick={() => audioInputRef.current?.click()}>
-              <Upload size={14} /> {audioFile ? audioFile.name : "Upload Audio"}
+            <button className="btn-secondary" style={{ width: '100%', padding: '8px 10px', fontSize: 13, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, background: '#F8F6F0', border: '1px solid var(--panel-border)', overflow: 'hidden' }} onClick={() => audioInputRef.current?.click()}>
+              <Upload size={14} style={{ flexShrink: 0 }} /> 
+              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+                {audioFile ? audioFile.name : "Upload Audio"}
+              </span>
             </button>
             <button className="btn-secondary" style={{ width: '100%', padding: '8px 0', fontSize: 13, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, background: isRecording ? '#ffebee' : '#F8F6F0', color: isRecording ? '#d32f2f' : 'inherit', border: isRecording ? '1px solid #ffcdd2' : '1px solid var(--panel-border)', transition: 'all 0.2s' }} onClick={toggleRecording}>
               <Mic size={14} color={isRecording ? '#d32f2f' : 'currentColor'} /> {isRecording ? "Stop Recording" : "Record Audio"}

@@ -20,10 +20,38 @@ export async function GET() {
             title: file.replace('_25fps.mp4', '').replace('.mp4', ''),
             edited: stats.mtime,
             sizeBytes: stats.size,
-            status: 'PUBLISHED'
+            status: 'PUBLISHED',
+            url: `/api/serve_video?type=gen&path=${encodeURIComponent(file)}`
           };
         });
       allVideos = [...allVideos, ...generatedVideos];
+    }
+
+    // Check avatar outputs
+    const avatarsDir = path.join(process.cwd(), '..', 'results', 'avatars');
+    if (fs.existsSync(avatarsDir)) {
+      const avatarDirs = fs.readdirSync(avatarsDir).filter(f => fs.statSync(path.join(avatarsDir, f)).isDirectory());
+      avatarDirs.forEach((avatarId, aIndex) => {
+        const avatarOutputDir = path.join(avatarsDir, avatarId, 'output');
+        if (fs.existsSync(avatarOutputDir)) {
+          const outputFiles = fs.readdirSync(avatarOutputDir);
+          const avatarVideos = outputFiles
+            .filter(file => file.endsWith('.mp4'))
+            .map((file, fIndex) => {
+              const stats = fs.statSync(path.join(avatarOutputDir, file));
+              return {
+                id: `av-${avatarId}-${fIndex}`,
+                filename: `${avatarId}/output/${file}`,
+                title: file.replace('.mp4', ''),
+                edited: stats.mtime,
+                sizeBytes: stats.size,
+                status: 'PUBLISHED',
+                url: `/api/serve_video?type=av&path=${encodeURIComponent(avatarId + '/output/' + file)}`
+              };
+            });
+          allVideos = [...allVideos, ...avatarVideos];
+        }
+      });
     }
 
     // Check uploaded public directory
@@ -40,7 +68,8 @@ export async function GET() {
             title: file.replace('.mp4', '').replace('.mov', ''),
             edited: stats.mtime,
             sizeBytes: stats.size,
-            status: 'UPLOADED'
+            status: 'UPLOADED',
+            url: `/videos/${file}`
           };
         });
       allVideos = [...allVideos, ...uploadedVideos];
@@ -58,12 +87,36 @@ export async function GET() {
 
 export async function DELETE(request: Request) {
   try {
-    const { filename, id } = await request.json();
-    const type = id.startsWith('gen') ? 'gen' : 'pub';
-    const dir = type === 'gen' ? path.join(process.cwd(), '..', 'results', 'output') : path.join(process.cwd(), 'public', 'videos');
-    const filePath = path.join(dir, filename);
+    const { filename, id, trash } = await request.json();
+    let dir;
+    let actualFilename = filename;
+    
+    if (id.startsWith('av-')) {
+      dir = path.join(process.cwd(), '..', 'results', 'avatars');
+    } else if (id.startsWith('gen-')) {
+      dir = path.join(process.cwd(), '..', 'results', 'output');
+    } else {
+      dir = path.join(process.cwd(), 'public', 'videos');
+    }
+    
+    const filePath = path.join(dir, actualFilename);
     if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+      if (trash) {
+        const trashDir = path.join(process.cwd(), '..', 'results', 'trash');
+        if (!fs.existsSync(trashDir)) {
+          fs.mkdirSync(trashDir, { recursive: true });
+        }
+        
+        // Format for the Trash UI: type___originalId___timestamp
+        // We use a flat filename to prevent directory traversal issues on restore
+        const flatOriginalId = `gen_${Date.now()}_${path.basename(actualFilename)}`;
+        const trashFilename = `video___${flatOriginalId}___${Date.now()}`;
+        const trashPath = path.join(trashDir, trashFilename);
+        
+        fs.renameSync(filePath, trashPath);
+      } else {
+        fs.unlinkSync(filePath);
+      }
       return NextResponse.json({ success: true });
     }
     return NextResponse.json({ success: false, error: 'File not found' }, { status: 404 });
@@ -75,15 +128,27 @@ export async function DELETE(request: Request) {
 export async function PUT(request: Request) {
   try {
     const { filename, id, newTitle } = await request.json();
-    const type = id.startsWith('gen') ? 'gen' : 'pub';
-    const dir = type === 'gen' ? path.join(process.cwd(), '..', 'results', 'output') : path.join(process.cwd(), 'public', 'videos');
-    const oldPath = path.join(dir, filename);
-    const ext = path.extname(filename);
-    const newFilename = `${newTitle.replace(/[^a-zA-Z0-9_ -]/g, '_')}${ext}`;
-    const newPath = path.join(dir, newFilename);
+    let dir;
+    let actualFilename = filename;
+    
+    if (id.startsWith('av-')) {
+      dir = path.join(process.cwd(), '..', 'results', 'avatars');
+    } else if (id.startsWith('gen-')) {
+      dir = path.join(process.cwd(), '..', 'results', 'output');
+    } else {
+      dir = path.join(process.cwd(), 'public', 'videos');
+    }
+    
+    const oldPath = path.join(dir, actualFilename);
+    const ext = path.extname(actualFilename);
+    // Only replace the actual file name part, preserving the directory structure for av- types
+    const parsedPath = path.parse(actualFilename);
+    const newFilenamePart = `${newTitle.replace(/[^a-zA-Z0-9_ -]/g, '_')}${ext}`;
+    const newPath = path.join(dir, parsedPath.dir, newFilenamePart);
+    
     if (fs.existsSync(oldPath)) {
       fs.renameSync(oldPath, newPath);
-      return NextResponse.json({ success: true, newFilename });
+      return NextResponse.json({ success: true, newFilename: path.join(parsedPath.dir, newFilenamePart).replace(/\\/g, '/') });
     }
     return NextResponse.json({ success: false, error: 'File not found' }, { status: 404 });
   } catch (error: any) {

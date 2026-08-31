@@ -592,79 +592,87 @@ def prepare_avatar(video_path, bbox_shift, extra_margin=10, parsing_mode="jaw",
 
 @torch.no_grad()
 def generate_from_avatar(avatar_id, audio_path, use_gfpgan=True, gfpgan_weight=0.5, progress=gr.Progress(track_tqdm=True)):
-    avatar_dir = os.path.join("./results/avatars", avatar_id)
-    if not os.path.exists(avatar_dir):
-        raise FileNotFoundError(f"Avatar ID {avatar_id} not found.")
-    with open(os.path.join(avatar_dir, 'meta.json'), 'r') as f:
-        meta = json.load(f)
-    fps = meta["fps"]
-    args = Namespace(**meta["args"])
-    with open(os.path.join(avatar_dir, 'coords.pkl'), 'rb') as f:
-        coord_list_cycle = pickle.load(f)
-    input_latent_list_cycle = torch.load(os.path.join(avatar_dir, 'latents.pt'))
-    with open(os.path.join(avatar_dir, 'frames.pkl'), 'rb') as f:
-        frame_list_cycle = pickle.load(f)
-    fp = FaceParsing(left_cheek_width=args.left_cheek_width, right_cheek_width=args.right_cheek_width)
-    whisper_input_features, librosa_length = audio_processor.get_audio_feature(audio_path)
-    whisper_chunks = audio_processor.get_whisper_chunk(
-        whisper_input_features, device, weight_dtype, whisper, librosa_length, fps=fps,
-        audio_padding_length_left=args.audio_padding_length_left, audio_padding_length_right=args.audio_padding_length_right,
-    )
-    video_num = len(whisper_chunks)
-    batch_size = args.batch_size
-    gen = datagen(whisper_chunks=whisper_chunks, vae_encode_latents=input_latent_list_cycle, batch_size=batch_size, delay_frame=0, device=device)
-    res_frame_list = []
-    for i, (whisper_batch,latent_batch) in enumerate(tqdm(gen,total=int(np.ceil(float(video_num)/batch_size)))):
-        audio_feature_batch = pe(whisper_batch)
-        latent_batch = latent_batch.to(dtype=weight_dtype)
-        pred_latents = unet.model(latent_batch, timesteps, encoder_hidden_states=audio_feature_batch).sample
-        recon = vae.decode_latents(pred_latents)
-        for res_frame in recon:
-            res_frame_list.append(res_frame)
-    temp_dir = os.path.join(avatar_dir, "output")
-    os.makedirs(temp_dir, exist_ok=True)
-    result_img_save_path = os.path.join(temp_dir, "frames")
-    if os.path.exists(result_img_save_path):
-        import shutil
-        shutil.rmtree(result_img_save_path)
-    os.makedirs(result_img_save_path, exist_ok=True)
-    for i, res_frame in enumerate(tqdm(res_frame_list)):
-        bbox = coord_list_cycle[i%(len(coord_list_cycle))]
-        ori_frame = copy.deepcopy(frame_list_cycle[i%(len(frame_list_cycle))])
-        if bbox == coord_placeholder:
-            cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png", ori_frame)
-            continue
-            
-        x1, y1, x2, y2 = bbox
-        y2 = min(y2 + args.extra_margin, ori_frame.shape[0])
-        try:
-            res_frame = cv2.resize(res_frame.astype(np.uint8),(x2-x1,y2-y1))
-        except:
-            cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png", ori_frame)
-            continue
-        combine_frame = get_image(ori_frame, res_frame, [x1, y1, x2, y2], mode=args.parsing_mode, fp=fp)
-        if use_gfpgan and 'gfpganer' in globals() and gfpganer is not None:
-            _, _, combine_frame = gfpganer.enhance(combine_frame, has_aligned=False, only_center_face=True, paste_back=True, weight=gfpgan_weight)
-        cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png",combine_frame)
-    output_video = os.path.join(temp_dir, 'temp.mp4')
-    images = []
-    def is_valid_image(file):
-        import re
-        pattern = re.compile(r'\d{8}\.png')
-        return pattern.match(file)
-    files = [file for file in os.listdir(result_img_save_path) if is_valid_image(file)]
-    files.sort(key=lambda x: int(x.split('.')[0]))
-    for file in files:
-        images.append(imageio.imread(os.path.join(result_img_save_path, file)))
-    imageio.mimwrite(output_video, images, 'FFMPEG', fps=fps, codec='libx264', pixelformat='yuv420p')
-    audio_basename = os.path.basename(audio_path).split('.')[0]
-    final_output = os.path.join(temp_dir, f"final_{audio_basename}.mp4")
-    video_clip = VideoFileClip(output_video)
-    audio_clip = AudioFileClip(audio_path)
-    video_clip = video_clip.set_audio(audio_clip)
-    video_clip.write_videofile(final_output, codec='libx264', audio_codec='aac',fps=25)
-    os.remove(output_video)
-    return final_output
+    try:
+        avatar_dir = os.path.join("./results/avatars", avatar_id)
+        if not os.path.exists(avatar_dir):
+            raise FileNotFoundError(f"Avatar ID {avatar_id} not found.")
+        with open(os.path.join(avatar_dir, 'meta.json'), 'r') as f:
+            meta = json.load(f)
+        fps = meta["fps"]
+        args = Namespace(**meta["args"])
+        with open(os.path.join(avatar_dir, 'coords.pkl'), 'rb') as f:
+            coord_list_cycle = pickle.load(f)
+        input_latent_list_cycle = torch.load(os.path.join(avatar_dir, 'latents.pt'))
+        if len(input_latent_list_cycle) == 0:
+            raise ValueError("The selected avatar is incomplete or failed to build. No faces were detected during preparation.")
+        with open(os.path.join(avatar_dir, 'frames.pkl'), 'rb') as f:
+            frame_list_cycle = pickle.load(f)
+        fp = FaceParsing(left_cheek_width=args.left_cheek_width, right_cheek_width=args.right_cheek_width)
+        whisper_input_features, librosa_length = audio_processor.get_audio_feature(audio_path)
+        whisper_chunks = audio_processor.get_whisper_chunk(
+            whisper_input_features, device, weight_dtype, whisper, librosa_length, fps=fps,
+            audio_padding_length_left=args.audio_padding_length_left, audio_padding_length_right=args.audio_padding_length_right,
+        )
+        video_num = len(whisper_chunks)
+        batch_size = args.batch_size
+        gen = datagen(whisper_chunks=whisper_chunks, vae_encode_latents=input_latent_list_cycle, batch_size=batch_size, delay_frame=0, device=device)
+        res_frame_list = []
+        for i, (whisper_batch,latent_batch) in enumerate(tqdm(gen,total=int(np.ceil(float(video_num)/batch_size)))):
+            audio_feature_batch = pe(whisper_batch)
+            latent_batch = latent_batch.to(dtype=weight_dtype)
+            pred_latents = unet.model(latent_batch, timesteps, encoder_hidden_states=audio_feature_batch).sample
+            recon = vae.decode_latents(pred_latents)
+            for res_frame in recon:
+                res_frame_list.append(res_frame)
+        temp_dir = os.path.join(avatar_dir, "output")
+        os.makedirs(temp_dir, exist_ok=True)
+        result_img_save_path = os.path.join(temp_dir, "frames")
+        if os.path.exists(result_img_save_path):
+            import shutil
+            shutil.rmtree(result_img_save_path)
+        os.makedirs(result_img_save_path, exist_ok=True)
+        for i, res_frame in enumerate(tqdm(res_frame_list)):
+            bbox = coord_list_cycle[i%(len(coord_list_cycle))]
+            ori_frame = copy.deepcopy(frame_list_cycle[i%(len(frame_list_cycle))])
+            if bbox == coord_placeholder:
+                cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png", ori_frame)
+                continue
+                
+            x1, y1, x2, y2 = bbox
+            y2 = min(y2 + args.extra_margin, ori_frame.shape[0])
+            try:
+                res_frame = cv2.resize(res_frame.astype(np.uint8),(x2-x1,y2-y1))
+            except:
+                cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png", ori_frame)
+                continue
+            combine_frame = get_image(ori_frame, res_frame, [x1, y1, x2, y2], mode=args.parsing_mode, fp=fp)
+            if use_gfpgan and 'gfpganer' in globals() and gfpganer is not None:
+                _, _, combine_frame = gfpganer.enhance(combine_frame, has_aligned=False, only_center_face=True, paste_back=True, weight=gfpgan_weight)
+            cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png",combine_frame)
+        output_video = os.path.join(temp_dir, 'temp.mp4')
+        images = []
+        def is_valid_image(file):
+            import re
+            pattern = re.compile(r'\d{8}\.png')
+            return pattern.match(file)
+        files = [file for file in os.listdir(result_img_save_path) if is_valid_image(file)]
+        files.sort(key=lambda x: int(x.split('.')[0]))
+        for file in files:
+            images.append(imageio.imread(os.path.join(result_img_save_path, file)))
+        imageio.mimwrite(output_video, images, 'FFMPEG', fps=fps, codec='libx264', pixelformat='yuv420p')
+        audio_basename = os.path.basename(audio_path).split('.')[0]
+        final_output = os.path.join(temp_dir, f"final_{audio_basename}.mp4")
+        video_clip = VideoFileClip(output_video)
+        audio_clip = AudioFileClip(audio_path)
+        video_clip = video_clip.set_audio(audio_clip)
+        video_clip.write_videofile(final_output, codec='libx264', audio_codec='aac',fps=25)
+        os.remove(output_video)
+        return final_output
+    except Exception as e:
+        import traceback
+        with open("error.log", "w") as f:
+            f.write(traceback.format_exc())
+        raise e
 
 
 def check_video(video):

@@ -131,11 +131,18 @@ function MyAvatarsUI() {
   }, []);
 
   const handleDelete = async (id: string) => {
+    // Optimistically hide from UI while trying to delete
     setAvatars(prev => prev.filter(a => a.id !== id));
     try {
-      await fetch(`/api/avatars/${id}`, { method: 'DELETE' });
-    } catch (e) {
+      const res = await fetch(`/api/avatars/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to delete');
+      }
+    } catch (e: any) {
       console.error(e);
+      alert(`Failed to delete avatar. It might be in use by the system.\n\nError: ${e.message}`);
+      // Refresh to put it back in the UI since deletion failed
       fetchAvatars();
     }
   };

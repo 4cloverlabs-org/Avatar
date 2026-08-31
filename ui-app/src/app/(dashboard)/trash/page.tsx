@@ -65,9 +65,9 @@ export default function TrashPage() {
       } else {
         alert("Delete failed: " + data.error);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("An error occurred while deleting.");
+      alert(`An error occurred while deleting: ${err.message}`);
     }
   };
 
@@ -92,7 +92,7 @@ export default function TrashPage() {
   }
 
   return (
-    <div style={{ padding: '40px', maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
+    <div className="home-dashboard" style={{ padding: '32px 40px', maxWidth: '1600px', margin: '0 auto', width: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
         <div>
           <h1 style={{ fontSize: '24px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '8px' }}>Trash</h1>
@@ -148,86 +148,166 @@ export default function TrashPage() {
           <p style={{ fontSize: '14px' }}>Deleted items will appear here.</p>
         </div>
       ) : (
-        <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: '12px', overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
           {items.map((item, index) => (
             <div 
               key={item.trashId}
               style={{ 
                 display: 'flex', 
-                alignItems: 'center', 
-                padding: '16px 24px',
-                borderBottom: index < items.length - 1 ? '1px solid var(--panel-border)' : 'none'
+                flexDirection: 'column',
+                background: '#fff', 
+                border: '2px solid #F5F5F5', 
+                borderRadius: '8px',
+                position: 'relative',
+                transition: 'border-color 0.2s ease-in-out',
+                overflow: 'visible'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#F5F5F5';
               }}
             >
-              <div style={{ 
-                width: '40px', 
-                height: '40px', 
-                borderRadius: '8px', 
-                background: 'var(--background)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--text-muted)',
-                marginRight: '16px'
-              }}>
-                {item.type === 'Avatar' ? <User size={20} /> : <Video size={20} />}
-              </div>
-              
-              <div style={{ flex: 1 }}>
-                <h3 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '4px' }}>
-                  {item.originalId}
-                </h3>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
-                  <span>{item.type}</span>
-                  <span>•</span>
-                  <span>Deleted {new Date(item.deletedAt).toLocaleDateString()}</span>
-                  <span>•</span>
-                  <span style={{ color: item.daysRemaining <= 1 ? '#ef4444' : 'var(--text-muted)' }}>
-                    {item.daysRemaining} {item.daysRemaining === 1 ? 'day' : 'days'} remaining
-                  </span>
+              {/* Edge-to-edge preview with perfect 16:9 aspect ratio */}
+              <div style={{ width: '100%', aspectRatio: '16/9', background: '#f8fafc', borderRadius: '6px 6px 0 0', overflow: 'hidden', position: 'relative' }}>
+                {item.type === 'Video' || item.type === 'Avatar' ? (
+                  <video 
+                    src={`/api/serve_video?type=trash&path=${encodeURIComponent(item.trashId)}#t=0.001`} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} 
+                    preload="metadata"
+                    onMouseEnter={(e) => { 
+                      e.currentTarget.play().catch(() => {});
+                    }}
+                    onMouseLeave={(e) => { 
+                      e.currentTarget.pause();
+                      e.currentTarget.currentTime = 0;
+                    }}
+                    muted
+                    loop
+                    playsInline
+                    onError={(e) => {
+                      // Fallback if avatar has no valid video preview
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.parentElement) {
+                        const fallback = document.createElement('div');
+                        fallback.style.cssText = 'width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #cbd5e1;';
+                        fallback.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+                        e.currentTarget.parentElement.appendChild(fallback);
+                      }
+                    }}
+                  />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1' }}>
+                    <User size={32} />
+                  </div>
+                )}
+                <div style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(4px)', color: '#fff', fontSize: '10px', fontWeight: 600, padding: '3px 8px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  {item.type === 'Avatar' ? <User size={10} /> : <Video size={10} />}
+                  {item.type}
                 </div>
               </div>
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <button 
-                  onClick={() => handleRestore(item.trashId)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    padding: '6px 12px',
-                    background: 'transparent',
-                    border: '1px solid var(--panel-border)',
-                    borderRadius: '6px',
-                    color: 'var(--foreground)',
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    cursor: 'pointer'
+
+              {/* Card Content Area - Much tighter padding */}
+              <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                
+                <h3 
+                  title={item.originalId}
+                  style={{ 
+                    fontSize: '13px', 
+                    fontWeight: 600, 
+                    color: 'var(--foreground)', 
+                    marginBottom: '10px', 
+                    wordBreak: 'break-all', 
+                    display: '-webkit-box', 
+                    WebkitLineClamp: 1, 
+                    WebkitBoxOrient: 'vertical', 
+                    overflow: 'hidden',
+                    lineHeight: '1.3'
                   }}
                 >
-                  <RotateCcw size={14} />
-                  Restore
-                </button>
-                <button 
-                  onClick={() => handleDelete(item.trashId)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '32px',
-                    height: '32px',
-                    background: 'transparent',
-                    border: '1px solid transparent',
-                    borderRadius: '6px',
-                    color: '#ef4444',
-                    cursor: 'pointer'
-                  }}
-                  title="Delete permanently"
-                  onMouseEnter={(e) => e.currentTarget.style.background = '#fee2e2'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                >
-                  <Trash2 size={16} />
-                </button>
+                  {item.originalId.replace(/^gen_\d+_/, '')}
+                </h3>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--text-muted)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span>Deleted</span>
+                    <span style={{ fontWeight: 500, color: 'var(--foreground)' }}>
+                      {new Date(item.deletedAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between', 
+                  }}>
+                    <span>Expires in</span>
+                    <span style={{ 
+                      fontWeight: 600, 
+                      color: item.daysRemaining <= 1 ? '#ef4444' : '#f59e0b',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      {item.daysRemaining <= 1 && <AlertTriangle size={12} />}
+                      {item.daysRemaining} {item.daysRemaining === 1 ? 'day' : 'days'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Actions at the bottom - Tighter */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--panel-border)' }}>
+                  <button 
+                    onClick={() => handleRestore(item.trashId)}
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      padding: '6px 10px',
+                      background: '#eff6ff',
+                      border: 'none',
+                      borderRadius: '6px',
+                      color: '#3b82f6',
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#dbeafe';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#eff6ff';
+                    }}
+                  >
+                    <RotateCcw size={14} />
+                    Restore
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(item.trashId)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '30px',
+                      height: '30px',
+                      background: '#fee2e2',
+                      border: 'none',
+                      borderRadius: '6px',
+                      color: '#ef4444',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      flexShrink: 0
+                    }}
+                    title="Delete permanently"
+                    onMouseEnter={(e) => e.currentTarget.style.background = '#fca5a5'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = '#fee2e2'}
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
               </div>
             </div>
           ))}

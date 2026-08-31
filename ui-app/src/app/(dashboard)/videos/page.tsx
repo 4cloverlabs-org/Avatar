@@ -11,6 +11,8 @@ export default function VideosView() {
   const [editModeId, setEditModeId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
 
+  const [sortBy, setSortBy] = useState('date-desc');
+
   const loadVideos = () => {
     fetch('/api/videos')
       .then(res => res.json())
@@ -26,13 +28,22 @@ export default function VideosView() {
     loadVideos();
   }, []);
 
-  const handleDelete = async (video: any) => {
-    if (!confirm('Are you sure you want to delete this video?')) return;
+  const sortedVideos = [...videos].sort((a, b) => {
+    if (sortBy === 'date-desc') return new Date(b.edited).getTime() - new Date(a.edited).getTime();
+    if (sortBy === 'date-asc') return new Date(a.edited).getTime() - new Date(b.edited).getTime();
+    if (sortBy === 'name-asc') return a.title.localeCompare(b.title);
+    if (sortBy === 'size-desc') return b.sizeBytes - a.sizeBytes;
+    return 0;
+  });
+
+  const handleDelete = async (video: any, trash: boolean) => {
+    const msg = trash ? 'Are you sure you want to move this video to trash?' : 'Are you sure you want to permanently delete this video?';
+    if (!confirm(msg)) return;
     try {
       const res = await fetch('/api/videos', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: video.filename, id: video.id })
+        body: JSON.stringify({ filename: video.filename, id: video.id, trash })
       });
       if (res.ok) loadVideos();
     } catch (e) {}
@@ -56,8 +67,110 @@ export default function VideosView() {
     } catch (e) {}
   };
 
+  const [isSortOpen, setIsSortOpen] = useState(false);
+
+  const sortOptions = [
+    { value: 'date-desc', label: 'Date (Newest)' },
+    { value: 'date-asc', label: 'Date (Oldest)' },
+    { value: 'name-asc', label: 'Name (A-Z)' },
+    { value: 'size-desc', label: 'Size (Largest)' }
+  ];
+
+  const currentSortLabel = sortOptions.find(o => o.value === sortBy)?.label || 'Sort By';
+
   return (
     <div className="home-content">
+      {/* HEADER SECTION WITH SORTING */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, padding: '0 8px' }}>
+        <h2 style={{ fontSize: 24, fontWeight: 700, color: '#0f172a' }}>Generated Videos</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, position: 'relative' }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>Sort by:</span>
+          
+          {/* Custom Professional Dropdown */}
+          <div style={{ position: 'relative' }}>
+            <button 
+              onClick={() => setIsSortOpen(!isSortOpen)}
+              style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '8px 12px', 
+                borderRadius: 8, 
+                border: isSortOpen ? '1px solid #3b82f6' : '1px solid #e2e8f0', 
+                background: '#fff', 
+                fontSize: 14, 
+                fontWeight: 500,
+                color: '#334155',
+                cursor: 'pointer',
+                minWidth: 160,
+                transition: 'all 0.2s',
+                boxShadow: isSortOpen ? '0 0 0 2px rgba(59, 130, 246, 0.1)' : '0 1px 2px rgba(0, 0, 0, 0.05)'
+              }}
+            >
+              {currentSortLabel}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 8, transform: isSortOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            {isSortOpen && (
+              <>
+                <div 
+                  style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 20 }}
+                  onClick={() => setIsSortOpen(false)}
+                />
+                <div style={{ 
+                  position: 'absolute', 
+                  top: '100%', 
+                  right: 0, 
+                  marginTop: 6,
+                  background: '#fff', 
+                  border: '1px solid #e2e8f0', 
+                  borderRadius: 10, 
+                  zIndex: 21, 
+                  width: '100%', 
+                  overflow: 'hidden', 
+                  padding: 6,
+                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'
+                }}>
+                  {sortOptions.map(option => (
+                    <div
+                      key={option.value}
+                      onClick={() => {
+                        setSortBy(option.value);
+                        setIsSortOpen(false);
+                      }}
+                      style={{
+                        padding: '8px 12px',
+                        fontSize: 14,
+                        fontWeight: 500,
+                        color: sortBy === option.value ? '#3b82f6' : '#475569',
+                        background: sortBy === option.value ? '#eff6ff' : 'transparent',
+                        borderRadius: 6,
+                        cursor: 'pointer',
+                        transition: 'background 0.15s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (sortBy !== option.value) e.currentTarget.style.background = '#f8fafc';
+                      }}
+                      onMouseLeave={(e) => {
+                        if (sortBy !== option.value) e.currentTarget.style.background = 'transparent';
+                      }}
+                    >
+                      {option.label}
+                      {sortBy === option.value && <Check size={14} color="#3b82f6" />}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* VIDEOS GRID */}
       {isLoading ? (
         <div style={{ textAlign: 'center', padding: 60, color: '#9ca3af' }}>Loading generated videos...</div>
@@ -69,11 +182,11 @@ export default function VideosView() {
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
-          {videos.map(video => (
+          {sortedVideos.map(video => (
             <div key={video.id} className="home-recent-card" style={{ border: '2px solid #F5F5F5', borderRadius: 8, overflow: 'visible', background: '#fff', transition: 'border-color 0.2s ease-in-out', position: 'relative' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--accent)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = '#F5F5F5'}>
               <div className="home-recent-img" style={{ width: '100%', background: '#f8fafc', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px 6px 0 0', overflow: 'hidden' }}>
                 <video 
-                  src={`/api/videos/${video.filename}#t=0.001`} 
+                  src={`${video.url}#t=0.001`} 
                   style={{ width: '100%', height: 'auto', display: 'block' }} 
                   preload="metadata"
                   onMouseEnter={(e) => { 
@@ -129,14 +242,21 @@ export default function VideosView() {
                           <a href={`/api/videos/download?filename=${video.filename}&quality=4k`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: '#334155', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>4K (UHD)</a>
                           <a href={`/api/videos/download?filename=${video.filename}&quality=1080p`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: '#334155', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>1080p (HD)</a>
                           <a href={`/api/videos/download?filename=${video.filename}&quality=720p`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: '#334155', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>720p (SD)</a>
-                          <div style={{ margin: '4px 0', borderBottom: '1px solid #f1f5f9' }}></div>
                           <div 
-                            onClick={() => { handleDelete(video); setMenuOpenId(null); }}
+                            onClick={() => { handleDelete(video, true); setMenuOpenId(null); }}
+                            style={{ padding: '8px 12px', fontSize: 13, color: '#f59e0b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, borderRadius: 6 }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = '#fffbeb'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                          >
+                            <Trash2 size={14} color="#f59e0b" /> Move to Trash
+                          </div>
+                          <div 
+                            onClick={() => { handleDelete(video, false); setMenuOpenId(null); }}
                             style={{ padding: '8px 12px', fontSize: 13, color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, borderRadius: 6 }}
                             onMouseEnter={(e) => e.currentTarget.style.background = '#fef2f2'}
                             onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                           >
-                            <Trash2 size={14} color="#ef4444" /> Delete
+                            <X size={14} color="#ef4444" /> Delete Permanently
                           </div>
                         </div>
                         </>

@@ -19,7 +19,10 @@ export async function GET(req: NextRequest) {
   if (!fs.existsSync(filePath)) {
     filePath = path.join(process.cwd(), '..', 'results', 'output', filename);
     if (!fs.existsSync(filePath)) {
-      return NextResponse.json({ error: 'File not found' }, { status: 404 });
+      filePath = path.join(process.cwd(), '..', 'results', 'avatars', filename);
+      if (!fs.existsSync(filePath)) {
+        return NextResponse.json({ error: 'File not found' }, { status: 404 });
+      }
     }
   }
 

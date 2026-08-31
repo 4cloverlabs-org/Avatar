@@ -21,8 +21,10 @@ export default function HomeDashboard() {
   const [availableAvatars, setAvailableAvatars] = useState<any[]>([]);
   const [isAspectOpen, setIsAspectOpen] = useState(false);
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
+  const [customVoice, setCustomVoice] = useState<File | null>(null);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const voiceInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -48,9 +50,12 @@ export default function HomeDashboard() {
       .then(res => res.json())
       .then(data => {
         if (data.success && data.avatars) {
-          setAvailableAvatars(data.avatars);
-          if (data.avatars.length > 0) {
-            setSelectedAvatar(data.avatars[data.avatars.length - 1].id);
+          const readyAvatars = data.avatars.filter((a: any) => a.status === 'ready');
+          setAvailableAvatars(readyAvatars);
+          if (readyAvatars.length > 0) {
+            const defaultId = readyAvatars[readyAvatars.length - 1].id;
+            setSelectedAvatar(defaultId);
+            localStorage.setItem('ai_assistant_avatar', defaultId);
           }
         }
       })
@@ -58,13 +63,39 @@ export default function HomeDashboard() {
   }, []);
 
   const handlePromptSubmit = () => {
-    if (!promptText.trim()) return;
+    if (!promptText.trim() && !customVoice) return;
     localStorage.setItem('ai_assistant_script', promptText);
     localStorage.setItem('ai_assistant_aspect', selectedAspect);
+    localStorage.setItem('ai_assistant_auto_generate', 'true');
+    
     if (selectedAvatar) {
       localStorage.setItem('ai_assistant_avatar', selectedAvatar);
     }
-    router.push('/studio');
+
+    if (customVoice) {
+      localStorage.setItem('ai_assistant_has_custom_voice', 'true');
+      
+      // Save file to IndexedDB for reliable handoff to Studio
+      const request = indexedDB.open("VoiceDB", 1);
+      request.onupgradeneeded = (e: any) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains("voice")) {
+          db.createObjectStore("voice");
+        }
+      };
+      request.onsuccess = (e: any) => {
+        const db = e.target.result;
+        const tx = db.transaction("voice", "readwrite");
+        const store = tx.objectStore("voice");
+        store.put(customVoice, "dashboardVoice");
+        tx.oncomplete = () => {
+          router.push('/studio');
+        };
+      };
+    } else {
+      localStorage.setItem('ai_assistant_has_custom_voice', 'false');
+      router.push('/studio');
+    }
   };
 
   const getSelectedAvatarName = () => {
@@ -139,24 +170,46 @@ export default function HomeDashboard() {
           </div>
 
           {/* Voice Pill */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            background: '#f8fafc',
-            border: 'none',
-            borderRadius: 8,
-            padding: '6px 14px',
-            fontSize: 12,
-            color: '#0f172a',
-            cursor: 'default'
-          }}>
+          <div 
+            onClick={(e) => {
+              e.stopPropagation();
+              voiceInputRef.current?.click();
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              background: '#f8fafc',
+              border: 'none',
+              borderRadius: 8,
+              padding: '6px 14px',
+              fontSize: 12,
+              color: '#0f172a',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            <input 
+              type="file" 
+              accept="audio/*" 
+              ref={voiceInputRef} 
+              style={{ display: 'none' }} 
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setCustomVoice(e.target.files[0]);
+                }
+              }}
+            />
             <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#ffffff', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Mic size={12} color="#475569" />
             </div>
             <div>
               <div style={{ fontSize: 9, color: '#64748b', lineHeight: 1 }}>Voice</div>
-              <div style={{ fontWeight: 600 }}>Auto Voice</div>
+              <div style={{ fontWeight: 600, maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {customVoice ? customVoice.name : "Auto Voice"}
+              </div>
             </div>
           </div>
 
@@ -203,15 +256,23 @@ export default function HomeDashboard() {
                 availableAvatars.map(a => (
                   <div
                     key={a.id}
-                    style={{ padding: '8px 12px', fontSize: 11, cursor: 'pointer', background: selectedAvatar === a.id ? 'var(--accent)' : 'transparent', color: selectedAvatar === a.id ? '#ffffff' : '#334155', borderRadius: 6, fontWeight: selectedAvatar === a.id ? 600 : 400 }}
+                    style={{ padding: '6px', fontSize: 11, cursor: 'pointer', background: selectedAvatar === a.id ? 'var(--accent)' : 'transparent', color: selectedAvatar === a.id ? '#ffffff' : '#334155', borderRadius: 6, fontWeight: selectedAvatar === a.id ? 600 : 400, display: 'flex', alignItems: 'center', gap: '8px' }}
                     onClick={() => {
                       setSelectedAvatar(a.id);
+                      localStorage.setItem('ai_assistant_avatar', a.id);
                       setIsAvatarOpen(false);
                     }}
                     onMouseEnter={(e) => { if (selectedAvatar !== a.id) e.currentTarget.style.background = 'var(--background)'; }}
                     onMouseLeave={(e) => { if (selectedAvatar !== a.id) e.currentTarget.style.background = 'transparent'; }}
                   >
-                    {a.name}
+                    <div style={{ width: 24, height: 24, borderRadius: '50%', overflow: 'hidden', background: selectedAvatar === a.id ? 'rgba(255,255,255,0.2)' : '#e2e8f0', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {a.id.includes('tpdne') || a.id.length < 20 ? (
+                        <img src={`/avatars/${a.id}.jpg`} alt={a.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => e.currentTarget.style.display = 'none'} />
+                      ) : (
+                        <User size={14} color={selectedAvatar === a.id ? '#ffffff' : '#64748b'} />
+                      )}
+                    </div>
+                    <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.name}</div>
                   </div>
                 ))
               )}
@@ -231,6 +292,7 @@ export default function HomeDashboard() {
                   style={{ padding: '8px 12px', fontSize: 11, cursor: 'pointer', background: selectedAspect === opt.val ? 'var(--accent)' : 'transparent', color: selectedAspect === opt.val ? '#ffffff' : '#334155', borderRadius: 6, fontWeight: selectedAspect === opt.val ? 600 : 400 }}
                   onClick={() => {
                     setSelectedAspect(opt.val);
+                    localStorage.setItem('ai_assistant_aspect', opt.val);
                     setIsAspectOpen(false);
                   }}
                   onMouseEnter={(e) => { if (selectedAspect !== opt.val) e.currentTarget.style.background = 'var(--background)'; }}
@@ -278,7 +340,7 @@ export default function HomeDashboard() {
 
             <button
               onClick={handlePromptSubmit}
-              disabled={!promptText.trim()}
+              disabled={!promptText.trim() && !customVoice}
               style={{
                 background: 'var(--accent)',
                 color: '#ffffff',
@@ -287,12 +349,12 @@ export default function HomeDashboard() {
                 padding: '8px 24px',
                 fontSize: 13,
                 fontWeight: 700,
-                cursor: promptText.trim() ? 'pointer' : 'not-allowed',
-                opacity: promptText.trim() ? 1 : 0.5,
+                cursor: (promptText.trim() || customVoice) ? 'pointer' : 'not-allowed',
+                opacity: (promptText.trim() || customVoice) ? 1 : 0.5,
                 transition: 'all 0.2s ease-in-out'
               }}
-              onMouseEnter={(e) => { if (promptText.trim()) e.currentTarget.style.backgroundColor = 'var(--accent-hover)'; }}
-              onMouseLeave={(e) => { if (promptText.trim()) e.currentTarget.style.backgroundColor = 'var(--accent)'; }}
+              onMouseEnter={(e) => { if (promptText.trim() || customVoice) e.currentTarget.style.backgroundColor = 'var(--accent-hover)'; }}
+              onMouseLeave={(e) => { if (promptText.trim() || customVoice) e.currentTarget.style.backgroundColor = 'var(--accent)'; }}
             >
               Submit
             </button>
@@ -411,11 +473,15 @@ export default function HomeDashboard() {
                     e.stopPropagation(); 
                     if (confirm("Move this video to trash?")) {
                       try {
-                        const res = await fetch(`/api/videos/${vid.filename}`, { method: 'DELETE' });
+                        const res = await fetch(`/api/videos`, { 
+                          method: 'DELETE',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ filename: vid.filename, id: vid.id, trash: true })
+                        });
                         if (res.ok) {
                           setVideos(videos.filter(v => v.filename !== vid.filename));
                         } else {
-                          alert('Failed to delete video');
+                          alert('Failed to move video to trash');
                         }
                       } catch (err) {
                         console.error(err);
@@ -470,11 +536,15 @@ export default function HomeDashboard() {
                   e.stopPropagation(); 
                   if (confirm("Move this video to trash?")) {
                     try {
-                      const res = await fetch(`/api/videos/${vid.filename}`, { method: 'DELETE' });
+                      const res = await fetch(`/api/videos`, { 
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ filename: vid.filename, id: vid.id, trash: true })
+                      });
                       if (res.ok) {
                         setVideos(videos.filter(v => v.filename !== vid.filename));
                       } else {
-                        alert('Failed to delete video');
+                        alert('Failed to move video to trash');
                       }
                     } catch (err) {
                       console.error(err);
