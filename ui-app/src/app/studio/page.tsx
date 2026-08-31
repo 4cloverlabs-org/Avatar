@@ -23,7 +23,9 @@ export type CanvasElement = {
 };
 
 const isVideoUrl = (url: string) => {
-  return /\.(mp4|webm|ogg|mov)$/i.test(url) || url.includes('blob:');
+  if (!url) return false;
+  const baseUrl = url.split('?')[0].split('#')[0];
+  return /\.(mp4|webm|ogg|mov)$/i.test(baseUrl) || url.includes('blob:') || url.includes('/api/serve_video') || url.includes('/preview');
 };
 
 export default function Dashboard() {
@@ -284,7 +286,7 @@ export default function Dashboard() {
             if (found && found.preview) {
                setVideoPreview(found.preview);
             } else if (targetId.length === 36) { // Custom UUID avatar
-               setVideoPreview(`/api/serve_video?type=av&path=${targetId}/video.mp4`);
+               setVideoPreview(`/api/serve_video?type=av&path=${targetId}`);
             } else {
                setVideoPreview(`/avatars/${targetId}.jpg`);
             }
