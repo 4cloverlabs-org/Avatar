@@ -398,6 +398,29 @@ export const videoRelations = relations(video, ({ one }) => ({
   }),
 }));
 
+// ── Voices (Cloned / System) ─────────────────────────────────────────
+export const voice = pgTable(
+  "voice",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    type: text("type").default('custom').notNull(), // 'custom' | 'system'
+    samplePath: text("sample_path"), // Path to the uploaded audio file
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("voice_userId_idx").on(table.userId)]
+);
+
+export const voiceRelations = relations(voice, ({ one }) => ({
+  user: one(user, {
+    fields: [voice.userId],
+    references: [user.id],
+  }),
+}));
+
 // ── Session Handoff ──────────────────────────────────────────────────
 export const sessionHandoff = pgTable(
   "session_handoff",

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Play, Search, X, ChevronRight } from 'lucide-react';
+import { User, Play, Search, X, ChevronRight, Mic, Square } from 'lucide-react';
 
 export default function VoicesView() {
   const router = useRouter();
@@ -38,11 +38,117 @@ export default function VoicesView() {
 }
 
 function MyVoicesUI() {
-  const mockVoices = [
-    { id: '1', name: "Lily's Voice", type: 'System Voice' },
-    { id: '2', name: "Matt's Voice", type: 'System Voice' },
-    { id: '3', name: "Rosie's Voice", type: 'System Voice' },
-  ];
+  const [voices, setVoices] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newVoiceName, setNewVoiceName] = useState('');
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
+  const audioChunksRef = React.useRef<Blob[]>([]);
+  
+  const [playingId, setPlayingId] = useState<string | null>(null);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  React.useEffect(() => {
+    fetchVoices();
+  }, []);
+
+  const fetchVoices = async () => {
+    try {
+      const res = await fetch('/api/voices');
+      const data = await res.json();
+      if (data.success) {
+        setVoices(data.voices);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleStartRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const file = new File([audioBlob], 'recorded_sample.webm', { type: 'audio/webm' });
+        setAudioFile(file);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error("Error accessing microphone:", err);
+      alert("Could not access microphone.");
+    }
+  };
+
+  const handleStopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+    }
+  };
+  
+  const handlePlayVoice = (id: string) => {
+    if (playingId === id) {
+      audioRef.current?.pause();
+      setPlayingId(null);
+    } else {
+      setPlayingId(id);
+      setTimeout(() => {
+        audioRef.current?.play().catch(e => {
+          console.error("Audio playback error", e);
+          setPlayingId(null);
+        });
+      }, 50);
+    }
+  };
+
+  const handleCloneVoice = async () => {
+    if (!audioFile) return;
+    setIsUploading(true);
+    
+    const finalName = newVoiceName.trim() || 'Untitled Voice';
+    
+    const formData = new FormData();
+    formData.append('name', finalName);
+    formData.append('audio', audioFile);
+    
+    try {
+      const res = await fetch('/api/voices', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success) {
+        setIsModalOpen(false);
+        setNewVoiceName('');
+        setAudioFile(null);
+        fetchVoices();
+      } else {
+        alert(data.error);
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Failed to clone voice');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const renderWaveform = () => {
     return (
@@ -76,40 +182,164 @@ function MyVoicesUI() {
           <p style={{ color: '#475569', fontSize: 15, lineHeight: 1.5, marginBottom: 24 }}>
             Clone your voice in minutes. Pair it with any Avatar to make videos that sound just like you.
           </p>
-          <button style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+          >
             Clone New Voice
           </button>
         </div>
       </div>
 
-      {/* EXAMPLES SECTION */}
-      <div style={{ marginBottom: 24 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: '0 0 4px 0' }}>Examples</h3>
-        <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>Check out these examples using our new cutting-edge voice cloning model.</p>
-      </div>
+      {/* CLONE MODAL */}
+      {isModalOpen && (
+        <>
+          <div onClick={() => !isUploading && setIsModalOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.6)', zIndex: 998, backdropFilter: 'blur(4px)' }} />
+          <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#fff', padding: 32, borderRadius: 16, width: '90%', maxWidth: 450, zIndex: 999 }}>
+            <h3 style={{ margin: '0 0 8px 0', fontSize: 20 }}>Clone a Voice</h3>
+            <p style={{ margin: '0 0 24px 0', color: '#64748b', fontSize: 14 }}>Upload a clear 10-30 second audio sample with no background noise.</p>
+            
+            <label style={{ display: 'block', marginBottom: 8, fontSize: 14, fontWeight: 600 }}>Voice Name</label>
+            <input 
+              type="text" 
+              placeholder="e.g. My Studio Voice" 
+              value={newVoiceName}
+              onChange={(e) => setNewVoiceName(e.target.value)}
+              style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #e2e8f0', marginBottom: 20, outline: 'none' }}
+            />
 
-      {/* CARDS GRID */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
-        {mockVoices.map(voice => (
-          <div key={voice.id} style={{ background: '#f8fafc', borderRadius: 12, overflow: 'hidden', padding: '24px 0 0 0' }}>
-            {renderWaveform()}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 20px 20px', marginTop: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ width: 40, height: 40, background: '#cbd5e1', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <User size={20} color="#fff" />
-                </div>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>{voice.name}</div>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>{voice.type}</div>
-                </div>
+            <label style={{ display: 'block', marginBottom: 8, fontSize: 14, fontWeight: 600 }}>Audio Sample (.wav or .mp3)</label>
+            <input 
+              type="file" 
+              accept="audio/*"
+              ref={fileInputRef}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setAudioFile(e.target.files[0]);
+                }
+              }}
+              style={{ display: 'none' }}
+            />
+            <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+              <div 
+                onClick={() => !isRecording && fileInputRef.current?.click()}
+                style={{ flex: 1, padding: '24px', border: '2px dashed #e2e8f0', borderRadius: 8, textAlign: 'center', cursor: isRecording ? 'not-allowed' : 'pointer', background: '#f8fafc', opacity: isRecording ? 0.5 : 1 }}
+              >
+                {audioFile ? (
+                  <div style={{ color: '#4f46e5', fontWeight: 600 }}>Audio Ready</div>
+                ) : (
+                  <div style={{ color: '#64748b' }}>Click to upload audio file</div>
+                )}
               </div>
-              <button style={{ width: 36, height: 36, background: '#4f46e5', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                <Play size={16} color="#fff" fill="#fff" />
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ color: '#94a3b8', fontSize: 13, fontWeight: 500 }}>OR</div>
+              </div>
+
+              <div 
+                onClick={isRecording ? handleStopRecording : handleStartRecording}
+                style={{ flex: 1, padding: '24px', border: `2px dashed ${isRecording ? '#ef4444' : '#e2e8f0'}`, borderRadius: 8, textAlign: 'center', cursor: 'pointer', background: isRecording ? '#fef2f2' : '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+              >
+                {isRecording ? (
+                  <>
+                    <Square size={20} color="#ef4444" fill="#ef4444" style={{ animation: 'pulse 1.5s infinite' }} />
+                    <div style={{ color: '#ef4444', fontWeight: 600, fontSize: 13 }}>Stop Recording...</div>
+                  </>
+                ) : (
+                  <>
+                    <Mic size={20} color="#64748b" />
+                    <div style={{ color: '#64748b', fontSize: 13 }}>Record from mic</div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {audioFile && (
+              <div style={{ marginBottom: 24, padding: '12px', background: '#f1f5f9', borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#334155' }}>Preview Audio:</div>
+                  <div 
+                    onClick={() => setAudioFile(null)}
+                    style={{ fontSize: 12, color: '#ef4444', cursor: 'pointer', fontWeight: 500 }}
+                  >
+                    Remove
+                  </div>
+                </div>
+                <audio controls src={URL.createObjectURL(audioFile)} style={{ width: '100%', height: 36, outline: 'none' }} />
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                disabled={isUploading}
+                style={{ padding: '10px 16px', borderRadius: 8, border: '1px solid #e2e8f0', background: '#fff', cursor: 'pointer', fontWeight: 600 }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleCloneVoice}
+                disabled={isUploading || !audioFile}
+                style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: '#4f46e5', color: '#fff', cursor: (isUploading || !audioFile) ? 'not-allowed' : 'pointer', fontWeight: 600, opacity: (isUploading || !audioFile) ? 0.7 : 1 }}
+              >
+                {isUploading ? 'Uploading...' : 'Clone Voice'}
               </button>
             </div>
           </div>
-        ))}
+        </>
+      )}
+
+      {/* EXAMPLES SECTION */}
+      <div style={{ marginBottom: 24 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: '0 0 4px 0' }}>Your Voices</h3>
+        <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>Use these voices to generate video content in the AI Studio.</p>
       </div>
+
+      {/* CARDS GRID */}
+      {voices.length === 0 ? (
+        <div style={{ padding: 40, textAlign: 'center', background: '#f8fafc', borderRadius: 12, color: '#94a3b8' }}>
+          You haven't cloned any voices yet.
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+          {voices.map(voice => (
+            <div key={voice.id} style={{ background: '#f8fafc', borderRadius: 12, overflow: 'hidden', padding: '24px 0 0 0', border: '1px solid #e2e8f0' }}>
+              {renderWaveform()}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 20px 20px', marginTop: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 40, height: 40, background: '#cbd5e1', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <User size={20} color="#fff" />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>{voice.name}</div>
+                    <div style={{ fontSize: 12, color: '#64748b' }}>Custom Voice</div>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => handlePlayVoice(voice.id)}
+                  style={{ width: 36, height: 36, background: '#4f46e5', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  {playingId === voice.id ? (
+                    <Square size={16} color="#fff" fill="#fff" />
+                  ) : (
+                    <Play size={16} color="#fff" fill="#fff" />
+                  )}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {playingId && (
+        <audio 
+          ref={audioRef}
+          src={`/api/voices/${playingId}/audio`}
+          onEnded={() => setPlayingId(null)}
+          onPause={() => setPlayingId(null)}
+          style={{ display: 'none' }}
+        />
+      )}
     </>
   );
 }

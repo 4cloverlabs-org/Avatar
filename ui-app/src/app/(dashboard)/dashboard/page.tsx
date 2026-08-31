@@ -21,10 +21,11 @@ export default function HomeDashboard() {
   const [availableAvatars, setAvailableAvatars] = useState<any[]>([]);
   const [isAspectOpen, setIsAspectOpen] = useState(false);
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
-  const [customVoice, setCustomVoice] = useState<File | null>(null);
+  const [availableVoices, setAvailableVoices] = useState<any[]>([]);
+  const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
+  const [isVoiceOpen, setIsVoiceOpen] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const voiceInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -61,10 +62,23 @@ export default function HomeDashboard() {
         }
       })
       .catch(console.error);
+
+    // Fetch Voices
+    fetch('/api/voices')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.voices) {
+          setAvailableVoices(data.voices);
+          if (data.voices.length > 0) {
+            setSelectedVoice(data.voices[0].id);
+          }
+        }
+      })
+      .catch(console.error);
   }, []);
 
   const handlePromptSubmit = () => {
-    if (!promptText.trim() && !customVoice) return;
+    if (!promptText.trim()) return;
     localStorage.setItem('ai_assistant_script', promptText);
     localStorage.setItem('ai_assistant_aspect', selectedAspect);
     localStorage.setItem('ai_assistant_auto_generate', 'true');
@@ -73,30 +87,11 @@ export default function HomeDashboard() {
       localStorage.setItem('ai_assistant_avatar', selectedAvatar);
     }
 
-    if (customVoice) {
-      localStorage.setItem('ai_assistant_has_custom_voice', 'true');
-      
-      // Save file to IndexedDB for reliable handoff to Studio
-      const request = indexedDB.open("VoiceDB", 1);
-      request.onupgradeneeded = (e: any) => {
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains("voice")) {
-          db.createObjectStore("voice");
-        }
-      };
-      request.onsuccess = (e: any) => {
-        const db = e.target.result;
-        const tx = db.transaction("voice", "readwrite");
-        const store = tx.objectStore("voice");
-        store.put(customVoice, "dashboardVoice");
-        tx.oncomplete = () => {
-          router.push('/studio');
-        };
-      };
-    } else {
-      localStorage.setItem('ai_assistant_has_custom_voice', 'false');
-      router.push('/studio');
+    if (selectedVoice) {
+      localStorage.setItem('ai_assistant_voice', selectedVoice);
     }
+
+    router.push('/studio');
   };
 
   const getSelectedAvatarName = () => {
@@ -155,6 +150,7 @@ export default function HomeDashboard() {
               e.stopPropagation();
               setIsAvatarOpen(!isAvatarOpen);
               setIsAspectOpen(false);
+              setIsVoiceOpen(false);
             }}
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
@@ -181,7 +177,9 @@ export default function HomeDashboard() {
           <div 
             onClick={(e) => {
               e.stopPropagation();
-              voiceInputRef.current?.click();
+              setIsVoiceOpen(!isVoiceOpen);
+              setIsAvatarOpen(false);
+              setIsAspectOpen(false);
             }}
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
@@ -199,24 +197,13 @@ export default function HomeDashboard() {
               transition: 'background-color 0.2s'
             }}
           >
-            <input 
-              type="file" 
-              accept="audio/*" 
-              ref={voiceInputRef} 
-              style={{ display: 'none' }} 
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  setCustomVoice(e.target.files[0]);
-                }
-              }}
-            />
             <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#ffffff', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Mic size={18} color="#475569" />
             </div>
             <div>
               <div style={{ fontSize: 9, color: '#64748b', lineHeight: 1 }}>Voice</div>
-              <div style={{ fontWeight: 600, maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {customVoice ? customVoice.name : "Auto Voice"}
+              <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                {selectedVoice ? (availableVoices.find(v => v.id === selectedVoice)?.name || "Custom Voice") : "Auto Voice"} <ChevronDown size={10} color="#64748b" />
               </div>
             </div>
           </div>
@@ -240,6 +227,7 @@ export default function HomeDashboard() {
               e.stopPropagation();
               setIsAspectOpen(!isAspectOpen);
               setIsAvatarOpen(false);
+              setIsVoiceOpen(false);
             }}
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
@@ -313,6 +301,32 @@ export default function HomeDashboard() {
             </div>
           )}
 
+          {/* Voice Dropdown List overlay */}
+          {isVoiceOpen && (
+            <div style={{ position: 'absolute', top: 44, left: 160, width: 200, background: '#ffffff', border: '1px solid var(--panel-border)', borderRadius: 8, padding: 6, zIndex: 100, display: 'flex', flexDirection: 'column', gap: 4, boxShadow: '0 10px 25px rgba(0,0,0,0.08)', maxHeight: 150, overflowY: 'auto' }}>
+              {availableVoices.length === 0 ? (
+                <div style={{ padding: '8px 12px', fontSize: 11, color: '#64748b' }}>No custom voices found</div>
+              ) : (
+                availableVoices.map(v => (
+                  <div
+                    key={v.id}
+                    style={{ padding: '6px', fontSize: 11, cursor: 'pointer', background: selectedVoice === v.id ? 'var(--accent)' : 'transparent', color: selectedVoice === v.id ? '#ffffff' : '#334155', borderRadius: 6, fontWeight: selectedVoice === v.id ? 600 : 400, display: 'flex', alignItems: 'center', gap: '8px' }}
+                    onClick={() => {
+                      setSelectedVoice(v.id);
+                      setIsVoiceOpen(false);
+                    }}
+                    onMouseEnter={(e) => { if (selectedVoice !== v.id) e.currentTarget.style.background = 'var(--background)'; }}
+                    onMouseLeave={(e) => { if (selectedVoice !== v.id) e.currentTarget.style.background = 'transparent'; }}
+                  >
+                    <div style={{ width: 24, height: 24, borderRadius: '50%', background: selectedVoice === v.id ? 'rgba(255,255,255,0.2)' : '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Mic size={14} color={selectedVoice === v.id ? '#ffffff' : '#64748b'} />
+                    </div>
+                    <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.name}</div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
 
         {/* Prompt input field */}
@@ -349,7 +363,7 @@ export default function HomeDashboard() {
 
             <button
               onClick={handlePromptSubmit}
-              disabled={!promptText.trim() && !customVoice}
+              disabled={!promptText.trim()}
               style={{
                 background: 'var(--accent)',
                 color: '#ffffff',
@@ -358,12 +372,12 @@ export default function HomeDashboard() {
                 padding: '8px 24px',
                 fontSize: 13,
                 fontWeight: 700,
-                cursor: (promptText.trim() || customVoice) ? 'pointer' : 'not-allowed',
-                opacity: (promptText.trim() || customVoice) ? 1 : 0.5,
+                cursor: (promptText.trim()) ? 'pointer' : 'not-allowed',
+                opacity: (promptText.trim()) ? 1 : 0.5,
                 transition: 'all 0.2s ease-in-out'
               }}
-              onMouseEnter={(e) => { if (promptText.trim() || customVoice) e.currentTarget.style.backgroundColor = 'var(--accent-hover)'; }}
-              onMouseLeave={(e) => { if (promptText.trim() || customVoice) e.currentTarget.style.backgroundColor = 'var(--accent)'; }}
+              onMouseEnter={(e) => { if (promptText.trim()) e.currentTarget.style.backgroundColor = 'var(--accent-hover)'; }}
+              onMouseLeave={(e) => { if (promptText.trim()) e.currentTarget.style.backgroundColor = 'var(--accent)'; }}
             >
               Submit
             </button>

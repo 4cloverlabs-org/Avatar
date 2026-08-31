@@ -46,6 +46,9 @@ export default function Dashboard() {
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const [availableVoices, setAvailableVoices] = useState<any[]>([]);
+  const [selectedVoiceId, setSelectedVoiceId] = useState<string | null>(null);
+  const [isVoiceDropdownOpen, setIsVoiceDropdownOpen] = useState(false);
 
   const pollForVideo = async (targetAvatarId: string, aspect: string) => {
     // Poll every 10 seconds for up to 60 minutes
@@ -73,6 +76,22 @@ export default function Dashboard() {
     if (avatarUrl) {
       setVideoPreview(avatarUrl);
     }
+
+    fetch('/api/voices')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.voices) {
+          setAvailableVoices(data.voices);
+          const passedVoice = localStorage.getItem('ai_assistant_voice');
+          if (passedVoice && data.voices.some((v: any) => v.id === passedVoice)) {
+            setSelectedVoiceId(passedVoice);
+          } else if (data.voices.length > 0) {
+            setSelectedVoiceId(data.voices[0].id);
+          }
+          localStorage.removeItem('ai_assistant_voice');
+        }
+      })
+      .catch(console.error);
   }, []);
 
   const toggleRecording = async () => {
@@ -229,7 +248,7 @@ export default function Dashboard() {
 
     if (autoGen === 'true') {
       if (hasCustomVoice === 'true') {
-        // Load file from IndexedDB
+        // Load file from IndexedDB (Legacy)
         const request = indexedDB.open("VoiceDB", 1);
         request.onsuccess = (e: any) => {
           const db = e.target.result;
@@ -245,27 +264,15 @@ export default function Dashboard() {
           };
         };
       } else if (script) {
-        (async () => {
-          setIsGeneratingVoice(true);
-          try {
-            const formData = new FormData();
-            formData.append('text', script);
-            
-            const res = await fetch('/api/tts', { method: 'POST', body: formData });
-            if (res.ok) {
-              const blob = await res.blob();
-              const file = new File([blob], 'generated_voice.wav', { type: 'audio/wav' });
-              setAudioFile(file);
-              setAudioPreview(URL.createObjectURL(file));
-            } else {
-              const data = await res.json();
-              alert(data.error || "Failed to generate voice");
-            }
-          } catch (e) {
-            alert("Error generating voice");
-          }
-          setIsGeneratingVoice(false);
-        })();
+        // Voice ID passed from dashboard
+        const passedVoice = localStorage.getItem('ai_assistant_voice');
+        if (passedVoice) {
+           // It will be handled below when fetching voices
+           // but we need to ensure the auto-generate still triggers if they want.
+           // However, if they pass a voice ID, we just want it to be pre-selected in the dropdown.
+           // Auto-generating TTS immediately might be confusing if they haven't reviewed it, 
+           // but we'll leave it as is for now.
+        }
       }
     }
 
@@ -438,13 +445,12 @@ export default function Dashboard() {
 
   const handleGenerateVoice = async () => {
     if (!scriptText.trim()) return alert("Please enter a script to generate voice");
+    if (!selectedVoiceId) return alert("Please select a voice from the dropdown");
     setIsGeneratingVoice(true);
     try {
       const formData = new FormData();
       formData.append('text', scriptText);
-      if (referenceVoice) {
-        formData.append('audio', referenceVoice);
-      }
+      formData.append('voiceId', selectedVoiceId);
 
       const res = await fetch('/api/tts', { method: 'POST', body: formData });
       if (res.ok) {
@@ -599,9 +605,35 @@ export default function Dashboard() {
       <div className="syn-main">
         {/* LEFT SIDEBAR: Script Input Area */}
         <div className="syn-sidebar-left" style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ padding: 15, borderBottom: '1px solid var(--panel-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ padding: 15, borderBottom: '1px solid var(--panel-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
             <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>Voice Script</span>
-            <div style={{ width: 32, height: 20, borderRadius: 4, background: '#F0EBDD', border: '1px solid #E2DCC9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 600, color: '#63685A', cursor: 'pointer' }}>EN</div>
+            <div 
+              style={{ padding: '4px 8px', borderRadius: 4, background: '#F0EBDD', border: '1px solid #E2DCC9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, color: '#63685A', cursor: 'pointer', gap: 4 }}
+              onClick={() => setIsVoiceDropdownOpen(!isVoiceDropdownOpen)}
+            >
+              {selectedVoiceId ? (availableVoices.find(v => v.id === selectedVoiceId)?.name || 'Custom Voice') : 'No Voices'}
+              <ChevronDown size={12} />
+            </div>
+            
+            {isVoiceDropdownOpen && (
+              <div style={{ position: 'absolute', top: 50, right: 15, background: '#fff', border: '1px solid var(--panel-border)', borderRadius: 8, padding: 6, zIndex: 100, display: 'flex', flexDirection: 'column', gap: 4, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', width: 180, maxHeight: 200, overflowY: 'auto' }}>
+                {availableVoices.length === 0 ? (
+                  <div style={{ padding: '6px', fontSize: 11, color: '#64748b' }}>No custom voices found</div>
+                ) : (
+                  availableVoices.map(v => (
+                    <div 
+                      key={v.id}
+                      style={{ padding: '6px', fontSize: 12, cursor: 'pointer', background: selectedVoiceId === v.id ? 'var(--accent)' : 'transparent', color: selectedVoiceId === v.id ? '#fff' : '#000', borderRadius: 4 }}
+                      onClick={() => { setSelectedVoiceId(v.id); setIsVoiceDropdownOpen(false); }}
+                      onMouseEnter={e => { if (selectedVoiceId !== v.id) e.currentTarget.style.background = '#f1f5f9' }}
+                      onMouseLeave={e => { if (selectedVoiceId !== v.id) e.currentTarget.style.background = 'transparent' }}
+                    >
+                      {v.name}
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
           <div style={{ flex: 1, padding: 15, display: 'flex', flexDirection: 'column' }}>
@@ -635,6 +667,19 @@ export default function Dashboard() {
                 value={scriptText}
                 onChange={(e) => setScriptText(e.target.value)}
               />
+            )}
+            
+            {!audioFile && (
+              <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', paddingTop: 10 }}>
+                <button 
+                  onClick={handleGenerateVoice} 
+                  disabled={isGeneratingVoice || !scriptText.trim()}
+                  className="syn-btn-primary" 
+                  style={{ fontSize: 12, padding: '6px 12px', background: 'var(--accent)', opacity: (!scriptText.trim() || isGeneratingVoice) ? 0.6 : 1 }}
+                >
+                  <Wand2 size={12} /> {isGeneratingVoice ? "Generating..." : "Generate Audio"}
+                </button>
+              </div>
             )}
           </div>
 

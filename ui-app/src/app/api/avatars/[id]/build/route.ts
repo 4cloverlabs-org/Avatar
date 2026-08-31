@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { Client, handle_file } from '@gradio/client';
+import { db } from '../../../../../lib/db';
+import { notification } from '../../../../../db/schema';
+import { auth } from '../../../../../lib/auth';
+import { headers } from 'next/headers';
+import crypto from 'crypto';
 
 export async function POST(
   request: Request,
@@ -11,6 +16,11 @@ export async function POST(
   let trackingId = "";
   
   try {
+    // Attempt to get user session for notifications (won't block if anonymous but needed for UI)
+    const session = await auth.api.getSession({
+      headers: await headers()
+    });
+
     trackingId = (await params).id;
     const trackingDir = path.join(process.cwd(), '..', 'results', 'avatars', trackingId);
 
@@ -171,6 +181,21 @@ export async function POST(
     } catch(e) {
       console.error("[Avatar Build] Failed to generate AI preview:", e);
       throw e; // Throw it so the outer catch block sets the status to error
+    }
+
+    // Insert database notification for successful avatar generation
+    if (session && session.user) {
+      try {
+        await db.insert(notification).values({
+          id: crypto.randomUUID(),
+          userId: session.user.id,
+          title: "AI Avatar Ready",
+          message: "Your AI avatar digital clone is ready to use! You can now generate videos with it.",
+          type: "avatar",
+        });
+      } catch (dbErr) {
+        console.error("Failed to insert avatar notification:", dbErr);
+      }
     }
 
     console.log(`[Avatar Build] Finished entirely for ${trackingId}`);

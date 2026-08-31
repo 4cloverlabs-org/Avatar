@@ -694,6 +694,12 @@ button {
   z-index: 0;
 }
 
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
 /* Isometric Layers */
 .iso-layer {
   position: absolute;

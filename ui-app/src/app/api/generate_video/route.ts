@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server';
 import { Client, handle_file } from '@gradio/client';
+import { db } from '../../../lib/db';
+import { notification } from '../../../db/schema';
+import { auth } from '../../../lib/auth';
+import { headers } from 'next/headers';
+import crypto from 'crypto';
 
 export async function POST(request: Request) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers()
+    });
+
     const formData = await request.formData();
     const avatarId = formData.get('avatarId') as string;
     const audioFile = formData.get('audio') as File;
@@ -101,6 +110,21 @@ export async function POST(request: Request) {
       
       // Cleanup temp file
       try { fs.unlinkSync(tempAudioPath); } catch (e) {}
+
+      // Insert database notification for successful video generation
+      if (session && session.user) {
+        try {
+          await db.insert(notification).values({
+            id: crypto.randomUUID(),
+            userId: session.user.id,
+            title: "Video Generation Complete",
+            message: "Your requested AI video has successfully finished generating.",
+            type: "video",
+          });
+        } catch (dbErr) {
+          console.error("Failed to insert video notification:", dbErr);
+        }
+      }
 
       return NextResponse.json({ 
         success: true, 
