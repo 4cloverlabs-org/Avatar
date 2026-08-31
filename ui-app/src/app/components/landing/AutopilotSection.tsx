@@ -47,11 +47,11 @@ const PipelineCard = ({ label, desc, activeDesc, isActive }: { label: string, de
    return (
       <motion.div
          animate={{
-            backgroundColor: isPublish && isActive ? '#000000' : '#FFFFFF',
-            color: isPublish && isActive ? '#FFFFFF' : 'var(--text-main)',
-            borderColor: isActive ? (isPublish ? '#000000' : '#1A1A1A') : 'var(--border-subtle)',
+            backgroundColor: '#FFFFFF',
+            color: 'var(--text-main)',
+            borderColor: isActive ? '#1A1A1A' : 'var(--border-subtle)',
             scale: isActive ? 1.02 : 1,
-            boxShadow: isActive && !isPublish ? 'var(--shadow-float)' : 'none',
+            boxShadow: isActive ? 'var(--shadow-float)' : 'none',
          }}
          transition={{ duration: 0.3 }}
          style={{
@@ -70,7 +70,7 @@ const PipelineCard = ({ label, desc, activeDesc, isActive }: { label: string, de
          }}
       >
          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.05em', color: isPublish && isActive ? '#FFFFFF' : (isActive ? '#000000' : 'var(--text-muted)') }}>
+            <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.05em', color: isActive ? '#000000' : 'var(--text-muted)' }}>
                {label}
             </span>
             {isActive && !isPublish && (
@@ -89,7 +89,7 @@ const PipelineCard = ({ label, desc, activeDesc, isActive }: { label: string, de
                </motion.div>
             )}
          </div>
-         <div style={{ fontSize: '0.75rem', fontWeight: 500, marginTop: '0.3rem', color: isPublish && isActive ? '#FFFFFF' : (isActive ? '#000000' : 'var(--text-main)'), display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+         <div style={{ fontSize: '0.75rem', fontWeight: 500, marginTop: '0.3rem', color: isActive ? '#000000' : 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>{isActive ? activeDesc : desc}</span>
             {isPublish && isActive && (
                <motion.div
