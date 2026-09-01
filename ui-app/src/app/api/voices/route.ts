@@ -73,7 +73,7 @@ export async function POST(req: Request) {
         voiceId 
       ]);
       
-      const outputString = result.data?.[0];
+      const outputString = (result as any).data?.[0];
       if (typeof outputString === 'string' && !outputString.startsWith('Error:')) {
          let absolutePath = outputString;
          if (absolutePath.startsWith('./')) {
