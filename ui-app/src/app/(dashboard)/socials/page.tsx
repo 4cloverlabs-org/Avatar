@@ -2,7 +2,23 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Youtube, Instagram, Facebook, Twitter, Music, Settings, X, Plus } from 'lucide-react';
+import { Youtube, Instagram, Facebook, Twitter, Settings, X, Plus } from 'lucide-react';
+
+const TikTokIcon = ({ size = 18, color = "#000000" }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width={size} 
+    height={size} 
+    viewBox="-32 -32 512 576" 
+    fill="none" 
+    stroke={color} 
+    strokeWidth="32" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+  >
+    <path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/>
+  </svg>
+);
 
 export default function SocialsPage() {
   const router = useRouter();
@@ -56,6 +72,10 @@ export default function SocialsPage() {
       window.location.href = '/api/socials/youtube/connect';
     } else if (platform === 'instagram') {
       window.location.href = '/api/socials/instagram/connect';
+    } else if (platform === 'facebook') {
+      window.location.href = '/api/socials/facebook/connect';
+    } else if (platform === 'twitter') {
+      window.location.href = '/api/socials/twitter/connect';
     } else {
       alert(`${platform} integration is coming soon!`);
     }
@@ -117,7 +137,7 @@ export default function SocialsPage() {
       id: 'tiktok',
       name: 'TikTok',
       desc: 'Track reach & interactions.',
-      icon: <Music size={18} color="#000000" />,
+      icon: <TikTokIcon size={18} color="#000000" />,
     },
     {
       id: 'youtube',
@@ -191,6 +211,9 @@ export default function SocialsPage() {
           display: flex;
           flex-direction: column;
           background: #fff;
+        }
+        .unconnected-card:hover {
+          border-color: #94a3b8;
         }
         .card-top {
           display: flex;
@@ -430,7 +453,16 @@ export default function SocialsPage() {
             }
 
             return (
-              <div className="integration-card" key={int.id}>
+              <div 
+                className={`integration-card ${!hasAccount ? 'unconnected-card' : ''}`}
+                key={int.id}
+                style={!hasAccount ? { cursor: 'pointer', transition: 'border-color 0.2s' } : {}}
+                onClick={() => {
+                  if (!hasAccount) {
+                    handleConnect(int.id);
+                  }
+                }}
+              >
                 <div className="card-top">
                   <div className="platform-info">
                     {int.icon}
@@ -438,7 +470,10 @@ export default function SocialsPage() {
                   </div>
                   <div 
                     className={`toggle-switch ${isConnected ? 'active' : ''}`}
-                    onClick={() => toggleConnection(int.id, hasAccount)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleConnection(int.id, hasAccount);
+                    }}
                   >
                     <div className="toggle-knob" />
                   </div>
@@ -452,11 +487,12 @@ export default function SocialsPage() {
                   <div className="status-badge" style={isConnected ? { background: '#e8f5e9', color: '#2e7d32' } : {}}>
                     {badgeText}
                   </div>
-                  <div className="settings-btn" onClick={() => {
+                  <div className="settings-btn" onClick={(e) => {
+                    e.stopPropagation();
                     if (hasAccount) {
                       setModalState({ isOpen: true, platform: int.id });
                     } else {
-                      toggleConnection(int.id, false);
+                      handleConnect(int.id);
                     }
                   }}>
                     <Settings size={20} />

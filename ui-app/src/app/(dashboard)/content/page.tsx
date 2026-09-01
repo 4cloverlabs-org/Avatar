@@ -74,7 +74,7 @@ export default function ContentSchedulerPage() {
     platforms: []
   }]);
   
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<{stratId: string, type: string} | null>(null);
 
   const niches = [
@@ -173,10 +173,10 @@ export default function ContentSchedulerPage() {
     }));
   };
 
-  const handleGenerate = () => {
-    setIsGenerating(true);
+  const handleGenerate = (id: string) => {
+    setGeneratingId(id);
     setTimeout(() => {
-      setIsGenerating(false);
+      setGeneratingId(null);
     }, 2000);
   };
 
@@ -188,8 +188,7 @@ export default function ContentSchedulerPage() {
 
   return (
     <div style={{ 
-      padding: '0px 40px 40px 40px',
-      marginTop: '-16px',
+      padding: '32px 40px 40px 40px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       width: '100%',
       minHeight: '100%',
@@ -211,7 +210,7 @@ export default function ContentSchedulerPage() {
           font-size: 42px;
           font-weight: 400;
           letter-spacing: -1px;
-          margin-bottom: 8px;
+          margin: 0 0 8px 0;
           color: #111;
         }
         .header-title span {
@@ -425,313 +424,512 @@ export default function ContentSchedulerPage() {
           background: #fef2f2;
           border-color: #fca5a5;
         }
+        
+        /* Premium Detail View Styles */
+        .detail-layout {
+          display: grid;
+          grid-template-columns: 1.2fr 1fr;
+          gap: 32px;
+        }
+        @media (max-width: 900px) {
+          .detail-layout {
+            grid-template-columns: 1fr;
+          }
+        }
+        .premium-card {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(10px);
+          border-radius: 20px;
+          border: 1px solid rgba(226, 232, 240, 0.8);
+          padding: 32px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+          transition: transform 0.2s, box-shadow 0.2s;
+          display: flex;
+          flex-direction: column;
+        }
+        .premium-card:hover {
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+          transform: translateY(-2px);
+        }
+        .premium-card-title {
+          font-size: 18px;
+          font-weight: 700;
+          color: #0f172a;
+          margin-bottom: 24px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .premium-pill-group {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+        .premium-pill {
+          padding: 10px 20px;
+          border-radius: 24px;
+          border: 1px solid #e2e8f0;
+          background: #f8fafc;
+          color: #475569;
+          font-weight: 600;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .premium-pill:hover {
+          background: #f1f5f9;
+        }
+        .premium-pill.active {
+          background: #0f172a;
+          color: #fff;
+          border-color: #0f172a;
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        }
+        
+        .platform-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 16px;
+        }
+        .platform-box {
+          border: 2px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 24px 16px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 16px;
+          cursor: pointer;
+          transition: all 0.3s;
+          background: #fff;
+          position: relative;
+        }
+        .platform-box:hover {
+          transform: translateY(-4px);
+          border-color: #cbd5e1;
+        }
+        .platform-box .check-icon {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          opacity: 0;
+          transform: scale(0.5);
+          transition: all 0.3s;
+        }
+        .platform-box.active-tiktok {
+          border-color: #FE2C55;
+          background: rgba(254, 44, 85, 0.04);
+        }
+        .platform-box.active-youtube {
+          border-color: #FF0000;
+          background: rgba(255, 0, 0, 0.04);
+        }
+        .platform-box.active-instagram {
+          border-color: #DD2A7B;
+          background: rgba(221, 42, 123, 0.04);
+        }
+        .platform-box[class*="active-"] .check-icon {
+          opacity: 1;
+          transform: scale(1);
+        }
+        
+        .premium-input-group {
+          display: flex;
+          align-items: center;
+          background: #fff;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          transition: all 0.2s;
+          overflow: hidden;
+        }
+        .premium-input-group:focus-within {
+          border-color: #94a3b8;
+          box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
+        }
+        .premium-input {
+          background: transparent;
+          border: none;
+          padding: 14px 16px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #0f172a;
+          outline: none;
+          width: 100%;
+        }
+        
+        .time-row {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding: 14px 20px;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          transition: all 0.2s;
+        }
+        .time-row:hover {
+          background: #fff;
+          border-color: #cbd5e1;
+        }
       `}</style>
 
-      <div>
-        <h1 className="header-title">
-          Content <span>Planner</span>
-        </h1>
-        <p className="header-subtitle">
-          Design your automated video publishing schedule with AI.
-        </p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1 className="header-title">
+            Content <span>Planner</span>
+          </h1>
+          <p className="header-subtitle">
+            Design your automated video publishing schedule with AI.
+          </p>
+        </div>
+        {!activeStrategyId && (
+          <button className="primary-btn" onClick={addStrategy} style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '8px', height: 'fit-content' }}>
+            <Plus size={16} /> New Strategy
+          </button>
+        )}
       </div>
 
       {!activeStrategyId ? (
-        <div className="strategy-list">
+        <div className="strategy-list" style={{ paddingBottom: '64px' }}>
+
           {strategies.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '64px 24px', background: '#fafafa', borderRadius: '24px', border: '1px dashed #e2e2e2' }}>
-              <div style={{ fontSize: '20px', fontWeight: 600, color: '#111', marginBottom: '8px' }}>No strategies found</div>
-              <p style={{ color: '#666', marginBottom: '24px' }}>Create your first content strategy to get started.</p>
+            <div style={{ textAlign: 'center', padding: '64px 24px', background: '#fff', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
+              <div style={{ fontSize: '18px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>No strategies yet</div>
+              <p style={{ color: '#64748b', marginBottom: '24px', fontSize: '14px' }}>Create your first content strategy to get started.</p>
               <button className="primary-btn" onClick={addStrategy}>
                 <Plus size={18} /> Create Strategy
               </button>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
-              {strategies.map((strat, index) => (
-                <div 
-                  key={strat.id}
-                  onClick={() => setActiveStrategyId(strat.id)}
-                  style={{ 
-                    background: '#fff', 
-                    borderRadius: '8px', 
-                    padding: '32px 28px', 
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    border: '2px solid #F5F5F5', 
-                    cursor: 'pointer'
-                  }}
-                >
-                  <div style={{ fontSize: '16px', fontWeight: 500, color: '#111', marginBottom: '16px' }}>
-                    Strategy {index + 1}
-                  </div>
-                  
-                  <h3 style={{ fontSize: '26px', fontWeight: 600, color: '#064e3b', marginBottom: '12px', lineHeight: 1.2 }}>
-                    {strat.niche} Content
-                  </h3>
-                  
-                  <div style={{ fontSize: '15px', color: '#9ca3af', marginBottom: '32px' }}>
-                    Duration : {strat.durationValue} {strat.durationUnit}
-                  </div>
-                  
-                  <button style={{ 
-                    width: '100%', 
-                    background: 'linear-gradient(90deg, #166534 0%, #15803d 100%)', 
-                    color: '#fff', 
-                    border: 'none', 
-                    padding: '16px 0', 
-                    borderRadius: '30px', 
-                    fontSize: '16px', 
-                    fontWeight: 500, 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    gap: '10px',
-                    cursor: 'pointer',
-                    marginTop: 'auto'
-                  }}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                    Edit Strategy
-                  </button>
-                </div>
-              ))}
+            <div>
+              <style>{`
+                .folder-card {
+                  position: relative;
+                  width: 280px;
+                  height: 220px;
+                  cursor: pointer;
+                  transition: transform 0.2s;
+                  --folder-bg: #f8fafc;
+                  --folder-text: #0f172a;
+                  --folder-label: #64748b;
+                }
+                
+                .folder-card.primary-folder {
+                  --folder-bg: #2563eb; 
+                  --folder-text: #ffffff;
+                  --folder-label: rgba(255, 255, 255, 0.8);
+                }
+
+                .folder-card:hover {
+                  transform: translateY(-4px);
+                }
+                
+                .folder-tab {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 35%;
+                  height: 44px;
+                  background: var(--folder-bg);
+                  border-radius: 24px 24px 0 0;
+                  transition: background 0.3s;
+                }
+                
+                .folder-tab::after {
+                  content: '';
+                  position: absolute;
+                  bottom: 0;
+                  right: -24px;
+                  width: 24px;
+                  height: 24px;
+                  background: radial-gradient(circle at top right, transparent 23.5px, var(--folder-bg) 24px);
+                  transition: background 0.3s;
+                }
+                
+                .folder-body {
+                  position: absolute;
+                  top: 44px;
+                  left: 0;
+                  right: 0;
+                  bottom: 0;
+                  background: var(--folder-bg);
+                  border-radius: 0 24px 24px 24px;
+                  padding: 20px 24px;
+                  display: flex;
+                  flex-direction: column;
+                  transition: background 0.3s;
+                }
+
+                .folder-pill {
+                  display: inline-flex;
+                  align-items: center;
+                  padding: 4px 10px;
+                  border-radius: 9999px;
+                  font-size: 12px;
+                  font-weight: 600;
+                }
+
+                .primary-folder .folder-pill {
+                  background: rgba(255, 255, 255, 0.2);
+                  color: #fff;
+                  border: none;
+                }
+
+                .primary-folder .folder-pill-dot {
+                  background: #fff;
+                }
+
+                .folder-card:not(.primary-folder) .folder-pill {
+                  background: #fff;
+                  color: #166534;
+                  border: 1px solid #bbf7d0;
+                }
+
+                .folder-card:not(.primary-folder) .folder-pill-dot {
+                  background: #22c55e;
+                }
+              `}</style>
               
-              <div 
-                onClick={addStrategy}
-                style={{ 
-                  background: '#fafafa', 
-                  borderRadius: '8px', 
-                  padding: '36px 24px', 
-                  display: 'flex', 
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '2px dashed #e2e2e2', 
-                  cursor: 'pointer', 
-                  transition: 'background 0.2s',
-                  minHeight: '260px'
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#fafafa')}
-              >
-                <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, border: '1px solid #e2e8f0', color: '#64748b' }}>
-                  <Plus size={24} />
-                </div>
-                <div style={{ fontSize: '15px', fontWeight: 600, color: '#475569' }}>
-                  Add Strategy
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="strategy-detail" style={{ padding: '0 0 40px 0' }}>
-          <button 
-            onClick={() => setActiveStrategyId(null)} 
-            style={{ 
-              background: '#f8fafc', 
-              border: '1px solid #e2e8f0', 
-              color: '#475569',
-              width: 'auto', 
-              marginBottom: 32, 
-              padding: '8px 16px', 
-              borderRadius: '20px', 
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              fontSize: '13px',
-              fontWeight: 500,
-              cursor: 'pointer',
-              transition: 'background 0.2s'
-            }}
-            onMouseOver={e => e.currentTarget.style.backgroundColor = '#f1f5f9'}
-            onMouseOut={e => e.currentTarget.style.backgroundColor = '#f8fafc'}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            View all
-          </button>
-          
-          {strategies.filter(s => s.id === activeStrategyId).map((strat, index) => (
-            <div key={strat.id} className="strategy-container" style={{ margin: 0 }}>
-              <div className="strategy-header">
-                <div className="strategy-title">Strategy Configuration</div>
-                <button className="remove-btn" onClick={() => { removeStrategy(strat.id); setActiveStrategyId(null); }} title="Remove Strategy">
-                  <Trash2 size={16} />
-                </button>
-              </div>
-
-          <div className="dashboard-grid">
-            {/* Niche Card */}
-            <div className="dash-card">
-              <div className="card-header">
-                <div className="icon-wrapper">
-                  <Target size={18} />
-                </div>
-                <div className="card-title">Select Your Niche</div>
-              </div>
-              <div style={{ position: 'relative', marginTop: 'auto' }}>
-                <div 
-                  className={`custom-dropdown-btn ${openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'active' : ''}`}
-                  onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'niche' }); }}
-                >
-                  {strat.niche}
-                  <ChevronDown size={16} color="#888" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
-                </div>
-                {openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' && (
-                  <div className="custom-dropdown-menu">
-                    {niches.map(n => (
-                      <div 
-                        key={n} 
-                        className={`custom-dropdown-item ${n === strat.niche ? 'selected' : ''}`}
-                        onClick={() => { updateStrategy(strat.id, 'niche', n); setOpenDropdown(null); }}
-                      >
-                        {n}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Duration Card */}
-            <div className="dash-card">
-              <div className="card-header">
-                <div className="icon-wrapper">
-                  <Calendar size={18} />
-                </div>
-                <div className="card-title">Campaign Duration</div>
-              </div>
-              <div style={{ display: 'flex', gap: '12px', marginTop: 'auto' }}>
-                <div style={{ flex: 1 }}>
-                  <input 
-                    type="number" 
-                    className="input-element" 
-                    value={strat.durationValue}
-                    onChange={(e) => updateStrategy(strat.id, 'durationValue', e.target.value)}
-                  />
-                </div>
-                <div style={{ position: 'relative', flex: 1 }}>
-                  <div 
-                    className={`custom-dropdown-btn ${openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' ? 'active' : ''}`}
-                    onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'duration' }); }}
-                  >
-                    {strat.durationUnit}
-                    <ChevronDown size={16} color="#888" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
-                  </div>
-                  {openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' && (
-                    <div className="custom-dropdown-menu">
-                      {durationUnits.map(u => (
-                        <div 
-                          key={u} 
-                          className={`custom-dropdown-item ${u === strat.durationUnit ? 'selected' : ''}`}
-                          onClick={() => { updateStrategy(strat.id, 'durationUnit', u); setOpenDropdown(null); }}
-                        >
-                          {u}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Content Style Card */}
-            <div className="dash-card">
-              <div className="card-header">
-                <div className="icon-wrapper">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                </div>
-                <div className="card-title">Content Style</div>
-              </div>
-              <div style={{ position: 'relative', marginTop: 'auto' }}>
-                <div 
-                  className={`custom-dropdown-btn ${openDropdown?.stratId === strat.id && openDropdown?.type === 'style' ? 'active' : ''}`}
-                  onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'style' }); }}
-                >
-                  {strat.contentStyle}
-                  <ChevronDown size={16} color="#888" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'style' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
-                </div>
-                {openDropdown?.stratId === strat.id && openDropdown?.type === 'style' && (
-                  <div className="custom-dropdown-menu">
-                    {contentStyles.map(s => (
-                      <div 
-                        key={s} 
-                        className={`custom-dropdown-item ${s === strat.contentStyle ? 'selected' : ''}`}
-                        onClick={() => { updateStrategy(strat.id, 'contentStyle', s); setOpenDropdown(null); }}
-                      >
-                        {s}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Target Platforms Card */}
-            <div className="dash-card">
-              <div className="card-header">
-                <div className="icon-wrapper">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-                </div>
-                <div className="card-title">Target Platforms</div>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: 'auto' }}>
-                {['TikTok', 'YouTube Shorts', 'Instagram Reels'].map((plat, i) => {
-                  const isSelected = strat.platforms.includes(plat);
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px' }}>
+                {strategies.map((strat, index) => {
+                  const isPrimary = index === 0; // First one is blue like the image
                   return (
                     <div 
-                      key={plat}
-                      onClick={() => togglePlatform(strat.id, plat)}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        cursor: 'pointer',
-                        paddingBottom: i < 2 ? '16px' : '0',
-                        borderBottom: i < 2 ? '1px dashed #e2e8f0' : 'none'
-                      }}
+                      key={strat.id}
+                      className={`folder-card ${isPrimary ? 'primary-folder' : ''}`}
+                      onClick={() => setActiveStrategyId(strat.id)}
                     >
-                      <div style={{
-                        width: '20px',
-                        height: '20px',
-                        borderRadius: '50%',
-                        border: isSelected ? 'none' : '2px solid #cbd5e1',
-                        backgroundColor: isSelected ? '#d946ef' : 'transparent',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        {isSelected && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
-                      </div>
-                      <div style={{ fontSize: '14px', fontWeight: 500, color: '#334155' }}>
-                        {plat}
+                      <div className="folder-tab"></div>
+                      <div className="folder-body">
+                        <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--folder-label)', marginBottom: '8px', letterSpacing: '0.05em' }}>
+                          STATUS
+                        </div>
+                        <div style={{ marginBottom: '14px' }}>
+                          <span className="folder-pill">
+                            <span className="folder-pill-dot" style={{ width: '6px', height: '6px', borderRadius: '50%', marginRight: '6px' }}></span>
+                            In Progress
+                          </span>
+                        </div>
+                        
+                        <div>
+                          <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--folder-label)', marginBottom: '4px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                            Strategy {index + 1}
+                          </div>
+                          <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--folder-text)', lineHeight: '1.2' }}>
+                            {strat.niche} Content
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
                 })}
               </div>
             </div>
+          )}
+        </div>
+      ) : (
+        <div className="strategy-detail" style={{ padding: '0 0 40px 0' }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '32px' }}>
+            <button 
+              onClick={() => setActiveStrategyId(null)} 
+              style={{ 
+                background: '#fff', 
+                border: '1px solid #e2e8f0', 
+                color: '#475569',
+                padding: '8px 16px', 
+                borderRadius: '20px', 
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '13px',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+              }}
+              onMouseOver={e => { e.currentTarget.style.backgroundColor = '#f8fafc'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
+              onMouseOut={e => { e.currentTarget.style.backgroundColor = '#fff'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Back to Strategies
+            </button>
+          </div>
+          
+          {strategies.filter(s => s.id === activeStrategyId).map((strat, index) => (
+            <div key={strat.id} className="strategy-container" style={{ margin: 0 }}>
+              <div className="strategy-header">
+                <div className="strategy-title">Strategy Configuration {index + 1}</div>
+                <button className="remove-btn" onClick={() => { removeStrategy(strat.id); setActiveStrategyId(null); }} title="Remove Strategy">
+                  <Trash2 size={16} />
+                </button>
+              </div>
 
-            {/* Frequency & Time Card */}
-            <div className="dash-card" style={{ gridColumn: '1 / -1', flexDirection: 'row', alignItems: 'flex-start', gap: '32px', flexWrap: 'wrap' }}>
-              <div style={{ flex: 1, minWidth: '250px' }}>
-                <div className="card-header" style={{ marginBottom: '16px' }}>
-                  <div className="icon-wrapper">
-                    <Activity size={18} />
-                  </div>
-                  <div className="card-title">Upload Frequency</div>
+          <div className="detail-layout">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+              
+              {/* Niche Selection */}
+              <div className="premium-card">
+                <div className="premium-card-title">
+                  <Target size={20} color="#3b82f6" /> Select Your Niche
                 </div>
                 <div style={{ position: 'relative' }}>
                   <div 
-                    className={`custom-dropdown-btn ${openDropdown?.stratId === strat.id && openDropdown?.type === 'frequency' ? 'active' : ''}`}
-                    onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'frequency' }); }}
+                    className={`premium-input-group ${openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'active' : ''}`}
+                    onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'niche' }); }}
+                    style={{ cursor: 'pointer' }}
                   >
-                    {strat.frequency}
-                    <ChevronDown size={16} color="#888" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'frequency' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                    <div style={{ flex: 1, padding: '14px 16px', fontSize: '16px', fontWeight: 600, color: '#0f172a' }}>
+                      {strat.niche}
+                    </div>
+                    <div style={{ padding: '0 16px' }}>
+                      <ChevronDown size={18} color="#94a3b8" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                    </div>
+                  </div>
+                  {openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' && (
+                    <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
+                      {niches.map(n => (
+                        <div 
+                          key={n} 
+                          className={`custom-dropdown-item ${n === strat.niche ? 'selected' : ''}`}
+                          onClick={() => { updateStrategy(strat.id, 'niche', n); setOpenDropdown(null); }}
+                        >
+                          {n}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Content Style Selection */}
+              <div className="premium-card">
+                <div className="premium-card-title">
+                  <Sparkles size={20} color="#d946ef" /> Content Style
+                </div>
+                <div className="premium-pill-group">
+                  {contentStyles.map(s => (
+                    <div 
+                      key={s} 
+                      className={`premium-pill ${s === strat.contentStyle ? 'active' : ''}`}
+                      onClick={() => updateStrategy(strat.id, 'contentStyle', s)}
+                    >
+                      {s}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Target Platforms */}
+              <div className="premium-card">
+                <div className="premium-card-title">
+                  <Users size={20} color="#22c55e" /> Target Platforms
+                </div>
+                <div className="platform-grid">
+                  {['TikTok', 'YouTube Shorts', 'Instagram Reels'].map(plat => {
+                    const isSelected = strat.platforms.includes(plat);
+                    let activeClass = '';
+                    if (isSelected) {
+                      if (plat === 'TikTok') activeClass = 'active-tiktok';
+                      if (plat === 'YouTube Shorts') activeClass = 'active-youtube';
+                      if (plat === 'Instagram Reels') activeClass = 'active-instagram';
+                    }
+                    return (
+                      <div 
+                        key={plat}
+                        className={`platform-box ${activeClass}`}
+                        onClick={() => togglePlatform(strat.id, plat)}
+                      >
+                        <div className="check-icon">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" 
+                            stroke={plat === 'TikTok' ? '#FE2C55' : plat === 'YouTube Shorts' ? '#FF0000' : '#DD2A7B'}
+                          >
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        </div>
+                        {plat === 'TikTok' && <TikTokIcon size={36} />}
+                        {plat === 'YouTube Shorts' && <YouTubeIcon size={36} />}
+                        {plat === 'Instagram Reels' && <InstagramIcon size={36} />}
+                        <div style={{ fontSize: '13px', fontWeight: 600, color: '#334155', textAlign: 'center', lineHeight: '1.2' }}>
+                          {plat}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+              
+              {/* Campaign Duration */}
+              <div className="premium-card">
+                <div className="premium-card-title">
+                  <Calendar size={20} color="#f59e0b" /> Campaign Duration
+                </div>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <div className="premium-input-group" style={{ flex: 1 }}>
+                    <input 
+                      type="number" 
+                      className="premium-input" 
+                      value={strat.durationValue}
+                      onChange={(e) => updateStrategy(strat.id, 'durationValue', e.target.value)}
+                    />
+                  </div>
+                  <div style={{ position: 'relative', flex: 1 }}>
+                    <div 
+                      className={`premium-input-group ${openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' ? 'active' : ''}`}
+                      onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'duration' }); }}
+                      style={{ cursor: 'pointer', height: '100%' }}
+                    >
+                      <div style={{ flex: 1, padding: '14px 16px', fontSize: '16px', fontWeight: 600, color: '#0f172a' }}>
+                        {strat.durationUnit}
+                      </div>
+                      <div style={{ padding: '0 16px' }}>
+                        <ChevronDown size={18} color="#94a3b8" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                      </div>
+                    </div>
+                    {openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' && (
+                      <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
+                        {durationUnits.map(u => (
+                          <div 
+                            key={u} 
+                            className={`custom-dropdown-item ${u === strat.durationUnit ? 'selected' : ''}`}
+                            onClick={() => { updateStrategy(strat.id, 'durationUnit', u); setOpenDropdown(null); }}
+                          >
+                            {u}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Upload Frequency & Time */}
+              <div className="premium-card">
+                <div className="premium-card-title">
+                  <Activity size={20} color="#8b5cf6" /> Upload Schedule
+                </div>
+                
+                <div style={{ marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Frequency
+                </div>
+                <div style={{ position: 'relative', marginBottom: '24px' }}>
+                  <div 
+                    className={`premium-input-group ${openDropdown?.stratId === strat.id && openDropdown?.type === 'frequency' ? 'active' : ''}`}
+                    onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'frequency' }); }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div style={{ flex: 1, padding: '14px 16px', fontSize: '16px', fontWeight: 600, color: '#0f172a' }}>
+                      {strat.frequency}
+                    </div>
+                    <div style={{ padding: '0 16px' }}>
+                      <ChevronDown size={18} color="#94a3b8" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'frequency' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                    </div>
                   </div>
                   {openDropdown?.stratId === strat.id && openDropdown?.type === 'frequency' && (
-                    <div className="custom-dropdown-menu">
+                    <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
                       {frequencies.map(f => (
                         <div 
                           key={f} 
@@ -744,69 +942,59 @@ export default function ContentSchedulerPage() {
                     </div>
                   )}
                 </div>
-              </div>
 
-              <div style={{ width: '1px', alignSelf: 'stretch', backgroundColor: '#f0f0f0', display: 'none' }} className="divider"></div>
-
-              <div style={{ flex: 1, minWidth: '250px' }}>
-                <div className="card-header" style={{ marginBottom: '16px' }}>
-                  <div className="icon-wrapper">
-                    <Clock size={18} />
-                  </div>
-                  <div className="card-title">Upload Time{strat.uploadTimes.length > 1 ? 's' : ''}</div>
+                <div style={{ marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Posting Times
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                   {strat.uploadTimes.map((time, idx) => {
-                    const colors = ['#22c55e', '#3b82f6', '#d946ef'];
+                    const colors = ['#22c55e', '#3b82f6', '#d946ef', '#f59e0b'];
                     return (
-                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '16px', paddingBottom: idx < strat.uploadTimes.length - 1 ? '16px' : '0', borderBottom: idx < strat.uploadTimes.length - 1 ? '1px dashed #e2e8f0' : 'none' }}>
-                        <div style={{ width: '4px', height: '32px', borderRadius: '4px', backgroundColor: colors[idx % colors.length] }}></div>
-                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          {strat.uploadTimes.length > 1 && (
-                            <div style={{ fontSize: '14px', fontWeight: 600, color: '#334155', minWidth: '60px' }}>
-                              Video {idx + 1}
-                            </div>
-                          )}
-                          <input 
-                            type="time" 
-                            className="input-element" 
-                            value={time}
-                            onChange={(e) => handleTimeChange(strat.id, idx, e.target.value)}
-                            style={{ flex: 1, background: 'transparent', border: 'none', padding: '0', fontSize: '15px', color: '#64748b' }}
-                          />
-                        </div>
+                      <div key={idx} className="time-row">
+                        <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: colors[idx % colors.length] }}></div>
+                        {strat.uploadTimes.length > 1 && (
+                          <div style={{ fontSize: '14px', fontWeight: 600, color: '#334155', width: '60px' }}>
+                            Video {idx + 1}
+                          </div>
+                        )}
+                        <input 
+                          type="time" 
+                          className="premium-input" 
+                          value={time}
+                          onChange={(e) => handleTimeChange(strat.id, idx, e.target.value)}
+                          style={{ padding: '0', background: 'transparent' }}
+                        />
                       </div>
                     );
                   })}
                 </div>
+                
               </div>
               
-              <style>{`
-                @media (min-width: 768px) {
-                  .divider { display: block !important; }
-                }
-              `}</style>
             </div>
           </div>
-        </div>
-      ))}
           
           {/* Action Row for Detail View */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
             <button 
               className="primary-btn"
-              onClick={handleGenerate}
+              onClick={() => handleGenerate(strat.id)}
+              style={{ padding: '14px 28px', fontSize: '15px', borderRadius: '12px', background: 'linear-gradient(135deg, #0f172a, #334155)', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.25)' }}
             >
-              {isGenerating ? (
+              {generatingId === strat.id ? (
                 'Generating Strategy...'
               ) : (
                 <>
+                  <Sparkles size={18} />
                   Generate Strategies
                   <ArrowRight size={18} />
                 </>
               )}
             </button>
           </div>
+        </div>
+      ))}
+      
         </div>
       )}
       {showConnectModal && (
