@@ -511,7 +511,7 @@ export default function SocialsPage() {
       {/* Add New Account Modal */}
       {addModalOpen && (
         <div className="modal-overlay" onClick={() => setAddModalOpen(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '800px', width: '90%' }}>
             <div className="modal-header">
               <div className="modal-title">
                 Connect New Account
@@ -521,17 +521,33 @@ export default function SocialsPage() {
               </div>
             </div>
             
-            <div>
+            <div className="integration-grid">
               {integrations.map(int => (
-                <div className="platform-select-item" key={int.id} onClick={() => {
-                  setAddModalOpen(false);
-                  handleConnect(int.id);
-                }}>
-                  <div className="account-item-left">
-                    {int.icon}
-                    <span className="account-name">{int.name}</span>
+                <div 
+                  className="integration-card" 
+                  key={int.id} 
+                  style={{ cursor: 'pointer', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+                  onClick={() => {
+                    setAddModalOpen(false);
+                    handleConnect(int.id);
+                  }}
+                >
+                  <div>
+                    <div className="card-top" style={{ marginBottom: 0 }}>
+                      <div className="platform-info">
+                        {int.icon}
+                        <span className="platform-name">{int.name}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="card-desc" style={{ marginBottom: 0, marginTop: 4 }}>
+                      {int.desc}
+                    </div>
                   </div>
-                  <Plus size={16} color="#64748b" />
+
+                  <div className="status-badge">
+                    Connect
+                  </div>
                 </div>
               ))}
             </div>

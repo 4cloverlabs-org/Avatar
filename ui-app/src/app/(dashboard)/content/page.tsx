@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Target, Calendar, Clock, Activity, ArrowRight, ChevronDown, Plus, Trash2 } from 'lucide-react';
+import { Target, Calendar, Clock, Activity, ArrowRight, ChevronDown, Plus, Trash2, ArrowLeft, Sparkles, Users, Settings } from 'lucide-react';
 
 const TikTokIcon = ({ size = 24 }) => (
   <svg width={size} height={size} viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
@@ -91,11 +91,14 @@ export default function ContentSchedulerPage() {
   const frequencies = ['1 video per day', '2 videos per day', '3 videos per day', '4 videos per day'];
   const contentStyles = ['Educational', 'Entertaining', 'Professional', 'Casual', 'Inspirational'];
 
+  const [activeStrategyId, setActiveStrategyId] = useState<string | null>(null);
+
   const addStrategy = () => {
+    const newId = `strat-${Date.now()}`;
     setStrategies(prev => [
       ...prev, 
       {
-        id: `strat-${Date.now()}`,
+        id: newId,
         niche: 'Gaming',
         durationValue: '10',
         durationUnit: 'Days',
@@ -105,6 +108,7 @@ export default function ContentSchedulerPage() {
         platforms: ['Instagram Reels']
       }
     ]);
+    setActiveStrategyId(newId);
   };
 
   const removeStrategy = (id: string) => {
@@ -231,9 +235,9 @@ export default function ContentSchedulerPage() {
         }
         .dash-card {
           background-color: #ffffff;
-          border-radius: 8px;
+          border-radius: 12px;
           padding: 24px;
-          border: 2px solid #F5F5F5;
+          border: 1px solid #e2e8f0;
           box-shadow: none; 
           display: flex;
           flex-direction: column;
@@ -243,17 +247,14 @@ export default function ContentSchedulerPage() {
           align-items: center;
           gap: 12px;
           margin-bottom: 24px;
+          border-bottom: 1px dashed #e2e8f0;
+          padding-bottom: 16px;
         }
         .icon-wrapper {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background-color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #111;
-          box-shadow: none;
+          color: #64748b;
         }
         .card-title {
           font-size: 16px;
@@ -262,29 +263,28 @@ export default function ContentSchedulerPage() {
         }
         .input-element {
           width: 100%;
-          padding: 16px 20px;
-          border-radius: 16px;
-          border: 1px solid #e2e2e2;
+          padding: 12px 16px;
+          border-radius: 8px;
+          border: 1px solid #e2e8f0;
           background-color: #ffffff;
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 500;
-          color: #111;
+          color: #0f172a;
           outline: none;
           transition: all 0.2s;
-          box-shadow: none;
         }
         .input-element:focus {
-          border-color: #d86450;
+          border-color: #94a3b8;
         }
         .custom-dropdown-btn {
           width: 100%;
-          padding: 16px 20px;
-          border-radius: 16px;
-          border: 1px solid #e2e2e2;
+          padding: 12px 16px;
+          border-radius: 8px;
+          border: 1px solid #e2e8f0;
           background-color: #ffffff;
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 500;
-          color: #111;
+          color: #0f172a;
           outline: none;
           display: flex;
           align-items: center;
@@ -293,7 +293,7 @@ export default function ContentSchedulerPage() {
           transition: all 0.2s;
         }
         .custom-dropdown-btn:hover, .custom-dropdown-btn.active {
-          border-color: #d86450;
+          background-color: #f8fafc;
         }
         .custom-dropdown-menu {
           position: absolute;
@@ -328,50 +328,46 @@ export default function ContentSchedulerPage() {
           font-weight: 600;
         }
         .primary-btn {
-          background-color: #d86450;
-          color: white;
+          background-color: #0f172a;
+          color: #ffffff;
           border: none;
-          border-radius: 50px;
-          padding: 18px 36px;
-          font-size: 16px;
-          font-weight: 500;
+          border-radius: 8px;
+          padding: 10px 20px;
+          font-size: 14px;
+          font-weight: 600;
           cursor: pointer;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 12px;
-          transition: transform 0.2s, background-color 0.2s;
-          box-shadow: 0 8px 16px rgba(216, 100, 80, 0.2);
+          gap: 8px;
+          transition: background-color 0.2s;
         }
         .primary-btn:hover {
-          background-color: #c55745;
-          transform: translateY(-1px);
+          background-color: #1e293b;
         }
         .primary-btn:active {
           transform: translateY(1px);
         }
         .platform-pill {
-          padding: 10px 16px;
-          border-radius: 12px;
-          border: 1px solid #e2e2e2;
+          padding: 16px;
+          border-radius: 8px;
+          border: none;
           background-color: #ffffff;
           font-size: 14px;
           font-weight: 500;
-          color: #666;
+          color: #475569;
           cursor: pointer;
           transition: all 0.2s;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          width: 100%;
         }
         .platform-pill:hover {
-          border-color: #d86450;
+          background-color: #f8fafc;
         }
         .platform-pill.selected {
-          background-color: #fff1f0;
-          border-color: #d86450;
-          color: #d86450;
-          font-weight: 600;
+          background-color: #ffffff;
         }
         .secondary-btn {
           background-color: transparent;
@@ -395,10 +391,9 @@ export default function ContentSchedulerPage() {
           background-color: #fff1f0;
         }
         .strategy-container {
-          background: #fafafa;
-          border: 1px solid #f0f0f0;
-          border-radius: 24px;
-          padding: 32px;
+          background: transparent;
+          border: none;
+          padding: 0px;
           margin-bottom: 32px;
           position: relative;
         }
@@ -441,16 +436,130 @@ export default function ContentSchedulerPage() {
         </p>
       </div>
 
-      {strategies.map((strat, index) => (
-        <div key={strat.id} className="strategy-container">
-          <div className="strategy-header">
-            <div className="strategy-title">Strategy {index + 1}</div>
-            {strategies.length > 1 && (
-              <button className="remove-btn" onClick={() => removeStrategy(strat.id)} title="Remove Strategy">
-                <Trash2 size={16} />
+      {!activeStrategyId ? (
+        <div className="strategy-list">
+          {strategies.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '64px 24px', background: '#fafafa', borderRadius: '24px', border: '1px dashed #e2e2e2' }}>
+              <div style={{ fontSize: '20px', fontWeight: 600, color: '#111', marginBottom: '8px' }}>No strategies found</div>
+              <p style={{ color: '#666', marginBottom: '24px' }}>Create your first content strategy to get started.</p>
+              <button className="primary-btn" onClick={addStrategy}>
+                <Plus size={18} /> Create Strategy
               </button>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '24px' }}>
+              {strategies.map((strat, index) => (
+                <div 
+                  key={strat.id}
+                  onClick={() => setActiveStrategyId(strat.id)}
+                  style={{ 
+                    background: '#fff', 
+                    borderRadius: '8px', 
+                    padding: '32px 28px', 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    border: '2px solid #F5F5F5', 
+                    cursor: 'pointer'
+                  }}
+                >
+                  <div style={{ fontSize: '16px', fontWeight: 500, color: '#111', marginBottom: '16px' }}>
+                    Strategy {index + 1}
+                  </div>
+                  
+                  <h3 style={{ fontSize: '26px', fontWeight: 600, color: '#064e3b', marginBottom: '12px', lineHeight: 1.2 }}>
+                    {strat.niche} Content
+                  </h3>
+                  
+                  <div style={{ fontSize: '15px', color: '#9ca3af', marginBottom: '32px' }}>
+                    Duration : {strat.durationValue} {strat.durationUnit}
+                  </div>
+                  
+                  <button style={{ 
+                    width: '100%', 
+                    background: 'linear-gradient(90deg, #166534 0%, #15803d 100%)', 
+                    color: '#fff', 
+                    border: 'none', 
+                    padding: '16px 0', 
+                    borderRadius: '30px', 
+                    fontSize: '16px', 
+                    fontWeight: 500, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    gap: '10px',
+                    cursor: 'pointer',
+                    marginTop: 'auto'
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    Edit Strategy
+                  </button>
+                </div>
+              ))}
+              
+              <div 
+                onClick={addStrategy}
+                style={{ 
+                  background: '#fafafa', 
+                  borderRadius: '8px', 
+                  padding: '36px 24px', 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '2px dashed #e2e2e2', 
+                  cursor: 'pointer', 
+                  transition: 'background 0.2s',
+                  minHeight: '260px'
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#fafafa')}
+              >
+                <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, border: '1px solid #e2e8f0', color: '#64748b' }}>
+                  <Plus size={24} />
+                </div>
+                <div style={{ fontSize: '15px', fontWeight: 600, color: '#475569' }}>
+                  Add Strategy
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="strategy-detail" style={{ padding: '0 0 40px 0' }}>
+          <button 
+            onClick={() => setActiveStrategyId(null)} 
+            style={{ 
+              background: '#f8fafc', 
+              border: '1px solid #e2e8f0', 
+              color: '#475569',
+              width: 'auto', 
+              marginBottom: 32, 
+              padding: '8px 16px', 
+              borderRadius: '20px', 
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '13px',
+              fontWeight: 500,
+              cursor: 'pointer',
+              transition: 'background 0.2s'
+            }}
+            onMouseOver={e => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+            onMouseOut={e => e.currentTarget.style.backgroundColor = '#f8fafc'}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            View all
+          </button>
+          
+          {strategies.filter(s => s.id === activeStrategyId).map((strat, index) => (
+            <div key={strat.id} className="strategy-container" style={{ margin: 0 }}>
+              <div className="strategy-header">
+                <div className="strategy-title">Strategy Configuration</div>
+                <button className="remove-btn" onClick={() => { removeStrategy(strat.id); setActiveStrategyId(null); }} title="Remove Strategy">
+                  <Trash2 size={16} />
+                </button>
+              </div>
 
           <div className="dashboard-grid">
             {/* Niche Card */}
@@ -567,16 +676,40 @@ export default function ContentSchedulerPage() {
                 </div>
                 <div className="card-title">Target Platforms</div>
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: 'auto' }}>
-                {['TikTok', 'YouTube Shorts', 'Instagram Reels'].map(plat => (
-                  <div 
-                    key={plat}
-                    className={`platform-pill ${strat.platforms.includes(plat) ? 'selected' : ''}`}
-                    onClick={() => togglePlatform(strat.id, plat)}
-                  >
-                    {plat}
-                  </div>
-                ))}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: 'auto' }}>
+                {['TikTok', 'YouTube Shorts', 'Instagram Reels'].map((plat, i) => {
+                  const isSelected = strat.platforms.includes(plat);
+                  return (
+                    <div 
+                      key={plat}
+                      onClick={() => togglePlatform(strat.id, plat)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        cursor: 'pointer',
+                        paddingBottom: i < 2 ? '16px' : '0',
+                        borderBottom: i < 2 ? '1px dashed #e2e8f0' : 'none'
+                      }}
+                    >
+                      <div style={{
+                        width: '20px',
+                        height: '20px',
+                        borderRadius: '50%',
+                        border: isSelected ? 'none' : '2px solid #cbd5e1',
+                        backgroundColor: isSelected ? '#d946ef' : 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        {isSelected && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                      </div>
+                      <div style={{ fontSize: '14px', fontWeight: 500, color: '#334155' }}>
+                        {plat}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -622,23 +755,29 @@ export default function ContentSchedulerPage() {
                   </div>
                   <div className="card-title">Upload Time{strat.uploadTimes.length > 1 ? 's' : ''}</div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {strat.uploadTimes.map((time, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      {strat.uploadTimes.length > 1 && (
-                        <div style={{ fontSize: '14px', fontWeight: 500, color: '#666', minWidth: '60px' }}>
-                          Video {idx + 1}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {strat.uploadTimes.map((time, idx) => {
+                    const colors = ['#22c55e', '#3b82f6', '#d946ef'];
+                    return (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '16px', paddingBottom: idx < strat.uploadTimes.length - 1 ? '16px' : '0', borderBottom: idx < strat.uploadTimes.length - 1 ? '1px dashed #e2e8f0' : 'none' }}>
+                        <div style={{ width: '4px', height: '32px', borderRadius: '4px', backgroundColor: colors[idx % colors.length] }}></div>
+                        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          {strat.uploadTimes.length > 1 && (
+                            <div style={{ fontSize: '14px', fontWeight: 600, color: '#334155', minWidth: '60px' }}>
+                              Video {idx + 1}
+                            </div>
+                          )}
+                          <input 
+                            type="time" 
+                            className="input-element" 
+                            value={time}
+                            onChange={(e) => handleTimeChange(strat.id, idx, e.target.value)}
+                            style={{ flex: 1, background: 'transparent', border: 'none', padding: '0', fontSize: '15px', color: '#64748b' }}
+                          />
                         </div>
-                      )}
-                      <input 
-                        type="time" 
-                        className="input-element" 
-                        value={time}
-                        onChange={(e) => handleTimeChange(strat.id, idx, e.target.value)}
-                        style={{ flex: 1 }}
-                      />
-                    </div>
-                  ))}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               
@@ -651,31 +790,25 @@ export default function ContentSchedulerPage() {
           </div>
         </div>
       ))}
-
-      {/* Add New Strategy Button */}
-      <div style={{ marginBottom: '40px' }}>
-        <button className="secondary-btn" onClick={addStrategy}>
-          <Plus size={20} />
-          Add Another Strategy
-        </button>
-      </div>
-
-      {/* Action Row */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
-        <button 
-          className="primary-btn"
-          onClick={handleGenerate}
-        >
-          {isGenerating ? (
-            'Generating Strategy...'
-          ) : (
-            <>
-              Generate Strategies
-              <ArrowRight size={18} />
-            </>
-          )}
-        </button>
-      </div>
+          
+          {/* Action Row for Detail View */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
+            <button 
+              className="primary-btn"
+              onClick={handleGenerate}
+            >
+              {isGenerating ? (
+                'Generating Strategy...'
+              ) : (
+                <>
+                  Generate Strategies
+                  <ArrowRight size={18} />
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
       {showConnectModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ background: '#fff', padding: 32, borderRadius: 12, width: 400, maxWidth: '90%', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
