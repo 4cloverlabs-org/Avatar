@@ -74,31 +74,44 @@ export async function GET(req: NextRequest) {
       videos: videoCount,
     });
 
-    // Upsert social account — delete existing then insert
-    await db
-      .delete(socialAccount)
-      .where(
-        and(
-          eq(socialAccount.userId, session.user.id),
-          eq(socialAccount.platform, "youtube")
-        )
-      );
+    const existing = await db.select().from(socialAccount).where(
+      and(
+        eq(socialAccount.platform, "youtube"),
+        eq(socialAccount.platformAccountId, channelId)
+      )
+    );
 
-    const id = `yt_${session.user.id}_${Date.now()}`;
-    await db.insert(socialAccount).values({
-      id,
-      userId: session.user.id,
-      platform: "youtube",
-      platformAccountId: channelId,
-      accountName: channelName,
-      accountAvatar: channelAvatar,
-      accessToken: tokenData.access_token,
-      refreshToken: tokenData.refresh_token || null,
-      tokenExpiresAt: tokenData.expires_in
-        ? new Date(Date.now() + tokenData.expires_in * 1000)
-        : null,
-      metadata,
-    });
+    const expiresAt = tokenData.expires_in
+      ? new Date(Date.now() + tokenData.expires_in * 1000)
+      : null;
+
+    if (existing.length > 0) {
+      await db
+        .update(socialAccount)
+        .set({
+          accountName: channelName,
+          accountAvatar: channelAvatar,
+          accessToken: tokenData.access_token,
+          refreshToken: tokenData.refresh_token || existing[0].refreshToken,
+          tokenExpiresAt: expiresAt,
+          metadata,
+        })
+        .where(eq(socialAccount.id, existing[0].id));
+    } else {
+      const id = `yt_${session.user.id}_${Date.now()}`;
+      await db.insert(socialAccount).values({
+        id,
+        userId: session.user.id,
+        platform: "youtube",
+        platformAccountId: channelId,
+        accountName: channelName,
+        accountAvatar: channelAvatar,
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token || null,
+        tokenExpiresAt: expiresAt,
+        metadata,
+      });
+    }
 
     return NextResponse.redirect(`${origin}/socials?connected=youtube`);
   } catch (err) {

@@ -84,14 +84,14 @@ export async function GET(req: NextRequest) {
     const posts = igData.media_count || 0;
 
     // 6. Save to database
-    // Check if user already has an IG account connected
+    // Check if user already has this specific IG account connected
     const existing = await db
       .select()
       .from(socialAccount)
       .where(
         and(
-          eq(socialAccount.userId, session.user.id),
-          eq(socialAccount.platform, "instagram")
+          eq(socialAccount.platform, "instagram"),
+          eq(socialAccount.platformAccountId, igAccountId)
         )
       );
 
@@ -101,7 +101,6 @@ export async function GET(req: NextRequest) {
       await db
         .update(socialAccount)
         .set({
-          platformAccountId: igAccountId,
           accountName,
           accountAvatar,
           accessToken,

@@ -14,15 +14,27 @@ export async function POST(req: NextRequest) {
 
   try {
     // Get the YouTube account to revoke the token
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      body = {};
+    }
+    const { accountId } = body;
+
+    let condition = and(
+      eq(socialAccount.userId, session.user.id),
+      eq(socialAccount.platform, "youtube")
+    );
+
+    if (accountId) {
+      condition = and(condition, eq(socialAccount.id, accountId));
+    }
+
     const accounts = await db
       .select()
       .from(socialAccount)
-      .where(
-        and(
-          eq(socialAccount.userId, session.user.id),
-          eq(socialAccount.platform, "youtube")
-        )
-      );
+      .where(condition);
 
     if (accounts.length > 0) {
       const ytAccount = accounts[0];

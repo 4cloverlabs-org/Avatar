@@ -16,15 +16,26 @@ export async function POST(req: NextRequest) {
     // We could make an API call to Facebook to revoke permissions,
     // but typically just deleting the token from our DB is sufficient
     // for disconnect (user can revoke from FB settings if they want).
+    let body;
+    try {
+      body = await req.json();
+    } catch (e) {
+      body = {};
+    }
+    const { accountId } = body;
+
+    let condition = and(
+      eq(socialAccount.userId, session.user.id),
+      eq(socialAccount.platform, "instagram")
+    );
+
+    if (accountId) {
+      condition = and(condition, eq(socialAccount.id, accountId));
+    }
     
     await db
       .delete(socialAccount)
-      .where(
-        and(
-          eq(socialAccount.userId, session.user.id),
-          eq(socialAccount.platform, "instagram")
-        )
-      );
+      .where(condition);
 
     return NextResponse.json({ success: true });
   } catch (err) {

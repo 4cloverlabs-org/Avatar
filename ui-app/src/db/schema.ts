@@ -183,9 +183,9 @@ export const socialAccount = pgTable(
   },
   (table) => [
     index("social_account_userId_idx").on(table.userId),
-    uniqueIndex("social_account_platform_userId_uidx").on(
+    uniqueIndex("social_account_platform_accountId_uidx").on(
       table.platform,
-      table.userId,
+      table.platformAccountId,
     ),
   ],
 );
