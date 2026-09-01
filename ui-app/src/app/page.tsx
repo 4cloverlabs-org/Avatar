@@ -21,8 +21,7 @@ export default function Home() {
       
       <main>
         <div style={{
-          width: '100%',
-          background: 'radial-gradient(circle at 100% 5%, #ff8b78 0%, #ffb4a3 22%, transparent 50%), radial-gradient(circle at 0% 0%, #d4d3f8 0%, #dfdcf5 30%, transparent 60%), radial-gradient(circle at 45% 110%, #fbb9da 0%, #f3d4e5 35%, transparent 65%), #f9eef1'
+          width: '100%'
         }}>
           <HeroSection />
           <SocialProof />
