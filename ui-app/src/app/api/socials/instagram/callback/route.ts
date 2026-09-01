@@ -111,6 +111,7 @@ export async function GET(req: NextRequest) {
         .where(eq(socialAccount.id, existing[0].id));
     } else {
       await db.insert(socialAccount).values({
+        id: crypto.randomUUID(),
         userId: session.user.id,
         platform: "instagram",
         platformAccountId: igAccountId,

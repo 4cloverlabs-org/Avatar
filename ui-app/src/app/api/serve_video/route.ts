@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     // @ts-ignore
     const stream = Readable.toWeb(fileStream);
 
-    return new NextResponse(stream, {
+    return new NextResponse(stream as any, {
       headers: {
         'Content-Type': 'video/mp4',
         'Content-Length': stat.size.toString(),

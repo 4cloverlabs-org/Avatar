@@ -61,6 +61,30 @@ export async function POST(req: Request) {
     const filePath = path.join(voiceDir, 'sample.wav');
     fs.writeFileSync(filePath, buffer);
 
+    // Generate cloned preview audio
+    try {
+      const { Client } = await import('@gradio/client');
+      console.log(`Generating preview for newly cloned voice ${voiceId}...`);
+      const client = await Client.connect("http://127.0.0.1:7860");
+      
+      const previewText = "Hi! This is a cloned sample of my voice. I think it sounds pretty good!";
+      const result = await client.predict("/generate_speech", [ 
+        previewText,
+        voiceId 
+      ]);
+      
+      const outputString = result.data?.[0];
+      if (typeof outputString === 'string' && !outputString.startsWith('Error:')) {
+         let absolutePath = outputString;
+         if (absolutePath.startsWith('./')) {
+            absolutePath = path.join(process.cwd(), '..', absolutePath.substring(2));
+         }
+         fs.copyFileSync(absolutePath, path.join(voiceDir, 'preview.wav'));
+      }
+    } catch (err) {
+      console.error("Failed to generate preview for voice", err);
+    }
+
     // Save to DB
     const newVoice = await db.insert(voice).values({
       id: voiceId,

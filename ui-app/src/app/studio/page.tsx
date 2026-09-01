@@ -5,7 +5,7 @@ import {
   Menu, Undo2, Redo2, Cloud, Play, Plus, Image as ImageIcon,
   User, Type, Square, LayoutTemplate, Film, MessageSquare, MousePointer2,
   Mic, Settings, Upload, Check, Volume2, Wand2, X, Trash2, ChevronDown, ArrowLeft, Video, Music, Layers, Keyboard, FileText,
-  AlignStartHorizontal, AlignCenterHorizontal, AlignEndHorizontal, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Pipette, Link as LinkIcon, Diamond, Wrench
+  AlignStartHorizontal, AlignCenterHorizontal, AlignEndHorizontal, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Pipette, Link as LinkIcon, Diamond, Wrench, BookOpen
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,7 +19,7 @@ export type CanvasElement = {
   height: number;
   zIndex: number;
   props: any;
-  motion?: { entrance: string, exit: string };
+  motion?: { entrance?: string, exit?: string, type?: string, duration?: number, delay?: number };
 };
 
 const isVideoUrl = (url: string) => {
@@ -1069,7 +1069,7 @@ export default function Dashboard() {
                   <div className="syn-panel-section">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
                       <div style={{ fontWeight: 600, fontSize: 11, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: 0.5 }}>Text</div>
-                      <Undo2 size={14} color="var(--text-muted)" cursor="pointer" title="Reset Text Properties" onClick={(e) => {
+                      <Undo2 size={14} color="var(--text-muted)" cursor="pointer" onClick={(e) => {
                         e.stopPropagation();
                         setElements(elements.map(el => el.id === selectedId ? {
                           ...el,
@@ -1143,7 +1143,7 @@ export default function Dashboard() {
                   <div className="syn-panel-section">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
                       <div style={{ fontWeight: 600, fontSize: 11, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: 0.5 }}>Appearance</div>
-                      <Undo2 size={14} color="var(--text-muted)" cursor="pointer" title="Reset Appearance" onClick={(e) => {
+                      <Undo2 size={14} color="var(--text-muted)" cursor="pointer" onClick={(e) => {
                         e.stopPropagation();
                         setElements(elements.map(el => el.id === selectedId ? {
                           ...el,
@@ -1205,7 +1205,7 @@ export default function Dashboard() {
                   <div className="syn-panel-section">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
                       <div style={{ fontWeight: 600, fontSize: 11, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: 0.5 }}>Transform</div>
-                      <Undo2 size={14} color="var(--text-muted)" cursor="pointer" title="Reset Transform" onClick={(e) => {
+                      <Undo2 size={14} color="var(--text-muted)" cursor="pointer" onClick={(e) => {
                         e.stopPropagation();
                         setElements(elements.map(el => el.id === selectedId ? {
                           ...el,
@@ -1251,7 +1251,7 @@ export default function Dashboard() {
                   <div className="syn-panel-section">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
                       <div style={{ fontWeight: 600, fontSize: 11, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: 0.5 }}>Animation</div>
-                      <Undo2 size={14} color="var(--text-muted)" cursor="pointer" title="Reset Animation" onClick={(e) => {
+                      <Undo2 size={14} color="var(--text-muted)" cursor="pointer" onClick={(e) => {
                         e.stopPropagation();
                         setElements(elements.map(el => el.id === selectedId ? {
                           ...el,
@@ -1297,7 +1297,7 @@ export default function Dashboard() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>
                           <ChevronDown size={14} color="var(--text-muted)" style={{ transform: collapsedSections['appearance'] ? 'rotate(-90deg)' : 'none', transition: 'transform 0.2s' }} /> Appearance
                         </div>
-                        <Undo2 size={14} color="var(--text-muted)" cursor="pointer" title="Reset Appearance" onClick={(e) => {
+                        <Undo2 size={14} color="var(--text-muted)" cursor="pointer" onClick={(e) => {
                           e.stopPropagation();
                           setElements(elements.map(el => el.id === selectedId ? {
                             ...el,
@@ -1374,7 +1374,7 @@ export default function Dashboard() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>
                           <ChevronDown size={14} color="var(--text-muted)" style={{ transform: collapsedSections['transform'] ? 'rotate(-90deg)' : 'none', transition: 'transform 0.2s' }} /> Align and Transform
                         </div>
-                        <Undo2 size={14} color="var(--text-muted)" cursor="pointer" title="Reset Transform" onClick={(e) => {
+                        <Undo2 size={14} color="var(--text-muted)" cursor="pointer" onClick={(e) => {
                           e.stopPropagation();
                           setElements(elements.map(el => el.id === selectedId ? {
                             ...el,
@@ -1478,7 +1478,7 @@ export default function Dashboard() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>
                           <ChevronDown size={14} color="var(--text-muted)" style={{ transform: collapsedSections['animation'] ? 'rotate(-90deg)' : 'none', transition: 'transform 0.2s' }} /> Animation
                         </div>
-                        <Undo2 size={14} color="var(--text-muted)" cursor="pointer" title="Reset Animation" onClick={(e) => {
+                        <Undo2 size={14} color="var(--text-muted)" cursor="pointer" onClick={(e) => {
                           e.stopPropagation();
                           setElements(elements.map(el => el.id === selectedId ? {
                             ...el,

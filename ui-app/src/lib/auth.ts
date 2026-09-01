@@ -39,9 +39,6 @@ export const auth = betterAuth({
     dash(),
     twoFactor({
       issuer: "AvatarApp",
-      totpOptions: {
-        issuer: "AvatarApp"
-      },
       allowPasswordless: true
     })
   ]

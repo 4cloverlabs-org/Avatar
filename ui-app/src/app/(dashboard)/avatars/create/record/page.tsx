@@ -43,7 +43,7 @@ export default function RecordAvatarPage() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const selfieSegmentationRef = useRef<SelfieSegmentation | null>(null);
-  const segmentationFrameRef = useRef<number>();
+  const segmentationFrameRef = useRef<number>(0);
 
   const [highlightedWordIndex, setHighlightedWordIndex] = useState(-1);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -52,7 +52,7 @@ export default function RecordAvatarPage() {
   const [hasSubjectPassed, setHasSubjectPassed] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const scriptWords = scriptText.split(' ').filter(Boolean);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number>(0);
   const isRecordingRef = useRef(false);
   const accumulatedTranscriptRef = useRef('');
 

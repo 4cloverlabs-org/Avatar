@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Play, Search, X, ChevronRight, Mic, Square } from 'lucide-react';
 
@@ -11,7 +11,7 @@ export default function VoicesView() {
     <div className="home-content">
       {/* TABS */}
       <div style={{ display: 'flex', gap: 24, borderBottom: '1px solid #e2e8f0', marginBottom: 24 }}>
-        {['System Voices', 'My Voices', 'Shared with Me'].map(tab => (
+        {['System Voices', 'My Voices'].map(tab => (
           <div 
             key={tab}
             onClick={() => setVoiceTab(tab)}
@@ -32,7 +32,7 @@ export default function VoicesView() {
 
       {voiceTab === 'My Voices' && <MyVoicesUI />}
       {voiceTab === 'System Voices' && <SystemVoicesUI />}
-      {voiceTab === 'Shared with Me' && <div style={{ padding: 40, textAlign: 'center', color: '#94a3b8' }}>No shared voices yet.</div>}
+
     </div>
   );
 }
@@ -282,7 +282,7 @@ function MyVoicesUI() {
                 disabled={isUploading || !audioFile}
                 style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: '#4f46e5', color: '#fff', cursor: (isUploading || !audioFile) ? 'not-allowed' : 'pointer', fontWeight: 600, opacity: (isUploading || !audioFile) ? 0.7 : 1 }}
               >
-                {isUploading ? 'Uploading...' : 'Clone Voice'}
+                {isUploading ? 'Cloning Voice...' : 'Clone Voice'}
               </button>
             </div>
           </div>
@@ -347,6 +347,23 @@ function MyVoicesUI() {
 function SystemVoicesUI() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeLanguage, setActiveLanguage] = useState<string | null>(null);
+  const [playingId, setPlayingId] = useState<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handlePlayVoice = (id: number) => {
+    if (playingId === id) {
+      audioRef.current?.pause();
+      setPlayingId(null);
+    } else {
+      setPlayingId(id);
+      setTimeout(() => {
+        audioRef.current?.play().catch(e => {
+          console.error("Audio playback error", e);
+          setPlayingId(null);
+        });
+      }, 50);
+    }
+  };
 
   const languages = [
     { name: 'English (US)', langCode: 'EN-US', langFull: 'English', region: 'United States', count: 37, flag: '🇺🇸' },
@@ -466,8 +483,8 @@ function SystemVoicesUI() {
       <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>All voices</h3>
       
       {/* Filter Bar */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f1f5f9', padding: '8px 12px', borderRadius: 8, flex: 1, maxWidth: 300 }}>
+      <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f1f5f9', padding: '8px 12px', borderRadius: 8, flex: 1, minWidth: 200, maxWidth: 300 }}>
           <Search size={14} color="#94a3b8" />
           <input 
             type="text" 
@@ -479,7 +496,7 @@ function SystemVoicesUI() {
         </div>
         
         <div 
-          style={{ display: 'flex', alignItems: 'center', gap: 6, background: selectedLangObj ? '#eff6ff' : '#fff', border: selectedLangObj ? '1px solid #eff6ff' : '1px solid #e2e8f0', padding: '6px 12px', borderRadius: 8, color: selectedLangObj ? '#3b82f6' : '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, background: selectedLangObj ? '#eff6ff' : '#fff', border: selectedLangObj ? '1px solid #eff6ff' : '1px solid #e2e8f0', padding: '6px 12px', borderRadius: 8, color: selectedLangObj ? '#3b82f6' : '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}
           onClick={() => { if(selectedLangObj) setActiveLanguage(null); }}
         >
           <span style={{ fontSize: 14 }}>A</span> {selectedLangObj ? selectedLangObj.langFull : 'Language'} 
@@ -487,26 +504,33 @@ function SystemVoicesUI() {
         </div>
 
         {selectedLangObj?.region ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#eff6ff', padding: '6px 12px', borderRadius: 8, color: '#3b82f6', fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#eff6ff', padding: '6px 12px', borderRadius: 8, color: '#3b82f6', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
             {selectedLangObj.region}
           </div>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #e2e8f0', padding: '6px 12px', borderRadius: 8, color: '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #e2e8f0', padding: '6px 12px', borderRadius: 8, color: '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
             Region
           </div>
         )}
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #e2e8f0', padding: '6px 12px', borderRadius: 8, color: '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #e2e8f0', padding: '6px 12px', borderRadius: 8, color: '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
           Gender
         </div>
       </div>
 
       {/* Voices Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: 16 }}>
         {filteredVoices.map(voice => (
           <div key={voice.id} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#fff', border: '1px solid #e2e8f0', padding: '16px', borderRadius: 12 }}>
-            <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Play size={12} color="#64748b" fill="#64748b" />
+            <div 
+              onClick={() => handlePlayVoice(voice.id)}
+              style={{ width: 32, height: 32, borderRadius: '50%', background: playingId === voice.id ? '#4f46e5' : '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}
+            >
+              {playingId === voice.id ? (
+                <Square size={12} color="#fff" fill="#fff" />
+              ) : (
+                <Play size={12} color={playingId === voice.id ? "#fff" : "#64748b"} fill={playingId === voice.id ? "#fff" : "#64748b"} />
+              )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{voice.name}</div>
@@ -524,6 +548,16 @@ function SystemVoicesUI() {
           </div>
         ))}
       </div>
+
+      {playingId && (
+        <audio 
+          ref={audioRef}
+          src={`/system_voices/${playingId}.wav`}
+          onEnded={() => setPlayingId(null)}
+          onPause={() => setPlayingId(null)}
+          style={{ display: 'none' }}
+        />
+      )}
     </div>
   );
 }

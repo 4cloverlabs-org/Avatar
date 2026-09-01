@@ -6,7 +6,7 @@ import { headers } from 'next/headers';
 import { eq } from 'drizzle-orm';
 import fs from 'fs';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth.api.getSession({
       headers: await headers()
@@ -29,11 +29,19 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!voiceRecord.samplePath || !fs.existsSync(voiceRecord.samplePath)) {
+    let audioPath = voiceRecord.samplePath;
+    if (audioPath) {
+      const previewPath = audioPath.replace('sample.wav', 'preview.wav');
+      if (fs.existsSync(previewPath)) {
+        audioPath = previewPath;
+      }
+    }
+
+    if (!audioPath || !fs.existsSync(audioPath)) {
        return NextResponse.json({ success: false, error: 'Audio file not found on disk' }, { status: 404 });
     }
 
-    const fileBuffer = fs.readFileSync(voiceRecord.samplePath);
+    const fileBuffer = fs.readFileSync(audioPath);
 
     return new NextResponse(fileBuffer, {
       status: 200,
