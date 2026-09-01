@@ -21,9 +21,7 @@ export default function Home() {
       
       <main>
         <div style={{
-          width: '100%',
-          backgroundImage: 'radial-gradient(ellipse at 0% 0%, rgba(205, 180, 255, 0.4) 0%, transparent 35%), radial-gradient(ellipse at 0% 25%, rgba(190, 235, 255, 0.35) 0%, transparent 50%), linear-gradient(180deg, rgba(205, 180, 255, 0.05) 0%, rgba(190, 235, 255, 0.15) 30%, transparent 90%)',
-          backgroundRepeat: 'no-repeat'
+          width: '100%'
         }}>
           <HeroSection />
           <SocialProof />

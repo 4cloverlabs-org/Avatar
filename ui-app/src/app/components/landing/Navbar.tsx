@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 export default function Navbar() {
   return (
-    <motion.header 
+    <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -21,12 +21,12 @@ export default function Navbar() {
         pointerEvents: 'none'
       }}
     >
-      <nav 
+      <nav
         style={{
-          background: 'rgba(255, 255, 255, 0.02)',
-          backdropFilter: 'blur(80px)',
-          WebkitBackdropFilter: 'blur(80px)',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
+          background: 'rgba(255, 255, 255, 0.5)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
           borderRadius: '100px',
           padding: '0.5rem 0.5rem 0.5rem 1.5rem',
           display: 'flex',
@@ -34,7 +34,7 @@ export default function Navbar() {
           justifyContent: 'space-between',
           width: '90%',
           maxWidth: '1200px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
           pointerEvents: 'auto'
         }}
       >
@@ -46,15 +46,11 @@ export default function Navbar() {
         </Link>
 
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-          <Link href="#features" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            Features <span style={{ fontSize: '0.7em', marginTop: '2px', opacity: 0.7 }}>⌄</span>
-          </Link>
+          <Link href="#features" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Features</Link>
           <Link href="#solutions" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Solutions</Link>
           <Link href="#use-cases" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Use cases</Link>
           <Link href="#pricing" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Pricing</Link>
-          <Link href="#resources" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            Resources <span style={{ fontSize: '0.7em', marginTop: '2px', opacity: 0.7 }}>⌄</span>
-          </Link>
+          <Link href="#resources" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Resources</Link>
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
