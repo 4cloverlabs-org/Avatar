@@ -63,16 +63,28 @@ export default function ContentSchedulerPage() {
       .catch(console.error);
   }, []);
 
-  const [strategies, setStrategies] = useState<StrategyConfig[]>([{
-    id: 'strat-1',
-    niche: 'Technology & Gadgets',
-    durationValue: '20',
-    durationUnit: 'Days',
-    contentStyle: 'Educational',
-    frequency: '1 video per day',
-    uploadTimes: ['12:00'],
-    platforms: []
-  }]);
+  const [strategies, setStrategies] = useState<StrategyConfig[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/strategies')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.strategies) {
+          setStrategies(data.strategies);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  const syncStrategy = (id: string, updates: Partial<StrategyConfig>) => {
+    fetch(`/api/strategies/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates)
+    }).catch(console.error);
+  };
   
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<{stratId: string, type: string} | null>(null);
@@ -93,27 +105,41 @@ export default function ContentSchedulerPage() {
 
   const [activeStrategyId, setActiveStrategyId] = useState<string | null>(null);
 
-  const addStrategy = () => {
+  const addStrategy = async () => {
     const newId = `strat-${Date.now()}`;
-    setStrategies(prev => [
-      ...prev, 
-      {
-        id: newId,
-        niche: 'Gaming',
-        durationValue: '10',
-        durationUnit: 'Days',
-        contentStyle: 'Entertaining',
-        frequency: '1 video per day',
-        uploadTimes: ['15:00'],
-        platforms: ['Instagram Reels']
-      }
-    ]);
+    const newStrat = {
+      id: newId,
+      niche: 'Gaming',
+      durationValue: '10',
+      durationUnit: 'Days',
+      contentStyle: 'Entertaining',
+      frequency: '1 video per day',
+      uploadTimes: ['15:00'],
+      platforms: ['Instagram Reels']
+    };
+    
+    // Optimistic update
+    setStrategies(prev => [...prev, newStrat]);
     setActiveStrategyId(newId);
+    
+    try {
+      await fetch('/api/strategies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStrat)
+      });
+    } catch (e) {
+      console.error('Failed to save new strategy', e);
+    }
   };
 
-  const removeStrategy = (id: string) => {
-    if (strategies.length > 1) {
-      setStrategies(prev => prev.filter(s => s.id !== id));
+  const removeStrategy = async (id: string) => {
+    setStrategies(prev => prev.filter(s => s.id !== id));
+    if (activeStrategyId === id) setActiveStrategyId(null);
+    try {
+      await fetch(`/api/strategies/${id}`, { method: 'DELETE' });
+    } catch (e) {
+      console.error('Failed to delete strategy', e);
     }
   };
 
@@ -124,6 +150,7 @@ export default function ContentSchedulerPage() {
       }
       return s;
     }));
+    syncStrategy(id, { [field]: value });
   };
 
   const togglePlatform = (id: string, plat: string) => {
@@ -141,7 +168,9 @@ export default function ContentSchedulerPage() {
           setShowConnectModal(plat);
           return s;
         }
-        return { ...s, platforms: has ? s.platforms.filter(p => p !== plat) : [...s.platforms, plat] };
+        const newPlatforms = has ? s.platforms.filter(p => p !== plat) : [...s.platforms, plat];
+        syncStrategy(id, { platforms: newPlatforms });
+        return { ...s, platforms: newPlatforms };
       }
       return s;
     }));
@@ -155,7 +184,9 @@ export default function ContentSchedulerPage() {
         while (newTimes.length < count) {
           newTimes.push(newTimes.length === 1 ? '18:00' : newTimes.length === 2 ? '21:00' : '12:00');
         }
-        return { ...s, frequency: val, uploadTimes: newTimes.slice(0, count) };
+        const slicedTimes = newTimes.slice(0, count);
+        syncStrategy(id, { frequency: val, uploadTimes: slicedTimes });
+        return { ...s, frequency: val, uploadTimes: slicedTimes };
       }
       return s;
     }));
@@ -167,6 +198,7 @@ export default function ContentSchedulerPage() {
       if (s.id === id) {
         const newTimes = [...s.uploadTimes];
         newTimes[idx] = value;
+        syncStrategy(id, { uploadTimes: newTimes });
         return { ...s, uploadTimes: newTimes };
       }
       return s;
@@ -429,7 +461,7 @@ export default function ContentSchedulerPage() {
         .detail-layout {
           display: grid;
           grid-template-columns: 1.2fr 1fr;
-          gap: 32px;
+          gap: 20px;
         }
         @media (max-width: 900px) {
           .detail-layout {
@@ -437,96 +469,88 @@ export default function ContentSchedulerPage() {
           }
         }
         .premium-card {
-          background: rgba(255, 255, 255, 0.7);
-          backdrop-filter: blur(10px);
-          border-radius: 20px;
-          border: 1px solid rgba(226, 232, 240, 0.8);
-          padding: 32px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-          transition: transform 0.2s, box-shadow 0.2s;
+          background: #ffffff;
+          border-radius: 12px;
+          border: 1px solid #e5e7eb;
+          padding: 20px 24px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
           display: flex;
           flex-direction: column;
-        }
-        .premium-card:hover {
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-          transform: translateY(-2px);
+          position: relative;
         }
         .premium-card-title {
-          font-size: 18px;
-          font-weight: 700;
-          color: #0f172a;
-          margin-bottom: 24px;
+          font-size: 16px;
+          font-weight: 600;
+          color: #111827;
+          margin-bottom: 16px;
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 8px;
+        }
+        .premium-card-title svg {
+          display: none; /* Hide icons from title to match clean image style */
         }
         .premium-pill-group {
           display: flex;
           flex-wrap: wrap;
-          gap: 12px;
+          gap: 8px;
         }
         .premium-pill {
-          padding: 10px 20px;
-          border-radius: 24px;
-          border: 1px solid #e2e8f0;
-          background: #f8fafc;
-          color: #475569;
-          font-weight: 600;
-          font-size: 14px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 12px;
+          border-radius: 100px;
+          border: 1px solid #e5e7eb;
+          background: #ffffff;
+          color: #4b5563;
+          font-weight: 500;
+          font-size: 13px;
           cursor: pointer;
-          transition: all 0.2s;
+          transition: all 0.2s ease;
         }
         .premium-pill:hover {
-          background: #f1f5f9;
+          border-color: #d1d5db;
         }
         .premium-pill.active {
-          background: #0f172a;
-          color: #fff;
-          border-color: #0f172a;
-          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+          border-color: #3b82f6;
+          color: #3b82f6;
+          background: #eff6ff;
         }
         
         .platform-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-          gap: 16px;
+          grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+          gap: 12px;
         }
         .platform-box {
-          border: 2px solid #e2e8f0;
-          border-radius: 16px;
-          padding: 24px 16px;
+          border: 1px solid #e5e7eb;
+          border-radius: 8px;
+          padding: 12px;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 16px;
+          gap: 8px;
           cursor: pointer;
-          transition: all 0.3s;
-          background: #fff;
+          transition: all 0.2s ease;
+          background: #ffffff;
           position: relative;
         }
         .platform-box:hover {
-          transform: translateY(-4px);
-          border-color: #cbd5e1;
+          border-color: #d1d5db;
         }
         .platform-box .check-icon {
           position: absolute;
-          top: 12px;
-          right: 12px;
+          top: 6px;
+          right: 6px;
           opacity: 0;
-          transform: scale(0.5);
-          transition: all 0.3s;
+          transform: scale(0.8);
+          transition: all 0.2s ease;
+          color: #3b82f6;
         }
-        .platform-box.active-tiktok {
-          border-color: #FE2C55;
-          background: rgba(254, 44, 85, 0.04);
-        }
-        .platform-box.active-youtube {
-          border-color: #FF0000;
-          background: rgba(255, 0, 0, 0.04);
-        }
-        .platform-box.active-instagram {
-          border-color: #DD2A7B;
-          background: rgba(221, 42, 123, 0.04);
+        .platform-box.active-tiktok, .platform-box.active-youtube, .platform-box.active-instagram {
+          border-color: #3b82f6;
+          background: #eff6ff;
         }
         .platform-box[class*="active-"] .check-icon {
           opacity: 1;
@@ -536,23 +560,21 @@ export default function ContentSchedulerPage() {
         .premium-input-group {
           display: flex;
           align-items: center;
-          background: #fff;
-          border: 1px solid #e2e8f0;
-          border-radius: 12px;
-          transition: all 0.2s;
-          overflow: hidden;
+          background: #ffffff;
+          border: 1px solid #d1d5db;
+          border-radius: 6px;
+          transition: border-color 0.2s;
         }
-        .premium-input-group:focus-within {
-          border-color: #94a3b8;
-          box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
+        .premium-input-group:focus-within, .premium-input-group.active {
+          border-color: #3b82f6;
         }
         .premium-input {
           background: transparent;
           border: none;
-          padding: 14px 16px;
-          font-size: 16px;
-          font-weight: 600;
-          color: #0f172a;
+          padding: 8px 12px;
+          font-size: 14px;
+          font-weight: 500;
+          color: #111827;
           outline: none;
           width: 100%;
         }
@@ -560,34 +582,61 @@ export default function ContentSchedulerPage() {
         .time-row {
           display: flex;
           align-items: center;
-          gap: 16px;
-          padding: 14px 20px;
-          background: #f8fafc;
-          border: 1px solid #e2e8f0;
-          border-radius: 12px;
-          transition: all 0.2s;
+          gap: 12px;
+          padding: 8px 12px;
+          background: #ffffff;
+          border: 1px solid #d1d5db;
+          border-radius: 6px;
+          margin-bottom: 8px;
         }
-        .time-row:hover {
-          background: #fff;
-          border-color: #cbd5e1;
+        .time-row:last-child {
+          margin-bottom: 0;
+        }
+        .time-row:focus-within {
+          border-color: #3b82f6;
+        }
+        .time-dot {
+          display: none;
+        }
+
+        /* Custom Time Select UI */
+        .time-select {
+          appearance: none;
+          background: transparent;
+          border: none;
+          outline: none;
+          font-size: 14px;
+          font-weight: 600;
+          color: #111827;
+          cursor: pointer;
+          padding: 6px 8px;
+          border-radius: 4px;
+          text-align: center;
+        }
+        .time-select:hover {
+          background: #f1f5f9;
+        }
+        .time-select.ampm {
+          color: #10b981;
+          margin-left: 4px;
         }
       `}</style>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h1 className="header-title">
-            Content <span>Planner</span>
-          </h1>
-          <p className="header-subtitle">
-            Design your automated video publishing schedule with AI.
-          </p>
-        </div>
-        {!activeStrategyId && (
+      {!activeStrategyId && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 className="header-title">
+              Content <span>Planner</span>
+            </h1>
+            <p className="header-subtitle">
+              Design your automated video publishing schedule with AI.
+            </p>
+          </div>
           <button className="primary-btn" onClick={addStrategy} style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '8px', height: 'fit-content' }}>
             <Plus size={16} /> New Strategy
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {!activeStrategyId ? (
         <div className="strategy-list" style={{ paddingBottom: '64px' }}>
@@ -733,268 +782,311 @@ export default function ContentSchedulerPage() {
             <button 
               onClick={() => setActiveStrategyId(null)} 
               style={{ 
-                background: '#fff', 
-                border: '1px solid #e2e8f0', 
-                color: '#475569',
-                padding: '8px 16px', 
-                borderRadius: '20px', 
+                background: 'transparent', 
+                border: 'none', 
+                color: '#6b7280',
+                padding: '8px 0', 
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                fontSize: '13px',
-                fontWeight: 500,
+                fontSize: '14px',
+                fontWeight: 600,
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
               }}
-              onMouseOver={e => { e.currentTarget.style.backgroundColor = '#f8fafc'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
-              onMouseOut={e => { e.currentTarget.style.backgroundColor = '#fff'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+              onMouseOver={e => e.currentTarget.style.color = '#111827'}
+              onMouseOut={e => e.currentTarget.style.color = '#6b7280'}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              <ArrowLeft size={16} />
               Back to Strategies
             </button>
           </div>
           
           {strategies.filter(s => s.id === activeStrategyId).map((strat, index) => (
-            <div key={strat.id} className="strategy-container" style={{ margin: 0 }}>
-              <div className="strategy-header">
-                <div className="strategy-title">Strategy Configuration {index + 1}</div>
-                <button className="remove-btn" onClick={() => { removeStrategy(strat.id); setActiveStrategyId(null); }} title="Remove Strategy">
-                  <Trash2 size={16} />
-                </button>
-              </div>
-
-          <div className="detail-layout">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            <div key={strat.id} style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
               
-              {/* Niche Selection */}
-              <div className="premium-card">
-                <div className="premium-card-title">
-                  <Target size={20} color="#3b82f6" /> Select Your Niche
-                </div>
-                <div style={{ position: 'relative' }}>
-                  <div 
-                    className={`premium-input-group ${openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'active' : ''}`}
-                    onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'niche' }); }}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div style={{ flex: 1, padding: '14px 16px', fontSize: '16px', fontWeight: 600, color: '#0f172a' }}>
-                      {strat.niche}
-                    </div>
-                    <div style={{ padding: '0 16px' }}>
-                      <ChevronDown size={18} color="#94a3b8" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
-                    </div>
-                  </div>
-                  {openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' && (
-                    <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
-                      {niches.map(n => (
-                        <div 
-                          key={n} 
-                          className={`custom-dropdown-item ${n === strat.niche ? 'selected' : ''}`}
-                          onClick={() => { updateStrategy(strat.id, 'niche', n); setOpenDropdown(null); }}
-                        >
-                          {n}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Content Style Selection */}
-              <div className="premium-card">
-                <div className="premium-card-title">
-                  <Sparkles size={20} color="#d946ef" /> Content Style
-                </div>
-                <div className="premium-pill-group">
-                  {contentStyles.map(s => (
-                    <div 
-                      key={s} 
-                      className={`premium-pill ${s === strat.contentStyle ? 'active' : ''}`}
-                      onClick={() => updateStrategy(strat.id, 'contentStyle', s)}
-                    >
-                      {s}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Target Platforms */}
-              <div className="premium-card">
-                <div className="premium-card-title">
-                  <Users size={20} color="#22c55e" /> Target Platforms
-                </div>
-                <div className="platform-grid">
-                  {['TikTok', 'YouTube Shorts', 'Instagram Reels'].map(plat => {
-                    const isSelected = strat.platforms.includes(plat);
-                    let activeClass = '';
-                    if (isSelected) {
-                      if (plat === 'TikTok') activeClass = 'active-tiktok';
-                      if (plat === 'YouTube Shorts') activeClass = 'active-youtube';
-                      if (plat === 'Instagram Reels') activeClass = 'active-instagram';
-                    }
-                    return (
-                      <div 
-                        key={plat}
-                        className={`platform-box ${activeClass}`}
-                        onClick={() => togglePlatform(strat.id, plat)}
-                      >
-                        <div className="check-icon">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" 
-                            stroke={plat === 'TikTok' ? '#FE2C55' : plat === 'YouTube Shorts' ? '#FF0000' : '#DD2A7B'}
-                          >
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                          </svg>
-                        </div>
-                        {plat === 'TikTok' && <TikTokIcon size={36} />}
-                        {plat === 'YouTube Shorts' && <YouTubeIcon size={36} />}
-                        {plat === 'Instagram Reels' && <InstagramIcon size={36} />}
-                        <div style={{ fontSize: '13px', fontWeight: 600, color: '#334155', textAlign: 'center', lineHeight: '1.2' }}>
-                          {plat}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-              
-              {/* Campaign Duration */}
-              <div className="premium-card">
-                <div className="premium-card-title">
-                  <Calendar size={20} color="#f59e0b" /> Campaign Duration
-                </div>
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  <div className="premium-input-group" style={{ flex: 1 }}>
-                    <input 
-                      type="number" 
-                      className="premium-input" 
-                      value={strat.durationValue}
-                      onChange={(e) => updateStrategy(strat.id, 'durationValue', e.target.value)}
-                    />
-                  </div>
-                  <div style={{ position: 'relative', flex: 1 }}>
-                    <div 
-                      className={`premium-input-group ${openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' ? 'active' : ''}`}
-                      onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'duration' }); }}
-                      style={{ cursor: 'pointer', height: '100%' }}
-                    >
-                      <div style={{ flex: 1, padding: '14px 16px', fontSize: '16px', fontWeight: 600, color: '#0f172a' }}>
-                        {strat.durationUnit}
-                      </div>
-                      <div style={{ padding: '0 16px' }}>
-                        <ChevronDown size={18} color="#94a3b8" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
-                      </div>
-                    </div>
-                    {openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' && (
-                      <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
-                        {durationUnits.map(u => (
-                          <div 
-                            key={u} 
-                            className={`custom-dropdown-item ${u === strat.durationUnit ? 'selected' : ''}`}
-                            onClick={() => { updateStrategy(strat.id, 'durationUnit', u); setOpenDropdown(null); }}
-                          >
-                            {u}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Upload Frequency & Time */}
-              <div className="premium-card">
-                <div className="premium-card-title">
-                  <Activity size={20} color="#8b5cf6" /> Upload Schedule
-                </div>
+              {/* Section 1: Strategy Preferences */}
+              <div className="settings-section">
+                <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>Strategy Preferences</h2>
+                <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 24px 0' }}>Define the core subject and timeframe of your automated content.</p>
                 
-                <div style={{ marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Frequency
-                </div>
-                <div style={{ position: 'relative', marginBottom: '24px' }}>
-                  <div 
-                    className={`premium-input-group ${openDropdown?.stratId === strat.id && openDropdown?.type === 'frequency' ? 'active' : ''}`}
-                    onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'frequency' }); }}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div style={{ flex: 1, padding: '14px 16px', fontSize: '16px', fontWeight: 600, color: '#0f172a' }}>
-                      {strat.frequency}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {/* Niche */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                        <Target size={20} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Niche</div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>The main topic for your videos.</div>
+                      </div>
                     </div>
-                    <div style={{ padding: '0 16px' }}>
-                      <ChevronDown size={18} color="#94a3b8" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'frequency' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                    <div style={{ width: '220px', position: 'relative' }}>
+                      <div 
+                        className={`premium-input-group ${openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'active' : ''}`}
+                        onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'niche' }); }}
+                        style={{ cursor: 'pointer', background: '#ffffff' }}
+                      >
+                        <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: '#111827' }}>
+                          {strat.niche}
+                        </div>
+                        <div style={{ padding: '0 12px' }}>
+                          <ChevronDown size={16} color="#94a3b8" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                        </div>
+                      </div>
+                      {openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' && (
+                        <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
+                          {niches.map(n => (
+                            <div key={n} className={`custom-dropdown-item ${n === strat.niche ? 'selected' : ''}`} onClick={() => { updateStrategy(strat.id, 'niche', n); setOpenDropdown(null); }}>
+                              {n}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
-                  {openDropdown?.stratId === strat.id && openDropdown?.type === 'frequency' && (
-                    <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
-                      {frequencies.map(f => (
-                        <div 
-                          key={f} 
-                          className={`custom-dropdown-item ${f === strat.frequency ? 'selected' : ''}`}
-                          onClick={() => handleFrequencyChange(strat.id, f)}
-                        >
-                          {f}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
 
-                <div style={{ marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Posting Times
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  {strat.uploadTimes.map((time, idx) => {
-                    const colors = ['#22c55e', '#3b82f6', '#d946ef', '#f59e0b'];
-                    return (
-                      <div key={idx} className="time-row">
-                        <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: colors[idx % colors.length] }}></div>
-                        {strat.uploadTimes.length > 1 && (
-                          <div style={{ fontSize: '14px', fontWeight: 600, color: '#334155', width: '60px' }}>
-                            Video {idx + 1}
+                  {/* Campaign Duration */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                        <Calendar size={20} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Campaign Duration</div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>How long the automation runs.</div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', width: '220px' }}>
+                      <div className="premium-input-group" style={{ flex: 1, background: '#ffffff' }}>
+                        <input type="number" className="premium-input" value={strat.durationValue} onChange={(e) => updateStrategy(strat.id, 'durationValue', e.target.value)} style={{ padding: '10px 14px', fontSize: '14px' }} />
+                      </div>
+                      <div style={{ flex: 1, position: 'relative' }}>
+                        <div className="premium-input-group" onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'duration' }); }} style={{ cursor: 'pointer', height: '100%', background: '#ffffff' }}>
+                          <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: '#111827' }}>{strat.durationUnit}</div>
+                          <div style={{ padding: '0 12px' }}><ChevronDown size={16} color="#94a3b8" /></div>
+                        </div>
+                        {openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' && (
+                          <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
+                            {durationUnits.map(u => (
+                              <div key={u} className={`custom-dropdown-item ${u === strat.durationUnit ? 'selected' : ''}`} onClick={() => { updateStrategy(strat.id, 'durationUnit', u); setOpenDropdown(null); }}>{u}</div>
+                            ))}
                           </div>
                         )}
-                        <input 
-                          type="time" 
-                          className="premium-input" 
-                          value={time}
-                          onChange={(e) => handleTimeChange(strat.id, idx, e.target.value)}
-                          style={{ padding: '0', background: 'transparent' }}
-                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Platforms & Style */}
+              <div className="settings-section">
+                <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>Platforms & Style</h2>
+                <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 24px 0' }}>Choose where to publish and the tone of your videos.</p>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {/* Content Style */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                        <Sparkles size={20} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Content Style</div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>The tone of the generated videos.</div>
+                      </div>
+                    </div>
+                    <div style={{ width: '220px', position: 'relative' }}>
+                      <div className="premium-input-group" onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'style' }); }} style={{ cursor: 'pointer', background: '#ffffff' }}>
+                        <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: '#111827' }}>{strat.contentStyle}</div>
+                        <div style={{ padding: '0 12px' }}><ChevronDown size={16} color="#94a3b8" /></div>
+                      </div>
+                      {openDropdown?.stratId === strat.id && openDropdown?.type === 'style' && (
+                        <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
+                          {contentStyles.map(s => (
+                            <div key={s} className={`custom-dropdown-item ${s === strat.contentStyle ? 'selected' : ''}`} onClick={() => { updateStrategy(strat.id, 'contentStyle', s); setOpenDropdown(null); }}>{s}</div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Platforms */}
+                  {['TikTok', 'YouTube Shorts', 'Instagram Reels'].map(plat => {
+                    const isSelected = strat.platforms.includes(plat);
+                    return (
+                      <div key={plat} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                            {plat === 'TikTok' ? <TikTokIcon size={20} /> : plat === 'YouTube Shorts' ? <YouTubeIcon size={20} /> : <InstagramIcon size={20} />}
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>{plat}</div>
+                            <div style={{ fontSize: '12px', color: '#6b7280' }}>Publish to {plat}.</div>
+                          </div>
+                        </div>
+                        <div 
+                          onClick={() => togglePlatform(strat.id, plat)}
+                          style={{
+                            width: '44px', height: '24px', borderRadius: '12px', background: isSelected ? '#10b981' : '#e5e7eb',
+                            position: 'relative', cursor: 'pointer', transition: 'background 0.2s'
+                          }}
+                        >
+                          <div style={{
+                            width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
+                            position: 'absolute', top: '2px', left: isSelected ? '22px' : '2px',
+                            transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                          }} />
+                        </div>
                       </div>
                     );
                   })}
                 </div>
-                
               </div>
-              
+
+              {/* Section 3: Schedule */}
+              <div className="settings-section">
+                <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>Schedule</h2>
+                <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 24px 0' }}>Configure when your videos go live.</p>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {/* Frequency */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                        <Activity size={20} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Upload Frequency</div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>Number of videos per day.</div>
+                      </div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', background: '#e5e7eb', borderRadius: '8px', padding: '4px' }}>
+                      {['1', '2', '3'].map(num => {
+                        const freqLabel = `${num} video${num === '1' ? '' : 's'} per day`;
+                        const isActive = strat.frequency.startsWith(num);
+                        return (
+                          <div 
+                            key={num}
+                            onClick={() => handleFrequencyChange(strat.id, freqLabel)}
+                            style={{
+                              padding: '6px 16px', fontSize: '13px', fontWeight: 500, borderRadius: '6px', cursor: 'pointer',
+                              background: isActive ? '#ffffff' : 'transparent',
+                              color: isActive ? '#059669' : '#4b5563',
+                              boxShadow: isActive ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            {num}/day
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Posting Times mapped as settings rows */}
+                  {strat.uploadTimes.map((time, idx) => {
+                    const [hStr, mStr] = time.split(':');
+                    let hNum = parseInt(hStr);
+                    const ampm = hNum >= 12 ? 'PM' : 'AM';
+                    if (hNum === 0) hNum = 12;
+                    if (hNum > 12) hNum -= 12;
+                    const displayHour = hNum.toString().padStart(2, '0');
+
+                    return (
+                      <div key={`time-${idx}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                            <Clock size={20} />
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>
+                              Video {idx + 1} Time
+                            </div>
+                            <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                              Scheduled publishing time.
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '4px', transition: 'border-color 0.2s', position: 'relative' }}
+                             onFocus={(e) => e.currentTarget.style.borderColor = '#10b981'}
+                             onBlur={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
+                        >
+                          <select 
+                            value={displayHour} 
+                            onChange={(e) => {
+                              let newH = parseInt(e.target.value);
+                              if (ampm === 'PM' && newH !== 12) newH += 12;
+                              if (ampm === 'AM' && newH === 12) newH = 0;
+                              handleTimeChange(strat.id, idx, `${newH.toString().padStart(2, '0')}:${mStr}`);
+                            }} 
+                            className="time-select"
+                          >
+                            {Array.from({length: 12}).map((_, i) => <option key={i+1} value={(i+1).toString().padStart(2, '0')}>{(i+1).toString().padStart(2, '0')}</option>)}
+                          </select>
+                          <span style={{ fontWeight: 600, color: '#111827', margin: '0 2px' }}>:</span>
+                          <select 
+                            value={mStr} 
+                            onChange={(e) => handleTimeChange(strat.id, idx, `${hStr}:${e.target.value}`)} 
+                            className="time-select"
+                          >
+                            {['00', '15', '30', '45'].map(m => <option key={m} value={m}>{m}</option>)}
+                          </select>
+                          <select 
+                            value={ampm} 
+                            onChange={(e) => {
+                              let newH = parseInt(hStr);
+                              if (e.target.value === 'PM' && newH < 12) newH += 12;
+                              if (e.target.value === 'AM' && newH >= 12) newH -= 12;
+                              handleTimeChange(strat.id, idx, `${newH.toString().padStart(2, '0')}:${mStr}`);
+                            }} 
+                            className="time-select ampm"
+                          >
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                          </select>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+          {/* End of map block */}
             </div>
-          </div>
+          ))}
           
           {/* Action Row for Detail View */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '40px', borderTop: '1px solid #e5e7eb', paddingTop: '24px' }}>
+            <button 
+              onClick={() => { removeStrategy(activeStrategyId!); setActiveStrategyId(null); }}
+              style={{ background: 'transparent', color: '#ef4444', border: 'none', padding: '12px 16px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', borderRadius: '8px', transition: 'background 0.2s' }}
+              onMouseOver={e => e.currentTarget.style.backgroundColor = '#fef2f2'}
+              onMouseOut={e => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Trash2 size={16} /> Delete Strategy
+              </span>
+            </button>
             <button 
               className="primary-btn"
-              onClick={() => handleGenerate(strat.id)}
-              style={{ padding: '14px 28px', fontSize: '15px', borderRadius: '12px', background: 'linear-gradient(135deg, #0f172a, #334155)', boxShadow: '0 4px 12px rgba(15, 23, 42, 0.25)' }}
+              onClick={() => handleGenerate(activeStrategyId!)}
+              style={{ 
+                padding: '12px 32px', fontSize: '14px', borderRadius: '8px', background: '#111827', color: '#ffffff',
+                fontWeight: 600, border: 'none', cursor: 'pointer', transition: 'background 0.2s'
+              }}
             >
-              {generatingId === strat.id ? (
-                'Generating Strategy...'
-              ) : (
-                <>
-                  <Sparkles size={18} />
-                  Generate Strategies
-                  <ArrowRight size={18} />
-                </>
-              )}
+              {generatingId === activeStrategyId ? (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                  Generating...
+                  <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+                </span>
+              ) : 'Generate Strategy'}
             </button>
           </div>
-        </div>
-      ))}
-      
         </div>
       )}
       {showConnectModal && (
