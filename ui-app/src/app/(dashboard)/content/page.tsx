@@ -45,6 +45,8 @@ type StrategyConfig = {
   frequency: string;
   uploadTimes: string[];
   platforms: string[];
+  avatarId?: string;
+  voiceId?: string;
 };
 
 export default function ContentSchedulerPage() {
@@ -61,7 +63,26 @@ export default function ContentSchedulerPage() {
         }
       })
       .catch(console.error);
+
+    fetch('/api/avatars')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.avatars) {
+          setAvatars(data.avatars.filter((a: any) => a.status === 'ready' || !a.status));
+        }
+      }).catch(console.error);
+
+    fetch('/api/voices')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.voices) {
+          setVoices(data.voices);
+        }
+      }).catch(console.error);
   }, []);
+
+  const [avatars, setAvatars] = useState<any[]>([]);
+  const [voices, setVoices] = useState<any[]>([]);
 
   const [strategies, setStrategies] = useState<StrategyConfig[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,6 +109,12 @@ export default function ContentSchedulerPage() {
   
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [openDropdown, setOpenDropdown] = useState<{stratId: string, type: string} | null>(null);
+  const [avatarModalStratId, setAvatarModalStratId] = useState<string | null>(null);
+  const [activeAvatarTab, setActiveAvatarTab] = useState<'custom' | 'system'>('custom');
+  const [voiceModalStratId, setVoiceModalStratId] = useState<string | null>(null);
+  const [activeVoiceTab, setActiveVoiceTab] = useState<'custom' | 'system'>('custom');
+  const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
   const niches = [
     'Technology & Gadgets',
@@ -115,7 +142,9 @@ export default function ContentSchedulerPage() {
       contentStyle: 'Entertaining',
       frequency: '1 video per day',
       uploadTimes: ['15:00'],
-      platforms: ['Instagram Reels']
+      platforms: ['Instagram Reels'],
+      avatarId: avatars.length > 0 ? avatars[0].id : '',
+      voiceId: voices.length > 0 ? voices[0].id : ''
     };
     
     // Optimistic update
@@ -877,6 +906,67 @@ export default function ContentSchedulerPage() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Avatar */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                        <Users size={20} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Avatar</div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>The visual persona for your videos.</div>
+                      </div>
+                    </div>
+                    <div style={{ width: '220px' }}>
+                      <button 
+                        className="premium-input-group"
+                        onClick={() => setAvatarModalStratId(strat.id)}
+                        style={{ cursor: 'pointer', background: '#ffffff', width: '100%', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                      >
+                        <div style={{ flex: 1, padding: '8px 12px', fontSize: '14px', fontWeight: 500, color: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '12px', minWidth: 0 }}>
+                          {strat.avatarId ? (
+                            <>
+                              <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', background: '#e2e8f0', flexShrink: 0, border: '2px solid #f1f5f9', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                                <video 
+                                  src={`/api/avatars/${strat.avatarId}/preview#t=0.001`} 
+                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                                />
+                              </div>
+                              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: 600, flex: 1, textAlign: 'left' }}>
+                                {avatars.find(a => a.id === strat.avatarId)?.name || 'Select Avatar'}
+                              </span>
+                            </>
+                          ) : 'Select Avatar'}
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Voice */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2c-1.7 0-3 1.2-3 2.8v6.4c0 1.6 1.3 2.8 3 2.8s3-1.2 3-2.8V4.8C15 3.2 13.7 2 12 2z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Voice</div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>The voice generating your script.</div>
+                      </div>
+                    </div>
+                    <div style={{ width: '220px' }}>
+                      <button 
+                        className="premium-input-group"
+                        onClick={() => setVoiceModalStratId(strat.id)}
+                        style={{ cursor: 'pointer', background: '#ffffff', width: '100%', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                      >
+                        <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'left', minWidth: 0 }}>
+                          {strat.voiceId ? (voices.find(v => v.id === strat.voiceId)?.name || 'Select Voice') : 'Select Voice'}
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
               </div>
 
@@ -1090,8 +1180,8 @@ export default function ContentSchedulerPage() {
         </div>
       )}
       {showConnectModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#fff', padding: 32, borderRadius: 12, width: 400, maxWidth: '90%', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
+          <div style={{ background: '#fff', padding: 32, borderRadius: 16, width: 400, maxWidth: '90%', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
             <div style={{ width: 64, height: 64, background: '#f8fafc', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
               {showConnectModal === 'TikTok' && <TikTokIcon size={32} />}
               {showConnectModal === 'YouTube Shorts' && <YouTubeIcon size={32} />}
@@ -1112,6 +1202,247 @@ export default function ContentSchedulerPage() {
                 style={{ flex: 1, padding: '10px 0', borderRadius: 8, background: 'var(--accent)', color: '#fff', fontWeight: 600, border: 'none', cursor: 'pointer' }}
               >Connect Now</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {avatarModalStratId && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)' }} onClick={() => setAvatarModalStratId(null)}>
+          <div style={{ background: '#fff', padding: 32, borderRadius: 16, width: 700, maxWidth: '90%', maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+              <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>Select Avatar</h2>
+              <button onClick={() => setAvatarModalStratId(null)} style={{ background: '#f1f5f9', border: 'none', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+                ✕
+              </button>
+            </div>
+            
+            <div style={{ display: 'flex', gap: 16, borderBottom: '1px solid #e2e8f0', marginBottom: 20 }}>
+              <button 
+                onClick={() => setActiveAvatarTab('custom')} 
+                style={{ background: 'transparent', border: 'none', borderBottom: activeAvatarTab === 'custom' ? '2px solid #3b82f6' : '2px solid transparent', color: activeAvatarTab === 'custom' ? '#3b82f6' : '#64748b', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
+              >
+                Your Custom Avatars
+              </button>
+              <button 
+                onClick={() => setActiveAvatarTab('system')} 
+                style={{ background: 'transparent', border: 'none', borderBottom: activeAvatarTab === 'system' ? '2px solid #3b82f6' : '2px solid transparent', color: activeAvatarTab === 'system' ? '#3b82f6' : '#64748b', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
+              >
+                From Us
+              </button>
+            </div>
+            
+            <div style={{ overflowY: 'auto', flex: 1, paddingRight: 8 }} className="custom-scrollbar">
+              {activeAvatarTab === 'custom' && (
+                avatars.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: 40, color: '#64748b' }}>No custom avatars found. Create one first!</div>
+                ) : (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 16 }}>
+                    {avatars.map(avatar => {
+                      const isSelected = strategies.find(s => s.id === avatarModalStratId)?.avatarId === avatar.id;
+                      return (
+                        <div 
+                          key={avatar.id}
+                          onClick={() => { updateStrategy(avatarModalStratId!, 'avatarId', avatar.id); setAvatarModalStratId(null); }}
+                          style={{ border: `2px solid ${isSelected ? '#3b82f6' : '#e2e8f0'}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}
+                        >
+                          <div style={{ aspectRatio: '9/16', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                            <video 
+                              src={`/api/avatars/${avatar.id}/preview#t=0.001`} 
+                              loop muted playsInline preload="metadata"
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                              onMouseEnter={e => e.currentTarget.play().catch(()=>{})}
+                              onMouseLeave={e => { e.currentTarget.pause(); e.currentTarget.currentTime = 0.001; }}
+                            />
+                          </div>
+                          <div style={{ padding: '8px 12px', background: isSelected ? '#eff6ff' : '#fff', color: isSelected ? '#1d4ed8' : '#111827', fontWeight: 600, fontSize: 13, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {avatar.name}
+                          </div>
+                          {isSelected && (
+                            <div style={{ position: 'absolute', top: 8, right: 8, background: '#3b82f6', color: '#fff', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              ✓
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )
+              )}
+
+              {activeAvatarTab === 'system' && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 16 }}>
+                  {[
+                    { id: 'sys-1', name: 'Professional Anna', image: '/avatars/anna.jpg' },
+                    { id: 'sys-2', name: 'Casual Mark', image: '/avatars/mark.jpg' },
+                    { id: 'sys-3', name: 'Tech Reviewer', image: '/avatars/reviewer_v2.jpg' },
+                    { id: 'sys-4', name: 'Friendly Sarah', image: '/avatars/sarah.jpg' },
+                    { id: 'sys-5', name: 'Corporate David', image: '/avatars/david.jpg' },
+                    { id: 'sys-6', name: 'Creative Designer', image: '/avatars/mia.jpg' },
+                    { id: 'sys-7', name: 'Support Agent', image: '/avatars/alex.jpg' }
+                  ].map(avatar => {
+                    const isSelected = strategies.find(s => s.id === avatarModalStratId)?.avatarId === avatar.id;
+                    return (
+                      <div 
+                        key={avatar.id}
+                        onClick={() => { updateStrategy(avatarModalStratId!, 'avatarId', avatar.id); setAvatarModalStratId(null); }}
+                        style={{ border: `2px solid ${isSelected ? '#3b82f6' : '#e2e8f0'}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}
+                      >
+                        <div style={{ aspectRatio: '9/16', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                          <img 
+                            src={avatar.image} 
+                            alt={avatar.name}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                            onError={(e) => e.currentTarget.style.display = 'none'}
+                          />
+                        </div>
+                        <div style={{ padding: '8px 12px', background: isSelected ? '#eff6ff' : '#fff', color: isSelected ? '#1d4ed8' : '#111827', fontWeight: 600, fontSize: 13, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {avatar.name}
+                        </div>
+                        {isSelected && (
+                          <div style={{ position: 'absolute', top: 8, right: 8, background: '#3b82f6', color: '#fff', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            ✓
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {voiceModalStratId && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)' }} onClick={() => setVoiceModalStratId(null)}>
+          <div style={{ background: '#fff', padding: 32, borderRadius: 16, width: 500, maxWidth: '90%', maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+              <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>Select Voice</h2>
+              <button onClick={() => setVoiceModalStratId(null)} style={{ background: '#f1f5f9', border: 'none', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+                ✕
+              </button>
+            </div>
+            
+            <div style={{ display: 'flex', gap: 16, borderBottom: '1px solid #e2e8f0', marginBottom: 20 }}>
+              <button 
+                onClick={() => setActiveVoiceTab('custom')} 
+                style={{ background: 'transparent', border: 'none', borderBottom: activeVoiceTab === 'custom' ? '2px solid #3b82f6' : '2px solid transparent', color: activeVoiceTab === 'custom' ? '#3b82f6' : '#64748b', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
+              >
+                My Voices
+              </button>
+              <button 
+                onClick={() => setActiveVoiceTab('system')} 
+                style={{ background: 'transparent', border: 'none', borderBottom: activeVoiceTab === 'system' ? '2px solid #3b82f6' : '2px solid transparent', color: activeVoiceTab === 'system' ? '#3b82f6' : '#64748b', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
+              >
+                System Voices
+              </button>
+            </div>
+            
+            <div style={{ overflowY: 'auto', flex: 1, paddingRight: 8 }} className="custom-scrollbar">
+              {activeVoiceTab === 'custom' && (
+                voices.filter(v => v.type !== 'system').length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: 40, color: '#64748b' }}>No custom voices found.</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {voices.filter(v => v.type !== 'system').map(voice => {
+                      const isSelected = strategies.find(s => s.id === voiceModalStratId)?.voiceId === voice.id;
+                      const isPlaying = playingVoiceId === voice.id;
+                      return (
+                        <div 
+                          key={voice.id}
+                          onClick={() => { updateStrategy(voiceModalStratId!, 'voiceId', voice.id); setVoiceModalStratId(null); }}
+                          style={{ border: `2px solid ${isSelected ? '#3b82f6' : '#e2e8f0'}`, borderRadius: 12, padding: '16px', cursor: 'pointer', transition: 'all 0.2s', background: isSelected ? '#eff6ff' : '#fff', display: 'flex', alignItems: 'center', gap: 16 }}
+                        >
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (isPlaying) {
+                                audioRef.current?.pause();
+                                setPlayingVoiceId(null);
+                              } else {
+                                setPlayingVoiceId(voice.id);
+                                setTimeout(() => audioRef.current?.play().catch(console.error), 50);
+                              }
+                            }}
+                            style={{ width: 40, height: 40, borderRadius: '50%', background: isPlaying ? '#3b82f6' : '#f1f5f9', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isPlaying ? '#fff' : '#64748b', cursor: 'pointer' }}
+                          >
+                            {isPlaying ? (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                            ) : (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            )}
+                          </button>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 600, color: isSelected ? '#1d4ed8' : '#111827', fontSize: 15 }}>{voice.name}</div>
+                            <div style={{ fontSize: 12, color: isSelected ? '#3b82f6' : '#64748b' }}>Custom Voice</div>
+                          </div>
+                          {isSelected && (
+                            <div style={{ color: '#3b82f6' }}>✓</div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )
+              )}
+
+              {activeVoiceTab === 'system' && (
+                voices.filter(v => v.type === 'system').length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: 40, color: '#64748b' }}>No system voices available.</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {voices.filter(v => v.type === 'system').map(voice => {
+                      const isSelected = strategies.find(s => s.id === voiceModalStratId)?.voiceId === voice.id;
+                      const isPlaying = playingVoiceId === voice.id;
+                      return (
+                        <div 
+                          key={voice.id}
+                          onClick={() => { updateStrategy(voiceModalStratId!, 'voiceId', voice.id); setVoiceModalStratId(null); }}
+                          style={{ border: `2px solid ${isSelected ? '#3b82f6' : '#e2e8f0'}`, borderRadius: 12, padding: '16px', cursor: 'pointer', transition: 'all 0.2s', background: isSelected ? '#eff6ff' : '#fff', display: 'flex', alignItems: 'center', gap: 16 }}
+                        >
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (isPlaying) {
+                                audioRef.current?.pause();
+                                setPlayingVoiceId(null);
+                              } else {
+                                setPlayingVoiceId(voice.id);
+                                setTimeout(() => audioRef.current?.play().catch(console.error), 50);
+                              }
+                            }}
+                            style={{ width: 40, height: 40, borderRadius: '50%', background: isPlaying ? '#3b82f6' : '#f1f5f9', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isPlaying ? '#fff' : '#64748b', cursor: 'pointer' }}
+                          >
+                            {isPlaying ? (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                            ) : (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            )}
+                          </button>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 600, color: isSelected ? '#1d4ed8' : '#111827', fontSize: 15 }}>{voice.name}</div>
+                            <div style={{ fontSize: 12, color: isSelected ? '#3b82f6' : '#64748b' }}>System Voice</div>
+                          </div>
+                          {isSelected && (
+                            <div style={{ color: '#3b82f6' }}>✓</div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )
+              )}
+            </div>
+            
+            {playingVoiceId && (
+              <audio 
+                ref={audioRef}
+                src={voices.find(v => v.id === playingVoiceId)?.type === 'system' ? `/system_voices/${playingVoiceId.replace('sys_', '')}.wav` : `/api/voices/${playingVoiceId}/audio`}
+                onEnded={() => setPlayingVoiceId(null)}
+                onPause={() => setPlayingVoiceId(null)}
+                style={{ display: 'none' }}
+              />
+            )}
           </div>
         </div>
       )}

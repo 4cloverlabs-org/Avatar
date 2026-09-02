@@ -6,8 +6,10 @@ import {
   MoreVertical, CheckCircle, FileText
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart, ReferenceLine, ReferenceDot } from 'recharts';
+import { useRouter } from 'next/navigation';
 
 export default function AnalyticsPage() {
+  const router = useRouter();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   
@@ -82,7 +84,7 @@ export default function AnalyticsPage() {
         
         // Mark as label only if it's the first data point for this day
         const isFirstOfDay = index === 0 || Math.floor(((index - 1) / totalPoints) * daysCount) !== dayIndex;
-        
+
         return { 
           ...d, 
           uniqueKey: index.toString(),
@@ -130,6 +132,10 @@ export default function AnalyticsPage() {
           border: 1px solid rgba(0,0,0,0.02);
           display: flex;
           flex-direction: column;
+        }
+        .hover-card:hover {
+          border-color: #3b82f6 !important;
+          box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
         }
         .bento-grid {
           display: grid;
@@ -373,7 +379,11 @@ export default function AnalyticsPage() {
           
           <div className="stats-row">
             {/* 1. Total Views */}
-            <div className="glass-card">
+            <div 
+              className="glass-card hover-card" 
+              style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+              onClick={() => router.push('/analytics/views')}
+            >
               <div className="card-header" style={{ marginBottom: 16 }}>
                 <div className="card-title" style={{ fontSize: 15 }}>Total Views</div>
                 <div className="nav-btn">›</div>
@@ -398,7 +408,11 @@ export default function AnalyticsPage() {
             </div>
 
             {/* 2. Total Posts */}
-            <div className="glass-card">
+            <div 
+              className="glass-card hover-card"
+              style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+              onClick={() => router.push('/analytics/posts')}
+            >
               <div className="card-header" style={{ marginBottom: 16 }}>
                 <div className="card-title" style={{ fontSize: 15 }}>Total Posts</div>
                 <div className="nav-btn">›</div>
@@ -429,7 +443,11 @@ export default function AnalyticsPage() {
             </div>
             
             {/* 3. Avg Engagement */}
-            <div className="glass-card">
+            <div 
+              className="glass-card hover-card"
+              style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+              onClick={() => router.push('/analytics/engagement')}
+            >
               <div className="card-header" style={{ marginBottom: 16 }}>
                 <div className="card-title" style={{ fontSize: 15 }}>Avg Engagement</div>
                 <div className="nav-btn">›</div>

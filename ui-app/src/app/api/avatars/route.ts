@@ -79,29 +79,29 @@ export async function GET() {
     // Check which ones have meta.json to ensure they are fully built
     const completedAvatars = dirs.filter(d => fs.existsSync(path.join(avatarsDir, d, 'meta.json')));
     
-    const avatarData = completedAvatars.map(id => {
+    const avatarData = [];
+    
+    for (const id of completedAvatars) {
       const metaPath = path.join(avatarsDir, id, 'meta.json');
-      let name = 'Custom Avatar';
-      let status = 'ready';
-      let progress = 0;
       try {
         const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-        if (meta.name) {
-          name = meta.name;
-        } else {
-          name = id;
+        
+        // Skip if this is actually a generated video (they have 'fps' and 'args' instead of 'name'/'status')
+        if (!meta.name && !meta.status && meta.fps !== undefined) {
+          continue;
         }
-        if (meta.status) {
-          status = meta.status;
-        }
-        if (meta.progress !== undefined) {
-          progress = meta.progress;
-        }
+        
+        const name = meta.name || id;
+        const status = meta.status || 'ready';
+        const progress = meta.progress !== undefined ? meta.progress : 0;
+        
+        avatarData.push({ id, name, status, progress });
       } catch (e) {
-        name = id;
+        // If meta.json is invalid, we can still include it as a fallback or skip it.
+        // Let's include it just in case it's a corrupted avatar.
+        avatarData.push({ id, name: id, status: 'ready', progress: 0 });
       }
-      return { id, name, status, progress };
-    });
+    }
 
     return NextResponse.json({ 
       success: true, 
