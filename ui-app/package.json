@@ -12,7 +12,7 @@
     "@aws-sdk/client-s3": "^3.1117.0",
     "@aws-sdk/s3-request-presigner": "^3.1117.0",
     "@better-auth/drizzle-adapter": "^1.7.1",
-    "@better-auth/infra": "^0.4.3",
+    "@better-auth/infra": "^0.4.5",
     "@gradio/client": "^1.15.7",
     "@mediapipe/camera_utils": "^0.3.1675466862",
     "@mediapipe/selfie_segmentation": "^0.1.1675465747",

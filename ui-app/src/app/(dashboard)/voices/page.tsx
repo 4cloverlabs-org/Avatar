@@ -11,7 +11,7 @@ export default function VoicesView() {
     <div className="home-content">
       {/* TABS */}
       <div style={{ display: 'flex', gap: 24, borderBottom: '1px solid #e2e8f0', marginBottom: 24 }}>
-        {['System Voices', 'My Voices'].map(tab => (
+        {['My Voices', 'System Voices'].map(tab => (
           <div 
             key={tab}
             onClick={() => setVoiceTab(tab)}
@@ -61,7 +61,7 @@ function MyVoicesUI() {
       const res = await fetch('/api/voices');
       const data = await res.json();
       if (data.success) {
-        setVoices(data.voices);
+        setVoices(data.voices.filter((v: any) => v.type !== 'system'));
       }
     } catch (e) {
       console.error(e);

@@ -308,7 +308,7 @@ export default function HomeDashboard() {
                     onClick={() => setActiveAvatarTab('system')} 
                     style={{ background: 'transparent', border: 'none', borderBottom: activeAvatarTab === 'system' ? '2px solid var(--accent)' : '2px solid transparent', color: activeAvatarTab === 'system' ? 'var(--accent)' : '#64748b', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
                   >
-                    System Avatars
+                    From Us
                   </button>
                 </div>
                 
@@ -351,7 +351,15 @@ export default function HomeDashboard() {
                 
                 {activeAvatarTab === 'system' && (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                    {availableAvatars.filter(a => a.type === 'system').map(a => (
+                    {[
+                      { id: 'sys-1', name: 'Professional Anna', image: '/avatars/anna.jpg' },
+                      { id: 'sys-2', name: 'Casual Mark', image: '/avatars/mark.jpg' },
+                      { id: 'sys-3', name: 'Tech Reviewer', image: '/avatars/reviewer_v2.jpg' },
+                      { id: 'sys-4', name: 'Friendly Sarah', image: '/avatars/sarah.jpg' },
+                      { id: 'sys-5', name: 'Corporate David', image: '/avatars/david.jpg' },
+                      { id: 'sys-6', name: 'Creative Designer', image: '/avatars/mia.jpg' },
+                      { id: 'sys-7', name: 'Support Agent', image: '/avatars/alex.jpg' }
+                    ].map(a => (
                       <div
                         key={a.id}
                         style={{ padding: '12px', border: `2px solid ${selectedAvatar === a.id ? 'var(--accent)' : '#e2e8f0'}`, borderRadius: 8, cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 12, background: selectedAvatar === a.id ? '#eff6ff' : '#fff', transition: 'all 0.2s' }}
@@ -363,11 +371,7 @@ export default function HomeDashboard() {
                       >
                         <div style={{ width: '100%', aspectRatio: '16/9', borderRadius: '6px', overflow: 'hidden', background: selectedAvatar === a.id ? 'rgba(79,70,229,0.1)' : '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                           <User size={24} color={selectedAvatar === a.id ? '#4f46e5' : '#94a3b8'} style={{ position: 'absolute' }} />
-                          {a.id.includes('tpdne') || a.id.length < 20 ? (
-                            <img src={`/avatars/${a.id}.jpg`} alt={a.name} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} onError={(e) => e.currentTarget.style.display = 'none'} />
-                          ) : (
-                            <video src={`/api/serve_video?type=av&path=${a.id}#t=0.001`} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} preload="metadata" muted playsInline onError={(e) => e.currentTarget.style.display = 'none'} />
-                          )}
+                          <img src={a.image} alt={a.name} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} onError={(e) => e.currentTarget.style.display = 'none'} />
                         </div>
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600, fontSize: 13, color: selectedAvatar === a.id ? 'var(--accent)' : '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
