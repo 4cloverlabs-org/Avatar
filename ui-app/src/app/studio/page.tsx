@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Menu, Undo2, Redo2, Cloud, Play, Plus, Image as ImageIcon,
   User, Type, Square, LayoutTemplate, Film, MessageSquare, MousePointer2,
@@ -30,6 +30,7 @@ const isVideoUrl = (url: string) => {
 
 export default function Dashboard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
@@ -71,8 +72,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Check for an avatar image passed from the avatars page
-    const params = new URLSearchParams(window.location.search);
-    const avatarUrl = params.get('avatar');
+    const avatarUrl = searchParams.get('avatar');
     if (avatarUrl) {
       setVideoPreview(avatarUrl);
     }
@@ -236,9 +236,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Read AI Assistant handoff data from dashboard
+    const urlAvatar = searchParams.get('avatar');
     const script = localStorage.getItem('ai_assistant_script');
     const aspect = localStorage.getItem('ai_assistant_aspect');
-    const avatar = localStorage.getItem('ai_assistant_avatar');
+    const avatar = urlAvatar || localStorage.getItem('ai_assistant_avatar');
     const autoGen = localStorage.getItem('ai_assistant_auto_generate');
     const hasCustomVoice = localStorage.getItem('ai_assistant_has_custom_voice');
 
@@ -285,13 +286,16 @@ export default function Dashboard() {
           setAvailableAvatars(readyAvatars);
           
           const isValidAvatar = avatar && readyAvatars.some((a: any) => a.id === avatar);
-          const targetId = isValidAvatar ? avatar : (readyAvatars.length > 0 ? readyAvatars[readyAvatars.length - 1].id : null);
+          const isSystemAvatarParam = avatar && (avatar.startsWith('/avatars/') || avatar.startsWith('sys-'));
+          const targetId = isValidAvatar ? avatar : (isSystemAvatarParam ? avatar : (readyAvatars.length > 0 ? readyAvatars[readyAvatars.length - 1].id : null));
           
           if (targetId) {
             setAvatarId(targetId);
             const found = readyAvatars.find((a: any) => a.id === targetId);
             if (found && found.preview) {
                setVideoPreview(found.preview);
+            } else if (targetId.startsWith('/avatars/')) {
+               setVideoPreview(targetId);
             } else if (targetId.length === 36) { // Custom UUID avatar
                setVideoPreview(`/api/serve_video?type=av&path=${targetId}`);
             } else {

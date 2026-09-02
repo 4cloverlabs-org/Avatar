@@ -138,6 +138,23 @@ export async function GET() {
       return v.toString();
     };
 
+    // 3. Generate heatmap data deterministically
+    const publishingActivity = Array.from({ length: 365 }).map((_, i) => {
+      const date = new Date(2024, 0, 4); // Start Jan 4, 2024
+      date.setDate(date.getDate() + i);
+      const dateString = date.toISOString().split('T')[0];
+      const countRand = seededRandom(dateString)();
+      let count = 0;
+      if (countRand > 0.4) count = 1;
+      if (countRand > 0.7) count = 2;
+      if (countRand > 0.9) count = 3;
+      if (countRand > 0.95) count = 4;
+      return {
+        date: dateString,
+        count
+      };
+    });
+
     return NextResponse.json({
       success: true,
       metrics: {
@@ -155,7 +172,51 @@ export async function GET() {
         niche: bestNiche,
         style: bestStyle
       },
-      recentVideos: enrichedVideos.slice(0, 3)
+      recentVideos: enrichedVideos.slice(0, 3),
+      planProgress: {
+        completed: Math.min(100, Math.max(10, enrichedVideos.length * 5)),
+        total: 100,
+        daysRemaining: 7,
+        errors: 0
+      },
+      avatarUsage: [
+        { name: 'Emma (Professional)', percentage: 54, count: 32 },
+        { name: 'Liam (Casual)', percentage: 27, count: 18 }
+      ],
+      upcomingPosts: [
+        { time: '07:00 - 11:00 AM', title: 'Winter Sale Reel (IG)', date: 'Sun 8 February' },
+        { time: '08:00 - 12:00 AM', title: 'New Arrivals (YT Shorts)', date: 'Mon 9 February' }
+      ],
+      performanceData: [
+        { date: 'Feb 7', revenue: 15000, clickRate: 14000, unsubscribes: 20000, twitter: 22000, facebook: 12000 },
+        { date: '', revenue: 18000, clickRate: 17000, unsubscribes: 22000, twitter: 25000, facebook: 14000 },
+        { date: '', revenue: 16000, clickRate: 16500, unsubscribes: 21000, twitter: 23000, facebook: 13000 },
+        { date: '', revenue: 21000, clickRate: 22000, unsubscribes: 26000, twitter: 29000, facebook: 18000 },
+        { date: 'Feb 8', revenue: 24000, clickRate: 24500, unsubscribes: 28000, twitter: 31000, facebook: 20000 },
+        { date: '', revenue: 22000, clickRate: 23000, unsubscribes: 27000, twitter: 29000, facebook: 19000 },
+        { date: '', revenue: 19000, clickRate: 20000, unsubscribes: 24000, twitter: 26000, facebook: 16000 },
+        { date: '', revenue: 23000, clickRate: 25000, unsubscribes: 29000, twitter: 31000, facebook: 21000 },
+        { date: 'Feb 9', revenue: 25000, clickRate: 26000, unsubscribes: 31000, twitter: 34000, facebook: 23000 },
+        { date: '', revenue: 24000, clickRate: 25500, unsubscribes: 30000, twitter: 33000, facebook: 22000 },
+        { date: '', revenue: 26000, clickRate: 27500, unsubscribes: 32000, twitter: 35000, facebook: 24000 },
+        { date: '', revenue: 23000, clickRate: 24000, unsubscribes: 28000, twitter: 31000, facebook: 20000 },
+        { date: 'Feb 10', revenue: 21000, clickRate: 22000, unsubscribes: 25000, twitter: 27000, facebook: 17000 },
+        { date: '', revenue: 21000, clickRate: 22000, unsubscribes: 25000, twitter: 27000, facebook: 17000 },
+        { date: '', revenue: 24000, clickRate: 25000, unsubscribes: 29000, twitter: 32000, facebook: 21000 },
+        { date: '', revenue: 27000, clickRate: 29000, unsubscribes: 34000, twitter: 37000, facebook: 25000 },
+        { date: 'Feb 11', revenue: 31000, clickRate: 33000, unsubscribes: 39000, twitter: 42000, facebook: 29000 },
+        { date: '', revenue: 32000, clickRate: 34000, unsubscribes: 40000, twitter: 44000, facebook: 30000 },
+        { date: '', revenue: 30000, clickRate: 32000, unsubscribes: 38000, twitter: 42000, facebook: 28000 },
+        { date: '', revenue: 28000, clickRate: 30000, unsubscribes: 35000, twitter: 39000, facebook: 25000 },
+        { date: 'Feb 12', revenue: 24000, clickRate: 25000, unsubscribes: 33000, twitter: 35000, facebook: 20000 },
+        { date: '', revenue: 29000, clickRate: 30000, unsubscribes: 35000, twitter: 37000, facebook: 25000 },
+        { date: '', revenue: 26000, clickRate: 29000, unsubscribes: 34500, twitter: 36000, facebook: 22000 },
+        { date: '', revenue: 24000, clickRate: 29500, unsubscribes: 33500, twitter: 35000, facebook: 20000 },
+        { date: 'Feb 13', revenue: 27000, clickRate: 30000, unsubscribes: 35000, twitter: 38000, facebook: 24000 },
+        { date: '', revenue: 29000, clickRate: 33000, unsubscribes: 37000, twitter: 40000, facebook: 26000 },
+        { date: '', revenue: 38000, clickRate: 39000, unsubscribes: 42000, twitter: 45000, facebook: 34000 },
+      ],
+      publishingActivity
     });
 
   } catch (error) {

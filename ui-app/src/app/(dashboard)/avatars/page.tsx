@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, MoreVertical, Copy, Edit2, Trash } from 'lucide-react';
+import { Plus, MoreVertical, Copy, Edit2, Trash, X } from 'lucide-react';
 
 export default function AvatarsView() {
   const [avatarTab, setAvatarTab] = useState('My Avatars');
@@ -78,7 +78,7 @@ function FromUsAvatarsUI() {
                 style={{ background: '#e0e7ff', color: '#4f46e5', border: 'none', borderRadius: 6, padding: '6px 12px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  router.push(`/studio?avatar=${encodeURIComponent(avatar.image)}`);
+                  setPreviewAvatar(avatar);
                 }}
               >
                 Use
@@ -89,31 +89,7 @@ function FromUsAvatarsUI() {
       </div>
       {/* POPUP PREVIEW for System Avatars */}
       {previewAvatar && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', padding: 24 }} onClick={() => setPreviewAvatar(null)}>
-          <div style={{ background: '#fff', padding: 20, borderRadius: 16, width: 300, position: 'relative', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }} onClick={e => e.stopPropagation()}>
-            <button style={{ position: 'absolute', top: 12, right: 12, background: '#f1f5f9', border: 'none', cursor: 'pointer', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }} onClick={() => setPreviewAvatar(null)}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-            <h3 style={{ marginTop: 0, marginBottom: 16, fontSize: 18, fontWeight: 700, color: '#0f172a' }}>{previewAvatar.name}</h3>
-            <div style={{ width: '100%', aspectRatio: '9/16', background: '#f8fafc', borderRadius: 12, overflow: 'hidden', border: '1px solid #e2e8f0', maxHeight: '55vh', display: 'flex', justifyContent: 'center' }}>
-              <img 
-                src={previewAvatar.image} 
-                alt={previewAvatar.name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-              />
-            </div>
-            <div style={{ marginTop: 20, display: 'flex', gap: 12 }}>
-              <button 
-                style={{ flex: 1, padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 15, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.2)' }}
-                onClick={() => router.push(`/studio?avatar=${encodeURIComponent(previewAvatar.image)}`)}
-                onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
-                onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-              >
-                Use this Avatar
-              </button>
-            </div>
-          </div>
-        </div>
+        <QuickGenerateModal previewAvatar={previewAvatar} setPreviewAvatar={setPreviewAvatar} isSystemAvatar={true} router={router} />
       )}
     </>
   );
@@ -362,37 +338,194 @@ function MyAvatarsUI() {
 
       {/* POPUP PREVIEW for My Avatars */}
       {previewAvatar && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', padding: 24 }} onClick={() => setPreviewAvatar(null)}>
-          <div style={{ background: '#fff', padding: 20, borderRadius: 16, width: 300, position: 'relative', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }} onClick={e => e.stopPropagation()}>
-            <button style={{ position: 'absolute', top: 12, right: 12, background: '#f1f5f9', border: 'none', cursor: 'pointer', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }} onClick={() => setPreviewAvatar(null)}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-            <h3 style={{ marginTop: 0, marginBottom: 16, fontSize: 18, fontWeight: 700, color: '#0f172a' }}>{previewAvatar.name}</h3>
-            <div style={{ width: '100%', aspectRatio: '9/16', background: '#000', borderRadius: 12, overflow: 'hidden', border: '1px solid #e2e8f0', maxHeight: '55vh', display: 'flex', justifyContent: 'center' }}>
-              <video 
-                src={`/api/avatars/${previewAvatar.id}/preview`} 
-                controls autoPlay loop playsInline
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-              />
+        <QuickGenerateModal previewAvatar={previewAvatar} setPreviewAvatar={setPreviewAvatar} isSystemAvatar={false} router={router} />
+      )}
+    </div>
+  );
+}
+
+function QuickGenerateModal({ previewAvatar, setPreviewAvatar, isSystemAvatar, router }: any) {
+  const [voices, setVoices] = useState<any[]>([]);
+  const [selectedVoiceId, setSelectedVoiceId] = useState<string>('');
+  const [scriptText, setScriptText] = useState<string>('');
+  const [step, setStep] = useState<'preview' | 'configure' | 'generating' | 'result'>('preview');
+  const [resultVideoUrl, setResultVideoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/voices')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.voices) {
+          setVoices(data.voices);
+          if (data.voices.length > 0) setSelectedVoiceId(data.voices[0].id);
+        }
+      });
+  }, []);
+
+  const handleGenerate = async () => {
+    if (!scriptText.trim()) return alert("Please enter a script.");
+    if (!selectedVoiceId) return alert("Please select a voice.");
+    setStep('generating');
+    
+    try {
+      const ttsRes = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: scriptText, voiceId: selectedVoiceId })
+      });
+      const ttsData = await ttsRes.json();
+      if (!ttsData.success) throw new Error("TTS failed");
+      
+      const audioUrl = ttsData.url;
+      const avatarId = isSystemAvatar ? previewAvatar.image : previewAvatar.id;
+
+      const audioFetch = await fetch(audioUrl);
+      const audioBlob = await audioFetch.blob();
+      
+      const formData = new FormData();
+      formData.append('avatarId', avatarId);
+      formData.append('audio', audioBlob, 'tts.wav');
+      formData.append('aspectRatio', '9:16');
+
+      const genRes = await fetch('/api/generate_video', {
+        method: 'POST',
+        body: formData
+      });
+      const genData = await genRes.json();
+      if (!genData.success) throw new Error(genData.error || "Video generation failed");
+
+      if (genData.data && genData.data.length > 0) {
+         let videoUrl = genData.data[0];
+         if (typeof videoUrl === 'object' && videoUrl.path) videoUrl = videoUrl.path;
+         
+         if (typeof videoUrl === 'string') {
+            const normalizedUrl = videoUrl.replace(/\\/g, '/');
+            if (normalizedUrl.includes('/results/avatars/')) {
+               const parts = normalizedUrl.split('/results/avatars/');
+               if (parts.length > 1) {
+                 videoUrl = `/api/serve_video?type=av&path=${encodeURIComponent(parts[1])}`;
+               }
+            } else if (normalizedUrl.includes('/results/output/')) {
+               const parts = normalizedUrl.split('/results/output/');
+               if (parts.length > 1) {
+                 videoUrl = `/api/serve_video?type=gen&path=${encodeURIComponent(parts[1])}`;
+               }
+            }
+         }
+         
+         setResultVideoUrl(videoUrl);
+         setStep('result');
+         return; // Done!
+      }
+
+      const targetId = avatarId || 'sys';
+      let found = false;
+      for (let i = 0; i < 60; i++) {
+        const checkRes = await fetch(`/api/check_video?avatarId=${targetId}&aspect=9:16`);
+        const checkData = await checkRes.json();
+        if (checkData.success && checkData.ready) {
+           setResultVideoUrl(checkData.url);
+           setStep('result');
+           found = true;
+           break;
+        }
+        await new Promise(r => setTimeout(r, 5000));
+      }
+      
+      if (!found) throw new Error("Timeout waiting for video");
+    } catch (e: any) {
+      alert("Error: " + e.message);
+      setStep('configure');
+    }
+  };
+
+  const previewMedia = isSystemAvatar ? (
+    <img src={previewAvatar.image} alt={previewAvatar.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+  ) : (
+    <video src={`/api/avatars/${previewAvatar.id}/preview`} controls autoPlay loop playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+  );
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', padding: 24 }} onClick={() => setPreviewAvatar(null)}>
+      <div style={{ background: '#fff', padding: 24, borderRadius: 16, width: step === 'configure' ? 640 : 340, position: 'relative', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)', transition: 'width 0.3s ease' }} onClick={e => e.stopPropagation()}>
+        <button style={{ position: 'absolute', top: 12, right: 12, background: '#f1f5f9', border: 'none', cursor: 'pointer', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }} onClick={() => setPreviewAvatar(null)}>
+          <X size={16} />
+        </button>
+        <h3 style={{ marginTop: 0, marginBottom: 16, fontSize: 18, fontWeight: 700, color: '#0f172a' }}>{previewAvatar.name}</h3>
+        
+        {step === 'preview' && (
+          <>
+            <div style={{ width: '100%', aspectRatio: '9/16', background: '#000', borderRadius: 12, overflow: 'hidden', border: '1px solid #e2e8f0', maxHeight: '50vh', display: 'flex', justifyContent: 'center' }}>
+              {previewMedia}
             </div>
             <div style={{ marginTop: 20, display: 'flex', gap: 12 }}>
               <button 
-                style={{ flex: 1, padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 15, cursor: previewAvatar.status === 'error' ? 'not-allowed' : 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.2)', opacity: previewAvatar.status === 'error' ? 0.5 : 1 }}
-                onClick={() => {
-                  if (previewAvatar.status !== 'error') {
-                    router.push(`/studio?avatar=${encodeURIComponent(previewAvatar.id)}`);
-                  }
-                }}
-                onMouseOver={(e) => e.currentTarget.style.transform = previewAvatar.status === 'error' ? 'none' : 'translateY(-1px)'}
-                onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                disabled={previewAvatar.status === 'error'}
+                style={{ flex: 1, padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 15, cursor: (previewAvatar.status === 'error' && !isSystemAvatar) ? 'not-allowed' : 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.2)' }}
+                onClick={() => setStep('configure')}
+                disabled={previewAvatar.status === 'error' && !isSystemAvatar}
               >
-                Use this Avatar
+                Quick Generate
+              </button>
+            </div>
+            <div style={{ textAlign: 'center', marginTop: 16 }}>
+              <a href="#" onClick={(e) => { e.preventDefault(); router.push(`/studio?avatar=${encodeURIComponent(isSystemAvatar ? previewAvatar.image : previewAvatar.id)}`); }} style={{ color: '#4f46e5', fontSize: 14, fontWeight: 600, textDecoration: 'none' }}>Open in Full Studio &rarr;</a>
+            </div>
+          </>
+        )}
+
+        {step === 'configure' && (
+          <div style={{ display: 'flex', gap: 24 }}>
+            <div style={{ width: 220, aspectRatio: '9/16', background: '#000', borderRadius: 12, overflow: 'hidden', flexShrink: 0 }}>
+              {previewMedia}
+            </div>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#475569', marginBottom: 8 }}>Select Voice</label>
+                <select value={selectedVoiceId} onChange={(e) => setSelectedVoiceId(e.target.value)} style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none' }}>
+                  {voices.map(v => <option key={v.id} value={v.id}>{v.name} {v.type === 'cloned' ? '(Cloned)' : ''}</option>)}
+                </select>
+              </div>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#475569', marginBottom: 8 }}>Script</label>
+                <textarea 
+                  value={scriptText} 
+                  onChange={(e) => setScriptText(e.target.value)} 
+                  placeholder="Type what you want the avatar to say..."
+                  style={{ width: '100%', flex: 1, minHeight: 120, padding: '12px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', resize: 'none', fontFamily: 'inherit' }}
+                />
+              </div>
+              <button 
+                onClick={handleGenerate}
+                style={{ width: '100%', padding: '12px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 15, cursor: 'pointer', marginTop: 16 }}
+              >
+                Generate Video
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {step === 'generating' && (
+          <div style={{ padding: '60px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ width: 40, height: 40, border: '3px solid #e0e7ff', borderTopColor: '#4f46e5', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            <div style={{ marginTop: 24, fontSize: 16, fontWeight: 600, color: '#0f172a' }}>Generating your video...</div>
+            <div style={{ marginTop: 8, fontSize: 13, color: '#64748b' }}>This might take a minute depending on the length of your script.</div>
+            <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+          </div>
+        )}
+
+        {step === 'result' && resultVideoUrl && (
+          <>
+            <div style={{ width: '100%', aspectRatio: '9/16', background: '#000', borderRadius: 12, overflow: 'hidden', border: '1px solid #e2e8f0', maxHeight: '50vh', display: 'flex', justifyContent: 'center' }}>
+              <video src={resultVideoUrl} controls autoPlay style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+            <div style={{ marginTop: 20 }}>
+              <a href={resultVideoUrl} download style={{ display: 'block', width: '100%', padding: '12px', background: '#10b981', color: '#fff', textAlign: 'center', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 15 }}>
+                Download Result
+              </a>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

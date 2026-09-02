@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Video, MoreVertical, Download, Edit2, Trash2, Check, X, Clock } from 'lucide-react';
+import { Video, MoreVertical, Download, Edit2, Trash2, Check, X, Clock, Info } from 'lucide-react';
 
 export default function VideosView() {
   const router = useRouter();
@@ -10,15 +10,33 @@ export default function VideosView() {
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [editModeId, setEditModeId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
+  const [videoDurations, setVideoDurations] = useState<Record<string, string>>({});
+  const [previewVideo, setPreviewVideo] = useState<any | null>(null);
+  const [downloadQuality, setDownloadQuality] = useState('1080p');
 
   const [sortBy, setSortBy] = useState('date-desc');
 
   const loadVideos = () => {
-    fetch('/api/videos')
+    fetch(`/api/videos?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.success && data.videos) {
-          setVideos(data.videos.filter((v: any) => v.status !== 'UPLOADED'));
+          const loadedVideos = data.videos.filter((v: any) => v.status !== 'UPLOADED');
+          setVideos(loadedVideos);
+          
+          // Asynchronously fetch video durations
+          loadedVideos.forEach((vid: any) => {
+            const videoElement = document.createElement('video');
+            videoElement.src = vid.url;
+            videoElement.addEventListener('loadedmetadata', () => {
+              const seconds = Math.round(videoElement.duration);
+              if (!isNaN(seconds)) {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                setVideoDurations(prev => ({ ...prev, [vid.id]: `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}` }));
+              }
+            });
+          });
         }
       })
       .finally(() => setIsLoading(false));
@@ -185,7 +203,11 @@ export default function VideosView() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
           {sortedVideos.map(video => (
             <div key={video.id} className="home-recent-card" style={{ border: '2px solid #F5F5F5', borderRadius: 8, overflow: 'visible', background: '#fff', transition: 'border-color 0.2s ease-in-out', position: 'relative' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--accent)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = '#F5F5F5'}>
-              <div className="home-recent-img" style={{ width: '100%', background: '#f8fafc', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px 6px 0 0', overflow: 'hidden' }}>
+              <div 
+                className="home-recent-img" 
+                style={{ width: '100%', background: '#f8fafc', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px 6px 0 0', overflow: 'hidden', cursor: 'pointer' }}
+                onClick={() => setPreviewVideo(video)}
+              >
                 <video 
                   src={`${video.url}#t=0.001`} 
                   style={{ width: '100%', height: 'auto', display: 'block' }} 
@@ -201,7 +223,7 @@ export default function VideosView() {
                   loop
                   playsInline
                 />
-
+                <div className="home-recent-duration">{videoDurations[video.id] || '00:00'}</div>
               </div>
               <div className="home-recent-info" style={{ padding: '16px', position: 'relative', display: 'block' }}>
                 {editModeId === video.id ? (
@@ -272,6 +294,136 @@ export default function VideosView() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Video Preview Modal */}
+      {previewVideo && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', animation: 'fadeIn 0.2s ease-out' }}>
+          <style>{`
+            @keyframes fadeIn {
+              from { opacity: 0; backdrop-filter: blur(0px); }
+              to { opacity: 1; backdrop-filter: blur(4px); }
+            }
+            @keyframes slideUp {
+              from { opacity: 0; transform: translateY(20px) scale(0.95); }
+              to { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            .quality-radio:hover { border-color: #6366f1 !important; }
+            .cancel-btn:hover { background: #f8fafc !important; }
+            .download-btn:hover { background: #4338ca !important; }
+          `}</style>
+          
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(4px)' }} onClick={() => setPreviewVideo(null)} />
+          
+          <div style={{ position: 'relative', width: '100%', maxWidth: 960, background: '#ffffff', borderRadius: 16, display: 'flex', flexDirection: 'column', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
+            
+            {/* Header */}
+            <div style={{ padding: '24px 32px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.5px' }}>{previewVideo.title}</h3>
+                <div style={{ color: '#64748b', fontSize: 13, marginTop: 4, fontWeight: 500 }}>
+                  {new Date(previewVideo.edited).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} • {new Date(previewVideo.edited).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
+                </div>
+              </div>
+              <button 
+                onClick={() => setPreviewVideo(null)} 
+                style={{ background: '#f1f5f9', border: 'none', color: '#64748b', width: 36, height: 36, borderRadius: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }} 
+                onMouseEnter={(e) => e.currentTarget.style.background = '#e2e8f0'} 
+                onMouseLeave={(e) => e.currentTarget.style.background = '#f1f5f9'}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div style={{ display: 'flex', padding: '0 32px 24px', gap: 32 }}>
+              
+              {/* Left Side: Video */}
+              <div style={{ flex: 1, borderRadius: 12, overflow: 'hidden', background: '#000', display: 'flex', alignItems: 'center' }}>
+                <video 
+                  src={previewVideo.url} 
+                  style={{ width: '100%', maxHeight: '480px', display: 'block', objectFit: 'contain' }} 
+                  controls
+                  autoPlay
+                />
+              </div>
+
+              {/* Right Side: Options */}
+              <div style={{ width: 340, flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
+                
+                {/* Options List */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {[
+                    { id: '1080p', label: 'Original (1080p)', res: '1920 × 1080 • MP4', hd: true },
+                    { id: '720p', label: 'High (720p)', res: '1280 × 720 • MP4', hd: false },
+                    { id: '480p', label: 'Medium (480p)', res: '854 × 480 • MP4', hd: false },
+                    { id: '360p', label: 'Low (360p)', res: '640 × 360 • MP4', hd: false }
+                  ].map(option => {
+                    const isActive = downloadQuality === option.id;
+                    return (
+                      <div 
+                        key={option.id}
+                        className="quality-radio"
+                        onClick={() => setDownloadQuality(option.id)}
+                        style={{ 
+                          display: 'flex', alignItems: 'center', gap: 16, padding: '16px', borderRadius: 12, 
+                          border: `1.5px solid ${isActive ? '#6366f1' : '#e2e8f0'}`, 
+                          background: isActive ? '#fefeff' : '#fff', 
+                          cursor: 'pointer', transition: 'all 0.2s',
+                          boxShadow: isActive ? '0 4px 12px rgba(99, 102, 241, 0.1)' : 'none'
+                        }}
+                      >
+                        {/* Custom Radio Button */}
+                        <div style={{ width: 20, height: 20, borderRadius: '50%', border: `2px solid ${isActive ? '#6366f1' : '#cbd5e1'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          {isActive && <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#6366f1' }} />}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: isActive ? '#4f46e5' : '#1e293b' }}>{option.label}</span>
+                            {option.hd && (
+                              <span style={{ background: isActive ? '#6366f1' : '#3b82f6', color: '#fff', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, letterSpacing: 0.5 }}>HD</span>
+                            )}
+                          </div>
+                          <div style={{ fontSize: 12, color: isActive ? '#6366f1' : '#64748b', opacity: isActive ? 0.8 : 1, fontWeight: 500 }}>{option.res}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Info Box */}
+                <div style={{ marginTop: 16, background: '#eff6ff', borderRadius: 12, padding: '12px 16px', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                  <Info size={16} color="#3b82f6" style={{ marginTop: 2, flexShrink: 0 }} />
+                  <div style={{ fontSize: 12, color: '#475569', lineHeight: 1.5, fontWeight: 500 }}>
+                    Higher quality videos may take longer to download and more storage space.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div style={{ padding: '20px 32px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fafafa' }}>
+              <button 
+                className="cancel-btn"
+                onClick={() => setPreviewVideo(null)}
+                style={{ padding: '10px 24px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: 10, fontSize: 14, fontWeight: 600, color: '#334155', cursor: 'pointer', transition: 'background 0.2s' }}
+              >
+                Cancel
+              </button>
+              <a 
+                href={`/api/videos/download?filename=${previewVideo.filename}&quality=${downloadQuality === '1080p' ? 'original' : downloadQuality}`}
+                download
+                className="download-btn"
+                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 24px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', textDecoration: 'none', transition: 'background 0.2s' }}
+                onClick={() => setPreviewVideo(null)}
+              >
+                <Download size={16} /> 
+                Download ({downloadQuality})
+              </a>
+            </div>
+
+          </div>
         </div>
       )}
     </div>
