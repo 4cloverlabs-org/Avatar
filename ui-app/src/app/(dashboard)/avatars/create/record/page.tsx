@@ -9,12 +9,20 @@ import { QRCodeSVG } from 'qrcode.react';
 export default function RecordAvatarPage() {
   const router = useRouter();
   const [selectedMethod, setSelectedMethod] = useState<'webcam' | 'phone' | 'upload' | null>(null);
-  const [currentUrl, setCurrentUrl] = useState('https://dirty-parts-fetch.loca.lt/avatars/create/record');
+  const [currentUrl, setCurrentUrl] = useState('');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Use localtunnel URL for seamless mobile internet access without firewall issues
-      setCurrentUrl('https://dirty-parts-fetch.loca.lt/avatars/create/record');
+      fetch('/api/network-ip')
+        .then(res => res.json())
+        .then(data => {
+          const port = window.location.port ? `:${window.location.port}` : '';
+          setCurrentUrl(`http://${data.ip}${port}/avatars/create/record`);
+        })
+        .catch(() => {
+          // Fallback to window location if API fails
+          setCurrentUrl(window.location.href);
+        });
     }
   }, []);
 
@@ -745,7 +753,7 @@ export default function RecordAvatarPage() {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       position: 'relative'
     }}>
       <style>{`

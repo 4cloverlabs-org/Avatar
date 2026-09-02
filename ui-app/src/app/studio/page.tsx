@@ -88,7 +88,6 @@ export default function Dashboard() {
           } else if (data.voices.length > 0) {
             setSelectedVoiceId(data.voices[0].id);
           }
-          localStorage.removeItem('ai_assistant_voice');
         }
       })
       .catch(console.error);
@@ -297,7 +296,7 @@ export default function Dashboard() {
             } else if (targetId.startsWith('/avatars/')) {
                setVideoPreview(targetId);
             } else if (targetId.length === 36) { // Custom UUID avatar
-               setVideoPreview(`/api/serve_video?type=av&path=${targetId}`);
+               setVideoPreview(`/api/serve_video?type=av&path=${targetId}#t=0.001`);
             } else {
                setVideoPreview(`/avatars/${targetId}.jpg`);
             }
@@ -306,12 +305,6 @@ export default function Dashboard() {
       })
       .catch(console.error);
 
-    // Clear after reading so it doesn't pollute subsequent visits
-    localStorage.removeItem('ai_assistant_script');
-    localStorage.removeItem('ai_assistant_aspect');
-    localStorage.removeItem('ai_assistant_avatar');
-    localStorage.removeItem('ai_assistant_auto_generate');
-    localStorage.removeItem('ai_assistant_has_custom_voice');
   }, []);
 
   useEffect(() => {
@@ -732,7 +725,7 @@ export default function Dashboard() {
               ) : videoPreview ? (
                 <div style={{ position: 'absolute', left: `${videoBox.x}%`, top: `${videoBox.y}%`, width: `${videoBox.width}%`, height: `${videoBox.height}%`, border: selectedId === 'main_video' ? '2px solid #3B5D3B' : 'none', cursor: selectedId === 'main_video' ? (interactionState === 'dragging' ? 'grabbing' : 'grab') : 'pointer', touchAction: 'none' }} onPointerDown={(e) => handlePointerDown(e, 'dragging', 'main_video')} onClick={(e) => e.stopPropagation()}>
                   {isVideoUrl(videoPreview) ? (
-                    <video id="main_video_element" src={videoPreview} controls={selectedId !== 'main_video'} style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: selectedId === 'main_video' ? 'none' : 'auto' }} />
+                    <video id="main_video_element" src={videoPreview.includes('#t=') ? videoPreview : `${videoPreview}#t=0.001`} preload="metadata" controls={selectedId !== 'main_video'} style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: selectedId === 'main_video' ? 'none' : 'auto' }} playsInline />
                   ) : (
                     <img id="main_video_element" src={videoPreview} alt="Selected Avatar" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover', pointerEvents: selectedId === 'main_video' ? 'none' : 'auto' }} />
                   )}
