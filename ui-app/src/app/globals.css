@@ -2937,3 +2937,24 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 @keyframes soundPulse { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(2); } }
+
+.footer {
+  position: relative;
+  background:
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(190, 180, 255, 0.35),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 55% 80%,
+      rgba(255, 170, 220, 0.35),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 100% 20%,
+      rgba(255, 190, 175, 0.35),
+      transparent 45%
+    ),
+    #faf9fc;
+}

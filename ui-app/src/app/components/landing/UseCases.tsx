@@ -354,24 +354,7 @@ export default function UseCases() {
             overflow: 'hidden'
           }}>
              
-             {/* Top Right Arrow Button */}
-             <div style={{ 
-               position: 'absolute', 
-               top: '1.5rem', 
-               right: '1.5rem', 
-               width: '40px', 
-               height: '40px', 
-               borderRadius: '50%', 
-               background: '#FFFFFF', 
-               display: 'flex', 
-               alignItems: 'center', 
-               justifyContent: 'center', 
-               cursor: 'pointer', 
-               border: '1px solid rgba(0,0,0,0.04)',
-               boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
-             }}>
-               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="1.5"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
-             </div>
+
 
              <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                <AnimatePresence mode="wait">

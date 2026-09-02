@@ -72,9 +72,6 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
         flex: 1,
         position: 'relative',
         width: '100%',
-        border: '1px solid var(--border-subtle, rgba(0,0,0,0.07))',
-        borderRadius: '12px',
-        backgroundColor: '#FFFFFF',
         padding: '16px 0',
         display: 'flex',
         flexDirection: 'column'
@@ -89,9 +86,9 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
           <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
             <defs>
               <linearGradient id="line-grad" x1={paddingLeft} y1="0" x2={width - paddingRight} y2="0" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#A855F7" />
-                <stop offset="50%" stopColor="#F97316" />
-                <stop offset="100%" stopColor="#EC4899" />
+                <stop offset="0%" stopColor="#3B82F6" />
+                <stop offset="50%" stopColor="#8B5CF6" />
+                <stop offset="100%" stopColor="#D946EF" />
               </linearGradient>
               <linearGradient id="mask-grad" x1="0" y1={paddingTop} x2="0" y2={height - paddingBottom} gradientUnits="userSpaceOnUse">
                 <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.3" />

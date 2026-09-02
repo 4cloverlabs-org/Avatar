@@ -72,22 +72,31 @@ export default function Pricing() {
   ];
 
   const wrapperVariants: Variants = {
-    rest: { y: 0 },
-    hover: { y: -8, transition: { type: "spring", stiffness: 300, damping: 20 } }
+    rest: { 
+      y: 0,
+      filter: "drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.05))"
+    },
+    hover: { 
+      y: -8, 
+      filter: "drop-shadow(0px 20px 30px rgba(0, 0, 0, 0.12))",
+      transition: { type: "spring", stiffness: 300, damping: 20 } 
+    }
   };
 
   const topAreaVariants: Variants = {
     rest: {
-      backgroundColor: "#F9FAFB",
+      backgroundColor: "#E4E6EA",
       borderBottomColor: "#E5E7EB",
       color: "#000000",
-      boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.05)"
+      borderBottomLeftRadius: "24px",
+      borderBottomRightRadius: "24px"
     },
     hover: {
-      backgroundColor: "#2A2A2A",
-      borderBottomColor: "#3A3A3A",
-      color: "#FFFFFF",
-      boxShadow: "0px 20px 40px rgba(0, 0, 0, 0.12)"
+      backgroundColor: "#F9FAFB",
+      borderBottomColor: "rgba(249, 250, 251, 0)", // make border transparent so bottom card shows through
+      color: "#000000",
+      borderBottomLeftRadius: "0px",
+      borderBottomRightRadius: "0px"
     }
   };
 
@@ -98,23 +107,29 @@ export default function Pricing() {
       scale: 1
     },
     hover: {
-      backgroundColor: "#FFFFFF",
-      color: "#000000",
+      backgroundColor: "#000000",
+      color: "#FFFFFF",
       scale: 1.02
     }
   };
 
   const slipVariants: Variants = {
     rest: {
+      top: "0%",
       y: 0,
       opacity: 0,
       rotate: 0,
+      borderTopLeftRadius: "24px",
+      borderTopRightRadius: "24px",
       transition: { type: "spring", stiffness: 300, damping: 25 }
     },
     hover: {
-      y: "90%", // Drop down to reveal features below the top card
+      top: "100%",
+      y: -2, // slide slightly under the transparent border to seal any subpixel gap
       opacity: 1,
-      rotate: -1,
+      rotate: 0,
+      borderTopLeftRadius: "0px",
+      borderTopRightRadius: "0px",
       transition: { type: "spring", stiffness: 300, damping: 25 }
     }
   };
@@ -163,15 +178,17 @@ export default function Pricing() {
               display: 'flex',
               flexDirection: 'column',
               gap: '1rem',
-              borderRadius: '24px',
+              borderTopLeftRadius: '24px',
+              borderTopRightRadius: '24px',
               position: 'relative',
+              height: '100%',
               zIndex: 2
             }}>
             <div>
-              <div className="mono-text" style={{ fontWeight: 600, fontSize: '1.1rem' }}>
+              <div className="mono-text" style={{ fontWeight: 600, fontSize: '1.1rem', color: '#000000' }}>
                 {plan.name}
               </div>
-              <div style={{ fontSize: '0.85rem', opacity: 0.7, marginTop: '0.25rem', minHeight: '40px' }}>
+              <div style={{ fontSize: '0.85rem', color: '#000000', marginTop: '0.25rem', minHeight: '40px' }}>
                 {plan.description}
               </div>
             </div>
@@ -206,7 +223,7 @@ export default function Pricing() {
                 fontWeight: 600,
                 fontSize: '1rem',
                 cursor: 'pointer',
-                marginTop: '0.5rem'
+                marginTop: 'auto'
               }}
             >
               {plan.ctaText}
@@ -218,15 +235,14 @@ export default function Pricing() {
             variants={slipVariants}
             style={{ 
               position: 'absolute',
-              top: 0,
               left: 0,
               width: '100%',
               padding: '2rem', 
               paddingTop: '3rem',
-              backgroundColor: '#FFFFFF',
+              backgroundColor: '#F9FAFB',
               color: '#000000',
-              borderRadius: '24px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
+              borderBottomLeftRadius: '24px',
+              borderBottomRightRadius: '24px',
               zIndex: 1,
               display: 'flex', 
               flexDirection: 'column' 
