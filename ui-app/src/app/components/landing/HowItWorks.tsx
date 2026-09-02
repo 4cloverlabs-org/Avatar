@@ -33,8 +33,19 @@ export default function HowItWorks() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="premium-glass-card" 
-                style={{ padding: '1.25rem', display: 'flex', alignItems: 'flex-start', gap: '1rem', borderRadius: 'var(--radius-lg)' }}
+                whileHover={{ y: -2, boxShadow: 'var(--shadow-float)' }}
+                style={{ 
+                  padding: '1.25rem', 
+                  display: 'flex', 
+                  alignItems: 'flex-start', 
+                  gap: '1rem', 
+                  borderRadius: 'var(--radius-lg)', 
+                  backgroundColor: 'rgba(241, 235, 246, 0.85)',
+                  border: '1px solid var(--border-subtle)',
+                  boxShadow: 'var(--shadow-soft)',
+                  overflow: 'hidden',
+                  position: 'relative'
+                }}
               >
                 <div style={{ backgroundColor: 'var(--bg-primary)', padding: '0.5rem', borderRadius: '50%', color: 'var(--text-main)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Check size={18} strokeWidth={2.5} />
