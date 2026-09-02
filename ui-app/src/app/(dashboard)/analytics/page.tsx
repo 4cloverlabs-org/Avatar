@@ -52,42 +52,14 @@ export default function AnalyticsPage() {
     );
   }
 
-  // Exact data from image reference visually, augmented with Twitter and Facebook
-  const performanceData = [
-    { date: 'Feb 7', revenue: 0, clickRate: 0, unsubscribes: 0, twitter: 0, facebook: 0 },
-    { date: '', revenue: 7000, clickRate: 8000, unsubscribes: 8000, twitter: 9000, facebook: 5000 },
-    { date: '', revenue: 4000, clickRate: 7000, unsubscribes: 7500, twitter: 8000, facebook: 3000 },
-    { date: '', revenue: 9000, clickRate: 9000, unsubscribes: 9500, twitter: 11000, facebook: 6000 },
-    { date: '', revenue: 7000, clickRate: 8500, unsubscribes: 11000, twitter: 13000, facebook: 5000 },
-    { date: 'Feb 8', revenue: 14000, clickRate: 15500, unsubscribes: 16500, twitter: 18000, facebook: 11000 },
-    { date: '', revenue: 16500, clickRate: 17500, unsubscribes: 18000, twitter: 19500, facebook: 13000 },
-    { date: 'Feb 9', revenue: 16000, clickRate: 18000, unsubscribes: 18000, twitter: 20000, facebook: 12000 },
-    { date: '', revenue: 18500, clickRate: 20000, unsubscribes: 22000, twitter: 24000, facebook: 15000 },
-    { date: '', revenue: 17000, clickRate: 18500, unsubscribes: 24000, twitter: 25000, facebook: 14000 },
-    { date: '', revenue: 10000, clickRate: 17000, unsubscribes: 21000, twitter: 22000, facebook: 8000 },
-    { date: '', revenue: 10000, clickRate: 17000, unsubscribes: 21500, twitter: 23000, facebook: 8000 },
-    { date: 'Feb 10', revenue: 17000, clickRate: 20000, unsubscribes: 22000, twitter: 24000, facebook: 14000 }, // Marker point!
-    { date: '', revenue: 19500, clickRate: 21000, unsubscribes: 23000, twitter: 25000, facebook: 16000 },
-    { date: '', revenue: 27500, clickRate: 30000, unsubscribes: 34000, twitter: 36000, facebook: 24000 },
-    { date: 'Feb 11', revenue: 28500, clickRate: 30500, unsubscribes: 40000, twitter: 42000, facebook: 25000 },
-    { date: '', revenue: 29000, clickRate: 31000, unsubscribes: 39000, twitter: 41000, facebook: 26000 },
-    { date: '', revenue: 25000, clickRate: 27500, unsubscribes: 38500, twitter: 40000, facebook: 22000 },
-    { date: '', revenue: 24000, clickRate: 25000, unsubscribes: 38000, twitter: 40000, facebook: 21000 },
-    { date: 'Feb 12', revenue: 24000, clickRate: 25000, unsubscribes: 33000, twitter: 35000, facebook: 20000 },
-    { date: '', revenue: 29000, clickRate: 30000, unsubscribes: 35000, twitter: 37000, facebook: 25000 },
-    { date: '', revenue: 26000, clickRate: 29000, unsubscribes: 34500, twitter: 36000, facebook: 22000 },
-    { date: '', revenue: 24000, clickRate: 29500, unsubscribes: 33500, twitter: 35000, facebook: 20000 },
-    { date: 'Feb 13', revenue: 27000, clickRate: 30000, unsubscribes: 35000, twitter: 38000, facebook: 24000 },
-    { date: '', revenue: 29000, clickRate: 33000, unsubscribes: 37000, twitter: 40000, facebook: 26000 },
-    { date: '', revenue: 38000, clickRate: 39000, unsubscribes: 42000, twitter: 45000, facebook: 34000 },
-  ];
-
   const getChartData = () => {
+    const baseData = data?.performanceData || [];
+    
     const generateData = (multiplier: number, daysCount: number) => {
       let extended: any[] = [];
       for (let i = 0; i < multiplier; i++) {
         const scale = 1 - (multiplier - 1 - i) * 0.15; 
-        extended = extended.concat(performanceData.map(d => ({
+        extended = extended.concat(baseData.map((d: any) => ({
           ...d,
           revenue: d.revenue * scale,
           clickRate: d.clickRate * scale,
@@ -120,6 +92,7 @@ export default function AnalyticsPage() {
       });
     };
 
+    if (!baseData.length) return [];
     if (timeframe === 'Last 14 days') return generateData(2, 14);
     if (timeframe === 'Last 30 days') return generateData(4, 28);
     // For 7 days
@@ -280,26 +253,26 @@ export default function AnalyticsPage() {
             </div>
             
             <div style={{ display: 'flex', gap: 24, alignItems: 'center', marginBottom: 24, marginTop: 12 }}>
-              <div style={{ fontSize: 54, fontWeight: 700, lineHeight: 1, color: '#1e293b', letterSpacing: '-2px' }}>82<span style={{ fontSize: 24, color: '#94a3b8', letterSpacing: '0' }}>/100</span></div>
+              <div style={{ fontSize: 54, fontWeight: 700, lineHeight: 1, color: '#1e293b', letterSpacing: '-2px' }}>{data?.planProgress?.completed || 0}<span style={{ fontSize: 24, color: '#94a3b8', letterSpacing: '0' }}>/{data?.planProgress?.total || 100}</span></div>
               <div style={{ fontSize: 12, color: '#64748b', maxWidth: 80, lineHeight: 1.5, fontWeight: 500 }}>Posts in current cycle</div>
             </div>
 
             <div style={{ width: '100%', height: 16, background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 8, marginBottom: 32, position: 'relative' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: '82%', background: '#bfdbfe', borderRadius: 8 }}></div>
-              <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: '60%', background: '#60a5fa', borderRadius: 8 }}></div>
+              <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${data?.planProgress?.completed || 0}%`, background: '#bfdbfe', borderRadius: 8 }}></div>
+              <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${(data?.planProgress?.completed || 0) * 0.75}%`, background: '#60a5fa', borderRadius: 8 }}></div>
               {/* The vertical divider inside the bar */}
-              <div style={{ position: 'absolute', top: -4, left: '60%', width: 2, height: 24, background: '#3b82f6' }}></div>
+              <div style={{ position: 'absolute', top: -4, left: `${(data?.planProgress?.completed || 0) * 0.75}%`, width: 2, height: 24, background: '#3b82f6' }}></div>
             </div>
 
             <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 16, color: '#1e293b' }}>Indicators:</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                 <span style={{ color: '#64748b', fontWeight: 500 }}>Days Remaining</span>
-                <span style={{ fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6' }}></div> 7 Days</span>
+                <span style={{ fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6' }}></div> {data?.planProgress?.daysRemaining || 0} Days</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                 <span style={{ color: '#64748b', fontWeight: 500 }}>Failed Posts</span>
-                <span style={{ fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }}></div> 0 Errors</span>
+                <span style={{ fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }}></div> {data?.planProgress?.errors || 0} Errors</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                 <span style={{ color: '#64748b', fontWeight: 500 }}>Platform Health</span>
@@ -320,30 +293,23 @@ export default function AnalyticsPage() {
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flex: 1, marginTop: 12 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <div style={{ width: 40, height: 40, background: '#eff6ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Target size={18} color="#3b82f6" />
+                {(data?.avatarUsage || []).map((avatar: any, i: number) => (
+                  <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                    <div style={{ width: 40, height: 40, background: i === 0 ? '#eff6ff' : '#f5f3ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {i === 0 ? <Target size={18} color="#3b82f6" /> : <Activity size={18} color="#8b5cf6" />}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b' }}>{avatar.name}</div>
+                      <div style={{ fontSize: 13, color: '#94a3b8', fontWeight: 500 }}><span style={{ color: i === 0 ? '#3b82f6' : '#8b5cf6', fontWeight: 700 }}>• {avatar.percentage}%</span> / {avatar.count} videos</div>
+                    </div>
                   </div>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b' }}>Emma (Professional)</div>
-                    <div style={{ fontSize: 13, color: '#94a3b8', fontWeight: 500 }}><span style={{ color: '#3b82f6', fontWeight: 700 }}>• 54%</span> / 32 videos</div>
-                  </div>
-                </div>
-                
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <div style={{ width: 40, height: 40, background: '#f5f3ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Activity size={18} color="#8b5cf6" />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b' }}>Liam (Casual)</div>
-                    <div style={{ fontSize: 13, color: '#94a3b8', fontWeight: 500 }}><span style={{ color: '#8b5cf6', fontWeight: 700 }}>• 27%</span> / 18 videos</div>
-                  </div>
-                </div>
+                ))}
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-end', paddingTop: 8 }}>
-                <div style={{ fontSize: 24, fontWeight: 700, color: '#3b82f6' }}>54%</div>
-                <div style={{ fontSize: 24, fontWeight: 700, color: '#8b5cf6', marginTop: 12 }}>27%</div>
+                {(data?.avatarUsage || []).map((avatar: any, i: number) => (
+                  <div key={i} style={{ fontSize: 24, fontWeight: 700, color: i === 0 ? '#3b82f6' : '#8b5cf6', marginTop: i === 0 ? 0 : 12 }}>{avatar.percentage}%</div>
+                ))}
               </div>
             </div>
           </div>
@@ -373,31 +339,30 @@ export default function AnalyticsPage() {
               </div>
 
               {/* Timeline Items */}
-              <div style={{ display: 'flex', alignItems: 'center', background: '#eff6ff', padding: '16px', borderRadius: '16px', marginBottom: 24, border: '1px solid #bfdbfe', gap: 16 }}>
-                <div style={{ width: 40, height: 40, borderRadius: '12px', background: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
-                  <Play size={18} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: '#1e293b', marginBottom: 4 }}>Winter Sale Reel (IG)</div>
-                  <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>07:00 - 11:00 AM</div>
-                </div>
-                <MoreVertical size={16} color="#94a3b8" />
-              </div>
+              {(data?.upcomingPosts || []).map((post: any, i: number) => (
+                <React.Fragment key={i}>
+                  {i === 0 ? (
+                    <div style={{ fontSize: 13, color: '#3b82f6', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+                      Today <div style={{ flex: 1, height: 1, borderTop: '2px dashed #bfdbfe' }}></div>
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: 12, color: '#94a3b8', fontWeight: 600, marginBottom: 16 }}>
+                      {post.date}
+                    </div>
+                  )}
 
-              <div style={{ fontSize: 12, color: '#94a3b8', fontWeight: 600, marginBottom: 16 }}>
-                Sun 8 February
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', background: '#fffbeb', padding: '16px', borderRadius: '16px', border: '1px solid #fde68a', gap: 16 }}>
-                <div style={{ width: 40, height: 40, borderRadius: '12px', background: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
-                  <Video size={18} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14, color: '#1e293b', marginBottom: 4 }}>New Arrivals (YT Shorts)</div>
-                  <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>08:00 - 12:00 AM</div>
-                </div>
-                <MoreVertical size={16} color="#fcd34d" />
-              </div>
+                  <div style={{ display: 'flex', alignItems: 'center', background: i === 0 ? '#eff6ff' : '#fffbeb', padding: '16px', borderRadius: '16px', marginBottom: 24, border: `1px solid ${i === 0 ? '#bfdbfe' : '#fde68a'}`, gap: 16 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: '12px', background: i === 0 ? '#3b82f6' : '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
+                      {i === 0 ? <Play size={18} /> : <Video size={18} />}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 700, fontSize: 14, color: '#1e293b', marginBottom: 4 }}>{post.title}</div>
+                      <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>{post.time}</div>
+                    </div>
+                    <MoreVertical size={16} color={i === 0 ? '#94a3b8' : '#fcd34d'} />
+                  </div>
+                </React.Fragment>
+              ))}
             </div>
           </div>
 
@@ -418,12 +383,12 @@ export default function AnalyticsPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, color: '#3b82f6', fontSize: 12, fontWeight: 700 }}>
                     ▲ +6.3%
                   </div>
-                  <div style={{ fontSize: 32, fontWeight: 700, color: '#1e293b', letterSpacing: '-1px' }}>12.4K</div>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: '#1e293b', letterSpacing: '-1px' }}>{data?.metrics?.totalViews || '0'}</div>
                 </div>
                 
                 {/* Exact Mini Line Chart visual */}
                 <div style={{ width: 60, height: 40, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', position: 'relative' }}>
-                   <div style={{ fontSize: 12, color: '#3b82f6', fontWeight: 600, textAlign: 'right', marginBottom: 4 }}>12k+</div>
+                   <div style={{ fontSize: 12, color: '#3b82f6', fontWeight: 600, textAlign: 'right', marginBottom: 4 }}>{data?.metrics?.totalViews || '0'}+</div>
                    <svg viewBox="0 0 100 40" style={{ width: '100%', height: 20 }}>
                      <path d="M0,20 Q20,20 30,10 T60,15 T100,0" fill="none" stroke="#93c5fd" strokeWidth="3" />
                      <path d="M0,20 Q20,20 30,10 T60,15 T100,0 L100,40 L0,40 Z" fill="#eff6ff" />
@@ -443,7 +408,7 @@ export default function AnalyticsPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, color: '#ef4444', fontSize: 12, fontWeight: 700 }}>
                     ▼ -2%
                   </div>
-                  <div style={{ fontSize: 32, fontWeight: 700, color: '#1e293b', letterSpacing: '-1px' }}>382</div>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: '#1e293b', letterSpacing: '-1px' }}>{data?.metrics?.videosPublished || 0}</div>
                 </div>
                 
                 {/* Mini Bars Exact */}
@@ -453,7 +418,7 @@ export default function AnalyticsPage() {
                   
                   {/* Highlighted bar */}
                   <div style={{ position: 'relative' }}>
-                    <div style={{ position: 'absolute', top: -24, left: '50%', transform: 'translateX(-50%)', background: '#fef3c7', padding: '4px 6px', borderRadius: '4px', fontSize: 10, fontWeight: 700, color: '#b45309' }}>382</div>
+                    <div style={{ position: 'absolute', top: -24, left: '50%', transform: 'translateX(-50%)', background: '#fef3c7', padding: '4px 6px', borderRadius: '4px', fontSize: 10, fontWeight: 700, color: '#b45309' }}>{data?.metrics?.videosPublished || 0}</div>
                     <div style={{ width: 6, height: '100%', background: '#fcd34d', borderRadius: 4 }}></div>
                   </div>
 
@@ -474,7 +439,7 @@ export default function AnalyticsPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, color: '#3b82f6', fontSize: 12, fontWeight: 700 }}>
                     ▲ +12%
                   </div>
-                  <div style={{ fontSize: 32, fontWeight: 700, color: '#1e293b', letterSpacing: '-1px' }}>12%</div>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: '#1e293b', letterSpacing: '-1px' }}>{data?.metrics?.avgEngagement || '0%'}</div>
                 </div>
                 
                 {/* Exact Horizontal Marker line */}
@@ -659,7 +624,14 @@ export default function AnalyticsPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ fontSize: 13, color: '#1e293b', fontWeight: 500 }}>Timeframe</span>
                 <div className="badge-btn" style={{ color: '#0f172a', padding: '8px 16px', borderRadius: '8px', gap: 8 }}>
-                  <Calendar size={14} /> 4 Jan - 21 Dec
+                  <Calendar size={14} /> 
+                  {(() => {
+                    if (!data?.publishingActivity?.length) return '4 Jan - 31 Jul';
+                    const start = new Date(data.publishingActivity[0].date);
+                    const end = new Date(data.publishingActivity[209]?.date || data.publishingActivity[data.publishingActivity.length - 1].date);
+                    const format = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+                    return `${format(start)} - ${format(end)}`;
+                  })()}
                 </div>
               </div>
             </div>
@@ -676,13 +648,10 @@ export default function AnalyticsPage() {
                 {Array.from({ length: 30 }).map((_, w) => (
                   <div key={w} style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
                     {Array.from({ length: 7 }).map((_, d) => {
-                      // Deterministic pseudo-random generation for stable rendering
-                      const val = (w * 17 + d * 31 + (w % 2) * 43) % 100;
-                      let level = 0;
-                      if (val > 50 && val < 65) level = 1;
-                      else if (val >= 65 && val < 80) level = 2;
-                      else if (val >= 80 && val < 90) level = 3;
-                      else if (val >= 90) level = 4;
+                      // Heatmap logic using API data
+                      const index = w * 7 + d;
+                      const activity = (data?.publishingActivity || [])[index];
+                      const level = activity?.count || 0;
 
                       const color = level === 0 ? 'transparent' 
                                   : level === 1 ? '#e0f2fe' 

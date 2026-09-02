@@ -18,10 +18,19 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const voices = await db.select()
+    const clonedVoices = await db.select()
       .from(voice)
       .where(eq(voice.userId, session.user.id))
       .orderBy(desc(voice.createdAt));
+
+    const systemVoices = [
+      { id: 'sys_female_1', name: 'Rachel (Professional)', type: 'system' },
+      { id: 'sys_male_1', name: 'Drew (Conversational)', type: 'system' },
+      { id: 'sys_female_2', name: 'Sarah (Energetic)', type: 'system' },
+      { id: 'sys_male_2', name: 'Mark (Deep)', type: 'system' }
+    ];
+
+    const voices = [...systemVoices, ...clonedVoices];
 
     return NextResponse.json({ success: true, voices });
   } catch (error: any) {

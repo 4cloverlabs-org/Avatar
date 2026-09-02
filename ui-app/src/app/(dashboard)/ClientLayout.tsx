@@ -637,7 +637,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                 <div style={{ fontSize: '14px', fontWeight: isUnread ? 600 : 500, color: '#0f172a', marginBottom: '4px' }}>{notif.title}</div>
                                 <div style={{ fontSize: '13px', color: '#475569', lineHeight: '1.4' }}>{notif.message}</div>
                                 <div style={{ fontSize: '12px', color: '#64748b', marginTop: '8px', fontWeight: 500 }}>
-                                  {new Date(notif.createdAt).toLocaleDateString()}
+                                  {new Date(notif.createdAt).toLocaleDateString()} at {new Date(notif.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </div>
                               </div>
                             </div>

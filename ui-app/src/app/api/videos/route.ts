@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     let allVideos: any[] = [];
@@ -46,7 +48,7 @@ export async function GET() {
               } catch(e) {}
               
               let friendlyTitle = file.replace('.mp4', '');
-              if (file.startsWith('final_')) {
+              if (file.startsWith('final_') || file === 'final.mp4') {
                 friendlyTitle = `Video from ${avatarName}`;
               } else {
                 friendlyTitle = friendlyTitle.replace('final_', 'Video ');

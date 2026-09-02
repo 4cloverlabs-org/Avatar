@@ -70,8 +70,9 @@ export async function POST(
     
     try {
       // This blocks until python finishes
+      const videoBlob = new Blob([buffer], { type: 'video/mp4' });
       const result = await client.predict("/prepare_avatar", [ 
-        handle_file(videoPath),
+        { video: handle_file(videoBlob) },
         bboxShift,
         extraMargin,
         parsingMode,
@@ -151,9 +152,11 @@ export async function POST(
       }
 
       console.log(`[Avatar Build] Generating AI avatar with extracted audio...`);
+      const audioBuffer = fs.readFileSync(audioPath);
+      const audioBlob = new Blob([audioBuffer], { type: 'audio/wav' });
       await client.predict("/generate_from_avatar", [
         trackingId, // Using trackingId because we merged the files into the tracking directory
-        handle_file(audioPath),
+        handle_file(audioBlob),
         true, // use_gfpgan
         0.5   // gfpgan_weight
       ]);

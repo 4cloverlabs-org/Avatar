@@ -548,7 +548,7 @@ def prepare_avatar(video_path, bbox_shift, extra_margin=10, parsing_mode="jaw",
     return avatar_id
 
 @torch.no_grad()
-def generate_from_avatar(avatar_id, audio_path, use_gfpgan=True, gfpgan_weight=0.5, progress=gr.Progress(track_tqdm=True)):
+def generate_from_avatar(avatar_id, audio_path, use_gfpgan=True, gfpgan_weight=0.5, aspect_ratio="Original", progress=gr.Progress(track_tqdm=True)):
     avatar_dir = os.path.join("./results/avatars", avatar_id)
     with open(os.path.join(avatar_dir, 'meta.json'), 'r') as f: meta = json.load(f)
     fps, args = meta["fps"], Namespace(**meta["args"])
@@ -578,10 +578,33 @@ def generate_from_avatar(avatar_id, audio_path, use_gfpgan=True, gfpgan_weight=0
                 cv2.imwrite(f"{temp_dir}/{i:08d}.png", combine)
             except: pass
     
-    out_vid = os.path.join(temp_dir, 'out.mp4')
+    import time
+    timestamp = int(time.time())
+    out_vid = os.path.join(temp_dir, f'out_{timestamp}.mp4')
     imageio.mimwrite(out_vid, [imageio.imread(f) for f in sorted(glob.glob(f"{temp_dir}/*.png"))], 'FFMPEG', fps=fps, codec='libx264')
-    final = os.path.join(temp_dir, "final.mp4")
+    final = os.path.join(temp_dir, f"final_{timestamp}.mp4")
     VideoFileClip(out_vid).set_audio(AudioFileClip(audio_path)).write_videofile(final, codec='libx264', audio_codec='aac', fps=25)
+    
+    # Cleanup temp frames and raw out_vid to save space
+    for f in glob.glob(f"{temp_dir}/*.png"):
+        os.remove(f)
+    if os.path.exists(out_vid):
+        os.remove(out_vid)
+        
+    # Handle aspect ratio cropping
+    if aspect_ratio and aspect_ratio != "Original" and "/" in aspect_ratio:
+        try:
+            w, h = aspect_ratio.split('/')
+            cropped_final = os.path.join(temp_dir, f"final_{timestamp}_{w}x{h}.mp4")
+            import subprocess
+            cmd = f'ffmpeg -y -i "{final}" -vf "crop=trunc(min(iw\\,ih*{w}/{h})/2)*2:trunc(min(ih\\,iw*{h}/{w})/2)*2" -c:v libx264 -c:a copy "{cropped_final}"'
+            subprocess.run(cmd, shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            if os.path.exists(cropped_final):
+                os.remove(final)
+                final = cropped_final
+        except Exception as e:
+            print(f"Failed to crop video to {aspect_ratio}: {e}")
+            
     return final
 
 def check_video(video):
@@ -616,6 +639,8 @@ with gr.Blocks(analytics_enabled=False) as demo:
     debug_info = gr.Text(visible=False)
     speech_output = gr.Text(visible=False)
 
+    aspect_ratio_input = gr.Text(value="Original", visible=False)
+    
     # API Endpoints
     inference_btn = gr.Button(visible=False)
     inference_btn.click(
@@ -644,7 +669,7 @@ with gr.Blocks(analytics_enabled=False) as demo:
     generate_btn = gr.Button(visible=False)
     generate_btn.click(
         fn=generate_from_avatar,
-        inputs=[avatar_id_output, audio, use_gfpgan, gfpgan_weight],
+        inputs=[avatar_id_output, audio, use_gfpgan, gfpgan_weight, aspect_ratio_input],
         outputs=[out1],
         api_name="generate_from_avatar"
     )

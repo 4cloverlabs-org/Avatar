@@ -1,9 +1,13 @@
 import sys
-import os
+import traceback
 
-# Add MuseTalk to path
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-
-from app import prepare_avatar
-video_path = r"F:\MuseTalk\results\avatars\5024797d-626b-4d94-95ac-965d7b771d38\video.mp4"
-print(prepare_avatar(video_path, 0, 10, "jaw", 90, 90))
+try:
+    import app
+    # Use a dummy video path. Wait, prepare_avatar expects a valid video!
+    # Let's use the one we used before:
+    video_path = "/Users/sohith/Desktop/Avatar/results/avatars/573be9be-9111-43c4-96c8-f9924d4c9b2d/video.mp4"
+    print("Calling prepare_avatar directly...")
+    result = app.prepare_avatar(video_path, 0, 10, "jaw", 90, 90)
+    print("Result:", result)
+except Exception as e:
+    traceback.print_exc()

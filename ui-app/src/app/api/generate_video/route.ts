@@ -49,12 +49,15 @@ export async function POST(request: Request) {
       // Race the prediction against the timeout
       let result: any;
       try {
+        const aspectRatio = formData.get('aspectRatio') as string || "Original";
+        
         result = await Promise.race([
           client.predict("/generate_from_avatar", [ 
             avatarId,
             handle_file(tempAudioPath),
             true, 
-            1.0   
+            1.0,
+            aspectRatio
           ]),
           timeoutPromise
         ]);
@@ -63,27 +66,6 @@ export async function POST(request: Request) {
         
         const generatedData = result.data[0];
         const generatedPath = typeof generatedData === 'string' ? generatedData : (generatedData.path || generatedData.url || generatedData.video?.path);
-        const aspectRatio = formData.get('aspectRatio') as string;
-        
-        if (aspectRatio && generatedPath) {
-          const [w, h] = aspectRatio.split('/');
-          if (w && h) {
-             console.log(`Cropping video to ${aspectRatio}...`);
-             const outputPath = generatedPath.replace('.mp4', `_${w}x${h}.mp4`);
-             const { execSync } = require('child_process');
-             try {
-                execSync(`ffmpeg -y -i "${generatedPath}" -vf "crop=trunc(min(iw\\,ih*${w}/${h})/2)*2:trunc(min(ih\\,iw*${h}/${w})/2)*2" -c:v libx264 -c:a copy "${outputPath}"`, { stdio: 'ignore' });
-                if (typeof result.data[0] === 'string') {
-                   result.data[0] = outputPath;
-                } else {
-                   result.data[0].path = outputPath;
-                }
-                console.log(`Successfully cropped video to ${outputPath}`);
-             } catch(e) {
-                console.error("FFmpeg crop failed, keeping original:", e);
-             }
-          }
-        }
       } catch (err: any) {
         if (isTimeout || (err.message && (err.message.includes('time') || err.message.includes('timeout')))) {
           console.log("Gradio client timed out or dropped connection. Manually checking output directory...");
@@ -91,10 +73,16 @@ export async function POST(request: Request) {
           const avatarOutputDir = path.join(process.cwd(), '..', 'results', 'avatars', avatarId, 'output');
           if (fs.existsSync(avatarOutputDir)) {
             const files = fs.readdirSync(avatarOutputDir);
-            const generatedMp4 = files.find((f: string) => f.endsWith('.mp4') && f.startsWith('final_'));
-            if (generatedMp4) {
-              const fullPath = path.join(avatarOutputDir, generatedMp4);
-              console.log("Found generated video on disk despite timeout:", fullPath);
+            const generatedMp4s = files.filter((f: string) => f.endsWith('.mp4') && f.startsWith('final_'));
+            if (generatedMp4s.length > 0) {
+              // Sort by modification time to find the newest one
+              const newestMp4 = generatedMp4s.sort((a: string, b: string) => {
+                const statA = fs.statSync(path.join(avatarOutputDir, a));
+                const statB = fs.statSync(path.join(avatarOutputDir, b));
+                return statB.mtimeMs - statA.mtimeMs;
+              })[0];
+              const fullPath = path.join(avatarOutputDir, newestMp4);
+              console.log("Found newest generated video on disk despite timeout:", fullPath);
               result = { data: [fullPath] };
             } else {
               throw new Error("Generation is taking longer than 60 minutes. It is still running in the background, but the UI connection closed. Please check the Videos section later.");
