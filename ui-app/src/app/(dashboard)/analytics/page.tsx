@@ -20,6 +20,9 @@ export default function AnalyticsPage() {
     facebook: false,
   });
 
+  const [timeframe, setTimeframe] = useState('Last 07 days');
+  const [isTimeframeDropdownOpen, setIsTimeframeDropdownOpen] = useState(false);
+
   const toggleLine = (key: string) => {
     setHiddenLines(prev => ({ ...prev, [key]: !prev[key] }));
   };
@@ -79,6 +82,53 @@ export default function AnalyticsPage() {
     { date: '', revenue: 38000, clickRate: 39000, unsubscribes: 42000, twitter: 45000, facebook: 34000 },
   ];
 
+  const getChartData = () => {
+    const generateData = (multiplier: number, daysCount: number) => {
+      let extended: any[] = [];
+      for (let i = 0; i < multiplier; i++) {
+        const scale = 1 - (multiplier - 1 - i) * 0.15; 
+        extended = extended.concat(performanceData.map(d => ({
+          ...d,
+          revenue: d.revenue * scale,
+          clickRate: d.clickRate * scale,
+          unsubscribes: d.unsubscribes * scale,
+          twitter: d.twitter * scale,
+          facebook: d.facebook * scale
+        })));
+      }
+      
+      const today = new Date('2024-02-13T12:00:00Z');
+      const totalPoints = extended.length;
+      
+      return extended.map((d, index) => {
+        // Map index to a day (0 to daysCount - 1) uniformly
+        const dayIndex = Math.floor((index / totalPoints) * daysCount);
+        const daysAgo = daysCount - 1 - dayIndex;
+        const dDate = new Date(today.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+        const month = dDate.toLocaleString('default', { month: 'short', timeZone: 'UTC' });
+        const day = dDate.getUTCDate();
+        
+        // Mark as label only if it's the first data point for this day
+        const isFirstOfDay = index === 0 || Math.floor(((index - 1) / totalPoints) * daysCount) !== dayIndex;
+        
+        return { 
+          ...d, 
+          uniqueKey: index.toString(),
+          date: `${month} ${day}`,
+          isLabel: isFirstOfDay
+        };
+      });
+    };
+
+    if (timeframe === 'Last 14 days') return generateData(2, 14);
+    if (timeframe === 'Last 30 days') return generateData(4, 28);
+    // For 7 days
+    return generateData(1, 7);
+  };
+
+  const activeChartData = getChartData();
+  const activeTicks = activeChartData.filter((d: any) => d.isLabel).map((d: any) => d.uniqueKey);
+
   const quickActions = [
     { icon: <Calendar size={18} color="#6366f1" />, label: 'Create Strategy', bg: '#eef2ff' },
     { icon: <Target size={18} color="#0ea5e9" />, label: 'Connect Platform', bg: '#e0f2fe' },
@@ -110,7 +160,7 @@ export default function AnalyticsPage() {
         }
         .bento-grid {
           display: grid;
-          grid-template-columns: 340px 1fr;
+          grid-template-columns: 400px 1fr;
           gap: 24px;
           flex: 1;
         }
@@ -302,14 +352,13 @@ export default function AnalyticsPage() {
           <div className="glass-card">
             <div className="card-header" style={{ marginBottom: 12 }}>
               <div>
-                <div className="card-title">Upcoming Posts</div>
+                <div className="card-title" style={{ whiteSpace: 'nowrap' }}>Upcoming Posts</div>
                 <div className="card-subtitle">See your automated scheduled posts.</div>
               </div>
               <div style={{ display: 'flex', gap: 12 }}>
                 <div className="badge-btn" style={{ color: '#0f172a', whiteSpace: 'nowrap' }}>
                   <Calendar size={14} /> 7 Feb 2024 - 10 Feb 2024
                 </div>
-                <div className="nav-btn" style={{ width: 28, height: 28 }}>⤢</div>
               </div>
             </div>
 
@@ -483,17 +532,35 @@ export default function AnalyticsPage() {
               </div>
               
               <div style={{ display: 'flex', gap: 12 }}>
-                <div className="badge-btn">
-                  Last 07 days ▾
+                <div 
+                  className="badge-btn" 
+                  style={{ position: 'relative', whiteSpace: 'nowrap' }} 
+                  onClick={() => setIsTimeframeDropdownOpen(!isTimeframeDropdownOpen)}
+                >
+                  {timeframe} ▾
+                  {isTimeframeDropdownOpen && (
+                    <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: 8, background: '#fff', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0', zIndex: 10, minWidth: 140, overflow: 'hidden' }}>
+                      {['Last 07 days', 'Last 14 days', 'Last 30 days'].map(tf => (
+                        <div 
+                          key={tf} 
+                          onClick={(e) => { e.stopPropagation(); setTimeframe(tf); setIsTimeframeDropdownOpen(false); }}
+                          style={{ padding: '8px 16px', fontSize: 13, color: tf === timeframe ? '#3b82f6' : '#475569', fontWeight: tf === timeframe ? 600 : 500, cursor: 'pointer', background: tf === timeframe ? '#eff6ff' : '#fff' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = tf === timeframe ? '#eff6ff' : '#f8fafc' }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = tf === timeframe ? '#eff6ff' : '#fff' }}
+                        >
+                          {tf}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <div className="nav-btn" style={{ width: 32, height: 32 }}>⤢</div>
               </div>
             </div>
 
             <div style={{ height: 320, width: '100%', position: 'relative' }}>
               
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={performanceData} margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
+                <AreaChart data={activeChartData} margin={{ top: 10, right: 0, left: 10, bottom: 10 }}>
                   <defs>
                     {/* Linear fades for each colored stripe */}
                     <linearGradient id="fadeSlate" x1="0" y1="0" x2="0" y2="1">
@@ -543,18 +610,19 @@ export default function AnalyticsPage() {
                   {/* Horizontal dashed grid lines only */}
                   <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
                   
-                  <XAxis dataKey="date" axisLine={{ stroke: '#e2e8f0' }} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} dy={10} interval={0} />
+                  <XAxis dataKey="uniqueKey" ticks={activeTicks} tickFormatter={(val) => activeChartData.find((d: any) => d.uniqueKey === val)?.date || ''} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} dy={10} />
                   
                   {/* YAxis on the right side */}
-                  <YAxis orientation="right" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 500 }} dx={10} tickFormatter={(v) => v === 0 ? '0' : `${v/1000}k`} />
+                  <YAxis orientation="right" width={45} axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 500 }} dx={10} tickFormatter={(v) => v === 0 ? '0' : `${v/1000}k`} />
                   
                   <Tooltip 
                     cursor={{ stroke: '#a5b4fc', strokeWidth: 2 }}
                     content={({ active, payload, label }) => {
                       if (active && payload && payload.length) {
+                        const originalDate = payload[0].payload.date;
                         return (
                           <div style={{ background: '#0a0a0a', color: '#fff', padding: '12px', borderRadius: '8px', fontSize: 13, fontWeight: 500, display: 'flex', flexDirection: 'column', gap: 6, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)' }}>
-                            <div style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, marginBottom: 4 }}>{label}</div>
+                            <div style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, marginBottom: 4 }}>{originalDate}</div>
                             {payload.map((p: any, i: number) => {
                               const displayName = p.name === 'twitter' ? 'Twitter/X' : p.name === 'facebook' ? 'Facebook' : p.name === 'unsubscribes' ? 'TikTok' : p.name === 'clickRate' ? 'YouTube' : 'Instagram';
                               return (
@@ -587,7 +655,7 @@ export default function AnalyticsPage() {
           {/* BOTTOM ROW - Contributions Heatmap */}
           <div className="glass-card" style={{ padding: '32px' }}>
             <div className="card-header" style={{ marginBottom: 32 }}>
-              <div className="card-title" style={{ fontSize: 20 }}>Contributions</div>
+              <div className="card-title" style={{ fontSize: 20 }}>Publishing Activity</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ fontSize: 13, color: '#1e293b', fontWeight: 500 }}>Timeframe</span>
                 <div className="badge-btn" style={{ color: '#0f172a', padding: '8px 16px', borderRadius: '8px', gap: 8 }}>
@@ -646,9 +714,6 @@ export default function AnalyticsPage() {
                 <div style={{ width: 14, height: 14, borderRadius: 4, background: '#818cf8' }}></div>
                 <div style={{ width: 14, height: 14, borderRadius: 4, background: '#4f46e5' }}></div>
                 More
-              </div>
-              <div style={{ fontSize: 13, color: '#1e293b', textDecoration: 'underline', cursor: 'pointer', fontWeight: 500 }}>
-                Learn how we count contributions
               </div>
             </div>
 
