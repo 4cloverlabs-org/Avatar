@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
-import { Instagram, Youtube } from 'lucide-react';
+import { Instagram, Youtube, Twitter, Linkedin } from 'lucide-react';
 
 const TikTokIcon = ({ size = 24, color = "currentColor", ...props }: any) => (
-   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a3 3 0 0 1-3 3v5a4 4 0 0 1-4-4Z" />
+   <svg width={size} height={size} viewBox="0 0 24 24" fill={color} {...props}>
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.04-.1z" />
    </svg>
 );
 
@@ -40,67 +40,58 @@ const ConnectedStatus = () => (
    </span>
 );
 
-const PipelineCard = ({ label, desc, activeDesc, isActive }: { label: string, desc: string, activeDesc: string, isActive: boolean }) => {
+const PipelineCard = ({ label, desc, activeDesc, isActive, isDone }: { label: string, desc: string, activeDesc: string, isActive: boolean, isDone: boolean }) => {
    const isPublish = label === 'PUBLISH';
    const isVideo = label === 'VIDEO';
 
    return (
       <motion.div
          animate={{
-            backgroundColor: '#FFFFFF',
-            color: 'var(--text-main)',
-            borderColor: isActive ? '#1A1A1A' : 'var(--border-subtle)',
+            backgroundColor: isActive ? '#ffffff' : (isDone ? 'rgba(255,255,255,0.6)' : 'rgba(250,250,250,0.4)'),
+            borderColor: isActive ? 'rgba(16, 185, 129, 0.4)' : (isDone ? 'rgba(0,0,0,0.05)' : 'rgba(0,0,0,0.02)'),
             scale: isActive ? 1.02 : 1,
-            boxShadow: isActive ? 'var(--shadow-float)' : 'none',
+            y: isActive ? -4 : 0,
+            boxShadow: isActive ? '0 10px 25px -5px rgba(16, 185, 129, 0.15)' : 'none'
          }}
-         transition={{ duration: 0.3 }}
+         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
          style={{
-            height: '72px',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--border-subtle)',
+            height: '86px',
+            borderRadius: '16px',
+            border: '1px solid',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            padding: '0 1rem',
+            padding: '0 1.25rem',
             position: 'relative',
-            overflow: 'hidden',
             width: '100%',
-            minWidth: '140px',
+            minWidth: '150px',
             boxSizing: 'border-box'
          }}
       >
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.05em', color: isActive ? '#000000' : 'var(--text-muted)' }}>
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.08em', color: isActive ? '#10B981' : (isDone ? '#374151' : '#9CA3AF') }}>
                {label}
             </span>
             {isActive && !isPublish && (
-               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ display: 'flex', alignItems: 'center' }}>
-                  {isVideo ? (
-                     <div style={{ width: '40px', height: '4px', backgroundColor: 'var(--border-subtle)', borderRadius: '2px', overflow: 'hidden' }}>
-                        <motion.div animate={{ width: ['0%', '72%'] }} transition={{ duration: 1.2, ease: 'easeOut' }} style={{ height: '100%', backgroundColor: '#000000' }} />
-                     </div>
-                  ) : (
-                     <div style={{ display: 'flex', gap: '3px' }}>
-                        <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0 }} style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#000000' }} />
-                        <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.1 }} style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#000000' }} />
-                        <motion.div animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }} style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#000000' }} />
-                     </div>
-                  )}
+               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                  <motion.div animate={{ height: [6, 12, 6] }} transition={{ repeat: Infinity, duration: 1 }} style={{ width: '3px', background: '#10B981', borderRadius: '3px' }} />
+                  <motion.div animate={{ height: [6, 14, 6] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} style={{ width: '3px', background: '#10B981', borderRadius: '3px' }} />
+                  <motion.div animate={{ height: [6, 10, 6] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} style={{ width: '3px', background: '#10B981', borderRadius: '3px' }} />
+               </motion.div>
+            )}
+            {isDone && !isActive && (
+               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ color: '#10B981' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                </motion.div>
             )}
          </div>
-         <div style={{ fontSize: '0.75rem', fontWeight: 500, marginTop: '0.3rem', color: isActive ? '#000000' : 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+         <div style={{ fontSize: '0.85rem', fontWeight: 500, color: isActive ? '#374151' : (isDone ? '#6B7280' : '#9CA3AF'), display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>{isActive ? activeDesc : desc}</span>
             {isPublish && isActive && (
-               <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  style={{ display: 'flex', gap: '0.5rem', fontSize: '0.65rem', opacity: 0.9, alignItems: 'center' }}
-               >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}><Instagram size={10} /> ✓</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}><Youtube size={10} /> ✓</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}><TikTokIcon size={10} /> ✓</span>
+               <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} style={{ display: 'flex', gap: '4px' }}>
+                  <span style={{ color: '#E1306C' }}><Instagram size={14} /></span>
+                  <span style={{ color: '#FF0000' }}><Youtube size={14} /></span>
+                  <span style={{ color: '#374151' }}><TikTokIcon size={14} /></span>
                </motion.div>
             )}
          </div>
@@ -109,9 +100,7 @@ const PipelineCard = ({ label, desc, activeDesc, isActive }: { label: string, de
 }
 
 const AIEnginePipeline = () => {
-   const [activeStage, setActiveStage] = useState<number | null>(0);
-   const dotProgress = useMotionValue(0);
-   const dotOpacity = useMotionValue(1);
+   const [activeStage, setActiveStage] = useState<number>(0);
    const [isMobile, setIsMobile] = useState(false);
 
    useEffect(() => {
@@ -124,154 +113,102 @@ const AIEnginePipeline = () => {
    useEffect(() => {
       let raf: number;
       const start = Date.now();
+      const cycleDuration = 10000;
 
       const loop = () => {
-         const t = (Date.now() - start) % 8000;
-
-         let newStage: number | null = null;
-         if (t < 1500) newStage = 0;
-         else if (t < 2000) newStage = null;
-         else if (t < 3500) newStage = 1;
-         else if (t < 4000) newStage = null;
-         else if (t < 5500) newStage = 2;
-         else if (t < 6000) newStage = null;
-         else if (t < 7500) newStage = 3;
-         else newStage = null;
-
-         setActiveStage(prev => prev !== newStage ? newStage : prev);
-
-         if (t < 1500) { dotProgress.set(0); dotOpacity.set(1); }
-         else if (t < 2000) {
-            const progress = (t - 1500) / 500;
-            const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-            dotProgress.set(ease * 33.33);
-         }
-         else if (t < 3500) { dotProgress.set(33.33); }
-         else if (t < 4000) {
-            const progress = (t - 3500) / 500;
-            const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-            dotProgress.set(33.33 + ease * 33.33);
-         }
-         else if (t < 5500) { dotProgress.set(66.66); }
-         else if (t < 6000) {
-            const progress = (t - 5500) / 500;
-            const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-            dotProgress.set(66.66 + ease * 33.33);
-         }
-         else if (t < 7500) { dotProgress.set(100); dotOpacity.set(1); }
-         else {
-            dotOpacity.set(0);
-         }
-
+         const t = (Date.now() - start) % cycleDuration;
+         if (t < 2500) setActiveStage(0);
+         else if (t < 5000) setActiveStage(1);
+         else if (t < 7500) setActiveStage(2);
+         else setActiveStage(3);
          raf = requestAnimationFrame(loop);
       };
-
       raf = requestAnimationFrame(loop);
       return () => cancelAnimationFrame(raf);
-   }, [dotProgress, dotOpacity]);
+   }, []);
 
    return (
-      <div className="premium-glass-card" style={{ display: 'flex', flexDirection: 'column', width: '100%', margin: '0 auto', padding: '2rem', boxSizing: 'border-box' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', margin: '0 auto', background: '#ffffff', borderRadius: '24px', padding: '2.5rem', boxSizing: 'border-box', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)' }}>
          {/* Header */}
-         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '3rem', position: 'relative' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-               <span style={{ fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em', color: 'var(--text-main)' }}>AI CONTENT ENGINE</span>
-               <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#10B981', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <motion.span
-                     animate={{ opacity: [1, 0.4, 1] }}
-                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                     style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981' }}
-                  />
-                  ACTIVE
-               </span>
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+               <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: '#FAFAFA', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+               </div>
+               <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 700, letterSpacing: '-0.02em', color: '#374151' }}>AI CONTENT ENGINE</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#6B7280' }}>Automated Production Pipeline</span>
+               </div>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '100px', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
+               <motion.div
+                  animate={{ opacity: [1, 0.5, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981' }}
+               />
+               <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10B981', letterSpacing: '0.05em' }}>ACTIVE</span>
             </div>
          </div>
 
          {/* Pipeline Container */}
-         <div style={{ position: 'relative', width: '100%', margin: '0 auto', paddingBottom: '2rem' }}>
+         <div style={{ position: 'relative', width: '100%', margin: '0 auto' }}>
             {isMobile ? (
-               // Vertical Layout for Mobile
                <div style={{ display: 'flex', gap: '20px', position: 'relative' }}>
-                  <div style={{ position: 'absolute', top: '36px', bottom: '36px', left: '6px', width: '2px', backgroundColor: 'var(--border-subtle)', transform: 'translateX(-50%)' }} />
-                  <motion.div style={{
-                     position: 'absolute',
-                     top: '36px',
-                     left: '6px',
-                     x: '-50%',
-                     y: useMotionValue(0), // Would need separate calc for vertical, simplifying for now
-                     opacity: dotOpacity,
-                     width: '8px',
-                     height: '8px',
-                     borderRadius: '50%',
-                     backgroundColor: '#000000',
-                     zIndex: 10
-                  }} />
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', flex: 1, paddingLeft: '24px' }}>
-                     <PipelineCard label="IDEA" desc="Finding next topic" activeDesc="Generating idea..." isActive={activeStage === 0} />
-                     <PipelineCard label="SCRIPT" desc="Writing hook + script" activeDesc="Writing script..." isActive={activeStage === 1} />
-                     <PipelineCard label="VIDEO" desc="Generating avatar video" activeDesc="Rendering 72%" isActive={activeStage === 2} />
-                     <PipelineCard label="PUBLISH" desc="Publishing everywhere" activeDesc="Published ✓" isActive={activeStage === 3} />
+                  <div style={{ position: 'absolute', top: '43px', bottom: '43px', left: '10px', width: '2px', backgroundColor: '#F3F4F6', transform: 'translateX(-50%)' }} />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1, paddingLeft: '24px' }}>
+                     <PipelineCard label="IDEA" desc="Finding next topic" activeDesc="Generating idea..." isActive={activeStage === 0} isDone={activeStage > 0} />
+                     <PipelineCard label="SCRIPT" desc="Writing hook + script" activeDesc="Writing script..." isActive={activeStage === 1} isDone={activeStage > 1} />
+                     <PipelineCard label="VIDEO" desc="Generating avatar video" activeDesc="Generating video" isActive={activeStage === 2} isDone={activeStage > 2} />
+                     <PipelineCard label="PUBLISH" desc="Publishing everywhere" activeDesc="Publishing everywhere" isActive={activeStage === 3} isDone={false} />
                   </div>
                </div>
             ) : (
-               // Horizontal Layout for Desktop
                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ position: 'absolute', top: '50%', left: '10%', right: '10%', height: '2px', backgroundColor: 'var(--border-subtle)', transform: 'translateY(-50%)' }} />
-                  <motion.div style={{
-                     position: 'absolute',
-                     top: '50%',
-                     left: '10%',
-                     width: '80%', // Path width
-                     height: '2px',
-                     zIndex: 5
-                  }}>
-                     <motion.div style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: useMotionValue(0),
-                        x: '-50%',
-                        y: '-50%',
-                        opacity: dotOpacity,
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        backgroundColor: '#000000',
-                     }}
-                        // Hack to map progress 0-100 to left %
-                        animate={{ left: `${dotProgress.get()}%` }}
-                        transition={{ duration: 0 }}
-                     />
-                  </motion.div>
+                  {/* Background Track */}
+                  <div style={{ position: 'absolute', top: '50%', left: '12%', right: '12%', height: '2px', backgroundColor: '#F3F4F6', borderRadius: '2px', transform: 'translateY(-50%)', zIndex: 0 }} />
+                  
+                  {/* Animated Progress Track */}
+                  <motion.div 
+                     style={{ position: 'absolute', top: '50%', left: '12%', height: '2px', background: '#10B981', borderRadius: '2px', transform: 'translateY(-50%)', zIndex: 1 }}
+                     animate={{ width: `${(activeStage / 3) * 76}%` }}
+                     transition={{ type: 'spring', stiffness: 50, damping: 15 }}
+                  />
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', width: '100%', zIndex: 10 }}>
-                     <PipelineCard label="IDEA" desc="Finding next topic" activeDesc="Generating idea..." isActive={activeStage === 0} />
-                     <PipelineCard label="SCRIPT" desc="Writing hook + script" activeDesc="Writing script..." isActive={activeStage === 1} />
-                     <PipelineCard label="VIDEO" desc="Generating video" activeDesc="Rendering 72%" isActive={activeStage === 2} />
-                     <PipelineCard label="PUBLISH" desc="Publishing" activeDesc="Published ✓" isActive={activeStage === 3} />
+                     <PipelineCard label="IDEA" desc="Finding next topic" activeDesc="Generating idea..." isActive={activeStage === 0} isDone={activeStage > 0} />
+                     <PipelineCard label="SCRIPT" desc="Writing hook + script" activeDesc="Writing hook + script" isActive={activeStage === 1} isDone={activeStage > 1} />
+                     <PipelineCard label="VIDEO" desc="Generating video" activeDesc="Generating video" isActive={activeStage === 2} isDone={activeStage > 2} />
+                     <PipelineCard label="PUBLISH" desc="Publishing everywhere" activeDesc="Publishing everywhere" isActive={activeStage === 3} isDone={false} />
                   </div>
                </div>
             )}
          </div>
 
          {/* Footer */}
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', padding: '1rem 0.5rem 0', borderTop: '1px solid var(--border-subtle)' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>NEXT RUN</span>
-            <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-main)' }}>Today · 9:00 AM</span>
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F3F4F6' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+               <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6B7280', letterSpacing: '0.05em' }}>NEXT RUN</span>
+            </div>
+            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#374151', background: '#FAFAFA', padding: '6px 14px', borderRadius: '8px', border: '1px solid #F0F0F0' }}>Today · 9:00 AM</span>
          </div>
       </div>
    );
 }
 
 const ContentTimeline = ({ settingsVariants }: { settingsVariants: any }) => {
-   const [hoveredWeek, setHoveredWeek] = useState<number | null>(null);
+   const [hoveredWeek, setHoveredWeek] = useState<number | null>(2); // Default hover on 3rd node (Aug 18)
 
    const timelineData = [
-      { label: 'AUG 04', count: 5, status: 'published', platforms: { ig: 2, yt: 2, tt: 1 } },
-      { label: 'AUG 11', count: 4, status: 'published', platforms: { ig: 2, yt: 1, tt: 1 } },
-      { label: 'AUG 18', count: 7, status: 'published', platforms: { ig: 3, yt: 2, tt: 2 } },
-      { label: 'AUG 25', count: 6, status: 'published', platforms: { ig: 2, yt: 2, tt: 2 } },
-      { label: 'SEP 01', count: 3, status: 'scheduled', platforms: { ig: 1, yt: 1, tt: 1 } },
+      { label: 'Aug 04', count: 5 },
+      { label: 'Aug 11', count: 4 },
+      { label: 'Aug 18', count: 7 },
+      { label: 'Aug 25', count: 6 },
+      { label: 'Sep 01', count: 3 },
    ];
+
+   const maxCount = 8; 
 
    return (
       <motion.div
@@ -279,145 +216,158 @@ const ContentTimeline = ({ settingsVariants }: { settingsVariants: any }) => {
          initial="hidden"
          whileInView="visible"
          viewport={{ once: true, margin: "-100px" }}
-         className="premium-glass-card"
-         style={{ padding: '1.5rem', width: '100%', boxSizing: 'border-box', position: 'relative' }}
+         style={{ 
+            background: '#ffffff', 
+            borderRadius: '24px', 
+            padding: '2rem 2.5rem', 
+            width: '100%', 
+            boxSizing: 'border-box', 
+            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', 
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2rem'
+         }}
       >
-         {/* Header */}
-         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem', fontWeight: 600, fontSize: '0.75rem', letterSpacing: '0.05em' }}>
-            <span style={{ color: 'var(--text-main)' }}>CONTENT ACTIVITY</span>
-            <span>24 POSTS THIS MONTH</span>
+         {/* Header Row */}
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+               <span style={{ fontSize: '1.25rem', fontWeight: 600, color: '#111827' }}>Content Activity</span>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
          </div>
 
-         {/* Timeline Container */}
-         <div style={{ position: 'relative', width: '100%', padding: '1rem 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-
-            {/* Subtle horizontal line */}
-            <div style={{ position: 'absolute', top: '50%', left: '2%', right: '2%', height: '1px', backgroundColor: 'var(--border-subtle)', opacity: 0.6, transform: 'translateY(-50%)', zIndex: 0 }} />
-
-            {/* Today Marker */}
-            <div style={{ position: 'absolute', left: '87.5%', top: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 2 }}>
-               <div style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#000000', marginBottom: '2px' }} />
-               <div style={{ width: '1px', height: '36px', backgroundColor: 'var(--border-subtle)', opacity: 0.8 }} />
-               <span style={{ fontSize: '0.55rem', fontWeight: 700, color: '#000000', letterSpacing: '0.1em', margin: '4px 0', backgroundColor: '#F0F0F0', padding: '0 4px', zIndex: 1 }}>TODAY</span>
-               <div style={{ width: '1px', height: '36px', backgroundColor: 'var(--border-subtle)', opacity: 0.8 }} />
+         {/* Stats Row */}
+         <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '4rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+               <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                  <span style={{ fontSize: '2.5rem', fontWeight: 500, color: '#111827', lineHeight: 1 }}>25</span>
+                  <span style={{ fontSize: '1rem', color: '#6B7280', fontWeight: 500 }}>Posts</span>
+               </div>
+               <span style={{ fontSize: '0.9rem', color: '#6B7280', fontWeight: 500 }}>12% vs last month</span>
             </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+               <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                  <span style={{ fontSize: '2.5rem', fontWeight: 500, color: '#111827', lineHeight: 1 }}>5.0</span>
+                  <span style={{ fontSize: '1rem', color: '#6B7280', fontWeight: 500 }}>Avg</span>
+               </div>
+               <span style={{ fontSize: '0.9rem', color: '#6B7280', fontWeight: 500 }}>Consistent</span>
+            </div>
+         </div>
 
-            {timelineData.map((period, i) => {
-               const isCurrent = period.label === 'AUG 25';
-               return (
-               <div
-                  key={i}
-                  style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 5, width: '18%' }}
-                  onMouseEnter={() => setHoveredWeek(i)}
-                  onMouseLeave={() => setHoveredWeek(null)}
-               >
-                  <span style={{ fontSize: '0.65rem', fontWeight: isCurrent ? 700 : 600, color: isCurrent ? '#000000' : 'var(--text-muted)', marginBottom: '1rem', letterSpacing: '0.05em' }}>
-                     {period.label}
-                  </span>
+         {/* Line Chart Area */}
+         <div style={{ position: 'relative', height: '180px', marginTop: '1rem' }}>
+            
+            {/* SVG Drawing Layer */}
+            <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0, overflow: 'visible', zIndex: 1 }}>
+               {/* Horizontal Grid Lines */}
+               {[0, 1, 2, 3, 4].map((i) => (
+                  <line key={`grid-${i}`} x1="0%" y1={`${i * 25}%`} x2="100%" y2={`${i * 25}%`} stroke="#E5E7EB" strokeWidth="1" />
+               ))}
 
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '6px', minHeight: '80px', position: 'relative', width: '100%' }}>
-                     {Object.entries(period.platforms).map(([platform, count], j) => {
-                        if (count === 0) return null;
-                        const isScheduled = period.status === 'scheduled';
-                        const platformLabel = platform.toUpperCase();
+               {/* Hover Dashed Line */}
+               {hoveredWeek !== null && (
+                  <line 
+                     x1={`${(hoveredWeek / (timelineData.length - 1)) * 100}%`} 
+                     y1={`${100 - (timelineData[hoveredWeek].count / maxCount) * 100}%`} 
+                     x2={`${(hoveredWeek / (timelineData.length - 1)) * 100}%`} 
+                     y2="100%" 
+                     stroke="#3B82F6" 
+                     strokeWidth="1.5" 
+                     strokeDasharray="4 4" 
+                  />
+               )}
 
-                        return (
-                           <motion.div
-                              key={platform}
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{ delay: i * 0.1 + j * 0.1 }}
-                              style={{
-                                 display: 'flex',
-                                 alignItems: 'center',
-                                 gap: '6px',
-                                 backgroundColor: '#ffffff',
-                                 border: isScheduled ? '1px dashed #10B981' : '1px solid rgba(16, 185, 129, 0.2)',
-                                 padding: '3px 8px 3px 3px',
-                                 borderRadius: '12px',
-                                 boxShadow: isScheduled ? 'none' : '0 2px 6px rgba(16, 185, 129, 0.08)',
-                                 zIndex: 10
-                              }}
-                           >
-                              <div style={{
-                                 width: '16px',
-                                 height: '16px',
-                                 borderRadius: '50%',
-                                 backgroundColor: isScheduled ? '#ffffff' : '#10B981',
-                                 border: isScheduled ? '1.5px solid #10B981' : 'none',
-                                 display: 'flex',
-                                 alignItems: 'center',
-                                 justifyContent: 'center',
-                              }}>
-                                 <span style={{ fontSize: '0.4rem', fontWeight: 800, color: isScheduled ? '#10B981' : '#ffffff' }}>
-                                    {platformLabel}
-                                 </span>
-                              </div>
-                              <span style={{ fontSize: '0.65rem', fontWeight: 700, color: isScheduled ? 'var(--text-main)' : '#10B981' }}>
-                                 {count}
-                              </span>
-                           </motion.div>
-                        );
-                     })}
-                  </div>
+               {/* Main Data Line Segments */}
+               {timelineData.slice(0, -1).map((d, i) => (
+                  <line 
+                     key={`line-${i}`}
+                     x1={`${(i / (timelineData.length - 1)) * 100}%`}
+                     y1={`${100 - (d.count / maxCount) * 100}%`}
+                     x2={`${((i + 1) / (timelineData.length - 1)) * 100}%`}
+                     y2={`${100 - (timelineData[i + 1].count / maxCount) * 100}%`}
+                     stroke="#3B82F6"
+                     strokeWidth="2.5"
+                     strokeLinecap="round"
+                  />
+               ))}
 
-                  <span style={{ fontSize: '0.6rem', fontWeight: 600, color: 'var(--text-main)', marginTop: '1rem' }}>
-                     {period.count} {period.status === 'published' ? 'POSTS' : 'SCHEDULED'}
-                  </span>
+               {/* Data Points (Rendered last to sit on top of lines) */}
+               {timelineData.map((d, i) => {
+                  const isHovered = hoveredWeek === i;
+                  return (
+                     <circle 
+                        key={`point-${i}`}
+                        cx={`${(i / (timelineData.length - 1)) * 100}%`} 
+                        cy={`${100 - (d.count / maxCount) * 100}%`} 
+                        r={isHovered ? 6 : 5} 
+                        fill="#ffffff" 
+                        stroke="#3B82F6" 
+                        strokeWidth={isHovered ? 3 : 2}
+                        style={{ transition: 'all 0.2s ease' }}
+                     />
+                  )
+               })}
+            </svg>
 
-                  {/* Tooltip */}
-                  {hoveredWeek === i && (
-                     <motion.div
-                        initial={{ opacity: 0, y: 4, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ duration: 0.15 }}
-                        style={{
+            {/* Hover Interaction & Background Pillars Overlay */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 5 }}>
+               {timelineData.map((_, i) => {
+                  const leftPos = (i / (timelineData.length - 1)) * 100;
+                  return (
+                     <div 
+                        key={`hover-${i}`}
+                        style={{ 
                            position: 'absolute',
-                           top: '100%',
-                           marginTop: '0.25rem',
-                           backgroundColor: '#ffffff',
-                           border: '1px solid var(--border-subtle)',
-                           borderRadius: '6px',
-                           padding: '0.75rem',
-                           boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-                           zIndex: 20,
-                           minWidth: '120px',
-                           pointerEvents: 'none'
+                           left: `${leftPos}%`,
+                           top: '-10%',
+                           bottom: 0,
+                           width: '40px',
+                           transform: 'translateX(-50%)'
                         }}
                      >
-                        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#000000', marginBottom: '0.5rem' }}>{period.label}</div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.7rem', color: 'var(--text-main)' }}>
-                           {period.platforms.ig > 0 && <div>Instagram · {period.platforms.ig} post{period.platforms.ig > 1 ? 's' : ''}</div>}
-                           {period.platforms.yt > 0 && <div>YouTube · {period.platforms.yt} post{period.platforms.yt > 1 ? 's' : ''}</div>}
-                           {period.platforms.tt > 0 && <div>TikTok · {period.platforms.tt} post{period.platforms.tt > 1 ? 's' : ''}</div>}
-                        </div>
-                        <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-subtle)', fontSize: '0.7rem', fontWeight: 600, color: period.status === 'published' ? '#10B981' : 'var(--text-muted)' }}>
-                           {period.count} {period.status === 'published' ? 'published' : 'scheduled'}
-                        </div>
-                     </motion.div>
-                  )}
-               </div>
-            )})}
-         </div>
-
-         {/* Bottom Statistics */}
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
-            <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-main)', flexWrap: 'wrap', alignItems: 'center' }}>
-               <span>18 PUBLISHED</span>
-               <div style={{ width: '1px', height: '10px', backgroundColor: 'var(--border-subtle)' }} />
-               <span>6 SCHEDULED</span>
-               <div style={{ width: '1px', height: '10px', backgroundColor: 'var(--border-subtle)' }} />
-               <span>3 PLATFORMS</span>
+                        {/* Blue Background Pill */}
+                        <div style={{ 
+                           width: '100%',
+                           height: '100%',
+                           background: 'linear-gradient(180deg, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0.02) 100%)',
+                           borderRadius: '24px 24px 0 0',
+                           opacity: hoveredWeek === i ? 1 : 0,
+                           transition: 'opacity 0.2s ease',
+                           pointerEvents: 'none'
+                        }} />
+                     </div>
+                  )
+               })}
             </div>
-            <div style={{ display: 'flex', gap: '1rem', fontSize: '0.7rem', fontWeight: 500, color: 'var(--text-muted)' }}>
-               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10B981' }} />
-                  Published
-               </div>
-               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', border: '1.5px solid #10B981', backgroundColor: '#ffffff' }} />
-                  Scheduled
-               </div>
+
+            {/* X-Axis Labels */}
+            <div style={{ position: 'absolute', bottom: '-30px', left: 0, right: 0, height: '20px' }}>
+               {timelineData.map((period, i) => {
+                  const isHovered = hoveredWeek === i;
+                  const leftPos = (i / (timelineData.length - 1)) * 100;
+                  // First label aligns left edge, last label aligns right edge, middle labels center
+                  const transform = i === 0 ? 'translateX(0)' : (i === timelineData.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)');
+                  
+                  return (
+                     <div 
+                        key={`label-${i}`}
+                        style={{ 
+                           position: 'absolute',
+                           left: `${leftPos}%`,
+                           transform,
+                           fontSize: '0.85rem', 
+                           fontWeight: isHovered ? 700 : 500, 
+                           color: isHovered ? '#111827' : '#6B7280',
+                           transition: 'all 0.2s ease',
+                           whiteSpace: 'nowrap'
+                        }}
+                     >
+                        {period.label}
+                     </div>
+                  )
+               })}
             </div>
          </div>
       </motion.div>
@@ -468,78 +418,158 @@ export default function AutopilotSection() {
             <AIEnginePipeline />
 
             {/* Level 3 - Configuration */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', width: '100%', alignItems: 'stretch' }}>
 
+               {/* Left Panel: Automation (Tasks Style) */}
                <motion.div
                   variants={containerVariants}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, margin: "-100px" }}
-                  className="premium-glass-card"
-                  style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem', padding: '1.5rem', height: '100%' }}
+                  style={{ display: 'flex', flexDirection: 'column', background: '#ffffff', borderRadius: '24px', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', overflow: 'hidden', padding: '0.5rem' }}
                >
-                  <div style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>CONNECTED PLATFORMS</div>
-
-                  <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
-                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                           <Instagram size={18} />
-                           <span style={{ fontWeight: 600 }}>Instagram</span>
-                        </div>
-                        <ConnectedStatus />
+                  {/* Header Tabs */}
+                  <div style={{ display: 'flex', borderBottom: '1px solid rgba(0,0,0,0.06)', position: 'relative', margin: '0 0.5rem' }}>
+                     <div style={{ padding: '1rem 0.5rem', fontSize: '0.95rem', fontWeight: 600, color: '#000' }}>Select Your Niche</div>                     <div style={{ marginLeft: 'auto', padding: '1rem 0.5rem', fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        4 / 4 DEFINED
                      </div>
-                  </motion.div>
+                     <div style={{ position: 'absolute', bottom: -1, left: 0, height: '2px', width: '45%', background: '#000' }} />
+                  </div>
 
-                  <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
-                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                           <Youtube size={18} />
-                           <span style={{ fontWeight: 600 }}>YouTube</span>
+                  {/* Settings List */}
+                  <div style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.75rem', flex: 1, minHeight: '200px' }}>
+                     
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                         </div>
-                        <ConnectedStatus />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Primary Niche</span>
+                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Select Niche</span>
+                        </div>
                      </div>
-                  </motion.div>
 
-                  <motion.div variants={platformVariants} style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
-                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                           <TikTokIcon size={18} />
-                           <span style={{ fontWeight: 600 }}>TikTok</span>
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         </div>
-                        <ConnectedStatus />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Campaign Duration</span>
+                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Ongoing</span>
+                        </div>
                      </div>
-                  </motion.div>
+
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Content Style</span>
+                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Educational</span>
+                        </div>
+                     </div>
+
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Upload Frequency</span>
+                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Daily</span>
+                        </div>
+                     </div>
+                  </div>
+
 
                </motion.div>
 
+               {/* Center Panel: Connected Platforms (Orbital) */}
                <motion.div
-                  variants={settingsVariants}
+                  variants={containerVariants}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, margin: "-100px" }}
-                  className="premium-glass-card"
-                  style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem', fontSize: '0.9rem', height: '100%' }}
+                  style={{ display: 'flex', flexDirection: 'column', background: '#ffffff', borderRadius: '24px', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', padding: '1.5rem', position: 'relative', overflow: 'hidden', alignItems: 'center', justifyContent: 'center' }}
                >
-                  <div style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>AUTOMATION</div>
+                  <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', fontSize: '0.95rem', fontWeight: 600, color: '#000' }}>Connections</div>
+                  
+                  {/* Subtle Background Pattern */}
+                  <div style={{ position: 'absolute', top: 20, right: 20, display: 'grid', gridTemplateColumns: 'repeat(3, 4px)', gap: '6px', opacity: 0.3 }}>
+                     <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#000' }}/>
+                     <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#000' }}/>
+                     <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#10B981' }}/>
+                     <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#000' }}/>
+                  </div>
+                  <div style={{ position: 'absolute', bottom: 20, left: 20, display: 'grid', gridTemplateColumns: 'repeat(3, 4px)', gap: '6px', opacity: 0.3 }}>
+                     <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#10B981' }}/>
+                     <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#000' }}/>
+                     <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#000' }}/>
+                     <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#000' }}/>
+                  </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
-                     <span style={{ fontWeight: 600 }}>Posting schedule</span>
-                     <span style={{ color: 'var(--text-muted)' }}>3x / week</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', alignItems: 'center' }}>
-                     <span style={{ fontWeight: 600 }}>Auto-publish</span>
-                     <span style={{ color: '#000000', fontWeight: 600 }}>ON</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                     <span style={{ fontWeight: 600 }}>Review required</span>
-                     <span style={{ color: 'var(--text-muted)' }}>OFF</span>
+                  {/* Grid Layout Design - 5-Part Spiral (Swastika) Pattern */}
+                  <div style={{ position: 'relative', width: '320px', height: '320px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridTemplateRows: 'repeat(4, 1fr)', gap: '1px', background: 'rgba(0,0,0,0.06)', borderRadius: '24px', overflow: 'hidden', marginTop: '1.5rem', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }}>
+                     
+                     {/* 1. Instagram (Top - Spans Right) */}
+                     <div style={{ gridColumn: '1 / 4', gridRow: '1 / 2', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                           <Instagram size={28} color="white" strokeWidth={1.5} />
+                        </div>
+                     </div>
+
+                     {/* 2. Facebook (Top Right - Spans Down) */}
+                     <div style={{ gridColumn: '4 / 5', gridRow: '1 / 3', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="48" height="48" viewBox="0 0 24 24">
+                           <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                           <path fill="#FFF" d="M16.671 15.542l.532-3.469h-3.328v-2.25c0-.949.465-1.874 1.956-1.874h1.514V5.002S16.033 4.767 14.721 4.767c-2.741 0-4.533 1.662-4.533 4.669v2.638H7.078v3.469h3.047v8.385a12.09 12.09 0 003.75 0v-8.385h2.796z"/>
+                        </svg>
+                     </div>
+
+                     {/* 3. YouTube (Bottom Right - Spans Down) */}
+                     <div style={{ gridColumn: '4 / 5', gridRow: '3 / 5', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="48" height="48" viewBox="0 0 24 24">
+                           <path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/>
+                           <path fill="#FFFFFF" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                     </div>
+
+                     {/* 4. TikTok (Bottom - Spans Left) */}
+                     <div style={{ gridColumn: '2 / 4', gridRow: '4 / 5', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="36" height="36" viewBox="0 0 448 512" fill="#000000" style={{ filter: 'drop-shadow(2px 2px 0px #00f2fe) drop-shadow(-2px -2px 0px #fe0979)' }}>
+                           <path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31v89.89a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/>
+                        </svg>
+                     </div>
+
+                     {/* 5. Twitter (Bottom Left - Square) */}
+                     <div style={{ gridColumn: '1 / 2', gridRow: '4 / 5', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="36" height="36" viewBox="0 0 24 24">
+                           <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" fill="#000"/>
+                        </svg>
+                     </div>
+
+                     {/* 6. LinkedIn (Left Edge - Spans Up) */}
+                     <div style={{ gridColumn: '1 / 2', gridRow: '2 / 4', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="48" height="48" viewBox="0 0 24 24">
+                           <path fill="#0A66C2" d="M22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                           <path fill="#FFF" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/>
+                        </svg>
+                     </div>
+
+                     {/* Center Node (AI Engine) - Central Hole */}
+                     <div style={{ gridColumn: '2 / 4', gridRow: '2 / 4', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #1A1A1A 0%, #333333 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.2), 0 8px 24px rgba(0,0,0,0.1)' }}>
+                           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 22h20L12 2z"/></svg>
+                        </div>
+                     </div>
+
                   </div>
                </motion.div>
 
-            </div>
+               {/* Right Panel: Content Timeline */}
+               <ContentTimeline settingsVariants={settingsVariants} />
 
-            {/* Level 4 - Content Timeline */}
-            <ContentTimeline settingsVariants={settingsVariants} />
+            </div>
 
          </div>
       </section>
