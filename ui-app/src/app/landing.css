@@ -40,7 +40,7 @@ body {
   overflow-x: hidden;
 }
 
-section, .editorial-section, .premium-glass-card {
+section, .editorial-section {
   background: transparent !important;
   background-color: transparent !important;
 }

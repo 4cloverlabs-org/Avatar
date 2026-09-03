@@ -6,8 +6,9 @@ import { Twitter, Youtube, Instagram } from 'lucide-react';
 
 export default function Footer() {
    return (
-      <footer className="grid-container" style={{ padding: '6rem 2rem 2rem', background: '#FFFFFF' }}>
-         <div className="col-4">
+      <footer className="footer" style={{ width: '100%' }}>
+         <div className="grid-container" style={{ padding: '6rem 2rem 2rem' }}>
+            <div className="col-4">
             <Link href="/" className="nav-logo" style={{ marginBottom: '1rem', display: 'block', fontSize: '1.5rem', fontWeight: 700 }}>
                AnClone
             </Link>
@@ -61,6 +62,7 @@ export default function Footer() {
 
          <div className="col-12 mt-4" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '2rem', marginTop: '4rem', display: 'flex', justifyContent: 'space-between' }}>
             <span className="mono-text" style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>© 2026 AnClone. All rights reserved.</span>
+         </div>
          </div>
       </footer>
    );

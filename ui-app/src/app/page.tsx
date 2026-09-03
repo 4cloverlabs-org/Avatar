@@ -8,7 +8,7 @@ import AutopilotSection from './components/landing/AutopilotSection';
 import Analytics from './components/landing/Analytics';
 import Pricing from './components/landing/Pricing';
 import FAQ from './components/landing/FAQ';
-import FinalCTA from './components/landing/FinalCTA';
+
 import Footer from './components/landing/Footer';
 import SocialProof from './components/landing/SocialProof';
 import UseCases from './components/landing/UseCases';
@@ -47,9 +47,7 @@ export default function Home() {
         <hr className="h-rule" />
         
         <FAQ />
-        <hr className="h-rule" />
-        
-        <FinalCTA />
+
       </main>
       
       <hr className="h-rule" />

@@ -16,17 +16,17 @@ export default function FAQ() {
   ];
 
   return (
-    <section id="faq" className="editorial-section" style={{ background: '#111111', color: '#ffffff' }}>
+    <section id="faq" className="editorial-section" style={{ background: 'transparent', color: '#000000' }}>
       <div className="grid-container">
         <div className="col-5 mb-4" style={{ paddingRight: '2rem' }}>
-          <h2 className="editorial-h2" style={{ color: '#ffffff', textAlign: 'left', lineHeight: '1.1' }}>
+          <h2 className="editorial-h2" style={{ color: '#000000', textAlign: 'left', lineHeight: '1.1' }}>
             Frequently asked<br/>questions
           </h2>
         </div>
         
         <div className="col-7" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
            {faqs.map((faq, i) => (
-              <div key={i} style={{ borderBottom: '1px solid #2a2a2a' }}>
+              <div key={i} style={{ borderBottom: '1px solid #000000' }}>
                  <button 
                    onClick={() => setOpenIndex(openIndex === i ? null : i)}
                    style={{ 
@@ -34,7 +34,7 @@ export default function FAQ() {
                       padding: '1.5rem 0', 
                       background: 'transparent', 
                       border: 'none', 
-                      color: '#ffffff', 
+                      color: '#000000', 
                       display: 'flex', 
                       justifyContent: 'flex-start', 
                       alignItems: 'center',
@@ -47,7 +47,7 @@ export default function FAQ() {
                  >
                     <span style={{ 
                       fontSize: '1.5rem', 
-                      color: '#ffffff', 
+                      color: '#000000', 
                       marginRight: '1rem',
                       width: '24px',
                       display: 'inline-block',
@@ -69,7 +69,7 @@ export default function FAQ() {
                         <div className="mono-text" style={{ 
                           paddingBottom: '1.5rem', 
                           paddingLeft: '2.5rem', // Aligned with the text, accounting for icon width + margin
-                          color: '#a1a1aa', 
+                          color: '#3f3f46', 
                           lineHeight: 1.6, 
                           textTransform: 'none', 
                           fontSize: '1rem', 

@@ -32,10 +32,10 @@ export default function Analytics() {
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <ChartInsightsGrid>
-            <div className="premium-glass-card" style={{ padding: '2rem', height: '100%', minHeight: '380px', backgroundColor: '#FFFFFF', display: 'flex', flexDirection: 'column' }}>
+            <div className="premium-glass-card" style={{ padding: '2rem', height: '100%', minHeight: '380px', background: '#FFFFFF', border: '1px solid var(--border-subtle, rgba(0,0,0,0.07))', display: 'flex', flexDirection: 'column' }}>
               <FunnelChart inView={inView} />
             </div>
-            <div className="premium-glass-card" style={{ height: '100%', minHeight: '380px', display: 'flex', flexDirection: 'column', padding: '2rem', backgroundColor: '#FFFFFF' }}>
+            <div className="premium-glass-card" style={{ padding: '2rem', height: '100%', minHeight: '380px', background: '#FFFFFF', border: '1px solid var(--border-subtle, rgba(0,0,0,0.07))', display: 'flex', flexDirection: 'column' }}>
               <ViewerRetentionChart inView={inView} />
             </div>
           </ChartInsightsGrid>
