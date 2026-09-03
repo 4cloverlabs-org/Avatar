@@ -6,7 +6,7 @@ import { Twitter, Youtube, Instagram } from 'lucide-react';
 
 export default function Footer() {
    return (
-      <footer className="footer" style={{ width: '100%' }}>
+      <footer className="footer" style={{ width: '100%', background: 'var(--bg-primary)', position: 'relative', zIndex: 10 }}>
          <div className="grid-container" style={{ padding: '6rem 2rem 2rem' }}>
             <div className="col-4">
             <Link href="/" className="nav-logo" style={{ marginBottom: '1rem', display: 'block', fontSize: '1.5rem', fontWeight: 700 }}>

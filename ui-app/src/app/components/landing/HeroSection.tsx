@@ -112,7 +112,10 @@ export default function HeroSection() {
         }
       `}</style>
       
-      <div className="hero-wrapper" style={{ width: '100%', overflow: 'hidden' }}>
+      <div className="hero-wrapper" style={{ 
+        width: '100%', 
+        overflow: 'hidden'
+      }}>
         <section className="hero-layout">
           <div className="hero-content-left">
             <motion.h1
