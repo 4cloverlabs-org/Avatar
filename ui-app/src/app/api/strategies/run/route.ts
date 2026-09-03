@@ -20,9 +20,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Strategy not found' }, { status: 404 });
     }
 
-    // Default voice/avatar for MVP if not set, would usually fetch from the UI
-    const voiceId = "system_drew"; // Default system voice
-    const avatarId = "default_avatar"; 
+    // Use voice/avatar from DB, or a known valid fallback for MVP
+    const voiceId = strategyData.voiceId || "8507f90c-88fd-41e1-b817-372ba5d96ea4"; 
+    const avatarId = strategyData.avatarId || "bf8b0499-0534-4dc3-b680-b8756f834ed5"; 
 
     // Send the event to Inngest
     await inngest.send({
@@ -35,6 +35,7 @@ export async function POST(request: Request) {
         durationValue: strategyData.durationValue,
         durationUnit: strategyData.durationUnit,
         platforms: JSON.parse(strategyData.platforms || '["youtube"]'),
+        uploadTimes: JSON.parse(strategyData.uploadTimes || '["12:00"]'),
         voiceId,
         avatarId
       }

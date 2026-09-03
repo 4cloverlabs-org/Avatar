@@ -56,9 +56,13 @@ export default function ContentSchedulerPage() {
 
   useEffect(() => {
     fetch('/api/socials/accounts')
-      .then(res => res.json())
+      .then(async res => {
+        if (!res.ok) return { success: false };
+        const text = await res.text();
+        return text ? JSON.parse(text) : { success: false };
+      })
       .then(data => {
-        if (data.success && data.accounts) {
+        if (data?.success && data.accounts) {
           setConnectedPlatforms(data.accounts.map((acc: any) => acc.platform));
         }
       })

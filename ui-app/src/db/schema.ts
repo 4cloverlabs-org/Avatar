@@ -353,6 +353,8 @@ export const contentStrategy = pgTable(
     frequency: text("frequency").notNull(),
     platforms: text("platforms").notNull(), // JSON string array of platforms
     uploadTimes: text("upload_times").default('["12:00"]').notNull(), // JSON string array of times
+    voiceId: text("voice_id"),
+    avatarId: text("avatar_id"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [index("content_strategy_userId_idx").on(table.userId)]

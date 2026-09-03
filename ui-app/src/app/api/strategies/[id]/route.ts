@@ -25,6 +25,12 @@ export async function PUT(req: NextRequest, props: { params: Promise<{ id: strin
     if (body.frequency !== undefined) updateData.frequency = body.frequency;
     if (body.platforms !== undefined) updateData.platforms = JSON.stringify(body.platforms);
     if (body.uploadTimes !== undefined) updateData.uploadTimes = JSON.stringify(body.uploadTimes);
+    if (body.voiceId !== undefined) updateData.voiceId = body.voiceId;
+    if (body.avatarId !== undefined) updateData.avatarId = body.avatarId;
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ success: true, message: "No updates needed" });
+    }
 
     const [updated] = await db
       .update(contentStrategy)

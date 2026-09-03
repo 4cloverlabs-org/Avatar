@@ -1,4 +1,5 @@
 import os
+os.environ["HF_HUB_OFFLINE"] = "1"
 import time
 import pdb
 import re
@@ -469,13 +470,16 @@ whisper = WhisperModel.from_pretrained("./models/whisper")
 whisper = whisper.to(device=device, dtype=weight_dtype).eval()
 whisper.requires_grad_(False)
 
-from transformers import pipeline
-transcriber = pipeline("automatic-speech-recognition", model="openai/whisper-tiny")
+transcriber = None
 
 def transcribe_audio(audio_path):
+    global transcriber
     if not audio_path:
         return ""
     try:
+        if transcriber is None:
+            from transformers import pipeline
+            transcriber = pipeline("automatic-speech-recognition", model="openai/whisper-tiny")
         result = transcriber(audio_path)
         return result.get("text", "").strip()
     except Exception as e:
@@ -628,7 +632,16 @@ def generate_strategy_video(script_segments_json, voice_id, avatar_id, strategy_
         # 2. Generate Video
         video_path = generate_from_avatar(avatar_id, audio_path)
         
-        # In a real app we'd save this to DB here or the caller would
+        try:
+            import requests
+            requests.post("http://127.0.0.1:3000/api/videos/webhook", json={
+                "strategyId": strategy_id,
+                "userId": user_id,
+                "video_path": video_path
+            }, timeout=5)
+        except Exception as e:
+            print(f"Webhook failed: {e}")
+            
         return json.dumps({
             "success": True, 
             "video_path": video_path, 
@@ -713,6 +726,8 @@ with gr.Blocks(analytics_enabled=False) as demo:
         outputs=[script_text],
         api_name="transcribe"
     )
+
+    generate_speech_btn = gr.Button(visible=False)
 
     generate_speech_btn.click(
         fn=generate_speech,

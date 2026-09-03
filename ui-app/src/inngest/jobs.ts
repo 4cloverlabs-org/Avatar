@@ -63,10 +63,16 @@ export const fetchTrendingTopics = inngest.createFunction(
     triggers: [{ cron: "0 */6 * * *" }],
   },
   async ({ step }) => {
-    // In a real app, query db for active niches. For MVP, we use hardcoded array.
-    const niches = ['Technology & Gadgets', 'Gaming', 'Finance & Crypto', 'Health & Fitness'];
+    // Query db for active niches picked by users
+    const activeNiches = await step.run("get-active-niches", async () => {
+      const { db } = await import("../lib/db");
+      const { contentStrategy } = await import("../db/schema");
+      const strategies = await db.select().from(contentStrategy);
+      const uniqueNiches = [...new Set(strategies.map(s => s.niche))];
+      return uniqueNiches.length > 0 ? uniqueNiches : ['Technology & Gadgets'];
+    });
     
-    for (const niche of niches) {
+    for (const niche of activeNiches) {
       await step.run(`scrape-niche-${niche.toLowerCase().replace(/[^a-z0-9]/g, '')}`, async () => {
         // dynamic import to avoid bundling issues
         const { runScraperForNiche } = await import("../lib/services/scraper");
@@ -74,7 +80,7 @@ export const fetchTrendingTopics = inngest.createFunction(
       });
     }
 
-    return { success: true, nichesScraped: niches.length };
+    return { success: true, nichesScraped: activeNiches.length, niches: activeNiches };
   }
 );
 
@@ -84,7 +90,7 @@ export const generateContentStrategy = inngest.createFunction(
     triggers: [{ event: "strategy/generate.requested" }]
   },
   async ({ event, step }) => {
-    const { strategyId, userId, niche, style, durationValue, durationUnit, platforms, voiceId, avatarId } = event.data as any;
+    const { strategyId, userId, niche, style, durationValue, durationUnit, platforms, uploadTimes, voiceId, avatarId } = event.data as any;
 
     // Step 1: Select Topic (Repetition Guard)
     const topic = await step.run("select-topic", async () => {
@@ -147,24 +153,101 @@ export const generateContentStrategy = inngest.createFunction(
 
     // Step 5: Render Video
     const videoResult = await step.run("render-strategy-video", async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      const { Client } = await import("@gradio/client");
+      const client = await Client.connect(process.env.NEXT_PUBLIC_GRADIO_URL || "http://127.0.0.1:7860");
       
-      const res = await fetch(`${apiUrl}/api/generate_strategy_video`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scriptSegments: script.body,
-          voiceId,
-          avatarId,
-          strategyId,
-          userId
-        })
-      });
-
-      if (!res.ok) throw new Error("Failed to trigger video generation");
-      return await res.json();
+      // FIRE AND FORGET. Do not await predict() because video takes 15 mins!
+      // The python backend will ping /api/videos/webhook when done.
+      client.submit("/generate_strategy_video", [
+        JSON.stringify(script.body),
+        voiceId,
+        avatarId,
+        strategyId,
+        userId
+      ]);
+      
+      return { status: "generating_in_background" };
     });
 
-    return { success: true, topic: topic.title, videoResult };
+    // Step 6: Wait for Python video generation to complete via Webhook
+    const videoGenerationEvent = await step.waitForEvent("wait-for-video", {
+      event: "video/generation.completed",
+      timeout: "24h",
+      match: "data.strategyId"
+    });
+
+    if (!videoGenerationEvent) {
+      throw new Error("Video generation timed out");
+    }
+
+    const { video_path } = videoGenerationEvent.data;
+
+    // Step 7: Sleep until target upload time
+    if (uploadTimes && uploadTimes.length > 0) {
+      // Pick the first upload time for this run
+      const timeString = uploadTimes[0]; // e.g. "15:00"
+      const [hours, minutes] = timeString.split(":").map(Number);
+      
+      const now = new Date();
+      const targetDate = new Date();
+      targetDate.setHours(hours, minutes, 0, 0);
+
+      // If the time has already passed today, schedule for tomorrow
+      if (targetDate.getTime() <= now.getTime()) {
+        targetDate.setDate(targetDate.getDate() + 1);
+      }
+
+      await step.sleepUntil("wait-for-upload", targetDate);
+    }
+
+    // Step 8: Upload to active platforms
+    const uploadResults = await step.run("upload-to-socials", async () => {
+      const results: Record<string, any> = {};
+      const { postToYouTube, postToTikTok, postToInstagram } = await import("../lib/services/socials");
+
+      if (platforms && Array.isArray(platforms)) {
+        for (const platform of platforms) {
+          const platformLower = platform.toLowerCase();
+          
+          if (platformLower === "youtube" || platformLower === "youtube shorts") {
+            const res = await postToYouTube(
+              userId, 
+              video_path, 
+              topic.title, 
+              script.body.join(" "), 
+              niche
+            );
+            results.youtube = res;
+          } else if (platformLower === "tiktok") {
+            const res = await postToTikTok(userId, video_path, topic.title);
+            results.tiktok = res;
+          } else if (platformLower === "instagram" || platformLower === "instagram reels") {
+            const res = await postToInstagram(userId, video_path, topic.title);
+            results.instagram = res;
+          }
+        }
+      }
+      
+      // Update DB to mark as Posted
+      const { db } = await import("../lib/db");
+      const { video } = await import("../db/schema");
+      const { eq, desc } = await import("drizzle-orm");
+      
+      // Find the most recent video for this strategy
+      const latestVideo = await db.query.video.findFirst({
+        where: eq(video.strategyId, strategyId),
+        orderBy: [desc(video.id)]
+      });
+      
+      if (latestVideo) {
+        await db.update(video)
+          .set({ status: "Posted" })
+          .where(eq(video.id, latestVideo.id));
+      }
+      
+      return results;
+    });
+
+    return { success: true, topic: topic.title, uploadResults };
   }
 );

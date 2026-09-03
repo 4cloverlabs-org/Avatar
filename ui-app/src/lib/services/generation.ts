@@ -64,7 +64,7 @@ Output strictly in JSON format matching this schema:
         "Authorization": `Bearer ${GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: "llama3-70b-8192",
+        model: "openai/gpt-oss-120b",
         messages: [
           { role: "system", content: "You are a helpful JSON-only scriptwriter." },
           { role: "user", content: prompt }
