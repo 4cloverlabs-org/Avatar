@@ -17,8 +17,8 @@ export default function HowItWorks() {
         {/* Centered Top Heading */}
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <h2 className="editorial-h2" style={{ marginBottom: '1rem', fontSize: '3rem' }}>Create Your Digital Identity</h2>
-          <p className="mono-text" style={{ fontSize: '1.25rem', color: 'var(--text-main)', maxWidth: '800px', margin: '0 auto' }}>
-            We map your exact facial movements, micro-expressions, and <span style={{ fontWeight: 600 }}>vocal tone</span> to create a 1:1 digital twin.
+          <p className="mono-text" style={{ fontSize: '1.25rem', color: 'var(--text-main)', maxWidth: '800px', margin: '0 auto', lineHeight: '1.6' }}>
+            We precisely map your facial movements, subtle micro-expressions, and <span style={{ fontWeight: 600 }}>exact vocal tone</span> to generate a hyper-realistic AI avatar.
           </p>
         </div>
 
@@ -58,20 +58,15 @@ export default function HowItWorks() {
                   gap: '0.5rem'
                 }}
               >
-                <div style={{ fontSize: '1.75rem', fontWeight: 500, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 500, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
                   {feature.title}
                 </div>
-                <div className="mono-text" style={{ fontSize: '1rem', color: '#64748b', lineHeight: '1.5' }}>
+                <div className="mono-text" style={{ fontSize: '0.95rem', color: '#64748b', lineHeight: '1.5' }}>
                   {feature.desc}
                 </div>
               </motion.div>
             ))}
             
-            <div style={{ marginTop: '2rem' }}>
-              <a href="/dashboard" className="btn-primary" style={{ display: 'inline-block', padding: '1rem 2rem', fontSize: '1.1rem' }}>
-                Create Avatar
-              </a>
-            </div>
           </div>
 
           {/* Right Column: Video in Blue Background */}
@@ -83,66 +78,94 @@ export default function HowItWorks() {
               style={{ 
                 background: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)', // Light blue background like image
                 borderRadius: '2rem',
-                padding: '2rem 4rem', // Less vertical padding, more horizontal
+                padding: '4rem', // Generous equal padding on all sides to frame it perfectly
                 width: '100%',
-                maxWidth: '580px', // Increased width
+                maxWidth: '480px',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                maxHeight: '600px' // Constrain height to decrease blue background height
               }}
             >
               <div style={{ 
                 position: 'relative', 
-                width: '110%', // Increased width beyond the blue padding slightly
-                aspectRatio: '3/4', // Wider and shorter than 9/16
+                width: '100%', 
+                aspectRatio: '9/16', // Phone shape
                 borderRadius: '2rem', 
-                overflow: 'hidden', 
-                backgroundColor: '#fff', 
+                // Removed overflow: hidden so badge can stick out
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
                 display: 'flex', 
                 flexDirection: 'column' 
               }}>
-                
-                {/* Top Right Badges */}
-                <div style={{ position: 'absolute', top: '16px', right: '16px', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end', zIndex: 10 }}>
-                  <div style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(10px)', color: 'var(--text-main)', padding: '6px 12px', fontSize: '0.7rem', fontWeight: '600', borderRadius: '100px', display: 'flex', alignItems: 'center', boxShadow: 'var(--shadow-soft)' }}>
-                    <motion.span
-                      animate={{ opacity: [1, 0.2, 1] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                      style={{ display: 'inline-block', width: '8px', height: '8px', background: '#1A1A1A', borderRadius: '50%', marginRight: '8px' }}
-                    />
-                    PROCESSING
-                  </div>
-                  
-                  <div style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(10px)', color: 'var(--text-main)', padding: '6px 12px', fontSize: '0.7rem', fontWeight: '600', borderRadius: '100px', display: 'flex', alignItems: 'center', boxShadow: 'var(--shadow-soft)' }}>
-                    VOCAL TONE: MATCHED 98%
-                  </div>
-                </div>
+                <img 
+                  src="/avatar.png" 
+                  alt="Digital Avatar" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: '2rem' }} 
+                />
 
-                {/* Top Half: Video */}
-                <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', backgroundColor: '#f9f9f9' }}>
-                  <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                {/* Face Mapping Badge */}
+                <motion.div 
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.6, duration: 0.5, type: 'spring' }}
+                  style={{
+                    position: 'absolute',
+                    right: '-32px', // Breaks out of the image container to the right
+                    top: '28%',
+
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(10px)',
+                    padding: '6px 12px',
+                    borderRadius: '100px',
+                    boxShadow: '0 10px 25px -5px rgba(0,0,0,0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    zIndex: 20
+                  }}
+                >
+                  {/* Dashed arrow pointing to the cheek */}
+                  <svg 
+                    width="40" 
+                    height="40" 
+                    viewBox="0 0 40 40" 
+                    fill="none" 
+                    stroke="rgba(255, 255, 255, 1)" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    style={{
+                      position: 'absolute',
+                      left: '-36px', // Longer arrow distance to reach the cheek
+                      top: '12px',
+                      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+                    }}
                   >
-                    <source src="/videos/avatar_split.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
+                    {/* Dashed curved line pointing down-left to cheek */}
+                    <path d="M 38 12 Q 20 12 5 35" strokeDasharray="4 4" />
+                    {/* Solid Arrow head at the end (5, 35) pointing down-left, made smaller */}
+                    <path d="M 5 30 L 5 35 L 10 35" />
+                  </svg>
 
-                {/* Bottom Half: Terminal & Waveform */}
-                <div style={{ display: 'flex', flexDirection: 'column', height: '180px', width: '100%', backgroundColor: '#fff', borderTop: '1px solid var(--border-subtle)' }}>
-                  <div style={{ flex: 1, overflow: 'hidden' }}>
-                    <TerminalLog />
-                  </div>
-                  <div style={{ height: '60px' }}>
-                    <AudioWaveform />
-                  </div>
-                </div>
+                  <motion.div
+                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    style={{ width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%' }}
+                  />
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>Face Mapping...</span>
+                </motion.div>
+                {/* Gradient overlay to fade into background at the bottom */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '40%',
+                  background: 'linear-gradient(to top, #bae6fd 0%, transparent 100%)',
+                  pointerEvents: 'none',
+                  borderBottomLeftRadius: '2rem',
+                  borderBottomRightRadius: '2rem'
+                }} />
               </div>
             </motion.div>
           </div>
