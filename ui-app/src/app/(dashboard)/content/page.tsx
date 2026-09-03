@@ -56,9 +56,13 @@ export default function ContentSchedulerPage() {
 
   useEffect(() => {
     fetch('/api/socials/accounts')
-      .then(res => res.json())
+      .then(async res => {
+        if (!res.ok) return { success: false };
+        const text = await res.text();
+        return text ? JSON.parse(text) : { success: false };
+      })
       .then(data => {
-        if (data.success && data.accounts) {
+        if (data?.success && data.accounts) {
           setConnectedPlatforms(data.accounts.map((acc: any) => acc.platform));
         }
       })
@@ -234,11 +238,24 @@ export default function ContentSchedulerPage() {
     }));
   };
 
-  const handleGenerate = (id: string) => {
+  const handleGenerate = async (id: string) => {
     setGeneratingId(id);
-    setTimeout(() => {
-      setGeneratingId(null);
-    }, 2000);
+    try {
+      const res = await fetch('/api/strategies/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ strategyId: id })
+      });
+      const data = await res.json();
+      if (!data.success) {
+        alert("Failed to trigger pipeline: " + data.error);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error triggering pipeline.");
+    } finally {
+      setTimeout(() => setGeneratingId(null), 1000); // Give user a short delay to see it worked
+    }
   };
 
   useEffect(() => {

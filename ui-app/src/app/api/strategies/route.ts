@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { id, niche, durationValue, durationUnit, contentStyle, frequency, platforms, uploadTimes } = body;
+    const { id, niche, durationValue, durationUnit, contentStyle, frequency, platforms, uploadTimes, voiceId, avatarId } = body;
 
     const [newStrategy] = await db.insert(contentStrategy).values({
       id: id || `strat-${Date.now()}`,
@@ -54,7 +54,9 @@ export async function POST(req: NextRequest) {
       contentStyle: contentStyle || 'Entertaining',
       frequency: frequency || '1 video per day',
       platforms: JSON.stringify(platforms || []),
-      uploadTimes: JSON.stringify(uploadTimes || ['12:00'])
+      uploadTimes: JSON.stringify(uploadTimes || ['12:00']),
+      voiceId: voiceId || null,
+      avatarId: avatarId || null
     }).returning();
 
     return NextResponse.json({ 
