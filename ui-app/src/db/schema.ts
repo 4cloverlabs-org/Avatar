@@ -5,6 +5,7 @@ import {
   timestamp,
   boolean,
   integer,
+  real,
   index,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
@@ -436,4 +437,71 @@ export const sessionHandoff = pgTable(
   },
   (table) => [index("session_handoff_token_idx").on(table.token)]
 );
+
+// ── Content Pipeline ─────────────────────────────────────────────────
+export const topicPool = pgTable(
+  "topic_pool",
+  {
+    id: text("id").primaryKey(),
+    niche: text("niche").notNull(),
+    title: text("title").notNull(),
+    source: text("source").notNull(), // "YouTube", "NewsAPI"
+    url: text("url").notNull(),
+    engagementSignal: integer("engagement_signal").default(0).notNull(),
+    crossPlatform: boolean("cross_platform").default(false).notNull(),
+    recencyScore: real("recency_score").default(0).notNull(),
+    velocityScore: real("velocity_score").default(0).notNull(),
+    totalScore: real("total_score").default(0).notNull(),
+    status: text("status").default("available").notNull(), // available, rejected
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("topic_pool_niche_idx").on(table.niche)
+  ]
+);
+
+export const generatedScript = pgTable(
+  "generated_script",
+  {
+    id: text("id").primaryKey(),
+    strategyId: text("strategy_id")
+      .notNull()
+      .references(() => contentStrategy.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    topicId: text("topic_id")
+      .references(() => topicPool.id, { onDelete: "set null" }),
+    researchBrief: text("research_brief"), // JSON string
+    scriptContent: text("script_content"), // JSON string
+    qaStatus: text("qa_status").default("pending").notNull(),
+    qaFeedback: text("qa_feedback"),
+    retryCount: integer("retry_count").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("generated_script_userId_idx").on(table.userId),
+    index("generated_script_strategyId_idx").on(table.strategyId),
+    index("generated_script_topicId_idx").on(table.topicId)
+  ]
+);
+
+export const topicPoolRelations = relations(topicPool, ({ many }) => ({
+  scripts: many(generatedScript),
+}));
+
+export const generatedScriptRelations = relations(generatedScript, ({ one }) => ({
+  user: one(user, {
+    fields: [generatedScript.userId],
+    references: [user.id],
+  }),
+  strategy: one(contentStrategy, {
+    fields: [generatedScript.strategyId],
+    references: [contentStrategy.id],
+  }),
+  topic: one(topicPool, {
+    fields: [generatedScript.topicId],
+    references: [topicPool.id],
+  }),
+}));
 

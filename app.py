@@ -615,6 +615,29 @@ def check_video(video):
     imageio.mimwrite(output, frames, 'FFMPEG', fps=25, codec='libx264', quality=9, pixelformat='yuv420p')
     return output
 
+def generate_strategy_video(script_segments_json, voice_id, avatar_id, strategy_id, user_id):
+    try:
+        segments = json.loads(script_segments_json)
+        full_script = " ".join(segments)
+        
+        # 1. Generate Audio
+        audio_path = generate_speech(full_script, voice_id)
+        if audio_path.startswith("Error"):
+            return json.dumps({"success": False, "error": audio_path})
+            
+        # 2. Generate Video
+        video_path = generate_from_avatar(avatar_id, audio_path)
+        
+        # In a real app we'd save this to DB here or the caller would
+        return json.dumps({
+            "success": True, 
+            "video_path": video_path, 
+            "strategy_id": strategy_id,
+            "user_id": user_id
+        })
+    except Exception as e:
+        return json.dumps({"success": False, "error": str(e)})
+
 css = """
 /* Styling omitted for brevity */
 """
@@ -641,7 +664,16 @@ with gr.Blocks(analytics_enabled=False) as demo:
 
     aspect_ratio_input = gr.Text(value="Original", visible=False)
     
+    # Strategy pipeline inputs
+    strategy_script = gr.Text(visible=False)
+    strategy_voice = gr.Text(visible=False)
+    strategy_avatar = gr.Text(visible=False)
+    strategy_id_input = gr.Text(visible=False)
+    strategy_user_input = gr.Text(visible=False)
+    strategy_output = gr.Text(visible=False)
+    
     # API Endpoints
+
     inference_btn = gr.Button(visible=False)
     inference_btn.click(
         fn=inference,
@@ -682,12 +714,19 @@ with gr.Blocks(analytics_enabled=False) as demo:
         api_name="transcribe"
     )
 
-    generate_speech_btn = gr.Button(visible=False)
     generate_speech_btn.click(
         fn=generate_speech,
         inputs=[script_text, voice_id],
         outputs=[speech_output],
         api_name="generate_speech"
+    )
+
+    generate_strategy_btn = gr.Button(visible=False)
+    generate_strategy_btn.click(
+        fn=generate_strategy_video,
+        inputs=[strategy_script, strategy_voice, strategy_avatar, strategy_id_input, strategy_user_input],
+        outputs=[strategy_output],
+        api_name="generate_strategy_video"
     )
 
 # Check ffmpeg and add to PATH

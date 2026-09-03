@@ -234,11 +234,24 @@ export default function ContentSchedulerPage() {
     }));
   };
 
-  const handleGenerate = (id: string) => {
+  const handleGenerate = async (id: string) => {
     setGeneratingId(id);
-    setTimeout(() => {
-      setGeneratingId(null);
-    }, 2000);
+    try {
+      const res = await fetch('/api/strategies/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ strategyId: id })
+      });
+      const data = await res.json();
+      if (!data.success) {
+        alert("Failed to trigger pipeline: " + data.error);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error triggering pipeline.");
+    } finally {
+      setTimeout(() => setGeneratingId(null), 1000); // Give user a short delay to see it worked
+    }
   };
 
   useEffect(() => {
