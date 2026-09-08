@@ -375,7 +375,7 @@ export default function AutopilotSection() {
                   <div style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.75rem', flex: 1, minHeight: '200px' }}>
                      
                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#3B82F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -385,7 +385,7 @@ export default function AutopilotSection() {
                      </div>
 
                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#3B82F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -395,7 +395,7 @@ export default function AutopilotSection() {
                      </div>
 
                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#3B82F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -405,7 +405,7 @@ export default function AutopilotSection() {
                      </div>
 
                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#3B82F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>

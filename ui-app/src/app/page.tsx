@@ -11,7 +11,7 @@ import FAQ from './components/landing/FAQ';
 import AIEngineSection from './components/landing/AIEngineSection';
 
 import Footer from './components/landing/Footer';
-import SocialProof from './components/landing/SocialProof';
+
 
 export default function Home() {
   return (
@@ -23,7 +23,7 @@ export default function Home() {
           width: '100%'
         }}>
           <HeroSection />
-          <SocialProof />
+
           <hr className="h-rule" />
           
           <HowItWorks />

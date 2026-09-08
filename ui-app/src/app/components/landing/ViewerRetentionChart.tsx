@@ -83,8 +83,8 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
                 <path d="M-2,2 l4,-4 M0,10 l10,-10 M8,12 l4,-4" stroke="#E5E7EB" strokeWidth="1.5" />
               </pattern>
               <linearGradient id="solidArea" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.12" />
-                <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.01" />
+                <stop offset="0%" stopColor="#ff6b35" stopOpacity="0.12" />
+                <stop offset="100%" stopColor="#ff6b35" stopOpacity="0.01" />
               </linearGradient>
             </defs>
 
@@ -138,7 +138,7 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
             <motion.path
               d={pathD}
               fill="none"
-              stroke="#6366F1"
+              stroke="#ff6b35"
               strokeWidth="2"
               strokeLinejoin="round"
               initial={{ pathLength: 0 }}
@@ -150,7 +150,7 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
             <motion.line
               x1={tooltipX} y1={tooltipY}
               x2={tooltipX} y2={height - paddingBottom}
-              stroke="#6366F1"
+              stroke="#ff6b35"
               strokeWidth="1.5"
               initial={{ opacity: 0 }}
               animate={inView ? { opacity: 1 } : { opacity: 0 }}
@@ -165,7 +165,7 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
                 cy={c.cy}
                 r={c.isTooltip ? 5 : 4}
                 fill="#FFFFFF"
-                stroke="#6366F1"
+                stroke="#ff6b35"
                 strokeWidth={2}
                 initial={{ scale: 0, opacity: 0 }}
                 animate={inView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}

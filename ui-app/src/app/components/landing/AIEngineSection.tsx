@@ -68,13 +68,13 @@ const SvgPublish = () => (
 const PipelineCardUI = ({ title, desc, svg }: { title: string, desc: string, svg: React.ReactNode }) => (
    <motion.div 
       style={{ 
-         background: '#F9F9F9', 
-         borderRadius: '20px', 
-         padding: '3rem 2rem', 
-         display: 'flex', 
+         background: 'rgba(248, 147, 77, 0.1)',
+         borderRadius: '20px',
+         padding: '3rem 2rem',
+         display: 'flex',
          flexDirection: 'column',
          minHeight: '420px',
-         boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.03)'
+         boxShadow: 'inset 0 0 0 1px rgba(248, 147, 77, 0.15)'
       }}
    >
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2.5rem' }}>
