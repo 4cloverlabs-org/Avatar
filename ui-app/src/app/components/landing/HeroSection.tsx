@@ -3,239 +3,228 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const topics = [
-  "productivity tips",
-  "5-minute workouts",
-  "market update",
-  "skincare routine"
-];
-
-const pipelineStates = ["GENERATING", "RENDERING", "SYNCING", "READY"];
-
 export default function HeroSection() {
-  const [topicIndex, setTopicIndex] = useState(0);
-  const [pipelineIndex, setPipelineIndex] = useState(0);
-
-  useEffect(() => {
-    const topicInterval = setInterval(() => {
-      setTopicIndex((prev) => (prev + 1) % topics.length);
-    }, 4000);
-    return () => clearInterval(topicInterval);
-  }, []);
-
-  useEffect(() => {
-    const pipelineInterval = setInterval(() => {
-      setPipelineIndex((prev) => (prev + 1) % pipelineStates.length);
-    }, 2500);
-    return () => clearInterval(pipelineInterval);
-  }, []);
-
   return (
     <>
       <style>{`
         .hero-layout {
-          display: grid;
-          grid-template-columns: repeat(12, 1fr);
-          gap: 3rem;
+          display: flex;
+          flex-direction: column;
           align-items: center;
           padding: 8rem 2rem 4rem;
-          max-width: 1280px;
+          max-width: 1200px;
           margin: 0 auto;
           position: relative;
           z-index: 1;
-          min-height: 85vh;
         }
 
-        .hero-content-left {
-          grid-column: span 5;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          text-align: left;
-        }
-
-        .hero-content-right {
-          grid-column: span 7;
-          position: relative;
-          z-index: 1;
+        .hero-headline {
+          font-family: 'Georgia', 'Times New Roman', serif;
+          font-size: clamp(3rem, 6vw, 4.5rem);
+          line-height: 1.1;
+          font-weight: 500;
+          color: #1A1A1A;
+          text-align: center;
+          max-width: 800px;
+          margin: 0 0 2rem 0;
+          letter-spacing: -0.02em;
         }
         
-        .avatar-glow {
-          position: absolute;
-          top: 40%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 140%;
-          height: 140%;
-          background: 
-            radial-gradient(
-              ellipse 60% 55% at 50% 20%,
-              rgba(205, 230, 255, 0.9),
-              transparent 70%
-            ),
-            radial-gradient(
-              ellipse 45% 40% at 20% 45%,
-              rgba(225, 215, 255, 0.7),
-              transparent 70%
-            ),
-            radial-gradient(
-              ellipse 45% 40% at 80% 45%,
-              rgba(215, 245, 245, 0.6),
-              transparent 70%
-            );
-          z-index: -1;
-          pointer-events: none;
-          filter: blur(60px);
-          opacity: 0.8;
+        .pill-button {
+          background: #FFFFFF;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          padding: 0.5rem 1rem;
+          border-radius: 100px;
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: #1A1A1A;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+          transition: all 0.2s ease;
+        }
+        
+        .pill-button:hover {
+          box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+          transform: translateY(-1px);
         }
 
-        .product-island {
-          z-index: 2;
+        .media-container {
+          width: 100%;
+          max-width: 900px;
+          background: #FAFAFA;
+          border: 1px dashed rgba(0, 0, 0, 0.15);
+          border-radius: 20px;
+          padding: 1rem;
+          margin-top: 3rem;
           position: relative;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .media-inner {
+          background: #FFFFFF;
+          border-radius: 12px;
+          width: 100%;
+          height: 450px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
 
-        @media (max-width: 1024px) {
-          .hero-layout {
-            grid-template-columns: 1fr;
-            text-align: center;
-            padding-top: 6rem;
-            gap: 4rem;
+        .media-controls {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1rem 0.5rem 0.5rem;
+          width: 100%;
+        }
+
+        .thumbnail-row {
+          display: flex;
+          gap: 1rem;
+          overflow: hidden;
+          margin-top: 2rem;
+          width: 100%;
+          justify-content: center;
+        }
+        
+        .thumbnail-card {
+          width: 180px;
+          height: 100px;
+          border-radius: 12px;
+          background-color: #E5E7EB;
+          overflow: hidden;
+          flex-shrink: 0;
+          position: relative;
+          border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .thumbnail-card img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        @media (max-width: 768px) {
+          .hero-headline {
+            font-size: 2.5rem;
           }
-          .hero-content-left {
-            grid-column: span 1;
-            align-items: center;
-            text-align: center;
+          .media-container {
+            padding: 0.5rem;
           }
-          .hero-content-right {
-            grid-column: span 1;
+          .media-inner {
+            height: 300px;
+          }
+          .thumbnail-card {
+            width: 140px;
+            height: 80px;
           }
         }
       `}</style>
       
-      <div className="hero-wrapper" style={{ 
-        width: '100%', 
-        overflow: 'hidden'
-      }}>
+      <div className="hero-wrapper" style={{ width: '100%', overflow: 'hidden' }}>
         <section className="hero-layout">
-          <div className="hero-content-left">
-            <motion.h1
-              className="editorial-h1 mb-2"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+          
+          <motion.h1
+            className="hero-headline"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
           >
             Create videos with a face that feels real.
           </motion.h1>
 
-          <motion.p
-            className="mono-text mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            style={{ fontSize: '1.1rem', lineHeight: '1.6', maxWidth: '500px' }}
-          >
-            A digital twin that creates content on autopilot. No studio required.
-          </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}
-          >
-            <a href="/dashboard" className="btn-primary">
-              Create Avatar
-            </a>
-            <button className="btn-secondary">
-              Watch Demo
-            </button>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+          <motion.div 
+            className="media-container"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '2.5rem' }}
+            transition={{ delay: 0.3, duration: 0.8 }}
           >
-            <div style={{ display: 'flex' }}>
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#fff', border: '2px solid #FAFAF8', marginLeft: i === 1 ? '0' : '-12px', overflow: 'hidden', zIndex: 10 - i }}>
-                  <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-              ))}
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-              <span className="mono-text" style={{ fontSize: '0.8rem', color: 'var(--text-main)', fontWeight: 600 }}>Join 1,200+ creators</span>
-              <span className="mono-text" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>No credit card required</span>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="hero-content-right">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-          >
-            <div className="avatar-glow"></div>
-            <div className="product-island" style={{ padding: '0.5rem', background: 'rgba(255, 255, 255, 0.4)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.6)' }}>
-              <div style={{ position: 'relative', width: '100%', borderRadius: 'var(--radius-lg)', overflow: 'hidden', minHeight: '450px', backgroundColor: '#fff', border: '1px solid var(--border-subtle)' }}>
-                <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(10px)', color: 'var(--text-main)', padding: '6px 12px', fontSize: '0.7rem', fontWeight: '600', borderRadius: '100px', display: 'flex', alignItems: 'center', zIndex: 10, boxShadow: 'var(--shadow-soft)' }}>
-                  <motion.span
-                    animate={{ opacity: [1, 0.2, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    style={{ display: 'inline-block', width: '8px', height: '8px', background: '#1A1A1A', borderRadius: '50%', marginRight: '8px' }}
-                  />
-                  <div style={{ position: 'relative', display: 'flex', alignItems: 'center', minWidth: '70px', height: '1em' }}>
-                    <AnimatePresence mode="wait">
-                      <motion.span
-                        key={pipelineStates[pipelineIndex]}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        style={{ position: 'absolute' }}
-                      >
-                        {pipelineStates[pipelineIndex]}
-                      </motion.span>
-                    </AnimatePresence>
-                  </div>
-                </div>
+            <div className="media-inner">
+              {/* Central Video */}
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                 <video
                   autoPlay
                   loop
                   muted
                   playsInline
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '500px', display: 'block' }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 >
                   <source src="/videos/hero.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
                 </video>
-              </div>
-
-              <div className="glass-floating-element" style={{ position: 'relative', marginTop: '0.5rem', bottom: 'auto', left: 'auto', transform: 'none', width: '100%', maxWidth: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(255, 255, 255, 0.9)' }}>
-                <AnimatePresence mode="wait">
-                  <motion.p
-                    key={topics[topicIndex]}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="mono-text"
-                    style={{ fontSize: '0.85rem', color: 'var(--text-main)', margin: 0, fontWeight: 500, textAlign: 'center' }}
-                  >
-                    Generating script: "{topics[topicIndex]}"...
-                  </motion.p>
-                </AnimatePresence>
-                <div className="progress-bar-container" style={{ height: '4px' }}>
-                  <div className="progress-bar-fill" style={{ width: '98%', background: 'var(--text-main)' }}></div>
+                
+                {/* Overlay card in center */}
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(10px)',
+                  padding: '2rem',
+                  borderRadius: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                     <div style={{ width: '45px', height: '65px', background: '#E5E7EB', borderRadius: '8px', transform: 'rotate(-12deg) translateX(10px)', zIndex: 1, overflow: 'hidden', border: '2px solid #FFF' }}>
+                        <img src="https://i.pravatar.cc/100?img=1" style={{ width: '100%', height: '100%', objectFit: 'cover'}}/>
+                     </div>
+                     <div style={{ width: '55px', height: '75px', background: '#F3F4F6', borderRadius: '8px', zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #E5E7EB', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2"><path d="M12 5v14M5 12h14"/></svg>
+                     </div>
+                  </div>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#4B5563', marginTop: '0.5rem' }}>Add footage to start</span>
                 </div>
               </div>
             </div>
+
+            {/* Bottom Controls */}
+            <div className="media-controls">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <button style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid rgba(0,0,0,0.1)', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+                </button>
+                <div style={{ background: '#E0F2FE', color: '#0284C7', padding: '0.4rem 0.8rem', borderRadius: '100px', fontSize: '0.8rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                   Avatar Pro
+                </div>
+              </div>
+              
+              <button style={{ background: '#F3F4F6', color: '#9CA3AF', padding: '0.6rem 1.25rem', borderRadius: '100px', fontSize: '0.85rem', fontWeight: 600, border: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                Create my video
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
           </motion.div>
-        </div>
-      </section>
+
+          {/* Thumbnails Row */}
+          <motion.div 
+            className="thumbnail-row"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+          >
+            {[4, 5, 6, 7, 8].map((num) => (
+              <div key={num} className="thumbnail-card">
+                <img src={`https://i.pravatar.cc/300?img=${num}`} alt="Thumbnail" />
+              </div>
+            ))}
+          </motion.div>
+
+        </section>
       </div>
     </>
   );

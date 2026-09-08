@@ -5,14 +5,13 @@ import Navbar from './components/landing/Navbar';
 import HeroSection from './components/landing/HeroSection';
 import HowItWorks from './components/landing/HowItWorks';
 import AutopilotSection from './components/landing/AutopilotSection';
-import Analytics from './components/landing/Analytics';
+import FeaturesGrid from './components/landing/FeaturesGrid';
 import Pricing from './components/landing/Pricing';
 import FAQ from './components/landing/FAQ';
+import AIEngineSection from './components/landing/AIEngineSection';
 
 import Footer from './components/landing/Footer';
 import SocialProof from './components/landing/SocialProof';
-import UseCases from './components/landing/UseCases';
-import Testimonials from './components/landing/Testimonials';
 
 export default function Home() {
   return (
@@ -31,16 +30,15 @@ export default function Home() {
         </div>
         <hr className="h-rule" />
         
+        <AIEngineSection />
+        <hr className="h-rule" />
+
         <AutopilotSection />
         <hr className="h-rule" />
         
-        <UseCases />
-        <hr className="h-rule" />
+
         
-        <Analytics />
-        <hr className="h-rule" />
-        
-        <Testimonials />
+        <FeaturesGrid />
         <hr className="h-rule" />
         
         <Pricing />

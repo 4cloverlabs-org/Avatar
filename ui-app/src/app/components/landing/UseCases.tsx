@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const niches = [
   { 
@@ -36,29 +35,6 @@ const niches = [
   }
 ];
 
-// Motion Variants
-const previewVariants = {
-  hidden: { opacity: 0, y: 12 },
-  show: {
-    opacity: 1, 
-    y: 0,
-    transition: {
-      duration: 0.4,
-      ease: [0.16, 1, 0.3, 1] as [number, number, number, number], // refined spring-like easeOut
-      staggerChildren: 0.08,
-      delayChildren: 0.05
-    }
-  },
-  exit: {
-    opacity: 0,
-    y: -8,
-    transition: {
-      duration: 0.3,
-      ease: [0.7, 0, 0.84, 0] as [number, number, number, number] // smooth easeIn
-    }
-  }
-};
-
 const contentVariants = {
   hidden: { opacity: 0, y: 6 },
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } }
@@ -87,10 +63,10 @@ const labelStyle = {
 const ReelPreview = () => (
   <div style={cardStyle}>
     <div style={labelStyle}>REEL SCRIPT</div>
-    <motion.h3 variants={contentVariants} style={{ fontSize: '1.75rem', fontWeight: 400, color: '#111', lineHeight: 1.25, margin: '0 0 3.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+    <h3 style={{ fontSize: '1.75rem', fontWeight: 400, color: '#111', lineHeight: 1.25, margin: '0 0 3.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
       "Still doing 100 crunches for abs?"
-    </motion.h3>
-    <motion.div variants={contentVariants} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
+    </h3>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
       {[
         { step: '01', name: 'Mountain Climbers', time: '30s' },
         { step: '02', name: 'Leg Raises', time: '30s' },
@@ -104,10 +80,10 @@ const ReelPreview = () => (
           <span style={{color: '#B3B3B3', fontSize: '0.9rem'}}>{item.time}</span>
         </div>
       ))}
-    </motion.div>
-    <motion.div variants={contentVariants} style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    </div>
+    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       Save this workout <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
-    </motion.div>
+    </div>
   </div>
 );
 
@@ -117,10 +93,10 @@ const CarouselPreview = () => (
       <div style={labelStyle}>CAROUSEL</div>
       <div style={{ fontSize: '0.75rem', color: '#A3A3A3', letterSpacing: '0.1em', marginBottom: '2.5rem' }}>01 / 05</div>
     </div>
-    <motion.h3 variants={contentVariants} style={{ fontSize: '1.85rem', fontWeight: 400, color: '#111', lineHeight: 1.25, margin: '0 0 3.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+    <h3 style={{ fontSize: '1.85rem', fontWeight: 400, color: '#111', lineHeight: 1.25, margin: '0 0 3.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
       5 Money Habits<br/>That Keep You Broke
-    </motion.h3>
-    <motion.div variants={contentVariants} style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', flex: 1 }}>
+    </h3>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', flex: 1 }}>
       {[
         { step: '01', name: 'Lifestyle inflation' },
         { step: '02', name: 'No emergency fund' },
@@ -131,22 +107,22 @@ const CarouselPreview = () => (
           <span style={{ fontWeight: 400, lineHeight: 1.4 }}>{item.name}</span>
         </div>
       ))}
-    </motion.div>
-    <motion.div variants={contentVariants} style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    </div>
+    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       Swipe <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
-    </motion.div>
+    </div>
   </div>
 );
 
 const PropertyPreview = () => (
   <div style={cardStyle}>
     <div style={labelStyle}>PROPERTY POST</div>
-    <motion.div variants={contentVariants} style={{ width: '100%', height: '140px', background: '#F7F7F5', borderRadius: '12px', marginBottom: '2.5rem' }} />
-    <motion.h3 variants={contentVariants} style={{ fontSize: '1.5rem', fontWeight: 400, color: '#111', margin: '0 0 0.75rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.01em' }}>
+    <div style={{ width: '100%', height: '140px', background: '#F7F7F5', borderRadius: '12px', marginBottom: '2.5rem' }} />
+    <h3 style={{ fontSize: '1.5rem', fontWeight: 400, color: '#111', margin: '0 0 0.75rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.01em' }}>
       $1.2M MODERN VILLA
-    </motion.h3>
-    <motion.div variants={contentVariants} style={{ fontSize: '0.75rem', color: '#A3A3A3', letterSpacing: '0.1em', marginBottom: '2.5rem' }}>4 BED &nbsp;&nbsp; 3 BATH &nbsp;&nbsp; 2,850 SQ FT</motion.div>
-    <motion.div variants={contentVariants} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', flex: 1 }}>
+    </h3>
+    <div style={{ fontSize: '0.75rem', color: '#A3A3A3', letterSpacing: '0.1em', marginBottom: '2.5rem' }}>4 BED &nbsp;&nbsp; 3 BATH &nbsp;&nbsp; 2,850 SQ FT</div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', flex: 1 }}>
       {[
         'Open-plan living', 'Private pool & garden', 'Smart home integrated'
       ].map((item, i) => (
@@ -154,23 +130,23 @@ const PropertyPreview = () => (
           {item}
         </div>
       ))}
-    </motion.div>
-    <motion.div variants={contentVariants} style={{ marginTop: '2.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    </div>
+    <div style={{ marginTop: '2.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       View Property <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
-    </motion.div>
+    </div>
   </div>
 );
 
 const ProductLaunchPreview = () => (
   <div style={cardStyle}>
     <div style={labelStyle}>PRODUCT UPDATE</div>
-    <motion.h3 variants={contentVariants} style={{ fontSize: '1.85rem', fontWeight: 400, color: '#111', lineHeight: 1.25, margin: '0 0 1.25rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+    <h3 style={{ fontSize: '1.85rem', fontWeight: 400, color: '#111', lineHeight: 1.25, margin: '0 0 1.25rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
       AI Automations
-    </motion.h3>
-    <motion.p variants={contentVariants} style={{ color: '#666', fontSize: '1.1rem', margin: '0 0 3.5rem 0', lineHeight: 1.6, fontWeight: 400 }}>
+    </h3>
+    <p style={{ color: '#666', fontSize: '1.1rem', margin: '0 0 3.5rem 0', lineHeight: 1.6, fontWeight: 400 }}>
       Turn repetitive workflows into automated actions seamlessly.
-    </motion.p>
-    <motion.div variants={contentVariants} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
+    </p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
       {[
         'Save 8+ hours per week', 'No-code visual setup', 'Native tool integrations'
       ].map((item, i) => (
@@ -179,45 +155,45 @@ const ProductLaunchPreview = () => (
           <span>{item}</span>
         </div>
       ))}
-    </motion.div>
-    <motion.div variants={contentVariants} style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    </div>
+    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       Read Announcement <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
-    </motion.div>
+    </div>
   </div>
 );
 
 const ProductAdPreview = () => (
   <div style={cardStyle}>
     <div style={labelStyle}>PRODUCT CAMPAIGN</div>
-    <motion.div variants={contentVariants} style={{ width: '100%', height: '140px', background: '#F7F7F5', borderRadius: '12px', marginBottom: '2.5rem' }} />
-    <motion.h3 variants={contentVariants} style={{ fontSize: '1.6rem', fontWeight: 400, color: '#111', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.01em' }}>
+    <div style={{ width: '100%', height: '140px', background: '#F7F7F5', borderRadius: '12px', marginBottom: '2.5rem' }} />
+    <h3 style={{ fontSize: '1.6rem', fontWeight: 400, color: '#111', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.01em' }}>
       SUMMER ESSENTIALS
-    </motion.h3>
-    <motion.p variants={contentVariants} style={{ color: '#666', fontSize: '1.05rem', margin: '0 0 2.5rem 0', lineHeight: 1.6, flex: 1, fontWeight: 400 }}>
+    </h3>
+    <p style={{ color: '#666', fontSize: '1.05rem', margin: '0 0 2.5rem 0', lineHeight: 1.6, flex: 1, fontWeight: 400 }}>
       Minimal. Lightweight.<br/>Made for everyday wear.
-    </motion.p>
-    <motion.div variants={contentVariants} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '1rem' }}>
+    </p>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '1rem' }}>
       <div>
         <div style={{ fontSize: '1.5rem', color: '#111', fontWeight: 400, marginBottom: '0.35rem', fontFamily: 'var(--font-heading)' }}>$49</div>
         <div style={{ fontSize: '0.75rem', color: '#A3A3A3', letterSpacing: '0.08em' }}>20% OFF THIS WEEK</div>
       </div>
-    </motion.div>
-    <motion.div variants={contentVariants} style={{ marginTop: '2.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    </div>
+    <div style={{ marginTop: '2.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       Shop Collection <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
-    </motion.div>
+    </div>
   </div>
 );
 
 const ThoughtLeadershipPreview = () => (
   <div style={cardStyle}>
     <div style={labelStyle}>THOUGHT LEADERSHIP</div>
-    <motion.h3 variants={contentVariants} style={{ fontSize: '1.75rem', fontWeight: 400, color: '#111', lineHeight: 1.3, margin: '0 0 1.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+    <h3 style={{ fontSize: '1.75rem', fontWeight: 400, color: '#111', lineHeight: 1.3, margin: '0 0 1.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
       YOU DON'T NEED<br/>MORE MOTIVATION.
-    </motion.h3>
-    <motion.p variants={contentVariants} style={{ color: '#666', fontSize: '1.1rem', margin: '0 0 3.5rem 0', lineHeight: 1.6, fontWeight: 400 }}>
+    </h3>
+    <p style={{ color: '#666', fontSize: '1.1rem', margin: '0 0 3.5rem 0', lineHeight: 1.6, fontWeight: 400 }}>
       You need a system you can follow on the days motivation disappears.
-    </motion.p>
-    <motion.div variants={contentVariants} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
+    </p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
       {[
         { step: '01', name: 'Make it smaller' },
         { step: '02', name: 'Make it repeatable' },
@@ -228,10 +204,10 @@ const ThoughtLeadershipPreview = () => (
           <span>{item.name}</span>
         </div>
       ))}
-    </motion.div>
-    <motion.div variants={contentVariants} style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    </div>
+    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       3 ways to build one <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
-    </motion.div>
+    </div>
   </div>
 );
 
@@ -295,17 +271,6 @@ const NicheButton = ({ niche, isActive, onClick }: { niche: NicheData, isActive:
 export default function UseCases() {
   const [activeNiche, setActiveNiche] = useState(niches[0].id);
 
-  // Auto-rotate through niches, but setting state directly resets the timer automatically because of the dependency array.
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveNiche(current => {
-        const currentIndex = niches.findIndex(n => n.id === current);
-        const nextIndex = (currentIndex + 1) % niches.length;
-        return niches[nextIndex].id;
-      });
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [activeNiche]);
 
   const currentNiche = niches.find(n => n.id === activeNiche) || niches[0];
   const ActivePreview = PreviewComponents[activeNiche] || ReelPreview;
@@ -357,29 +322,23 @@ export default function UseCases() {
 
 
              <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-               <AnimatePresence mode="wait">
-                 <motion.div
+                                <div
                    key={activeNiche}
-                   variants={previewVariants}
-                   initial="hidden"
-                   animate="show"
-                   exit="exit"
-                   style={{ width: '100%', maxWidth: '380px', display: 'flex', flexDirection: 'column' }}
+                           style={{ width: '100%', maxWidth: '380px', display: 'flex', flexDirection: 'column' }}
                  >
                    
                    <ActivePreview />
 
-                   <motion.div variants={contentVariants} style={{ marginTop: '3rem', textAlign: 'center' }}>
+                   <div style={{ marginTop: '3rem', textAlign: 'center' }}>
                      <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 500, color: '#111', margin: '0 0 0.5rem 0' }}>
                        {currentNiche.label}
                      </h4>
                      <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.95rem', color: '#666', margin: 0, lineHeight: 1.6 }}>
                        {currentNiche.description}
                      </p>
-                   </motion.div>
+                   </div>
                    
-                 </motion.div>
-               </AnimatePresence>
+                 </div>
              </div>
              
           </div>

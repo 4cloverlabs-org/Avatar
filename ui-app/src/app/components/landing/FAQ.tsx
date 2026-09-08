@@ -16,7 +16,18 @@ export default function FAQ() {
   ];
 
   return (
-    <section id="faq" className="editorial-section" style={{ background: 'transparent', color: '#000000' }}>
+    <section id="faq" className="editorial-section" style={{ position: 'relative', background: 'transparent', color: '#000000', zIndex: 1 }}>
+      <div style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        height: '150%',
+        background: 'radial-gradient(ellipse 90% 100% at 0% 100%, rgba(248, 197, 162, 1) 0%, rgba(248, 197, 162, 0) 90%), radial-gradient(ellipse 90% 100% at 100% 100%, rgba(125, 211, 252, 1) 0%, rgba(125, 211, 252, 0) 90%)',
+        zIndex: -1,
+        pointerEvents: 'none',
+        opacity: 0.8
+      }} />
       <div className="grid-container">
         <div className="col-5 mb-4" style={{ paddingRight: '2rem' }}>
           <h2 className="editorial-h2" style={{ color: '#000000', textAlign: 'left', lineHeight: '1.1' }}>
