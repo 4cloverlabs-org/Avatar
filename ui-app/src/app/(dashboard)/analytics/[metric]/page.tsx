@@ -332,7 +332,7 @@ export default function DeepAnalysisPage() {
                   ))}
                 </Pie>
                 <RechartsTooltip 
-                  formatter={(value: number) => [
+                  formatter={(value: any) => [
                     metric === 'engagement' ? `${(value/chartData.length).toFixed(1)}%` : value.toLocaleString(), 
                     'Total'
                   ]}

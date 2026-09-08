@@ -16,7 +16,7 @@ export default function FAQ() {
   ];
 
   return (
-    <section id="faq" className="editorial-section" style={{ position: 'relative', background: 'transparent', color: '#000000', zIndex: 1 }}>
+    <section id="faq" className="editorial-section" style={{ position: 'relative', background: 'transparent', color: '#000000', zIndex: 1, paddingTop: '60px' }}>
       <div style={{
         position: 'absolute',
         bottom: 0,

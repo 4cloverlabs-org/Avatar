@@ -218,7 +218,7 @@ export default function PlatformDeepDivePage() {
               <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dx={-10} tickFormatter={(v) => `${(v/1000).toFixed(1)}k`} />
               <Tooltip 
                 contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)' }}
-                formatter={(value: number) => [value.toLocaleString(), 'Followers']}
+                formatter={(value: any) => [value.toLocaleString(), 'Followers']}
               />
               <Area type="monotone" dataKey="followers" stroke={config.color} strokeWidth={3} fillOpacity={1} fill="url(#colorFollowers)" />
             </AreaChart>
@@ -252,7 +252,7 @@ export default function PlatformDeepDivePage() {
                     ))}
                   </Pie>
                   <Tooltip 
-                    formatter={(value: number) => [`${value}%`, 'Audience']}
+                    formatter={(value: any) => [`${value}%`, 'Audience']}
                     contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)' }}
                   />
                 </PieChart>
@@ -283,7 +283,7 @@ export default function PlatformDeepDivePage() {
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
                 <XAxis type="number" hide />
                 <YAxis dataKey="country" type="category" axisLine={false} tickLine={false} tick={{ fill: '#475569', fontSize: 12, fontWeight: 500 }} />
-                <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} formatter={(v: number) => [`${v}%`, 'Audience']} />
+                <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} formatter={(v: any) => [`${v}%`, 'Audience']} />
                 <Bar dataKey="percentage" fill={config.color} radius={[0, 4, 4, 0]} barSize={16} />
               </BarChart>
             </ResponsiveContainer>
@@ -306,7 +306,7 @@ export default function PlatformDeepDivePage() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dx={-10} />
-                <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} formatter={(v: number) => [`${v}%`, 'Engagement Potential']} />
+                <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} formatter={(v: any) => [`${v}%`, 'Engagement Potential']} />
                 <Bar dataKey="engagement" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={32}>
                   {timeToPostData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.engagement > 70 ? config.color : '#cbd5e1'} />

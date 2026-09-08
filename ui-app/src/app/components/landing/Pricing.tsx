@@ -73,7 +73,7 @@ export default function Pricing() {
 
 
   return (
-    <section className="editorial-section grid-container" id="pricing" style={{ paddingBottom: '20vh' }}>
+    <section className="editorial-section grid-container" id="pricing" style={{ paddingTop: '60px', paddingBottom: '20vh' }}>
       <div className="col-12 mb-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h2 className="editorial-h2" style={{ textAlign: 'center' }}>Simple Pricing</h2>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', backgroundColor: '#E5E7EB', padding: '0.25rem', borderRadius: '100px', marginTop: '1rem' }}>

@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       userId                          // strategy_user_input
     ]);
 
-    const resultData = JSON.parse(result.data[0]);
+    const resultData = JSON.parse((result.data as any[])[0]);
 
     if (!resultData.success) {
       throw new Error(resultData.error);
