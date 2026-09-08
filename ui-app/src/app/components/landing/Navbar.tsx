@@ -38,7 +38,7 @@ export default function Navbar() {
           pointerEvents: 'auto'
         }}
       >
-        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', color: 'var(--text-main)', fontSize: '1.25rem', fontWeight: 600, fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none', color: 'var(--text-main)', fontSize: '1.4rem', fontWeight: 600, fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, fill: 'var(--text-main)', stroke: 'none' }}>
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" fill="none" />
           </svg>
@@ -46,18 +46,21 @@ export default function Navbar() {
         </Link>
 
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-          <Link href="#features" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Features</Link>
+          <Link href="#features" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>
+            Features
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px', opacity: 0.5 }}><path d="M6 9l6 6 6-6" /></svg>
+          </Link>
           <Link href="#solutions" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Solutions</Link>
           <Link href="#use-cases" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Use cases</Link>
           <Link href="#pricing" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Pricing</Link>
-          <Link href="#resources" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Resources</Link>
+          <Link href="#resources" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>
+            Resources
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px', opacity: 0.5 }}><path d="M6 9l6 6 6-6" /></svg>
+          </Link>
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <Link href="/login" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1rem', borderRadius: '100px', transition: 'background-color 0.2s' }} className="hover-bg-subtle">
-            Log in
-          </Link>
-          <Link href="/signup" style={{ textDecoration: 'none', background: 'transparent', color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1.25rem', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.15)', transition: 'background-color 0.2s' }}>
+          <Link href="/signup" style={{ textDecoration: 'none', background: 'transparent', color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1.25rem', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.4)', transition: 'background-color 0.2s' }}>
             Sign up
           </Link>
         </div>
