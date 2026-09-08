@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 export default function Pricing() {
   const [isYearly, setIsYearly] = useState(true);
@@ -71,68 +70,7 @@ export default function Pricing() {
     }
   ];
 
-  const wrapperVariants: Variants = {
-    rest: { 
-      y: 0,
-      filter: "drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.05))"
-    },
-    hover: { 
-      y: -8, 
-      filter: "drop-shadow(0px 20px 30px rgba(0, 0, 0, 0.12))",
-      transition: { type: "spring", stiffness: 300, damping: 20 } 
-    }
-  };
 
-  const topAreaVariants: Variants = {
-    rest: {
-      backgroundColor: "#E4E6EA",
-      borderBottomColor: "#E5E7EB",
-      color: "#000000",
-      borderBottomLeftRadius: "24px",
-      borderBottomRightRadius: "24px"
-    },
-    hover: {
-      backgroundColor: "#F9FAFB",
-      borderBottomColor: "rgba(249, 250, 251, 0)", // make border transparent so bottom card shows through
-      color: "#000000",
-      borderBottomLeftRadius: "0px",
-      borderBottomRightRadius: "0px"
-    }
-  };
-
-  const buttonVariants: Variants = {
-    rest: {
-      backgroundColor: "#000000",
-      color: "#FFFFFF",
-      scale: 1
-    },
-    hover: {
-      backgroundColor: "#000000",
-      color: "#FFFFFF",
-      scale: 1.02
-    }
-  };
-
-  const slipVariants: Variants = {
-    rest: {
-      top: "0%",
-      y: 0,
-      opacity: 0,
-      rotate: 0,
-      borderTopLeftRadius: "24px",
-      borderTopRightRadius: "24px",
-      transition: { type: "spring", stiffness: 300, damping: 25 }
-    },
-    hover: {
-      top: "100%",
-      y: -2, // slide slightly under the transparent border to seal any subpixel gap
-      opacity: 1,
-      rotate: 0,
-      borderTopLeftRadius: "0px",
-      borderTopRightRadius: "0px",
-      transition: { type: "spring", stiffness: 300, damping: 25 }
-    }
-  };
 
   return (
     <section className="editorial-section grid-container" id="pricing" style={{ paddingBottom: '20vh' }}>
@@ -148,18 +86,16 @@ export default function Pricing() {
       </div>
 
       {plans.map((plan, i) => (
-        <motion.div 
+        <div 
           key={plan.name}
           className="col-3"
-          initial="rest"
-          whileHover="hover"
-          animate="rest"
-          variants={wrapperVariants}
           style={{ 
             display: 'flex', 
             flexDirection: 'column', 
             position: 'relative',
-            zIndex: plan.highlight ? 10 : 1
+            zIndex: plan.highlight ? 10 : 1,
+            filter: "drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.05))",
+            height: '100%'
           }}
         >
           {plan.tag && (
@@ -169,8 +105,7 @@ export default function Pricing() {
           )}
 
           {/* Top Card Area (Ticket) */}
-          <motion.div 
-            variants={topAreaVariants}
+          <div 
             style={{ 
               padding: '2rem', 
               borderBottomWidth: '1px',
@@ -180,8 +115,12 @@ export default function Pricing() {
               gap: '1rem',
               borderTopLeftRadius: '24px',
               borderTopRightRadius: '24px',
+              borderBottomLeftRadius: '0px',
+              borderBottomRightRadius: '0px',
               position: 'relative',
-              height: '100%',
+              backgroundColor: '#F9FAFB',
+              borderBottomColor: 'rgba(249, 250, 251, 0)',
+              color: '#000000',
               zIndex: 2
             }}>
             <div>
@@ -194,27 +133,18 @@ export default function Pricing() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px' }}>
-              <AnimatePresence mode="popLayout">
-                <motion.span 
-                  key={isYearly ? 'yearly' : 'monthly'}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="editorial-h2" 
-                  style={{ fontSize: plan.monthlyPrice === "Custom" ? '2.5rem' : '3.5rem', lineHeight: 1, margin: 0 }}
-                >
-                  {plan.monthlyPrice !== "Custom" ? "$" : ""}{isYearly ? plan.yearlyPrice : plan.monthlyPrice}
-                </motion.span>
-              </AnimatePresence>
+              <span 
+                className="editorial-h2" 
+                style={{ fontSize: plan.monthlyPrice === "Custom" ? '2.5rem' : '3.5rem', lineHeight: 1, margin: 0 }}
+              >
+                {plan.monthlyPrice !== "Custom" ? "$" : ""}{isYearly ? plan.yearlyPrice : plan.monthlyPrice}
+              </span>
               {plan.monthlyPrice !== "Custom" && (
                 <span style={{ fontSize: '1rem', opacity: 0.7, marginBottom: '6px' }}>/mo</span>
               )}
             </div>
 
-            <motion.button 
-              variants={buttonVariants}
-              whileTap={{ scale: 0.98 }}
+            <button 
               style={{ 
                 width: '100%', 
                 padding: '0.875rem', 
@@ -223,29 +153,31 @@ export default function Pricing() {
                 fontWeight: 600,
                 fontSize: '1rem',
                 cursor: 'pointer',
-                marginTop: 'auto'
+                marginTop: 'auto',
+                backgroundColor: '#000000',
+                color: '#FFFFFF'
               }}
             >
               {plan.ctaText}
-            </motion.button>
-          </motion.div>
+            </button>
+          </div>
 
           {/* Bottom Card Area (Slip / Features) */}
-          <motion.div 
-            variants={slipVariants}
+          <div 
             style={{ 
-              position: 'absolute',
-              left: 0,
               width: '100%',
               padding: '2rem', 
-              paddingTop: '3rem',
+              paddingTop: '1rem',
               backgroundColor: '#F9FAFB',
               color: '#000000',
               borderBottomLeftRadius: '24px',
               borderBottomRightRadius: '24px',
+              borderTopLeftRadius: '0px',
+              borderTopRightRadius: '0px',
               zIndex: 1,
               display: 'flex', 
-              flexDirection: 'column' 
+              flexDirection: 'column',
+              flex: 1
             }}>
             <ul className="mono-text" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem', opacity: 0.9 }}>
               {plan.features.map((feature, idx) => {
@@ -267,8 +199,8 @@ export default function Pricing() {
                 );
               })}
             </ul>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       ))}
     </section>
   );

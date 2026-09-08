@@ -40,172 +40,15 @@ const ConnectedStatus = () => (
    </span>
 );
 
-const PipelineCard = ({ label, desc, activeDesc, isActive, isDone }: { label: string, desc: string, activeDesc: string, isActive: boolean, isDone: boolean }) => {
-   const isPublish = label === 'PUBLISH';
-   const isVideo = label === 'VIDEO';
-
-   return (
-      <motion.div
-         animate={{
-            backgroundColor: isActive ? '#ffffff' : (isDone ? 'rgba(255,255,255,0.6)' : 'rgba(250,250,250,0.4)'),
-            borderColor: isActive ? 'rgba(16, 185, 129, 0.4)' : (isDone ? 'rgba(0,0,0,0.05)' : 'rgba(0,0,0,0.02)'),
-            scale: isActive ? 1.02 : 1,
-            y: isActive ? -4 : 0,
-            boxShadow: isActive ? '0 10px 25px -5px rgba(16, 185, 129, 0.15)' : 'none'
-         }}
-         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-         style={{
-            height: '86px',
-            borderRadius: '16px',
-            border: '1px solid',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            padding: '0 1.25rem',
-            position: 'relative',
-            width: '100%',
-            minWidth: '150px',
-            boxSizing: 'border-box'
-         }}
-      >
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.08em', color: isActive ? '#10B981' : (isDone ? '#374151' : '#9CA3AF') }}>
-               {label}
-            </span>
-            {isActive && !isPublish && (
-               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                  <motion.div animate={{ height: [6, 12, 6] }} transition={{ repeat: Infinity, duration: 1 }} style={{ width: '3px', background: '#10B981', borderRadius: '3px' }} />
-                  <motion.div animate={{ height: [6, 14, 6] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} style={{ width: '3px', background: '#10B981', borderRadius: '3px' }} />
-                  <motion.div animate={{ height: [6, 10, 6] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} style={{ width: '3px', background: '#10B981', borderRadius: '3px' }} />
-               </motion.div>
-            )}
-            {isDone && !isActive && (
-               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ color: '#10B981' }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-               </motion.div>
-            )}
-         </div>
-         <div style={{ fontSize: '0.85rem', fontWeight: 500, color: isActive ? '#374151' : (isDone ? '#6B7280' : '#9CA3AF'), display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{isActive ? activeDesc : desc}</span>
-            {isPublish && isActive && (
-               <motion.div initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} style={{ display: 'flex', gap: '4px' }}>
-                  <span style={{ color: '#E1306C' }}><Instagram size={14} /></span>
-                  <span style={{ color: '#FF0000' }}><Youtube size={14} /></span>
-                  <span style={{ color: '#374151' }}><TikTokIcon size={14} /></span>
-               </motion.div>
-            )}
-         </div>
-      </motion.div>
-   )
-}
-
-const AIEnginePipeline = () => {
-   const [activeStage, setActiveStage] = useState<number>(0);
-   const [isMobile, setIsMobile] = useState(false);
-
-   useEffect(() => {
-      const checkMobile = () => setIsMobile(window.innerWidth < 768);
-      checkMobile();
-      window.addEventListener('resize', checkMobile);
-      return () => window.removeEventListener('resize', checkMobile);
-   }, []);
-
-   useEffect(() => {
-      let raf: number;
-      const start = Date.now();
-      const cycleDuration = 10000;
-
-      const loop = () => {
-         const t = (Date.now() - start) % cycleDuration;
-         if (t < 2500) setActiveStage(0);
-         else if (t < 5000) setActiveStage(1);
-         else if (t < 7500) setActiveStage(2);
-         else setActiveStage(3);
-         raf = requestAnimationFrame(loop);
-      };
-      raf = requestAnimationFrame(loop);
-      return () => cancelAnimationFrame(raf);
-   }, []);
-
-   return (
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', margin: '0 auto', background: '#ffffff', borderRadius: '24px', padding: '2.5rem', boxSizing: 'border-box', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)' }}>
-         {/* Header */}
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-               <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: '#FAFAFA', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-               </div>
-               <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <span style={{ fontSize: '1.1rem', fontWeight: 700, letterSpacing: '-0.02em', color: '#374151' }}>AI CONTENT ENGINE</span>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#6B7280' }}>Automated Production Pipeline</span>
-               </div>
-            </div>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '100px', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
-               <motion.div
-                  animate={{ opacity: [1, 0.5, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981' }}
-               />
-               <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10B981', letterSpacing: '0.05em' }}>ACTIVE</span>
-            </div>
-         </div>
-
-         {/* Pipeline Container */}
-         <div style={{ position: 'relative', width: '100%', margin: '0 auto' }}>
-            {isMobile ? (
-               <div style={{ display: 'flex', gap: '20px', position: 'relative' }}>
-                  <div style={{ position: 'absolute', top: '43px', bottom: '43px', left: '10px', width: '2px', backgroundColor: '#F3F4F6', transform: 'translateX(-50%)' }} />
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1, paddingLeft: '24px' }}>
-                     <PipelineCard label="IDEA" desc="Finding next topic" activeDesc="Generating idea..." isActive={activeStage === 0} isDone={activeStage > 0} />
-                     <PipelineCard label="SCRIPT" desc="Writing hook + script" activeDesc="Writing script..." isActive={activeStage === 1} isDone={activeStage > 1} />
-                     <PipelineCard label="VIDEO" desc="Generating avatar video" activeDesc="Generating video" isActive={activeStage === 2} isDone={activeStage > 2} />
-                     <PipelineCard label="PUBLISH" desc="Publishing everywhere" activeDesc="Publishing everywhere" isActive={activeStage === 3} isDone={false} />
-                  </div>
-               </div>
-            ) : (
-               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  {/* Background Track */}
-                  <div style={{ position: 'absolute', top: '50%', left: '12%', right: '12%', height: '2px', backgroundColor: '#F3F4F6', borderRadius: '2px', transform: 'translateY(-50%)', zIndex: 0 }} />
-                  
-                  {/* Animated Progress Track */}
-                  <motion.div 
-                     style={{ position: 'absolute', top: '50%', left: '12%', height: '2px', background: '#10B981', borderRadius: '2px', transform: 'translateY(-50%)', zIndex: 1 }}
-                     animate={{ width: `${(activeStage / 3) * 76}%` }}
-                     transition={{ type: 'spring', stiffness: 50, damping: 15 }}
-                  />
-
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', width: '100%', zIndex: 10 }}>
-                     <PipelineCard label="IDEA" desc="Finding next topic" activeDesc="Generating idea..." isActive={activeStage === 0} isDone={activeStage > 0} />
-                     <PipelineCard label="SCRIPT" desc="Writing hook + script" activeDesc="Writing hook + script" isActive={activeStage === 1} isDone={activeStage > 1} />
-                     <PipelineCard label="VIDEO" desc="Generating video" activeDesc="Generating video" isActive={activeStage === 2} isDone={activeStage > 2} />
-                     <PipelineCard label="PUBLISH" desc="Publishing everywhere" activeDesc="Publishing everywhere" isActive={activeStage === 3} isDone={false} />
-                  </div>
-               </div>
-            )}
-         </div>
-
-         {/* Footer */}
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #F3F4F6' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-               <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6B7280', letterSpacing: '0.05em' }}>NEXT RUN</span>
-            </div>
-            <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#374151', background: '#FAFAFA', padding: '6px 14px', borderRadius: '8px', border: '1px solid #F0F0F0' }}>Today · 9:00 AM</span>
-         </div>
-      </div>
-   );
-}
-
 const ContentTimeline = ({ settingsVariants }: { settingsVariants: any }) => {
    const [hoveredWeek, setHoveredWeek] = useState<number | null>(2); // Default hover on 3rd node (Aug 18)
 
    const timelineData = [
-      { label: 'Aug 04', count: 5 },
-      { label: 'Aug 11', count: 4 },
-      { label: 'Aug 18', count: 7 },
-      { label: 'Aug 25', count: 6 },
-      { label: 'Sep 01', count: 3 },
+      { label: 'Aug 04', count: 5, showLabel: true },
+      { label: 'Aug 11', count: 4, showLabel: false },
+      { label: 'Aug 18', count: 7, showLabel: true },
+      { label: 'Aug 25', count: 6, showLabel: false },
+      { label: 'Sep 01', count: 3, showLabel: true },
    ];
 
    const maxCount = 8; 
@@ -219,24 +62,24 @@ const ContentTimeline = ({ settingsVariants }: { settingsVariants: any }) => {
          style={{ 
             background: '#ffffff', 
             borderRadius: '24px', 
-            padding: '2rem 2.5rem', 
+            padding: '0.5rem', 
             width: '100%', 
             boxSizing: 'border-box', 
             boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', 
             display: 'flex',
-            flexDirection: 'column',
-            gap: '2rem'
+            flexDirection: 'column'
          }}
       >
-         {/* Header Row */}
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-               <span style={{ fontSize: '1.25rem', fontWeight: 600, color: '#111827' }}>Content Activity</span>
+         {/* Header Tabs */}
+         <div style={{ display: 'flex', borderBottom: '1px solid rgba(0,0,0,0.06)', position: 'relative', margin: '0 0.5rem' }}>
+            <div style={{ padding: '1rem 0.5rem', fontSize: '0.95rem', fontWeight: 600, color: '#000' }}>Content Activity</div>
+            <div style={{ marginLeft: 'auto', padding: '1rem 0.5rem', display: 'flex', alignItems: 'center' }}>
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
             </div>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+            <div style={{ position: 'absolute', bottom: -1, left: 0, height: '2px', width: '45%', background: '#000' }} />
          </div>
 
+         <div style={{ padding: '1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
          {/* Stats Row */}
          <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '4rem' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -345,6 +188,8 @@ const ContentTimeline = ({ settingsVariants }: { settingsVariants: any }) => {
             {/* X-Axis Labels */}
             <div style={{ position: 'absolute', bottom: '-30px', left: 0, right: 0, height: '20px' }}>
                {timelineData.map((period, i) => {
+                  if (!period.showLabel) return null;
+
                   const isHovered = hoveredWeek === i;
                   const leftPos = (i / (timelineData.length - 1)) * 100;
                   // First label aligns left edge, last label aligns right edge, middle labels center
@@ -369,6 +214,7 @@ const ContentTimeline = ({ settingsVariants }: { settingsVariants: any }) => {
                   )
                })}
             </div>
+         </div>
          </div>
       </motion.div>
    );
@@ -414,85 +260,27 @@ export default function AutopilotSection() {
                </p>
             </div>
 
-            {/* Level 2 - AI Content Engine */}
-            <AIEnginePipeline />
-
             {/* Level 3 - Configuration */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', width: '100%', alignItems: 'stretch' }}>
 
-               {/* Left Panel: Automation (Tasks Style) */}
+               {/* Left Panel: Connected Platforms (Orbital) */}
                <motion.div
                   variants={containerVariants}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, margin: "-100px" }}
-                  style={{ display: 'flex', flexDirection: 'column', background: '#ffffff', borderRadius: '24px', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', overflow: 'hidden', padding: '0.5rem' }}
+                  style={{ display: 'flex', flexDirection: 'column', background: '#ffffff', borderRadius: '24px', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', padding: '0.5rem', position: 'relative', overflow: 'hidden' }}
                >
                   {/* Header Tabs */}
-                  <div style={{ display: 'flex', borderBottom: '1px solid rgba(0,0,0,0.06)', position: 'relative', margin: '0 0.5rem' }}>
-                     <div style={{ padding: '1rem 0.5rem', fontSize: '0.95rem', fontWeight: 600, color: '#000' }}>Select Your Niche</div>                     <div style={{ marginLeft: 'auto', padding: '1rem 0.5rem', fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        4 / 4 DEFINED
+                  <div style={{ display: 'flex', borderBottom: '1px solid rgba(0,0,0,0.06)', position: 'relative', margin: '0 0.5rem', zIndex: 10 }}>
+                     <div style={{ padding: '1rem 0.5rem', fontSize: '0.95rem', fontWeight: 600, color: '#000' }}>Connections</div>
+                     <div style={{ marginLeft: 'auto', padding: '1rem 0.5rem', display: 'flex', alignItems: 'center' }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
                      </div>
                      <div style={{ position: 'absolute', bottom: -1, left: 0, height: '2px', width: '45%', background: '#000' }} />
                   </div>
 
-                  {/* Settings List */}
-                  <div style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.75rem', flex: 1, minHeight: '200px' }}>
-                     
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Primary Niche</span>
-                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Select Niche</span>
-                        </div>
-                     </div>
-
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Campaign Duration</span>
-                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Ongoing</span>
-                        </div>
-                     </div>
-
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Content Style</span>
-                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Educational</span>
-                        </div>
-                     </div>
-
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
-                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Upload Frequency</span>
-                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Daily</span>
-                        </div>
-                     </div>
-                  </div>
-
-
-               </motion.div>
-
-               {/* Center Panel: Connected Platforms (Orbital) */}
-               <motion.div
-                  variants={containerVariants}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, margin: "-100px" }}
-                  style={{ display: 'flex', flexDirection: 'column', background: '#ffffff', borderRadius: '24px', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', padding: '1.5rem', position: 'relative', overflow: 'hidden', alignItems: 'center', justifyContent: 'center' }}
-               >
-                  <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', fontSize: '0.95rem', fontWeight: 600, color: '#000' }}>Connections</div>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1rem', position: 'relative' }}>
                   
                   {/* Subtle Background Pattern */}
                   <div style={{ position: 'absolute', top: 20, right: 20, display: 'grid', gridTemplateColumns: 'repeat(3, 4px)', gap: '6px', opacity: 0.3 }}>
@@ -564,6 +352,70 @@ export default function AutopilotSection() {
                      </div>
 
                   </div>
+                  </div>
+               </motion.div>
+
+               {/* Center Panel: Automation (Tasks Style) */}
+               <motion.div
+                  variants={containerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  style={{ display: 'flex', flexDirection: 'column', background: '#ffffff', borderRadius: '24px', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.05)', overflow: 'hidden', padding: '0.5rem' }}
+               >
+                  {/* Header Tabs */}
+                  <div style={{ display: 'flex', borderBottom: '1px solid rgba(0,0,0,0.06)', position: 'relative', margin: '0 0.5rem' }}>
+                     <div style={{ padding: '1rem 0.5rem', fontSize: '0.95rem', fontWeight: 600, color: '#000' }}>Select Your Niche</div>                     <div style={{ marginLeft: 'auto', padding: '1rem 0.5rem', display: 'flex', alignItems: 'center' }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+                     </div>
+                     <div style={{ position: 'absolute', bottom: -1, left: 0, height: '2px', width: '45%', background: '#000' }} />
+                  </div>
+
+                  {/* Settings List */}
+                  <div style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.75rem', flex: 1, minHeight: '200px' }}>
+                     
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Primary Niche</span>
+                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Select Niche</span>
+                        </div>
+                     </div>
+
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Campaign Duration</span>
+                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Ongoing</span>
+                        </div>
+                     </div>
+
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Content Style</span>
+                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Educational</span>
+                        </div>
+                     </div>
+
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FAFAFA', border: '1px solid #F0F0F0', padding: '1rem 1.25rem', borderRadius: '16px' }}>
+                        <div style={{ width: '22px', height: '22px', borderRadius: '6px', background: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                           <span style={{ fontSize: '0.9rem', fontWeight: 600, color: '#111827' }}>Upload Frequency</span>
+                           <span style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 500 }}>Daily</span>
+                        </div>
+                     </div>
+                  </div>
+
+
                </motion.div>
 
                {/* Right Panel: Content Timeline */}

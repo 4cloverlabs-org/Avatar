@@ -28,20 +28,20 @@ export default function HowItWorks() {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {[
               { 
-                title: "Face Mapping", 
-                desc: "Advanced 468-point tracking captures your unique geometry, mapping every detail in 3D space." 
+                title: "Avatar Creation", 
+                desc: "Advanced AI models capture your unique facial geometry, mapping every detail in 3D space." 
               },
               { 
-                title: "Voice Cloning", 
+                title: "Voice Clone", 
                 desc: "Our neural networks recreate your exact tone and cadence from just 60 seconds of audio." 
               },
               { 
-                title: "Expression Sync", 
-                desc: "Subtle micro-expressions are matched frame-by-frame to deliver a photorealistic performance." 
+                title: "Exact Clone", 
+                desc: "Using both your visual and vocal identity, we generate an exact digital clone of you." 
               },
               { 
-                title: "Motion Capture", 
-                desc: "We preserve your natural body language—head tilts, blinks, and gestures—so your avatar feels alive." 
+                title: "Ready to Create", 
+                desc: "Your AI avatar is now ready to produce photorealistic content on autopilot 24/7." 
               }
             ].map((feature, i) => (
               <motion.div 

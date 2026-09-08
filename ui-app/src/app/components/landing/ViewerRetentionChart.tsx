@@ -1,113 +1,102 @@
 "use client";
 
 import React from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
-  const reducedMotion = useReducedMotion();
-
-  const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-  // Adjusted values to visually match the steps in the provided image
-  const points = [55, 65, 60, 95, 85, 55];
+  const labels = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const points = [3.5, 2.1, 4.99, 4.99, 5.6, 5.6, 5.6]; // Corresponding to 1M to 6M scale
 
   // Layout dimensions
   const width = 600;
   const height = 280;
   const paddingLeft = 45;
   const paddingRight = 20;
-  const paddingTop = 60; // Extra room for the badge
-  const paddingBottom = 30; // Room for x-axis
+  const paddingTop = 60;
+  const paddingBottom = 30;
 
   const effectiveWidth = width - paddingLeft - paddingRight;
   const effectiveHeight = height - paddingTop - paddingBottom;
-
   const stepWidth = effectiveWidth / (labels.length - 1);
 
   let pathD = "";
-  let areaD = "";
-  const circles: { cx: number; cy: number; isTopStart: boolean }[] = [];
+  let areaDHatched = "";
+  let areaDSolid = "";
+  const circles: { cx: number; cy: number; isTooltip: boolean }[] = [];
 
-  // Highest point for badge - in image it's Apr (index 3)
-  const highestIndex = 3;
-  const highestX = paddingLeft + highestIndex * stepWidth;
-  const highestY = height - paddingBottom - (points[highestIndex] / 100) * effectiveHeight;
+  const tooltipIndex = 2; // Monday
+  const tooltipX = paddingLeft + tooltipIndex * stepWidth;
+  const tooltipY = height - paddingBottom - (points[tooltipIndex] / 6) * effectiveHeight;
 
   for (let i = 0; i < points.length; i++) {
-    const xStart = paddingLeft + i * stepWidth;
-    // The horizontal segment goes to the next X coordinate
-    const xEnd = paddingLeft + Math.min(i + 1, points.length - 1) * stepWidth;
-    const y = height - paddingBottom - (points[i] / 100) * effectiveHeight;
+    const x = paddingLeft + i * stepWidth;
+    const y = height - paddingBottom - (points[i] / 6) * effectiveHeight;
 
     if (i === 0) {
-      pathD += `M ${xStart} ${y}`;
-      areaD += `M ${xStart} ${height - paddingBottom} L ${xStart} ${y}`;
+      pathD += `M ${x} ${y}`;
     } else {
-      // Draw vertical step up/down from previous horizontal segment
-      const prevY = height - paddingBottom - (points[i - 1] / 100) * effectiveHeight;
-      pathD += ` L ${xStart} ${prevY} L ${xStart} ${y}`;
-      areaD += ` L ${xStart} ${prevY} L ${xStart} ${y}`;
+      pathD += ` L ${x} ${y}`;
     }
 
-    // Draw horizontal segment
-    if (i < points.length - 1) {
-      pathD += ` L ${xEnd} ${y}`;
-      areaD += ` L ${xEnd} ${y}`;
+    if (i <= tooltipIndex) {
+      if (i === 0) {
+        areaDHatched += `M ${x} ${height - paddingBottom} L ${x} ${y}`;
+      } else {
+        areaDHatched += ` L ${x} ${y}`;
+      }
+    }
+    
+    if (i >= tooltipIndex) {
+      if (i === tooltipIndex) {
+        areaDSolid += `M ${x} ${height - paddingBottom} L ${x} ${y}`;
+      } else {
+        areaDSolid += ` L ${x} ${y}`;
+      }
     }
 
-    // Add start circle for this segment
-    circles.push({ cx: xStart, cy: y, isTopStart: i === highestIndex });
-
-    // Add end circle for this segment, unless it's the very last point
-    if (i < points.length - 1) {
-      circles.push({ cx: xEnd, cy: y, isTopStart: false });
-    }
+    circles.push({ cx: x, cy: y, isTooltip: i === tooltipIndex });
   }
 
-  areaD += ` L ${paddingLeft + (points.length - 1) * stepWidth} ${height - paddingBottom} Z`;
+  areaDHatched += ` L ${tooltipX} ${height - paddingBottom} Z`;
+  areaDSolid += ` L ${paddingLeft + (points.length - 1) * stepWidth} ${height - paddingBottom} Z`;
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: '340px', display: 'flex', flexDirection: 'column', fontFamily: 'var(--font-body, sans-serif)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', padding: '0 24px' }}>
+        <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 500, color: '#111827' }}>User Statistics</h3>
+        <button style={{ 
+          display: 'flex', alignItems: 'center', gap: '8px', 
+          padding: '6px 12px', borderRadius: '6px', 
+          border: '1px solid #E5E7EB', backgroundColor: '#FFFFFF',
+          fontSize: '0.875rem', color: '#4B5563', cursor: 'pointer'
+        }}>
+          Last 7 Days
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
 
-      <div style={{
-        flex: 1,
-        position: 'relative',
-        width: '100%',
-        padding: '16px 0',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-
-        {/* Top Text inside container like the image */}
-        <div style={{ marginBottom: '0.5rem', padding: '0 24px' }}>
-          <h3 style={{ margin: 0, fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)', fontFamily: 'var(--font-heading, sans-serif)' }}>% Retained</h3>
-        </div>
-
-        <div style={{ flex: 1, position: 'relative' }}>
+      <div style={{ flex: 1, position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 0 }}>
+        <div style={{ position: 'relative', width: '100%', maxWidth: '100%', aspectRatio: `${width} / ${height}` }}>
           <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
             <defs>
-              <linearGradient id="line-grad" x1={paddingLeft} y1="0" x2={width - paddingRight} y2="0" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#3B82F6" />
-                <stop offset="50%" stopColor="#8B5CF6" />
-                <stop offset="100%" stopColor="#D946EF" />
+              <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="10" height="10">
+                <path d="M-2,2 l4,-4 M0,10 l10,-10 M8,12 l4,-4" stroke="#E5E7EB" strokeWidth="1.5" />
+              </pattern>
+              <linearGradient id="solidArea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.12" />
+                <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.01" />
               </linearGradient>
-              <linearGradient id="mask-grad" x1="0" y1={paddingTop} x2="0" y2={height - paddingBottom} gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
-              </linearGradient>
-              <mask id="fade-mask">
-                <rect x="0" y="0" width={width} height={height} fill="url(#mask-grad)" />
-              </mask>
             </defs>
 
             {/* Gridlines & Y-Axis */}
-            {[0, 25, 50, 75, 100].map((val, i) => {
-              const y = height - paddingBottom - (val / 100) * effectiveHeight;
+            {[1, 2, 3, 4, 5, 6].map((val, i) => {
+              const y = height - paddingBottom - (val / 6) * effectiveHeight;
               return (
                 <g key={`grid-${i}`}>
-                  <text x={paddingLeft - 10} y={y} fill="var(--text-muted)" fontSize="11" fontWeight="500" textAnchor="end" alignmentBaseline="middle" fontFamily="var(--font-body, sans-serif)">
-                    {val}%
+                  <text x={paddingLeft - 10} y={y} fill="#9CA3AF" fontSize="12" textAnchor="end" alignmentBaseline="middle">
+                    {val}M
                   </text>
-                  <line x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="rgba(0,0,0,0.04)" strokeWidth="1" strokeDasharray="4 4" />
+                  <line x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="#F3F4F6" strokeWidth="1" />
                 </g>
               );
             })}
@@ -118,48 +107,51 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
                 key={`x-${i}`}
                 x={paddingLeft + i * stepWidth}
                 y={height - 5}
-                fill="var(--text-muted)"
+                fill="#9CA3AF"
                 fontSize="12"
-                fontWeight="500"
                 textAnchor="middle"
-                fontFamily="var(--font-body, sans-serif)"
               >
                 {lbl}
               </text>
             ))}
+            <line x1={paddingLeft} y1={height - paddingBottom} x2={width - paddingRight} y2={height - paddingBottom} stroke="#E5E7EB" strokeWidth="1" />
 
-            {/* X-Axis bottom line */}
-            <line x1={paddingLeft} y1={height - paddingBottom} x2={width - paddingRight} y2={height - paddingBottom} stroke="rgba(0,0,0,0.08)" strokeWidth="1" />
-
-            {/* Area Fill */}
+            {/* Area Fill - Hatched */}
             <motion.path
-              d={areaD}
-              fill="url(#line-grad)"
-              mask="url(#fade-mask)"
+              d={areaDHatched}
+              fill="url(#diagonalHatch)"
               initial={{ opacity: 0 }}
               animate={inView ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ delay: 0.4, duration: 1 }}
+              transition={{ delay: 0.2, duration: 1 }}
+            />
+
+            {/* Area Fill - Solid segment */}
+            <motion.path
+              d={areaDSolid}
+              fill="url(#solidArea)"
+              initial={{ opacity: 0 }}
+              animate={inView ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ delay: 0.2, duration: 1 }}
             />
 
             {/* Stroke Line */}
             <motion.path
               d={pathD}
               fill="none"
-              stroke="url(#line-grad)"
-              strokeWidth="3"
+              stroke="#6366F1"
+              strokeWidth="2"
               strokeLinejoin="round"
               initial={{ pathLength: 0 }}
               animate={inView ? { pathLength: 1 } : { pathLength: 0 }}
               transition={{ duration: 1.5, ease: "easeInOut" }}
             />
 
-            {/* Dashed line connecting badge to point */}
+            {/* Vertical Line for Tooltip */}
             <motion.line
-              x1={highestX} y1={highestY}
-              x2={highestX} y2={paddingTop}
-              stroke="rgba(0,0,0,0.15)"
+              x1={tooltipX} y1={tooltipY}
+              x2={tooltipX} y2={height - paddingBottom}
+              stroke="#6366F1"
               strokeWidth="1.5"
-              strokeDasharray="4 4"
               initial={{ opacity: 0 }}
               animate={inView ? { opacity: 1 } : { opacity: 0 }}
               transition={{ delay: 1.5, duration: 0.4 }}
@@ -171,48 +163,67 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
                 key={`circle-${i}`}
                 cx={c.cx}
                 cy={c.cy}
-                r={c.isTopStart ? 4.5 : 3}
+                r={c.isTooltip ? 5 : 4}
                 fill="#FFFFFF"
-                stroke={c.isTopStart ? "#FF5F7E" : "url(#line-grad)"}
-                strokeWidth={c.isTopStart ? 3 : 2}
+                stroke="#6366F1"
+                strokeWidth={2}
                 initial={{ scale: 0, opacity: 0 }}
                 animate={inView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-                transition={{ delay: 1.0 + i * 0.05, duration: 0.3 }}
+                transition={{ delay: 1.0 + i * 0.1, duration: 0.3 }}
               />
             ))}
-          </svg>
 
-          {/* Floating badge for highest point */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-            transition={{ delay: 1.6, duration: 0.4 }}
-            style={{
-              position: 'absolute',
-              top: `${(paddingTop / height) * 100}%`,
-              left: `${(highestX / width) * 100}%`,
-              transform: 'translate(-50%, -100%)',
-              marginTop: '-75px',
-              zIndex: 10,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              backgroundColor: '#FFFFFF',
-              boxShadow: '0 6px 20px rgba(255, 95, 126, 0.15)',
-              padding: '10px 18px',
-              borderRadius: '12px',
-              border: '1px solid rgba(255, 95, 126, 0.15)'
-            }}
-          >
-            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#FF5F7E', lineHeight: 1, fontFamily: 'var(--font-heading, sans-serif)' }}>
-              85%
-            </div>
-            <div style={{ fontSize: '0.65rem', fontWeight: 500, color: 'var(--text-muted)', marginTop: '4px', whiteSpace: 'nowrap', fontFamily: 'var(--font-body, sans-serif)' }}>
-              Average Retention
-            </div>
-          </motion.div>
+            {/* Tooltip Embedded in SVG */}
+            <foreignObject
+              x={tooltipX - 100}
+              y={tooltipY - 100}
+              width={200}
+              height={100}
+              style={{ overflow: 'visible' }}
+            >
+              <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: '12px' }}>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                  transition={{ delay: 1.6, duration: 0.4 }}
+                  style={{
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    backgroundColor: '#FFFFFF',
+                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    border: '1px solid #E5E7EB',
+                    width: 'max-content',
+                  }}
+                >
+                  <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#111827', lineHeight: 1.2 }}>
+                    4.990K
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '2px', whiteSpace: 'nowrap' }}>
+                    Monday 18, September
+                  </div>
+                  {/* Tooltip Arrow */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-6px',
+                    left: '50%',
+                    transform: 'translateX(-50%) rotate(45deg)',
+                    width: '12px',
+                    height: '12px',
+                    backgroundColor: '#FFFFFF',
+                    borderRight: '1px solid #E5E7EB',
+                    borderBottom: '1px solid #E5E7EB',
+                  }} />
+                </motion.div>
+              </div>
+            </foreignObject>
+          </svg>
         </div>
       </div>
     </div>
   );
 }
+

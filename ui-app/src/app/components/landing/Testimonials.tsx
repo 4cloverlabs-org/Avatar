@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, PanInfo } from 'framer-motion';
+import { motion, PanInfo, AnimatePresence } from 'framer-motion';
 
 const testimonials = [
   {
@@ -42,6 +42,33 @@ const testimonials = [
     name: "Alex Rivera",
     title: "Content Creator",
     avatar: "https://i.pravatar.cc/150?u=alexr",
+  },
+  {
+    id: 5,
+    company: "StartupDaily",
+    platform: "tiktok",
+    quote: "The ability to generate personalized outreach videos for 500+ clients a day without speaking a single word has doubled our conversion rate.",
+    name: "David Chen",
+    title: "Head of Sales",
+    avatar: "https://i.pravatar.cc/150?u=davidc",
+  },
+  {
+    id: 6,
+    company: "GlobalNews",
+    platform: "youtube",
+    quote: "We now broadcast daily updates in 12 different languages using the same avatar. The translation combined with perfectly synced lip movements is unparalleled.",
+    name: "Aisha Patel",
+    title: "Media Director",
+    avatar: "https://i.pravatar.cc/150?u=aishap",
+  },
+  {
+    id: 7,
+    company: "FitnessPro",
+    platform: "instagram",
+    quote: "Being able to update my workout library by just editing text has given me so much time back. My followers can't even tell the difference.",
+    name: "Marcus Johnson",
+    title: "Fitness Coach",
+    avatar: "https://i.pravatar.cc/150?u=marcusj",
   }
 ];
 
@@ -127,189 +154,90 @@ export default function Testimonials() {
       }}>
         
         {/* Left side: Testimonials Container */}
-        <div style={{ position: 'relative', flex: '1.5', minWidth: '350px', maxWidth: '750px' }}>
-          {/* Lanyard Strap Background Layer (static) */}
-          <div style={{
-            position: 'absolute',
-            top: '-20px',
-            left: '50%',
-            transform: 'translateX(-50%) rotate(-10deg)',
-            width: '50px',
-            height: '140px',
-            background: 'linear-gradient(180deg, rgba(220,220,220,0.2) 0%, rgba(200,200,200,0.8) 100%)',
-            borderRadius: '4px',
-            zIndex: 0,
-            boxShadow: '2px 4px 10px rgba(0,0,0,0.05)'
-          }} />
-
-        <div style={{ 
-          position: 'relative', 
-          height: '600px', 
-          width: '100%', 
-          maxWidth: '750px', 
-          margin: '40px auto 0', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          perspective: '1000px',
-          zIndex: 10
-        }}>
-          {cards.map((testimonial, index) => {
-            const isFront = index === 0;
-            
-            // Framer component logic
-            const scaleStep = 0.06;
-            const dimStep = 0.15;
-            
-            const scale = 1 - index * scaleStep;
-            const brightness = Math.max(0.1, 1 - index * dimStep);
-            const baseZ = cards.length - index;
-            const yOffset = index * -25; // Negative offset to shift back cards up
-            
-            const spring = { type: "spring" as const, stiffness: 170, damping: 26 };
-
-            return (
-              <motion.div
-                key={testimonial.id}
-                style={{
-                  position: 'absolute',
-                  top: '100px', // Shifted down a bit so the top-stacked cards don't clip the lanyard too much
-                  width: '100%',
-                  maxWidth: '680px',
-                  backgroundColor: '#ffffff',
-                  borderRadius: '16px',
-                  boxShadow: index === 0 
-                    ? '0 20px 40px -10px rgba(0,0,0,0.1), 0 0 1px rgba(0,0,0,0.1)' 
-                    : '0 4px 10px rgba(0,0,0,0.05), 0 0 1px rgba(0,0,0,0.1)',
-                  padding: '44px 56px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '440px',
-                  cursor: isFront ? 'grab' : 'auto',
-                  boxSizing: 'border-box'
-                }}
-                onHoverStart={() => setIsHovered(true)}
-                onHoverEnd={() => setIsHovered(false)}
-                drag={isFront ? "y" : false}
-                dragConstraints={{ top: 0, bottom: 0 }}
-                dragMomentum={false}
-                onDragEnd={handleDragEnd}
-                whileDrag={isFront ? {
-                  zIndex: cards.length,
-                  cursor: "grabbing",
-                  scale: 1 - index * scaleStep + 0.05,
-                  rotate: 2
-                } : {}}
-                animate={{
-                  y: yOffset,
-                  scale: scale,
-                  filter: `brightness(${brightness})`,
-                  zIndex: baseZ,
-                }}
-                transition={spring}
-              >
-                {/* Lanyard Hole */}
-                <div style={{
-                  position: 'absolute',
-                  top: '12px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '44px',
-                  height: '10px',
-                  borderRadius: '10px',
-                  backgroundColor: '#d1d5db',
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)'
-                }} />
-                
-                {/* Lanyard Strap Front (only visible on front card to look like it loops through) */}
-                {isFront && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '-60px',
-                    left: '50%',
-                    transform: 'translateX(-50%) rotate(-10deg)',
-                    width: '50px',
-                    height: '80px',
-                    background: 'linear-gradient(180deg, rgba(240,240,240,0.9) 0%, rgba(220,220,220,0.95) 100%)',
-                    borderRadius: '4px',
-                    zIndex: 20,
-                    boxShadow: 'inset 0 0 2px rgba(255,255,255,0.5), 0 4px 6px -2px rgba(0,0,0,0.1)',
-                    clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 90%)'
-                  }} />
-                )}
-                
-                {/* Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingBottom: '24px', borderBottom: '1px solid #e5e7eb', position: 'relative', zIndex: 10 }}>
-                  
-                  {/* User Info */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <img 
-                      src={testimonial.avatar} 
-                      alt={testimonial.name} 
-                      style={{ 
-                        width: '72px', 
-                        height: '72px', 
-                        borderRadius: '50%', 
-                        backgroundColor: '#F3F4F6', 
-                        objectFit: 'cover'
-                      }} 
-                    />
-                    <div>
-                      <h4 style={{ fontWeight: '600', color: '#111827', margin: 0, fontSize: '1.4rem' }}>
-                        {testimonial.name}
-                      </h4>
-                      <p style={{ fontSize: '1.1rem', color: '#6b7280', margin: 0 }}>
-                        {testimonial.title}
-                      </p>
+        <div style={{ position: 'relative', flex: '1.5', minWidth: '350px', maxWidth: '600px', height: '600px', overflow: 'hidden' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1rem', width: '100%', position: 'absolute', top: 0, left: 0 }}>
+            <AnimatePresence mode="popLayout">
+              {cards.slice(0, 3).map((testimonial) => (
+                <motion.div
+                  key={testimonial.id}
+                  layout
+                  initial={{ opacity: 0, y: 100, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -100, scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                  onHoverStart={() => setIsHovered(true)}
+                  onHoverEnd={() => setIsHovered(false)}
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#ffffff',
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.05), 0 0 1px rgba(0,0,0,0.1)',
+                    padding: '2rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  {/* Header */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', paddingBottom: '1rem', borderBottom: '1px solid #e5e7eb', position: 'relative', zIndex: 10 }}>
+                    
+                    {/* User Info */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <img 
+                        src={testimonial.avatar} 
+                        alt={testimonial.name} 
+                        style={{ 
+                          width: '48px', 
+                          height: '48px', 
+                          borderRadius: '50%', 
+                          backgroundColor: '#F3F4F6', 
+                          objectFit: 'cover'
+                        }} 
+                      />
+                      <div>
+                        <h4 style={{ fontWeight: '600', color: '#111827', margin: 0, fontSize: '1.1rem' }}>
+                          {testimonial.name}
+                        </h4>
+                        <p style={{ fontSize: '0.9rem', color: '#6b7280', margin: 0 }}>
+                          {testimonial.title}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Social Platform Icon */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                      <div 
+                        style={{ 
+                          padding: '0.5rem', 
+                          backgroundColor: 'transparent',
+                          color: '#111827',
+                          display: 'flex',
+                          flexShrink: 0
+                        }}
+                        aria-label={`${testimonial.platform} Icon`}
+                      >
+                        {testimonial.platform && socialIcons[testimonial.platform] ? socialIcons[testimonial.platform] : socialIcons.instagram}
+                      </div>
                     </div>
                   </div>
-                  
-                  {/* Social Platform Icon */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                    <div 
-                      style={{ 
-                        padding: '12px', 
-                        backgroundColor: 'transparent',
-                        color: '#111827',
-                        display: 'flex',
-                        flexShrink: 0
-                      }}
-                      aria-label={`${testimonial.platform} Icon`}
-                    >
-                      {testimonial.platform && socialIcons[testimonial.platform] ? socialIcons[testimonial.platform] : socialIcons.instagram}
-                    </div>
+
+                  {/* Text */}
+                  <div style={{ marginTop: '1rem' }}>
+                    <p style={{ 
+                      color: '#4b5563', 
+                      fontSize: '1rem', 
+                      lineHeight: '1.6', 
+                      margin: 0, 
+                      fontWeight: 400,
+                      letterSpacing: '-0.01em'
+                    }}>
+                      "{testimonial.quote}"
+                    </p>
                   </div>
-                </div>
-
-                {/* Quote Icon */}
-                <div style={{ 
-                  color: '#111827', 
-                  marginBottom: '16px',
-                  marginTop: '32px'
-                }}>
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                  </svg>
-                </div>
-
-                {/* Text */}
-                <p style={{ 
-                  color: '#4b5563', 
-                  fontSize: '1.15rem', 
-                  lineHeight: '1.6', 
-                  marginBottom: 'auto', 
-                  fontWeight: 400,
-                  letterSpacing: '-0.01em'
-                }}>
-                  {testimonial.quote}
-                </p>
-
-                {/* Bottom spacer instead of Footer */}
-                <div style={{ marginTop: '1.5rem' }} />
-              </motion.div>
-            );
-          })}
-        </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Right side: Title */}

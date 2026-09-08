@@ -1,111 +1,165 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Settings, Mic, Video, Share } from 'lucide-react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useInView, motion, AnimatePresence } from 'framer-motion';
+import FunnelChart from './FunnelChart';
+import ViewerRetentionChart from './ViewerRetentionChart';
+
+const testimonials = [
+  {
+    id: 1,
+    quote: "Managing social media for multiple brands used to require endless filming days. Now, we create consistent, high-quality talking-head videos on autopilot. It's transformed our agency.",
+    name: "Sarah Jenkins",
+    title: "Agency Owner",
+    avatar: "https://i.pravatar.cc/150?u=sarahj",
+  },
+  {
+    id: 2,
+    quote: "I was skeptical about AI video, but the lip sync and expressions are incredibly lifelike. It took 10 minutes to set up my digital twin and it's saved me 20 hours this month alone.",
+    name: "Alex Rivera",
+    title: "Content Creator",
+    avatar: "https://i.pravatar.cc/150?u=alexr",
+  },
+  {
+    id: 3,
+    quote: "I used to spend days recording and editing course videos. With Avatar, I just type my script and get a studio-quality video in minutes. It's like having a full production team.",
+    name: "Elena Rodriguez",
+    title: "Course Creator",
+    avatar: "https://i.pravatar.cc/150?u=elena",
+  },
+  {
+    id: 4,
+    quote: "The ability to generate personalized outreach videos for 500+ clients a day without speaking a single word has doubled our conversion rate.",
+    name: "David Chen",
+    title: "Head of Sales",
+    avatar: "https://i.pravatar.cc/150?u=davidc",
+  },
+  {
+    id: 5,
+    quote: "We now broadcast daily updates in 12 different languages using the same avatar. The translation combined with perfectly synced lip movements is unparalleled.",
+    name: "Aisha Patel",
+    title: "Media Director",
+    avatar: "https://i.pravatar.cc/150?u=aishap",
+  },
+  {
+    id: 6,
+    quote: "Being able to update my workout library by just editing text has given me so much time back. My followers can't even tell the difference.",
+    name: "Marcus Johnson",
+    title: "Fitness Coach",
+    avatar: "https://i.pravatar.cc/150?u=marcusj",
+  }
+];
 
 export default function FeaturesGrid() {
-  const [niche, setNiche] = useState<'tech' | 'fitness'>('tech');
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+
+  const [cards, setCards] = useState(testimonials);
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCards((prev) => {
+        const newCards = [...prev];
+        const front = newCards.shift();
+        if (front) newCards.push(front);
+        return newCards;
+      });
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <section className="editorial-section grid-container">
-      <div className="col-12 panel-header" style={{ borderBottom: 'none', marginBottom: '0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, color: 'var(--text-muted)' }}>02</span>
-      </div>
-      <div className="col-12 mb-4">
-        <h2 className="editorial-h2">Content Engine</h2>
-      </div>
-
+    <section ref={ref} className="editorial-section grid-container" style={{ padding: '6rem 0' }}>
       <div className="col-12">
-        <div className="premium-glass-card" style={{ padding: '0', background: '#FFFFFF', overflow: 'hidden' }}>
-           <div className="dashboard-bar" style={{ borderBottom: '1px solid var(--border-subtle)', background: '#F8FAFC', padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, color: 'var(--text-main)', fontSize: '0.9rem' }}>Process: Generation Pipeline</span>
-              <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 500, color: 'var(--text-muted)', fontSize: '0.85rem' }}>Avg. Total Time: 3 min 40s</span>
-           </div>
-           
-           <div style={{ display: 'flex', flexDirection: 'column', padding: '4rem', alignItems: 'center', background: 'radial-gradient(circle at center, #F1F5F9 0%, #FFFFFF 100%)' }}>
-              
-              {/* Input Mechanism */}
-              <div style={{ display: 'flex', gap: '1rem', marginBottom: '3rem' }}>
-                <button 
-                  onClick={() => setNiche('tech')}
-                  style={{ 
-                    background: niche === 'tech' ? '#000000' : '#FFFFFF', 
-                    color: niche === 'tech' ? '#FFFFFF' : 'var(--text-main)',
-                    border: niche === 'tech' ? '1px solid #000000' : '1px solid var(--border-subtle)',
-                    padding: '0.5rem 1.25rem',
-                    fontFamily: 'var(--font-body)',
-                    fontWeight: 500,
-                    borderRadius: '100px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    boxShadow: niche === 'tech' ? '0 4px 10px rgba(0, 0, 0,0.2)' : '0 2px 4px rgba(0,0,0,0.05)'
-                  }}
-                >
-                  Tech Creator
-                </button>
-                <button 
-                  onClick={() => setNiche('fitness')}
-                  style={{ 
-                    background: niche === 'fitness' ? '#000000' : '#FFFFFF', 
-                    color: niche === 'fitness' ? '#FFFFFF' : 'var(--text-main)',
-                    border: niche === 'fitness' ? '1px solid #000000' : '1px solid var(--border-subtle)',
-                    padding: '0.5rem 1.25rem',
-                    fontFamily: 'var(--font-body)',
-                    fontWeight: 500,
-                    borderRadius: '100px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    boxShadow: niche === 'fitness' ? '0 4px 10px rgba(0, 0, 0,0.2)' : '0 2px 4px rgba(0,0,0,0.05)'
-                  }}
-                >
-                  Fitness Coach
-                </button>
-              </div>
+        <div style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: '#FFFFFF',
+        }}>
+          
+          {/* Row 1 */}
+          <div className="features-split-row">
+            <div className="features-split-left">
+              <h3 style={{ fontSize: '1.75rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
+                Automated Audience Growth
+              </h3>
+              <p style={{ fontSize: '1.1rem', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
+                Our AI engine works around the clock to optimize your content delivery, ensuring that your message reaches the right people at the exact right moment.
+              </p>
+            </div>
+            <div className="features-split-right" style={{ minHeight: '400px', backgroundColor: '#FFFFFF' }}>
+              <FunnelChart inView={inView} />
+            </div>
+          </div>
 
-              {/* Pipeline Step 1 */}
-              <div className="premium-glass-card" style={{ width: '100%', maxWidth: '600px', background: '#F8FAFC', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                   <Settings size={20} color="#000000" />
-                   <span style={{ fontWeight: 600, fontFamily: 'var(--font-heading)' }}>01. Script</span>
-                 </div>
-                 <span style={{ color: 'var(--text-muted)' }}>{niche === 'tech' ? '"Top 5 AI Tools..."' : '"3 core exercises..."'}</span>
+          {/* Row 2 */}
+          <div className="features-split-row">
+            <div className="features-split-left">
+              <h3 style={{ fontSize: '1.75rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
+                Sustain Long-Term Engagement
+              </h3>
+              <p style={{ fontSize: '1.1rem', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
+                Keep your audience captivated with continuous, high-quality interactions. Deliver personalized experiences that create loyal followers who keep coming back.
+              </p>
+            </div>
+            <div className="features-split-right" style={{ minHeight: '400px', backgroundColor: '#FFFFFF' }}>
+              <ViewerRetentionChart inView={inView} />
+            </div>
+          </div>
+
+          {/* Row 3 */}
+          <div className="features-split-row">
+            <div className="features-split-left">
+              <h3 style={{ fontSize: '1.75rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
+                Loved by creators.
+              </h3>
+              <p style={{ fontSize: '1.1rem', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
+                See how professionals are using Avatar to scale their content without stepping into a studio.
+              </p>
+            </div>
+            <div 
+              className="features-split-right" 
+              style={{ backgroundColor: 'transparent', overflow: 'hidden', height: '560px', position: 'relative' }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', position: 'absolute', top: '1.5rem', left: 0, padding: '0 1.5rem', boxSizing: 'border-box' }}>
+                <AnimatePresence mode="popLayout">
+                  {cards.slice(0, 3).map((t) => (
+                    <motion.div 
+                      key={t.id} 
+                      layout
+                      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -50, scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                      style={{ 
+                        display: 'flex', 
+                        gap: '1.25rem', 
+                        padding: '1.5rem', 
+                        backgroundColor: '#FFFFFF', 
+                        borderRadius: '12px',
+                        border: '1px solid #e5e7eb',
+                        width: '100%',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
+                        boxSizing: 'border-box'
+                      }}>
+                      <img src={t.avatar} alt={t.name} style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', margin: '0 0 0.5rem 0' }}>
+                          <span style={{ fontWeight: 600, color: '#111827', fontSize: '1rem' }}>{t.name}</span>
+                          <span style={{ color: '#6B7280', fontSize: '0.85rem' }}>{t.title}</span>
+                        </div>
+                        <p style={{ color: '#4B5563', margin: 0, lineHeight: 1.5, fontSize: '0.95rem' }}>
+                          "{t.quote}"
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
-              
-              <div style={{ height: '30px', width: '2px', background: 'var(--border-subtle)', margin: '0.5rem 0' }}></div>
-              
-              {/* Pipeline Step 2 */}
-              <div className="premium-glass-card" style={{ width: '100%', maxWidth: '600px', background: '#F8FAFC', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 2rem', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                   <Mic size={20} color="#000000" />
-                   <span style={{ fontWeight: 600, fontFamily: 'var(--font-heading)' }}>02. Voice</span>
-                 </div>
-                 <span style={{ color: '#000000', fontWeight: 500 }}>Synthesis 100%</span>
-              </div>
-              
-              <div style={{ height: '30px', width: '2px', background: 'var(--border-subtle)', margin: '0.5rem 0' }}></div>
-              
-              {/* Pipeline Step 3 */}
-              <div className="premium-glass-card" style={{ width: '100%', maxWidth: '600px', background: '#F8FAFC', color: 'var(--text-main)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 2rem', border: '1px solid #000000', boxShadow: '0 8px 16px rgba(0, 0, 0,0.1)' }}>
-                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                   <Video size={20} color="#000000" />
-                   <span style={{ fontWeight: 600, fontFamily: 'var(--font-heading)', color: '#000000' }}>03. Avatar</span>
-                 </div>
-                 <span style={{ color: '#000000', fontWeight: 600 }}>Rendering...</span>
-              </div>
-              
-              <div style={{ height: '30px', width: '2px', background: 'var(--border-subtle)', margin: '0.5rem 0' }}></div>
-              
-              {/* Pipeline Step 4 */}
-              <div className="premium-glass-card" style={{ width: '100%', maxWidth: '600px', background: '#000000', color: '#FFFFFF', border: '1px solid #000000', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 2rem', boxShadow: '0 8px 20px rgba(0, 0, 0,0.2)' }}>
-                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                   <Share size={20} color="#FFFFFF" />
-                   <span style={{ fontWeight: 600, fontFamily: 'var(--font-heading)' }}>04. Video Output</span>
-                 </div>
-                 <span style={{ fontWeight: 600 }}>Ready ↗</span>
-              </div>
-              
-           </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
