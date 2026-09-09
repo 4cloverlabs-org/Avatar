@@ -73,8 +73,16 @@ export default function Pricing() {
 
 
   return (
-    <section className="editorial-section grid-container" id="pricing" style={{ paddingTop: '60px', paddingBottom: '20vh' }}>
-      <div className="col-12 mb-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <section className="editorial-section" id="pricing" style={{ paddingTop: '60px', paddingBottom: '20vh', maxWidth: '1280px', margin: '0 auto', paddingLeft: '2rem', paddingRight: '2rem' }}>
+      <style>{`
+        .pricing-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 1.5rem;
+          width: 100%;
+        }
+      `}</style>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '4rem' }}>
         <h2 className="editorial-h2" style={{ textAlign: 'center' }}>Simple Pricing</h2>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', backgroundColor: '#E5E7EB', padding: '0.25rem', borderRadius: '100px', marginTop: '1rem' }}>
            <button onClick={() => setIsYearly(false)} style={{ background: !isYearly ? '#FFFFFF' : 'transparent', color: 'var(--text-main)', border: 'none', borderRadius: '100px', padding: '0.5rem 1.25rem', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', boxShadow: !isYearly ? '0 2px 8px rgba(0,0,0,0.1)' : 'none', transition: 'all 0.2s ease' }}>Monthly</button>
@@ -85,10 +93,10 @@ export default function Pricing() {
         </div>
       </div>
 
+      <div className="pricing-grid">
       {plans.map((plan, i) => (
         <div 
           key={plan.name}
-          className="col-3"
           style={{ 
             display: 'flex', 
             flexDirection: 'column', 
@@ -202,6 +210,7 @@ export default function Pricing() {
           </div>
         </div>
       ))}
+      </div>
     </section>
   );
 }

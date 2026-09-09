@@ -81,10 +81,10 @@ export default function FeaturesGrid() {
           {/* Row 1 */}
           <div className="features-split-row">
             <div className="features-split-left">
-              <h3 style={{ fontSize: '1.75rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
+              <h3 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.75rem)', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
                 Automated Audience Growth
               </h3>
-              <p style={{ fontSize: '1.1rem', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
                 Our AI engine works around the clock to optimize your content delivery, ensuring that your message reaches the right people at the exact right moment.
               </p>
             </div>
@@ -96,10 +96,10 @@ export default function FeaturesGrid() {
           {/* Row 2 */}
           <div className="features-split-row">
             <div className="features-split-left">
-              <h3 style={{ fontSize: '1.75rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
+              <h3 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.75rem)', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
                 Sustain Long-Term Engagement
               </h3>
-              <p style={{ fontSize: '1.1rem', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
                 Keep your audience captivated with continuous, high-quality interactions. Deliver personalized experiences that create loyal followers who keep coming back.
               </p>
             </div>
@@ -111,10 +111,10 @@ export default function FeaturesGrid() {
           {/* Row 3 */}
           <div className="features-split-row">
             <div className="features-split-left">
-              <h3 style={{ fontSize: '1.75rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
+              <h3 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.75rem)', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
                 Loved by creators.
               </h3>
-              <p style={{ fontSize: '1.1rem', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
                 See how professionals are using Avatar to scale their content without stepping into a studio.
               </p>
             </div>

@@ -29,13 +29,13 @@ export default function FAQ() {
         opacity: 0.8
       }} />
       <div className="grid-container">
-        <div className="col-5 mb-4" style={{ paddingRight: '2rem' }}>
+        <div className="col-5 col-lg-8 mb-4" style={{ paddingRight: '2rem' }}>
           <h2 className="editorial-h2" style={{ color: '#000000', textAlign: 'left', lineHeight: '1.1' }}>
             Frequently asked<br/>questions
           </h2>
         </div>
-        
-        <div className="col-7" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+
+        <div className="col-7 col-lg-8" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
            {faqs.map((faq, i) => (
               <div key={i} style={{ borderBottom: '1px solid #000000' }}>
                  <button 

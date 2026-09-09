@@ -113,6 +113,9 @@ export default function HeroSection() {
         }
 
         @media (max-width: 768px) {
+          .hero-layout {
+            padding: 6rem 1rem 3rem;
+          }
           .hero-headline {
             font-size: 2.5rem;
           }
@@ -125,6 +128,23 @@ export default function HeroSection() {
           .thumbnail-card {
             width: 140px;
             height: 80px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-layout {
+            padding: 6.5rem 1rem 2.5rem;
+          }
+          .hero-headline {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+          }
+          .media-container {
+            border-radius: 14px;
+          }
+          .media-inner {
+            height: 220px;
+            border-radius: 10px;
           }
         }
       `}</style>

@@ -247,6 +247,25 @@ export default function AutopilotSection() {
    };
 
    return (
+      <>
+      <style>{`
+         .autopilot-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            width: 100%;
+            align-items: stretch;
+         }
+         @media (max-width: 1024px) {
+            .autopilot-cols {
+               grid-template-columns: 1fr !important;
+            }
+            .autopilot-icon-grid {
+               width: min(320px, 80vw) !important;
+               height: min(320px, 80vw) !important;
+            }
+         }
+      `}</style>
       <section id="autopilot" className="editorial-section" style={{ background: '#F0F0F0', position: 'relative', padding: '4rem 1rem' }}>
          <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
@@ -259,7 +278,7 @@ export default function AutopilotSection() {
             </div>
 
             {/* Level 3 - Configuration */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem', width: '100%', alignItems: 'stretch' }}>
+            <div className="autopilot-cols">
 
                {/* Left Panel: Connected Platforms (Orbital) */}
                <motion.div
@@ -295,7 +314,7 @@ export default function AutopilotSection() {
                   </div>
 
                   {/* Grid Layout Design - 5-Part Spiral (Swastika) Pattern */}
-                  <div style={{ position: 'relative', width: '320px', height: '320px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridTemplateRows: 'repeat(4, 1fr)', gap: '1px', background: 'rgba(0,0,0,0.06)', borderRadius: '24px', overflow: 'hidden', marginTop: '1.5rem', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }}>
+                  <div className="autopilot-icon-grid" style={{ position: 'relative', width: '320px', height: '320px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridTemplateRows: 'repeat(4, 1fr)', gap: '1px', background: 'rgba(0,0,0,0.06)', borderRadius: '24px', overflow: 'hidden', marginTop: '1.5rem', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }}>
                      
                      {/* 1. Instagram (Top - Spans Right) */}
                      <div style={{ gridColumn: '1 / 4', gridRow: '1 / 2', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -423,6 +442,7 @@ export default function AutopilotSection() {
 
          </div>
       </section>
+      </>
    );
 }
 

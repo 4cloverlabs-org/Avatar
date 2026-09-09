@@ -12,18 +12,48 @@ export default function HowItWorks() {
       width: '100%',
       overflow: 'hidden'
     }}>
+      <style>{`
+        .hiw-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 4rem;
+          align-items: center;
+        }
+        .hiw-avatar-frame {
+          padding: 4rem;
+        }
+        .hiw-badge {
+          right: -32px;
+        }
+        @media (max-width: 900px) {
+          .hiw-grid {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+          }
+        }
+        @media (max-width: 600px) {
+          .hiw-avatar-frame {
+            padding: 2rem 1.5rem;
+          }
+        }
+        @media (max-width: 420px) {
+          .hiw-badge {
+            right: -8px;
+          }
+        }
+      `}</style>
       <section id="how-it-works" className="editorial-section" style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 2rem' }}>
-        
+
         {/* Centered Top Heading */}
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <h2 className="editorial-h2" style={{ marginBottom: '1rem', fontSize: '3rem' }}>Create Your Digital Identity</h2>
-          <p className="mono-text" style={{ fontSize: '1.25rem', color: 'var(--text-main)', maxWidth: '800px', margin: '0 auto', lineHeight: '1.6' }}>
+          <h2 className="editorial-h2" style={{ marginBottom: '1rem', fontSize: 'clamp(2rem, 6vw, 3rem)' }}>Create Your Digital Identity</h2>
+          <p className="mono-text" style={{ fontSize: 'clamp(1rem, 3vw, 1.25rem)', color: 'var(--text-main)', maxWidth: '800px', margin: '0 auto', lineHeight: '1.6' }}>
             We precisely map your facial movements, subtle micro-expressions, and <span style={{ fontWeight: 600 }}>exact vocal tone</span> to generate a hyper-realistic AI avatar.
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
-          
+        <div className="hiw-grid">
+
           {/* Left Column: List Items */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {[
@@ -58,7 +88,7 @@ export default function HowItWorks() {
                   gap: '0.5rem'
                 }}
               >
-                <div style={{ fontSize: '2rem', fontWeight: 500, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
+                <div style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', fontWeight: 500, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
                   {feature.title}
                 </div>
                 <div className="mono-text" style={{ fontSize: '0.95rem', color: '#64748b', lineHeight: '1.5' }}>
@@ -71,19 +101,20 @@ export default function HowItWorks() {
 
           {/* Right Column: Video in Blue Background */}
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <motion.div 
+            <motion.div
+              className="hiw-avatar-frame"
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              style={{ 
+              style={{
                 background: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)', // Light blue background like image
                 borderRadius: '2rem',
-                padding: '4rem', // Generous equal padding on all sides to frame it perfectly
                 width: '100%',
                 maxWidth: '480px',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                boxSizing: 'border-box',
               }}
             >
               <div style={{ 
@@ -103,14 +134,14 @@ export default function HowItWorks() {
                 />
 
                 {/* Face Mapping Badge */}
-                <motion.div 
+                <motion.div
+                  className="hiw-badge"
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.6, duration: 0.5, type: 'spring' }}
                   style={{
                     position: 'absolute',
-                    right: '-32px', // Breaks out of the image container to the right
                     top: '28%',
 
                     background: 'rgba(255, 255, 255, 0.95)',

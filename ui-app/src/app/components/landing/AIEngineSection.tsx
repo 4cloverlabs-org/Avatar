@@ -66,19 +66,21 @@ const SvgPublish = () => (
 );
 
 const PipelineCardUI = ({ title, desc, svg }: { title: string, desc: string, svg: React.ReactNode }) => (
-   <motion.div 
-      style={{ 
+   <motion.div
+      className="pipeline-card"
+      style={{
          background: 'rgba(248, 147, 77, 0.1)',
          borderRadius: '20px',
          padding: '3rem 2rem',
          display: 'flex',
          flexDirection: 'column',
          minHeight: '420px',
-         boxShadow: 'inset 0 0 0 1px rgba(248, 147, 77, 0.15)'
+         boxShadow: 'inset 0 0 0 1px rgba(248, 147, 77, 0.15)',
+         boxSizing: 'border-box'
       }}
    >
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2.5rem' }}>
-         <div style={{ width: '240px', height: '240px' }}>
+         <div className="pipeline-card-icon" style={{ width: '240px', height: '240px' }}>
             {svg}
          </div>
       </div>
@@ -91,6 +93,25 @@ const PipelineCardUI = ({ title, desc, svg }: { title: string, desc: string, svg
 
 export default function AIEngineSection() {
    return (
+      <>
+      <style>{`
+         @media (max-width: 1024px) {
+            .pipeline-card-icon {
+               width: min(240px, 45vw) !important;
+               height: min(240px, 45vw) !important;
+            }
+         }
+         @media (max-width: 480px) {
+            .pipeline-card {
+               min-height: 300px !important;
+               padding: 2rem 1.5rem !important;
+            }
+            .pipeline-card-icon {
+               width: min(180px, 55vw) !important;
+               height: min(180px, 55vw) !important;
+            }
+         }
+      `}</style>
       <section id="ai-engine" className="editorial-section" style={{ background: '#F0F0F0', position: 'relative', padding: '4rem 1rem' }}>
          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
@@ -117,5 +138,6 @@ export default function AIEngineSection() {
             </div>
          </div>
       </section>
+      </>
    );
 }
