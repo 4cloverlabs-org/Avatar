@@ -46,22 +46,17 @@ export default function Navbar() {
         </Link>
 
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-          <Link href="#features" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>
-            Features
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px', opacity: 0.5 }}><path d="M6 9l6 6 6-6" /></svg>
-          </Link>
-          <Link href="#solutions" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Solutions</Link>
-          <Link href="#use-cases" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Use cases</Link>
-          <Link href="#pricing" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Pricing</Link>
-          <Link href="#resources" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>
-            Resources
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px', opacity: 0.5 }}><path d="M6 9l6 6 6-6" /></svg>
-          </Link>
+          <Link href="/#how-it-works" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>How it works</Link>
+          <Link href="/#ai-engine" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>AI Engine</Link>
+          <Link href="/#autopilot" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Autopilot</Link>
+          <Link href="/#features" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Features</Link>
+          <Link href="/#pricing" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>Pricing</Link>
+          <Link href="/#faq" style={{ textDecoration: 'none', color: 'var(--text-main)', fontSize: '0.85rem', fontWeight: 400, transition: 'color 0.2s' }}>FAQ</Link>
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <Link href="/signup" style={{ textDecoration: 'none', background: 'transparent', color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1.25rem', borderRadius: '100px', border: '1px solid rgba(0, 0, 0, 0.4)', transition: 'background-color 0.2s' }}>
-            Sign up
+          <Link href="/login" style={{ textDecoration: 'none', background: '#111827', color: '#ffffff', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1.25rem', borderRadius: '100px', border: '1px solid rgba(255, 255, 255, 0.1)', transition: 'opacity 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }} onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'} onMouseOut={(e) => e.currentTarget.style.opacity = '1'}>
+            Login
           </Link>
         </div>
       </nav>

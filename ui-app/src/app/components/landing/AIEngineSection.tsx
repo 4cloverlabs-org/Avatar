@@ -91,7 +91,7 @@ const PipelineCardUI = ({ title, desc, svg }: { title: string, desc: string, svg
 
 export default function AIEngineSection() {
    return (
-      <section className="editorial-section" style={{ background: '#F0F0F0', position: 'relative', padding: '4rem 1rem' }}>
+      <section id="ai-engine" className="editorial-section" style={{ background: '#F0F0F0', position: 'relative', padding: '4rem 1rem' }}>
          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                <h2 className="editorial-h2" style={{ marginBottom: '1rem' }}>Avatar Production Pipeline</h2>

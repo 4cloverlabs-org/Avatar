@@ -87,7 +87,6 @@ const ContentTimeline = ({ settingsVariants }: { settingsVariants: any }) => {
                   <span style={{ fontSize: '2.5rem', fontWeight: 500, color: '#111827', lineHeight: 1 }}>25</span>
                   <span style={{ fontSize: '1rem', color: '#6B7280', fontWeight: 500 }}>Posts</span>
                </div>
-               <span style={{ fontSize: '0.9rem', color: '#6B7280', fontWeight: 500 }}>12% vs last month</span>
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -95,7 +94,6 @@ const ContentTimeline = ({ settingsVariants }: { settingsVariants: any }) => {
                   <span style={{ fontSize: '2.5rem', fontWeight: 500, color: '#111827', lineHeight: 1 }}>5.0</span>
                   <span style={{ fontSize: '1rem', color: '#6B7280', fontWeight: 500 }}>Avg</span>
                </div>
-               <span style={{ fontSize: '0.9rem', color: '#6B7280', fontWeight: 500 }}>Consistent</span>
             </div>
          </div>
 
@@ -249,7 +247,7 @@ export default function AutopilotSection() {
    };
 
    return (
-      <section className="editorial-section" style={{ background: '#F0F0F0', position: 'relative', padding: '4rem 1rem' }}>
+      <section id="autopilot" className="editorial-section" style={{ background: '#F0F0F0', position: 'relative', padding: '4rem 1rem' }}>
          <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
             {/* Level 1 - Section Intro */}

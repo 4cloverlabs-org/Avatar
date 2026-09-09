@@ -30,9 +30,9 @@ const testimonials = [
     platform: "tiktok",
     companyIcon: null,
     quote: "Managing social media for multiple brands used to require endless filming days. Now, we create consistent, high-quality talking-head videos on autopilot. It's transformed our agency.",
-    name: "Sarah Jenkins",
+    name: "James Carter",
     title: "Agency Owner",
-    avatar: "https://i.pravatar.cc/150?u=sarahj",
+    avatar: "https://i.pravatar.cc/150?u=jamesc",
   },
   {
     id: 4,

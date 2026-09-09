@@ -9,9 +9,9 @@ const testimonials = [
   {
     id: 1,
     quote: "Managing social media for multiple brands used to require endless filming days. Now, we create consistent, high-quality talking-head videos on autopilot. It's transformed our agency.",
-    name: "Sarah Jenkins",
+    name: "James Carter",
     title: "Agency Owner",
-    avatar: "https://i.pravatar.cc/150?u=sarahj",
+    avatar: "https://i.pravatar.cc/150?u=jamesc",
   },
   {
     id: 2,
@@ -69,7 +69,7 @@ export default function FeaturesGrid() {
   }, []);
 
   return (
-    <section ref={ref} className="editorial-section grid-container" style={{ padding: '6rem 0' }}>
+    <section ref={ref} id="features" className="editorial-section grid-container" style={{ padding: '6rem 0' }}>
       <div className="col-12">
         <div style={{
           width: '100%',
