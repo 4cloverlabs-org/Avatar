@@ -630,8 +630,14 @@ def generate_strategy_video(script_segments_json, voice_id, avatar_id, strategy_
             return json.dumps({"success": False, "error": audio_path})
             
         # 2. Generate Video
-        video_path = generate_from_avatar(avatar_id, audio_path)
-        
+        # Optimized for maximum realism: 
+        # - gfpgan_weight=1.0 makes teeth and lips sharper and more lifelike.
+        video_path = generate_from_avatar(
+            avatar_id, 
+            audio_path, 
+            use_gfpgan=True, 
+            gfpgan_weight=1.0
+        )
         try:
             import requests
             requests.post("http://127.0.0.1:3000/api/videos/webhook", json={

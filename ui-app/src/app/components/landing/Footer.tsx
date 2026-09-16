@@ -56,7 +56,7 @@ export default function Footer() {
             <h4 style={{ fontWeight: 600, marginBottom: '1.5rem', color: 'var(--text-main)', fontSize: '0.95rem' }}>Legal</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                <Link href="/privacy" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Privacy</Link>
-               <Link href="#" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Terms</Link>
+               <Link href="/terms" className="mono-text" style={{ textDecoration: 'none', color: 'var(--text-muted)', transition: 'color 0.2s' }}>Terms</Link>
             </div>
          </div>
 

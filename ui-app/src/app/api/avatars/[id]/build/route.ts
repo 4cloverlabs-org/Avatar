@@ -158,7 +158,7 @@ export async function POST(
         trackingId, // Using trackingId because we merged the files into the tracking directory
         handle_file(audioBlob),
         true, // use_gfpgan
-        0.5   // gfpgan_weight
+        1.0   // gfpgan_weight (Increased to 1.0 for perfect lip detail)
       ]);
       
       const outputDir = path.join(trackingDir, 'output');

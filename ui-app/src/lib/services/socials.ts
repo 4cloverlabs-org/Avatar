@@ -175,15 +175,122 @@ export async function postToInstagram(
   videoPath: string,
   title: string
 ): Promise<{ success: boolean; videoId?: string; instagramUrl?: string; error?: string }> {
-  console.log(`[MOCK] Posting to Instagram for user ${userId}: ${title}`);
-  console.log(`[MOCK] Video Path: ${videoPath}`);
-  
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  
-  return {
-    success: true,
-    videoId: `mock_ig_${Date.now()}`,
-    instagramUrl: `https://www.instagram.com/p/mock_ig_${Date.now()}`
-  };
+  try {
+    const accounts = await db
+      .select()
+      .from(socialAccount)
+      .where(
+        and(
+          eq(socialAccount.userId, userId),
+          eq(socialAccount.platform, "instagram")
+        )
+      );
+
+    if (accounts.length === 0) {
+      return { success: false, error: "Instagram account not connected" };
+    }
+
+    const igAccount = accounts[0];
+    const accessToken = igAccount.accessToken;
+    const igAccountId = igAccount.platformAccountId;
+
+    if (!accessToken || !igAccountId) {
+      return { success: false, error: "Instagram account missing credentials" };
+    }
+
+    // Extract filename and generate public URL using Next.js app URL
+    let videoFilename = path.basename(videoPath);
+    if (videoPath.includes('output/')) {
+        videoFilename = videoPath.split('output/')[1];
+    }
+    
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const videoUrl = `${appUrl}/api/serve_video?type=gen&path=${encodeURIComponent(videoFilename)}`;
+
+    console.log(`[Instagram] Initiating upload for container. Video URL: ${videoUrl}`);
+
+    // 1. Create Media Container
+    const createContainerRes = await fetch(
+      `https://graph.facebook.com/v19.0/${igAccountId}/media`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          media_type: "REELS",
+          video_url: videoUrl,
+          caption: title,
+          access_token: accessToken,
+        }),
+      }
+    );
+
+    const createContainerData = await createContainerRes.json();
+
+    if (!createContainerRes.ok) {
+      console.error("Instagram media creation failed:", createContainerData);
+      return { success: false, error: createContainerData.error?.message || "Failed to create media container" };
+    }
+
+    const containerId = createContainerData.id;
+
+    // 2. Poll Container Status
+    let status = "IN_PROGRESS";
+    let attempts = 0;
+    const maxAttempts = 12; // Wait up to ~60 seconds (12 * 5s)
+
+    while (status === "IN_PROGRESS" && attempts < maxAttempts) {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      attempts++;
+
+      const statusRes = await fetch(
+        `https://graph.facebook.com/v19.0/${containerId}?fields=status_code&access_token=${accessToken}`
+      );
+      const statusData = await statusRes.json();
+      
+      if (!statusRes.ok) {
+        console.error("Failed to check container status:", statusData);
+        return { success: false, error: "Failed to check container status" };
+      }
+
+      status = statusData.status_code;
+
+      if (status === "ERROR") {
+        return { success: false, error: "Instagram video processing failed" };
+      }
+    }
+
+    if (status !== "FINISHED") {
+      return { success: false, error: "Instagram video processing timed out" };
+    }
+
+    // 3. Publish Media Container
+    console.log(`[Instagram] Container ${containerId} finished processing. Publishing...`);
+    const publishRes = await fetch(
+      `https://graph.facebook.com/v19.0/${igAccountId}/media_publish`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          creation_id: containerId,
+          access_token: accessToken,
+        }),
+      }
+    );
+
+    const publishData = await publishRes.json();
+
+    if (!publishRes.ok) {
+      console.error("Instagram publish failed:", publishData);
+      return { success: false, error: publishData.error?.message || "Failed to publish media" };
+    }
+
+    return {
+      success: true,
+      videoId: publishData.id,
+      instagramUrl: `https://www.instagram.com/p/${publishData.id}/` 
+    };
+  } catch (err: any) {
+    console.error("Instagram upload error:", err);
+    return { success: false, error: err.message || "Upload failed" };
+  }
 }

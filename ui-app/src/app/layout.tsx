@@ -29,7 +29,9 @@ export default function RootLayout({
     <html lang="en" className={`${bubblegumSans.variable} ${poppins.variable}`} suppressHydrationWarning>
       <head />
       <body>
-        <script
+        <Script
+          id="theme-script"
+          strategy="beforeInteractive"
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `
