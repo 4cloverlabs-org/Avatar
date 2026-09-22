@@ -213,7 +213,7 @@ export default function SocialsPage() {
           background: #fff;
         }
         .unconnected-card:hover {
-          border-color: #94a3b8;
+          border-color: #e0e0e0;
         }
         .card-top {
           display: flex;
@@ -382,7 +382,7 @@ export default function SocialsPage() {
         }
         .add-account-btn:hover {
           background: #f1f5f9;
-          border-color: #94a3b8;
+          border-color: #e0e0e0;
         }
         .top-add-btn {
           display: flex;
@@ -406,7 +406,7 @@ export default function SocialsPage() {
           align-items: center;
           justify-content: space-between;
           padding: 12px;
-          border: 1px solid #eee;
+          border: 1px solid #e0e0e0;
           border-radius: 8px;
           margin-bottom: 8px;
           cursor: pointer;
@@ -414,7 +414,7 @@ export default function SocialsPage() {
         }
         .platform-select-item:hover {
           background: #f8fafc;
-          border-color: #cbd5e1;
+          border-color: #e0e0e0;
         }
       `}</style>
       

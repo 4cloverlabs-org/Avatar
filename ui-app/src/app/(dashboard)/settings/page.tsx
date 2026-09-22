@@ -717,7 +717,7 @@ export default function SettingsPage() {
           </div>
           
           {newKey && (
-            <div style={{ background: '#f0fdf4', padding: '16px', borderRadius: '8px', border: '1px solid #bbf7d0', color: '#15803d', fontSize: '13px', marginBottom: '16px' }}>
+            <div style={{ background: '#f0fdf4', padding: '16px', borderRadius: '8px', border: '1px solid #e0e0e0', color: '#15803d', fontSize: '13px', marginBottom: '16px' }}>
               <strong>Your new API key:</strong> <code style={{ background: 'rgba(255,255,255,0.5)', padding: '2px 4px', borderRadius: '4px' }}>{newKey}</code>
               <br/><br/>
               Please copy this key now. You will not be able to see it again!
@@ -768,7 +768,7 @@ export default function SettingsPage() {
             </div>
             
             {totpError && (
-              <div style={{ background: '#fef2f2', color: '#b91c1c', padding: '8px 12px', borderRadius: '6px', fontSize: '13px', marginBottom: '16px', border: '1px solid #fecaca' }}>
+              <div style={{ background: '#fef2f2', color: '#b91c1c', padding: '8px 12px', borderRadius: '6px', fontSize: '13px', marginBottom: '16px', border: '1px solid #e0e0e0' }}>
                 {totpError}
               </div>
             )}
@@ -862,7 +862,7 @@ export default function SettingsPage() {
             </div>
             
             {passwordError && (
-              <div style={{ background: '#fef2f2', color: '#b91c1c', padding: '8px 12px', borderRadius: '6px', fontSize: '13px', marginBottom: '16px', border: '1px solid #fecaca' }}>
+              <div style={{ background: '#fef2f2', color: '#b91c1c', padding: '8px 12px', borderRadius: '6px', fontSize: '13px', marginBottom: '16px', border: '1px solid #e0e0e0' }}>
                 {passwordError}
               </div>
             )}

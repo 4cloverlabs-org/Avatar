@@ -179,7 +179,7 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
                   alignItems: 'center', 
                   justifyContent: 'center',
                   background: '#f8fafc', 
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #e0e0e0',
                   padding: '0 20px', 
                   borderRadius: '8px', 
                   cursor: isUploadingLocal ? 'not-allowed' : 'pointer',
@@ -341,7 +341,7 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
       {/* Video preview pane */}
       <div style={{ borderLeft: '1px solid #e2e8f0', paddingLeft: 32, display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div style={{ fontSize: 13, fontWeight: 600, color: '#334155' }}>Selected Video Preview</div>
-        <div style={{ background: '#0f172a', borderRadius: 12, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', border: '1px solid #e2e8f0' }}>
+        <div style={{ background: '#0f172a', borderRadius: 12, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', border: '1px solid #e0e0e0' }}>
           {selectedVideoFile ? (
             <video 
               src={`/api/videos/${selectedVideoFile}`}

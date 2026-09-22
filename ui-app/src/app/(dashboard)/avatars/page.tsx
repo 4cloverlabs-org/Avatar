@@ -54,10 +54,10 @@ function FromUsAvatarsUI() {
         {avatars.map(avatar => (
           <div 
             key={avatar.id} 
-            style={{ border: '2px solid #F3F3F3', borderRadius: 12, background: '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative', display: 'flex', flexDirection: 'column' }}
+            style={{ border: '1px solid #e0e0e0', borderRadius: 12, background: '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative', display: 'flex', flexDirection: 'column' }}
             onClick={() => setPreviewAvatar(avatar)}
           >
-            <div style={{ aspectRatio: '9/16', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderTopLeftRadius: 10, borderTopRightRadius: 10, overflow: 'hidden' }}>
+            <div style={{ aspectRatio: '1/1', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderTopLeftRadius: 10, borderTopRightRadius: 10, overflow: 'hidden' }}>
               <img 
                 src={avatar.image} 
                 alt={avatar.name}
@@ -197,10 +197,10 @@ function MyAvatarsUI() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 24 }}>
           {/* Create New Card */}
           <div 
-            style={{ border: '2px dashed #F3F3F3', borderRadius: 12, overflow: 'hidden', background: '#f8fafc', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column' }}
+            style={{ border: '1px dashed #e0e0e0', borderRadius: 12, overflow: 'hidden', background: '#f8fafc', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column' }}
             onClick={() => router.push('/avatars/create')}
           >
-            <div style={{ aspectRatio: '9/16', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ aspectRatio: '1/1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ width: 56, height: 56, background: '#e0e7ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                 <Plus size={28} color="#4f46e5" />
               </div>
@@ -215,7 +215,7 @@ function MyAvatarsUI() {
           {avatars.map(avatar => (
             <div 
               key={avatar.id} 
-              style={{ border: '2px solid #F3F3F3', borderRadius: 12, background: '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}
+              style={{ border: '1px solid #e0e0e0', borderRadius: 12, background: '#fff', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}
               onClick={() => setPreviewAvatar(avatar)}
               onMouseEnter={(e) => {
                 if (editingId === avatar.id) return;
@@ -235,7 +235,7 @@ function MyAvatarsUI() {
                 }
               }}
             >
-              <div style={{ aspectRatio: '9/16', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderTopLeftRadius: 10, borderTopRightRadius: 10, overflow: 'hidden' }}>
+              <div style={{ aspectRatio: '1/1', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', borderTopLeftRadius: 10, borderTopRightRadius: 10, overflow: 'hidden' }}>
                 <video 
                   src={`/api/avatars/${avatar.id}/preview#t=0.001`} 
                   loop muted playsInline preload="metadata"
@@ -307,7 +307,7 @@ function MyAvatarsUI() {
                         style={{ position: 'fixed', inset: 0, zIndex: 9 }} 
                         onClick={(e) => { e.stopPropagation(); setOpenMenuId(null); }} 
                       />
-                      <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 8, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', zIndex: 10, minWidth: 160, overflow: 'hidden' }}>
+                      <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 8, background: '#fff', border: '1px solid #e0e0e0', borderRadius: 8, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', zIndex: 10, minWidth: 160, overflow: 'hidden' }}>
                         <div 
                           style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#0f172a', cursor: 'pointer', borderBottom: '1px solid #f1f5f9' }}
                           onClick={(e) => { e.stopPropagation(); setEditingId(avatar.id); setEditName(avatar.name); setOpenMenuId(null); }}
@@ -455,7 +455,7 @@ function QuickGenerateModal({ previewAvatar, setPreviewAvatar, isSystemAvatar, r
         
         {step === 'preview' && (
           <>
-            <div style={{ width: '100%', aspectRatio: '9/16', background: '#000', borderRadius: 12, overflow: 'hidden', border: '1px solid #e2e8f0', maxHeight: '50vh', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: '100%', aspectRatio: '9/16', background: '#000', borderRadius: 12, overflow: 'hidden', border: '1px solid #e0e0e0', maxHeight: '50vh', display: 'flex', justifyContent: 'center' }}>
               {previewMedia}
             </div>
             <div style={{ marginTop: 20, display: 'flex', gap: 12 }}>
@@ -481,7 +481,7 @@ function QuickGenerateModal({ previewAvatar, setPreviewAvatar, isSystemAvatar, r
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#475569', marginBottom: 8 }}>Select Voice</label>
-                <select value={selectedVoiceId} onChange={(e) => setSelectedVoiceId(e.target.value)} style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none' }}>
+                <select value={selectedVoiceId} onChange={(e) => setSelectedVoiceId(e.target.value)} style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #e0e0e0', fontSize: 14, outline: 'none' }}>
                   {voices.map(v => <option key={v.id} value={v.id}>{v.name} {v.type === 'cloned' ? '(Cloned)' : ''}</option>)}
                 </select>
               </div>
@@ -491,7 +491,7 @@ function QuickGenerateModal({ previewAvatar, setPreviewAvatar, isSystemAvatar, r
                   value={scriptText} 
                   onChange={(e) => setScriptText(e.target.value)} 
                   placeholder="Type what you want the avatar to say..."
-                  style={{ width: '100%', flex: 1, minHeight: 120, padding: '12px', borderRadius: 8, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none', resize: 'none', fontFamily: 'inherit' }}
+                  style={{ width: '100%', flex: 1, minHeight: 120, padding: '12px', borderRadius: 8, border: '1px solid #e0e0e0', fontSize: 14, outline: 'none', resize: 'none', fontFamily: 'inherit' }}
                 />
               </div>
               <button 
@@ -515,7 +515,7 @@ function QuickGenerateModal({ previewAvatar, setPreviewAvatar, isSystemAvatar, r
 
         {step === 'result' && resultVideoUrl && (
           <>
-            <div style={{ width: '100%', aspectRatio: '9/16', background: '#000', borderRadius: 12, overflow: 'hidden', border: '1px solid #e2e8f0', maxHeight: '50vh', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: '100%', aspectRatio: '9/16', background: '#000', borderRadius: 12, overflow: 'hidden', border: '1px solid #e0e0e0', maxHeight: '50vh', display: 'flex', justifyContent: 'center' }}>
               <video src={resultVideoUrl} controls autoPlay style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
             <div style={{ marginTop: 20 }}>

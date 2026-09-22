@@ -531,7 +531,7 @@ export default function RecordAvatarPage() {
   if (uploadSuccess) {
     return (
       <div className="home-content">
-        <div style={{ maxWidth: 600, margin: '80px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: '#fff', padding: '64px 32px', borderRadius: 24, boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0' }}>
+        <div style={{ maxWidth: 600, margin: '80px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: '#fff', padding: '64px 32px', borderRadius: 24, boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid #e0e0e0' }}>
           <div style={{ width: 80, height: 80, borderRadius: 40, border: '4px solid #e0e7ff', borderTopColor: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, animation: 'spin 1s linear infinite' }}>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
@@ -653,7 +653,7 @@ export default function RecordAvatarPage() {
                    <button onClick={() => setShowSettings(!showSettings)} style={{ width: 36, height: 36, borderRadius: 18, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', border: 'none', color: showSettings ? '#60a5fa' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}><Settings size={16} /></button>
                 </div>
                 {showSettings && (
-                  <div style={{ position: 'absolute', bottom: 64, right: 20, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(20px)', borderRadius: 16, padding: 16, width: 280, color: '#fff', border: '1px solid rgba(255,255,255,0.1)', animation: 'fadeIn 0.2s ease-out' }}>
+                  <div style={{ position: 'absolute', bottom: 64, right: 20, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(20px)', borderRadius: 16, padding: 16, width: 280, color: '#fff', border: '1px solid #e0e0e0', animation: 'fadeIn 0.2s ease-out' }}>
                     <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, opacity: 0.8, textTransform: 'uppercase', letterSpacing: 1 }}>Studio Lighting</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
                       {['Normal', 'Studio Warm', 'Studio Cool', 'Cinematic'].map(mode => (
@@ -765,7 +765,7 @@ export default function RecordAvatarPage() {
       
       <button
         onClick={() => { stopCamera(); router.push('/avatars/create'); }}
-        style={{ position: 'absolute', top: 40, left: 60, background: '#fff', border: '1px solid #e2e8f0', cursor: 'pointer', color: '#64748b', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, padding: '8px 16px', borderRadius: '20px', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.02)', width: 'fit-content' }}
+        style={{ position: 'absolute', top: 40, left: 60, background: '#fff', border: '1px solid #e0e0e0', cursor: 'pointer', color: '#64748b', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, padding: '8px 16px', borderRadius: '20px', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.02)', width: 'fit-content' }}
         onMouseEnter={(e) => { e.currentTarget.style.color = '#0f172a'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
         onMouseLeave={(e) => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
       >
@@ -846,7 +846,7 @@ export default function RecordAvatarPage() {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, background: '#f8fafc', padding: '16px 24px', borderRadius: 12, border: '2px solid #F5F5F5' }}>
               <div style={{ fontSize: 15, color: '#475569', fontWeight: 500 }}>We'll provide a script on screen in</div>
-              <select style={{ padding: '8px 32px 8px 12px', border: '1px solid #e2e8f0', borderRadius: 8, background: '#fff', fontWeight: 600, fontSize: 14, color: '#0f172a', cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px top 50%', backgroundSize: '10px auto', transition: 'border-color 0.2s' }} onMouseEnter={e => e.currentTarget.style.borderColor = '#d86450'} onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}>
+              <select style={{ padding: '8px 32px 8px 12px', border: '1px solid #e0e0e0', borderRadius: 8, background: '#fff', fontWeight: 600, fontSize: 14, color: '#0f172a', cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px top 50%', backgroundSize: '10px auto', transition: 'border-color 0.2s' }} onMouseEnter={e => e.currentTarget.style.borderColor = '#d86450'} onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}>
                 <option>English</option>
                 <option>Spanish</option>
                 <option>French</option>

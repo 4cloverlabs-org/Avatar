@@ -129,7 +129,7 @@ export default function AnalyticsPage() {
           border-radius: 24px;
           padding: 24px;
           box-shadow: 0 4px 24px rgba(100, 100, 111, 0.05);
-          border: 1px solid rgba(0,0,0,0.02);
+          border: 1px solid #e0e0e0;
           display: flex;
           flex-direction: column;
         }
@@ -184,7 +184,7 @@ export default function AnalyticsPage() {
           gap: 12px;
           padding: 12px;
           border-radius: 12px;
-          border: 1px solid #f1f5f9;
+          border: 1px solid #e0e0e0;
           background: #fff;
           cursor: pointer;
           transition: all 0.2s;
@@ -195,7 +195,7 @@ export default function AnalyticsPage() {
         }
         .action-btn:hover {
           background: #f8fafc;
-          border-color: #e2e8f0;
+          border-color: #e0e0e0;
           box-shadow: 0 4px 8px rgba(0,0,0,0.04);
         }
         .card-header {
@@ -218,7 +218,7 @@ export default function AnalyticsPage() {
         .badge-btn {
           padding: 6px 12px;
           border-radius: 20px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid #e0e0e0;
           font-size: 12px;
           font-weight: 600;
           color: #64748b;
@@ -233,7 +233,7 @@ export default function AnalyticsPage() {
           height: 24px;
           border-radius: 50%;
           background: #f8fafc;
-          border: 1px solid #e2e8f0;
+          border: 1px solid #e0e0e0;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -263,7 +263,7 @@ export default function AnalyticsPage() {
               <div style={{ fontSize: 12, color: '#64748b', maxWidth: 80, lineHeight: 1.5, fontWeight: 500 }}>Posts in current cycle</div>
             </div>
 
-            <div style={{ width: '100%', height: 16, background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 8, marginBottom: 32, position: 'relative' }}>
+            <div style={{ width: '100%', height: 16, background: '#f8fafc', border: '1px solid #e0e0e0', borderRadius: 8, marginBottom: 32, position: 'relative' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${data?.planProgress?.completed || 0}%`, background: '#bfdbfe', borderRadius: 8 }}></div>
               <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${(data?.planProgress?.completed || 0) * 0.75}%`, background: '#60a5fa', borderRadius: 8 }}></div>
               {/* The vertical divider inside the bar */}
@@ -427,8 +427,8 @@ export default function AnalyticsPage() {
                 
                 {/* Mini Bars Exact */}
                 <div style={{ display: 'flex', gap: 6, height: 40, alignItems: 'flex-end', position: 'relative' }}>
-                  <div style={{ width: 6, height: '40%', background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 4 }}></div>
-                  <div style={{ width: 6, height: '60%', background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 4 }}></div>
+                  <div style={{ width: 6, height: '40%', background: '#f8fafc', border: '1px solid #e0e0e0', borderRadius: 4 }}></div>
+                  <div style={{ width: 6, height: '60%', background: '#f8fafc', border: '1px solid #e0e0e0', borderRadius: 4 }}></div>
                   
                   {/* Highlighted bar */}
                   <div style={{ position: 'relative' }}>
@@ -436,8 +436,8 @@ export default function AnalyticsPage() {
                     <div style={{ width: 6, height: '100%', background: '#fcd34d', borderRadius: 4 }}></div>
                   </div>
 
-                  <div style={{ width: 6, height: '30%', background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 4 }}></div>
-                  <div style={{ width: 6, height: '50%', background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 4 }}></div>
+                  <div style={{ width: 6, height: '30%', background: '#f8fafc', border: '1px solid #e0e0e0', borderRadius: 4 }}></div>
+                  <div style={{ width: 6, height: '50%', background: '#f8fafc', border: '1px solid #e0e0e0', borderRadius: 4 }}></div>
                 </div>
               </div>
             </div>
@@ -522,7 +522,7 @@ export default function AnalyticsPage() {
                 >
                   {timeframe} ▾
                   {isTimeframeDropdownOpen && (
-                    <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: 8, background: '#fff', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0', zIndex: 10, minWidth: 140, overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: 8, background: '#fff', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '1px solid #e0e0e0', zIndex: 10, minWidth: 140, overflow: 'hidden' }}>
                       {['Last 07 days', 'Last 14 days', 'Last 30 days'].map(tf => (
                         <div 
                           key={tf} 
@@ -655,7 +655,7 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Heatmap Grid Area */}
-            <div style={{ border: '1px solid #f1f5f9', borderRadius: '16px', padding: '24px 32px', marginBottom: 16 }}>
+            <div style={{ border: '1px solid #e0e0e0', borderRadius: '16px', padding: '24px 32px', marginBottom: 16 }}>
               {/* Months Header */}
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, paddingRight: 40, fontSize: 13, fontWeight: 500, color: '#1e293b' }}>
                 <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>

@@ -272,7 +272,7 @@ export default function YouTubeChannelPage() {
                   </div>
                 </div>
 
-                <div style={{ fontSize: 11, color: '#475569', background: '#ffffff', padding: 8, borderRadius: 4, border: '1px solid #e2e8f0', borderLeft: '3px solid #10b981' }}>
+                <div style={{ fontSize: 11, color: '#475569', background: '#ffffff', padding: 8, borderRadius: 4, border: '1px solid #e0e0e0', borderLeft: '3px solid #10b981' }}>
                   Audience retention is <strong>above average</strong> compared to similar duration shorts.
                 </div>
               </div>
