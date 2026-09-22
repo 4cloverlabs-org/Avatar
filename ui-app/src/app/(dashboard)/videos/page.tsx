@@ -143,7 +143,7 @@ export default function VideosView() {
                   right: 0, 
                   marginTop: 6,
                   background: '#fff', 
-                  border: '1px solid #e2e8f0', 
+                  border: '1px solid #e0e0e0', 
                   borderRadius: 10, 
                   zIndex: 21, 
                   width: '100%', 
@@ -193,7 +193,7 @@ export default function VideosView() {
       {isLoading ? (
         <div style={{ textAlign: 'center', padding: 60, color: '#9ca3af' }}>Loading generated videos...</div>
       ) : videos.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 20px', background: '#ffffff', borderRadius: 20, border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', padding: '80px 20px', background: '#ffffff', borderRadius: 20, border: '1px solid #e0e0e0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ width: 64, height: 64, borderRadius: 32, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
             <Video size={28} color="#94a3b8" strokeWidth={1.5} />
           </div>
@@ -202,7 +202,7 @@ export default function VideosView() {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
           {sortedVideos.map(video => (
-            <div key={video.id} className="home-recent-card" style={{ border: '2px solid #F5F5F5', borderRadius: 8, overflow: 'visible', background: '#fff', transition: 'border-color 0.2s ease-in-out', position: 'relative' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--accent)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = '#F5F5F5'}>
+            <div key={video.id} className="home-recent-card" style={{ border: '1px solid #e0e0e0', borderRadius: 12, overflow: 'visible', background: '#fff', transition: 'border-color 0.2s ease-in-out', position: 'relative' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = '#94a3b8'} onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}>
               <div 
                 className="home-recent-img" 
                 style={{ width: '100%', background: '#f8fafc', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px 6px 0 0', overflow: 'hidden', cursor: 'pointer' }}
@@ -232,7 +232,7 @@ export default function VideosView() {
                       autoFocus
                       value={editTitle}
                       onChange={e => setEditTitle(e.target.value)}
-                      style={{ flex: 1, padding: '4px 8px', borderRadius: 6, border: '1px solid #cbd5e1', fontSize: 14, outline: 'none' }}
+                      style={{ flex: 1, padding: '4px 8px', borderRadius: 6, border: '1px solid #e0e0e0', fontSize: 14, outline: 'none' }}
                     />
                     <button onClick={() => handleRename(video)} style={{ background: '#10b981', color: '#fff', border: 'none', borderRadius: 6, padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Check size={14}/></button>
                     <button onClick={() => setEditModeId(null)} style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 6, padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><X size={14}/></button>
@@ -250,7 +250,7 @@ export default function VideosView() {
                             style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9 }}
                             onClick={(e) => { e.stopPropagation(); setMenuOpenId(null); }}
                           />
-                          <div style={{ position: 'absolute', right: 0, top: 36, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, zIndex: 10, width: 180, overflow: 'hidden', padding: 4 }}>
+                          <div style={{ position: 'absolute', right: 0, top: 36, background: '#fff', border: '1px solid #e0e0e0', borderRadius: 12, zIndex: 10, width: 180, overflow: 'hidden', padding: 4 }}>
                           <div 
                             onClick={() => { setEditTitle(video.title); setEditModeId(video.id); setMenuOpenId(null); }}
                             style={{ padding: '8px 12px', fontSize: 13, color: '#334155', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, borderRadius: 6 }}
@@ -407,7 +407,7 @@ export default function VideosView() {
               <button 
                 className="cancel-btn"
                 onClick={() => setPreviewVideo(null)}
-                style={{ padding: '10px 24px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: 10, fontSize: 14, fontWeight: 600, color: '#334155', cursor: 'pointer', transition: 'background 0.2s' }}
+                style={{ padding: '10px 24px', background: '#fff', border: '1px solid #e0e0e0', borderRadius: 10, fontSize: 14, fontWeight: 600, color: '#334155', cursor: 'pointer', transition: 'background 0.2s' }}
               >
                 Cancel
               </button>

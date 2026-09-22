@@ -136,8 +136,8 @@ export default function HomeDashboard() {
       {/* Console Box */}
       <div style={{
         background: '#ffffff',
-        borderRadius: 8,
-        border: '2px solid #F5F5F5',
+        borderRadius: 12,
+        border: '1px solid #e0e0e0',
         padding: '20px 24px',
         textAlign: 'left',
         display: 'flex',
@@ -560,7 +560,7 @@ export default function HomeDashboard() {
 
       {/* Grid or List content */}
       {videos.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 20px', background: '#ffffff', borderRadius: 20, border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', padding: '80px 20px', background: '#ffffff', borderRadius: 20, border: '1px solid #e0e0e0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ width: 64, height: 64, borderRadius: 32, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
             <Video size={28} color="#94a3b8" strokeWidth={1.5} />
           </div>
@@ -576,16 +576,16 @@ export default function HomeDashboard() {
               key={idx}
               className="home-recent-card"
               onClick={() => setPreviewVideo(vid)}
-              style={{ minHeight: 240, borderRadius: 8, border: '2px solid #F5F5F5', overflow: 'hidden', transition: 'transform 0.2s ease-in-out, border-color 0.2s ease-in-out' }}
+              style={{ minHeight: 240, borderRadius: 12, border: '1px solid #e0e0e0', overflow: 'hidden', transition: 'transform 0.2s ease-in-out, border-color 0.2s ease-in-out' }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.boxShadow = 'none';
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.borderColor = 'var(--accent)';
+                e.currentTarget.style.borderColor = '#94a3b8';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.boxShadow = 'none';
                 e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.borderColor = '#F5F5F5';
+                e.currentTarget.style.borderColor = '#e0e0e0';
               }}
             >
               <div className="home-recent-img" style={{ background: '#0f172a', position: 'relative' }}>
@@ -638,9 +638,9 @@ export default function HomeDashboard() {
           ))}
         </div>
       ) : (
-        <div style={{ background: '#ffffff', border: '2px solid #F5F5F5', borderRadius: 8, overflow: 'hidden' }}>
+        <div style={{ background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: 12, overflow: 'hidden' }}>
           {/* Header Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', padding: '12px 20px', borderBottom: '2px solid #F5F5F5', background: '#f8fafc', fontSize: 12, fontWeight: 600, color: '#64748b' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', padding: '12px 20px', borderBottom: '1px solid #e0e0e0', background: '#f8fafc', fontSize: 12, fontWeight: 600, color: '#64748b' }}>
             <div>Name</div>
             <div>Duration</div>
             <div>Date Created</div>
@@ -657,7 +657,7 @@ export default function HomeDashboard() {
                 display: 'grid',
                 gridTemplateColumns: '2fr 1fr 1fr 1fr auto',
                 padding: '16px 20px',
-                borderBottom: idx === videos.length - 1 ? 'none' : '2px solid #F5F5F5',
+                borderBottom: idx === videos.length - 1 ? 'none' : '1px solid #e0e0e0',
                 alignItems: 'center',
                 fontSize: 13,
                 cursor: 'pointer',
@@ -813,7 +813,7 @@ export default function HomeDashboard() {
               <button 
                 className="cancel-btn"
                 onClick={() => setPreviewVideo(null)}
-                style={{ padding: '10px 24px', background: '#fff', border: '1px solid #cbd5e1', borderRadius: 10, fontSize: 14, fontWeight: 600, color: '#334155', cursor: 'pointer', transition: 'background 0.2s' }}
+                style={{ padding: '10px 24px', background: '#fff', border: '1px solid #e0e0e0', borderRadius: 10, fontSize: 14, fontWeight: 600, color: '#334155', cursor: 'pointer', transition: 'background 0.2s' }}
               >
                 Cancel
               </button>

@@ -27,7 +27,7 @@ export default function CreateAvatarPage() {
           {/* Option 1 */}
           <div 
             onClick={() => router.push('/avatars/create/record')}
-            style={{ display: 'flex', flexDirection: 'column', padding: 32, border: '1px solid #e2e8f0', borderRadius: 20, cursor: 'pointer', transition: 'all 0.2s', background: '#fff', position: 'relative', overflow: 'hidden' }}
+            style={{ display: 'flex', flexDirection: 'column', padding: 32, border: '1px solid #e0e0e0', borderRadius: 20, cursor: 'pointer', transition: 'all 0.2s', background: '#fff', position: 'relative', overflow: 'hidden' }}
             onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#4f46e5'; e.currentTarget.querySelector('.arrow')?.setAttribute('stroke', '#4f46e5'); e.currentTarget.querySelector('.arrow')?.setAttribute('transform', 'translateX(4px)'); }}
             onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.querySelector('.arrow')?.setAttribute('stroke', '#cbd5e1'); e.currentTarget.querySelector('.arrow')?.setAttribute('transform', 'translateX(0)'); }}
           >
@@ -45,7 +45,7 @@ export default function CreateAvatarPage() {
 
           {/* Option 2 */}
           <div 
-            style={{ display: 'flex', flexDirection: 'column', padding: 32, border: '1px solid #e2e8f0', borderRadius: 20, cursor: 'not-allowed', transition: 'all 0.2s', background: '#f8fafc', position: 'relative', overflow: 'hidden', opacity: 0.7 }}
+            style={{ display: 'flex', flexDirection: 'column', padding: 32, border: '1px solid #e0e0e0', borderRadius: 20, cursor: 'not-allowed', transition: 'all 0.2s', background: '#f8fafc', position: 'relative', overflow: 'hidden', opacity: 0.7 }}
           >
             <div style={{ position: 'absolute', top: 24, right: 24, background: '#f1f5f9', color: '#64748b', fontSize: 12, fontWeight: 600, padding: '4px 8px', borderRadius: 6, letterSpacing: '0.05em' }}>COMING SOON</div>
             <div style={{ width: 56, height: 56, borderRadius: 16, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>

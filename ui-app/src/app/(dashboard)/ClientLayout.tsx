@@ -371,7 +371,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   background: '#ffffff',
                   borderRadius: '12px',
                   boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid #e0e0e0',
                   zIndex: 100,
                   overflow: 'hidden',
                   display: 'flex',
@@ -485,7 +485,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <NavItem href="/avatars" icon={Users} label="Avatars" />
           <NavItem href="/voices" icon={Mic} label="Voices" />
           <NavItem href="/socials" icon={Share2} label="Socials" />
-          <NavItem href="/library" icon={BookOpen} label="Library" />
           <NavItem href="/trash" icon={Trash} label="Trash" />
         </div>
 
@@ -710,7 +709,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       top: '40px',
                       width: '240px',
                       background: '#ffffff',
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid #e0e0e0',
                       boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
                       borderRadius: '12px',
                       padding: '12px',
@@ -837,7 +836,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   width: '100%',
                   padding: '12px 16px',
                   borderRadius: '8px',
-                  border: '1px solid #cbd5e1',
+                  border: '1px solid #e0e0e0',
                   fontSize: '14px',
                   outline: 'none',
                   transition: 'border-color 0.2s, box-shadow 0.2s'

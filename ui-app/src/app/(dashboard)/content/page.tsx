@@ -314,7 +314,7 @@ export default function ContentSchedulerPage() {
           background-color: #ffffff;
           border-radius: 12px;
           padding: 24px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid #e0e0e0;
           box-shadow: none; 
           display: flex;
           flex-direction: column;
@@ -342,7 +342,7 @@ export default function ContentSchedulerPage() {
           width: 100%;
           padding: 12px 16px;
           border-radius: 8px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid #e0e0e0;
           background-color: #ffffff;
           font-size: 14px;
           font-weight: 500;
@@ -351,13 +351,13 @@ export default function ContentSchedulerPage() {
           transition: all 0.2s;
         }
         .input-element:focus {
-          border-color: #94a3b8;
+          border-color: #e0e0e0;
         }
         .custom-dropdown-btn {
           width: 100%;
           padding: 12px 16px;
           border-radius: 8px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid #e0e0e0;
           background-color: #ffffff;
           font-size: 14px;
           font-weight: 500;
@@ -378,7 +378,7 @@ export default function ContentSchedulerPage() {
           left: 0;
           width: 100%;
           background: #ffffff;
-          border: 1px solid #e2e2e2;
+          border: 1px solid #e0e0e0;
           border-radius: 16px;
           box-shadow: 0 10px 30px rgba(0,0,0,0.08);
           z-index: 100;
@@ -463,7 +463,7 @@ export default function ContentSchedulerPage() {
           width: 100%;
         }
         .secondary-btn:hover {
-          border-color: #d86450;
+          border-color: #e0e0e0;
           color: #d86450;
           background-color: #fff1f0;
         }
@@ -487,7 +487,7 @@ export default function ContentSchedulerPage() {
         }
         .remove-btn {
           background: #fff;
-          border: 1px solid #e2e2e2;
+          border: 1px solid #e0e0e0;
           color: #ef4444;
           width: 36px;
           height: 36px;
@@ -500,7 +500,7 @@ export default function ContentSchedulerPage() {
         }
         .remove-btn:hover {
           background: #fef2f2;
-          border-color: #fca5a5;
+          border-color: #e0e0e0;
         }
         
         /* Premium Detail View Styles */
@@ -517,7 +517,7 @@ export default function ContentSchedulerPage() {
         .premium-card {
           background: #ffffff;
           border-radius: 12px;
-          border: 1px solid #e5e7eb;
+          border: 1px solid #e0e0e0;
           padding: 20px 24px;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
           display: flex;
@@ -547,7 +547,7 @@ export default function ContentSchedulerPage() {
           gap: 6px;
           padding: 6px 12px;
           border-radius: 100px;
-          border: 1px solid #e5e7eb;
+          border: 1px solid #e0e0e0;
           background: #ffffff;
           color: #4b5563;
           font-weight: 500;
@@ -556,10 +556,10 @@ export default function ContentSchedulerPage() {
           transition: all 0.2s ease;
         }
         .premium-pill:hover {
-          border-color: #d1d5db;
+          border-color: #e0e0e0;
         }
         .premium-pill.active {
-          border-color: #3b82f6;
+          border-color: #e0e0e0;
           color: #3b82f6;
           background: #eff6ff;
         }
@@ -570,7 +570,7 @@ export default function ContentSchedulerPage() {
           gap: 12px;
         }
         .platform-box {
-          border: 1px solid #e5e7eb;
+          border: 1px solid #e0e0e0;
           border-radius: 8px;
           padding: 12px;
           display: flex;
@@ -583,7 +583,7 @@ export default function ContentSchedulerPage() {
           position: relative;
         }
         .platform-box:hover {
-          border-color: #d1d5db;
+          border-color: #e0e0e0;
         }
         .platform-box .check-icon {
           position: absolute;
@@ -595,7 +595,7 @@ export default function ContentSchedulerPage() {
           color: #3b82f6;
         }
         .platform-box.active-tiktok, .platform-box.active-youtube, .platform-box.active-instagram {
-          border-color: #3b82f6;
+          border-color: #e0e0e0;
           background: #eff6ff;
         }
         .platform-box[class*="active-"] .check-icon {
@@ -607,12 +607,12 @@ export default function ContentSchedulerPage() {
           display: flex;
           align-items: center;
           background: #ffffff;
-          border: 1px solid #d1d5db;
+          border: 1px solid #e0e0e0;
           border-radius: 6px;
           transition: border-color 0.2s;
         }
         .premium-input-group:focus-within, .premium-input-group.active {
-          border-color: #3b82f6;
+          border-color: #e0e0e0;
         }
         .premium-input {
           background: transparent;
@@ -631,7 +631,7 @@ export default function ContentSchedulerPage() {
           gap: 12px;
           padding: 8px 12px;
           background: #ffffff;
-          border: 1px solid #d1d5db;
+          border: 1px solid #e0e0e0;
           border-radius: 6px;
           margin-bottom: 8px;
         }
@@ -639,7 +639,7 @@ export default function ContentSchedulerPage() {
           margin-bottom: 0;
         }
         .time-row:focus-within {
-          border-color: #3b82f6;
+          border-color: #e0e0e0;
         }
         .time-dot {
           display: none;
@@ -777,7 +777,7 @@ export default function ContentSchedulerPage() {
                 .folder-card:not(.primary-folder) .folder-pill {
                   background: #fff;
                   color: #166534;
-                  border: 1px solid #bbf7d0;
+                  border: 1px solid #e0e0e0;
                 }
 
                 .folder-card:not(.primary-folder) .folder-pill-dot {
@@ -860,7 +860,7 @@ export default function ContentSchedulerPage() {
                   {/* Niche */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
                         <Target size={20} />
                       </div>
                       <div>
@@ -896,7 +896,7 @@ export default function ContentSchedulerPage() {
                   {/* Campaign Duration */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
                         <Calendar size={20} />
                       </div>
                       <div>
@@ -927,7 +927,7 @@ export default function ContentSchedulerPage() {
                   {/* Avatar */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
                         <Users size={20} />
                       </div>
                       <div>
@@ -963,7 +963,7 @@ export default function ContentSchedulerPage() {
                   {/* Voice */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2c-1.7 0-3 1.2-3 2.8v6.4c0 1.6 1.3 2.8 3 2.8s3-1.2 3-2.8V4.8C15 3.2 13.7 2 12 2z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                       </div>
                       <div>
@@ -996,7 +996,7 @@ export default function ContentSchedulerPage() {
                   {/* Content Style */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
                         <Sparkles size={20} />
                       </div>
                       <div>
@@ -1025,7 +1025,7 @@ export default function ContentSchedulerPage() {
                     return (
                       <div key={plat} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
                             {plat === 'TikTok' ? <TikTokIcon size={20} /> : plat === 'YouTube Shorts' ? <YouTubeIcon size={20} /> : <InstagramIcon size={20} />}
                           </div>
                           <div>
@@ -1061,7 +1061,7 @@ export default function ContentSchedulerPage() {
                   {/* Frequency */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
                         <Activity size={20} />
                       </div>
                       <div>
@@ -1105,7 +1105,7 @@ export default function ContentSchedulerPage() {
                     return (
                       <div key={`time-${idx}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
                             <Clock size={20} />
                           </div>
                           <div>
@@ -1117,7 +1117,7 @@ export default function ContentSchedulerPage() {
                             </div>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '4px', transition: 'border-color 0.2s', position: 'relative' }}
+                        <div style={{ display: 'flex', alignItems: 'center', background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: '8px', padding: '4px', transition: 'border-color 0.2s', position: 'relative' }}
                              onFocus={(e) => e.currentTarget.style.borderColor = '#10b981'}
                              onBlur={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
                         >

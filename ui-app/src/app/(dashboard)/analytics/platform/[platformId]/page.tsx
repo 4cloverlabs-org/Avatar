@@ -95,7 +95,7 @@ export default function PlatformDeepDivePage() {
           border-radius: 24px;
           padding: 32px;
           box-shadow: 0 4px 24px rgba(100, 100, 111, 0.05);
-          border: 1px solid rgba(0,0,0,0.02);
+          border: 1px solid #e0e0e0;
           display: flex;
           flex-direction: column;
         }
@@ -104,7 +104,7 @@ export default function PlatformDeepDivePage() {
           border-radius: 20px;
           padding: 24px;
           box-shadow: 0 4px 20px rgba(100, 100, 111, 0.04);
-          border: 1px solid rgba(0,0,0,0.02);
+          border: 1px solid #e0e0e0;
           display: flex;
           align-items: center;
           gap: 20px;
@@ -326,7 +326,7 @@ export default function PlatformDeepDivePage() {
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {topVideos.map((vid, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #f1f5f9' }}>
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e0e0e0' }}>
                 <div style={{ width: 40, height: 40, borderRadius: '8px', background: config.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', opacity: 0.9 }}>
                   <Play size={18} fill="currentColor" />
                 </div>

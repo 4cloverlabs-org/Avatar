@@ -205,7 +205,7 @@ function MyVoicesUI() {
               placeholder="e.g. My Studio Voice" 
               value={newVoiceName}
               onChange={(e) => setNewVoiceName(e.target.value)}
-              style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #e2e8f0', marginBottom: 20, outline: 'none' }}
+              style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #e0e0e0', marginBottom: 20, outline: 'none' }}
             />
 
             <label style={{ display: 'block', marginBottom: 8, fontSize: 14, fontWeight: 600 }}>Audio Sample (.wav or .mp3)</label>
@@ -273,7 +273,7 @@ function MyVoicesUI() {
               <button 
                 onClick={() => setIsModalOpen(false)}
                 disabled={isUploading}
-                style={{ padding: '10px 16px', borderRadius: 8, border: '1px solid #e2e8f0', background: '#fff', cursor: 'pointer', fontWeight: 600 }}
+                style={{ padding: '10px 16px', borderRadius: 8, border: '1px solid #e0e0e0', background: '#fff', cursor: 'pointer', fontWeight: 600 }}
               >
                 Cancel
               </button>
@@ -303,7 +303,7 @@ function MyVoicesUI() {
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
           {voices.map(voice => (
-            <div key={voice.id} style={{ background: '#f8fafc', borderRadius: 12, overflow: 'hidden', padding: '24px 0 0 0', border: '1px solid #e2e8f0' }}>
+            <div key={voice.id} style={{ background: '#f8fafc', borderRadius: 12, overflow: 'hidden', padding: '24px 0 0 0', border: '1px solid #e0e0e0' }}>
               {renderWaveform()}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 20px 20px', marginTop: 10 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -508,12 +508,12 @@ function SystemVoicesUI() {
             {selectedLangObj.region}
           </div>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #e2e8f0', padding: '6px 12px', borderRadius: 8, color: '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #e0e0e0', padding: '6px 12px', borderRadius: 8, color: '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
             Region
           </div>
         )}
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #e2e8f0', padding: '6px 12px', borderRadius: 8, color: '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #e0e0e0', padding: '6px 12px', borderRadius: 8, color: '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
           Gender
         </div>
       </div>
@@ -521,7 +521,7 @@ function SystemVoicesUI() {
       {/* Voices Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: 16 }}>
         {filteredVoices.map(voice => (
-          <div key={voice.id} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#fff', border: '1px solid #e2e8f0', padding: '16px', borderRadius: 12 }}>
+          <div key={voice.id} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#fff', border: '1px solid #e0e0e0', padding: '16px', borderRadius: 12 }}>
             <div 
               onClick={() => handlePlayVoice(voice.id)}
               style={{ width: 32, height: 32, borderRadius: '50%', background: playingId === voice.id ? '#4f46e5' : '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}
