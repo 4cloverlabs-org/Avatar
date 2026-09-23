@@ -91,7 +91,7 @@ export default function HowItWorks() {
                 <div style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', fontWeight: 500, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
                   {feature.title}
                 </div>
-                <div className="mono-text" style={{ fontSize: '0.95rem', color: '#64748b', lineHeight: '1.5' }}>
+                <div className="mono-text" style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
                   {feature.desc}
                 </div>
               </motion.div>

@@ -15,7 +15,7 @@ export default function Integrations() {
          <div className="premium-glass-card" style={{ 
             width: '240px', 
             height: '135px', 
-            background: '#FFFFFF', 
+            background: 'var(--panel-bg)', 
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -40,7 +40,7 @@ export default function Integrations() {
                  style={{ 
                    width: '120px', 
                    height: '213px', 
-                   background: '#FFFFFF', 
+                   background: 'var(--panel-bg)', 
                    display: 'flex',
                    flexDirection: 'column',
                    alignItems: 'center',
@@ -64,7 +64,7 @@ export default function Integrations() {
                  style={{ 
                    width: '180px', 
                    height: '101px', 
-                   background: '#FFFFFF', 
+                   background: 'var(--panel-bg)', 
                    display: 'flex',
                    flexDirection: 'column',
                    alignItems: 'center',
@@ -88,7 +88,7 @@ export default function Integrations() {
                  style={{ 
                    width: '120px', 
                    height: '213px', 
-                   background: '#FFFFFF', 
+                   background: 'var(--panel-bg)', 
                    display: 'flex',
                    flexDirection: 'column',
                    alignItems: 'center',
@@ -98,7 +98,7 @@ export default function Integrations() {
                    border: '1px solid #000000'
                  }}
                >
-                 <div style={{ width: '28px', height: '28px', background: '#000000', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFF', fontSize: '12px', fontWeight: 700 }}>t</div>
+                 <div style={{ width: '28px', height: '28px', background: '#000000', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--panel-bg)', fontSize: '12px', fontWeight: 700 }}>t</div>
                  <span style={{ fontWeight: 500, fontSize: '0.9rem' }}>TikTok</span>
                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>9:16</span>
                </motion.div>

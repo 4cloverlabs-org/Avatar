@@ -75,20 +75,20 @@ export default function FeaturesGrid() {
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--panel-bg)',
         }}>
           
           {/* Row 1 */}
           <div className="features-split-row">
             <div className="features-split-left">
-              <h3 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.75rem)', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
+              <h3 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.75rem)', fontWeight: 600, color: 'var(--foreground)', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
                 Automated Audience Growth
               </h3>
-              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
                 Our AI engine works around the clock to optimize your content delivery, ensuring that your message reaches the right people at the exact right moment.
               </p>
             </div>
-            <div className="features-split-right" style={{ minHeight: '400px', backgroundColor: '#FFFFFF' }}>
+            <div className="features-split-right" style={{ minHeight: '400px', backgroundColor: 'var(--panel-bg)' }}>
               <FunnelChart inView={inView} />
             </div>
           </div>
@@ -96,14 +96,14 @@ export default function FeaturesGrid() {
           {/* Row 2 */}
           <div className="features-split-row">
             <div className="features-split-left">
-              <h3 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.75rem)', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
+              <h3 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.75rem)', fontWeight: 600, color: 'var(--foreground)', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
                 Sustain Long-Term Engagement
               </h3>
-              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
                 Keep your audience captivated with continuous, high-quality interactions. Deliver personalized experiences that create loyal followers who keep coming back.
               </p>
             </div>
-            <div className="features-split-right" style={{ minHeight: '400px', backgroundColor: '#FFFFFF' }}>
+            <div className="features-split-right" style={{ minHeight: '400px', backgroundColor: 'var(--panel-bg)' }}>
               <ViewerRetentionChart inView={inView} />
             </div>
           </div>
@@ -111,10 +111,10 @@ export default function FeaturesGrid() {
           {/* Row 3 */}
           <div className="features-split-row">
             <div className="features-split-left">
-              <h3 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.75rem)', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
+              <h3 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.75rem)', fontWeight: 600, color: 'var(--foreground)', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)' }}>
                 Loved by creators.
               </h3>
-              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
                 See how professionals are using Avatar to scale their content without stepping into a studio.
               </p>
             </div>
@@ -136,7 +136,7 @@ export default function FeaturesGrid() {
                         display: 'flex', 
                         gap: '1.25rem', 
                         padding: '1.5rem', 
-                        backgroundColor: '#FFFFFF', 
+                        backgroundColor: 'var(--panel-bg)', 
                         borderRadius: '12px',
                         border: '1px solid #e5e7eb',
                         width: '100%',
@@ -146,10 +146,10 @@ export default function FeaturesGrid() {
                       <img src={t.avatar} alt={t.name} style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
                       <div>
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', margin: '0 0 0.5rem 0' }}>
-                          <span style={{ fontWeight: 600, color: '#111827', fontSize: '1rem' }}>{t.name}</span>
-                          <span style={{ color: '#6B7280', fontSize: '0.85rem' }}>{t.title}</span>
+                          <span style={{ fontWeight: 600, color: 'var(--foreground)', fontSize: '1rem' }}>{t.name}</span>
+                          <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{t.title}</span>
                         </div>
-                        <p style={{ color: '#4B5563', margin: 0, lineHeight: 1.5, fontSize: '0.95rem' }}>
+                        <p style={{ color: 'var(--text-muted)', margin: 0, lineHeight: 1.5, fontSize: '0.95rem' }}>
                           "{t.quote}"
                         </p>
                       </div>

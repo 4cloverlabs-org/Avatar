@@ -100,9 +100,9 @@ export default function VideosView() {
     <div className="home-content">
       {/* HEADER SECTION WITH SORTING */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, padding: '0 8px' }}>
-        <h2 style={{ fontSize: 24, fontWeight: 700, color: '#0f172a' }}>Generated Videos</h2>
+        <h2 style={{ fontSize: 24, fontWeight: 700, color: 'var(--foreground)' }}>Generated Videos</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, position: 'relative' }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: '#64748b' }}>Sort by:</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-muted)' }}>Sort by:</span>
           
           {/* Custom Professional Dropdown */}
           <div style={{ position: 'relative' }}>
@@ -114,11 +114,11 @@ export default function VideosView() {
                 justifyContent: 'space-between',
                 padding: '8px 12px', 
                 borderRadius: 8, 
-                border: isSortOpen ? '1px solid #3b82f6' : '1px solid #e2e8f0', 
-                background: '#fff', 
+                border: isSortOpen ? '1px solid #3b82f6' : '1px solid var(--panel-border)', 
+                background: 'var(--panel-bg)', 
                 fontSize: 14, 
                 fontWeight: 500,
-                color: '#334155',
+                color: 'var(--foreground)',
                 cursor: 'pointer',
                 minWidth: 160,
                 transition: 'all 0.2s',
@@ -142,8 +142,8 @@ export default function VideosView() {
                   top: '100%', 
                   right: 0, 
                   marginTop: 6,
-                  background: '#fff', 
-                  border: '1px solid #e0e0e0', 
+                  background: 'var(--panel-bg)', 
+                  border: '1px solid var(--panel-border)', 
                   borderRadius: 10, 
                   zIndex: 21, 
                   width: '100%', 
@@ -162,8 +162,8 @@ export default function VideosView() {
                         padding: '8px 12px',
                         fontSize: 14,
                         fontWeight: 500,
-                        color: sortBy === option.value ? '#3b82f6' : '#475569',
-                        background: sortBy === option.value ? '#eff6ff' : 'transparent',
+                        color: sortBy === option.value ? '#3b82f6' : 'var(--text-muted)',
+                        background: sortBy === option.value ? 'var(--muted-bg)' : 'transparent',
                         borderRadius: 6,
                         cursor: 'pointer',
                         transition: 'background 0.15s',
@@ -172,7 +172,7 @@ export default function VideosView() {
                         justifyContent: 'space-between'
                       }}
                       onMouseEnter={(e) => {
-                        if (sortBy !== option.value) e.currentTarget.style.background = '#f8fafc';
+                        if (sortBy !== option.value) e.currentTarget.style.background = 'var(--muted-bg)';
                       }}
                       onMouseLeave={(e) => {
                         if (sortBy !== option.value) e.currentTarget.style.background = 'transparent';
@@ -193,19 +193,19 @@ export default function VideosView() {
       {isLoading ? (
         <div style={{ textAlign: 'center', padding: 60, color: '#9ca3af' }}>Loading generated videos...</div>
       ) : videos.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 20px', background: '#ffffff', borderRadius: 20, border: '1px solid #e0e0e0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: 64, height: 64, borderRadius: 32, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-            <Video size={28} color="#94a3b8" strokeWidth={1.5} />
+        <div style={{ textAlign: 'center', padding: '80px 20px', background: 'var(--panel-bg)', borderRadius: 20, border: '1px solid var(--panel-border)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 64, height: 64, borderRadius: 32, background: 'var(--muted-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+            <Video size={28} color='var(--text-muted)' strokeWidth={1.5} />
           </div>
-          <div style={{ color: '#1e293b', fontSize: 17, fontWeight: 600, letterSpacing: '-0.01em' }}>No generated videos found</div>
+          <div style={{ color: 'var(--foreground)', fontSize: 17, fontWeight: 600, letterSpacing: '-0.01em' }}>No generated videos found</div>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
           {sortedVideos.map(video => (
-            <div key={video.id} className="home-recent-card" style={{ border: '1px solid #e0e0e0', borderRadius: 12, overflow: 'visible', background: '#fff', transition: 'border-color 0.2s ease-in-out', position: 'relative' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = '#94a3b8'} onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}>
+            <div key={video.id} className="home-recent-card" style={{ border: '1px solid var(--panel-border)', borderRadius: 12, overflow: 'visible', background: 'var(--panel-bg)', transition: 'border-color 0.2s ease-in-out', position: 'relative' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--text-muted)'} onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--panel-border)'}>
               <div 
                 className="home-recent-img" 
-                style={{ width: '100%', background: '#f8fafc', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px 6px 0 0', overflow: 'hidden', cursor: 'pointer' }}
+                style={{ width: '100%', background: 'var(--muted-bg)', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px 6px 0 0', overflow: 'hidden', cursor: 'pointer' }}
                 onClick={() => setPreviewVideo(video)}
               >
                 <video 
@@ -232,16 +232,16 @@ export default function VideosView() {
                       autoFocus
                       value={editTitle}
                       onChange={e => setEditTitle(e.target.value)}
-                      style={{ flex: 1, padding: '4px 8px', borderRadius: 6, border: '1px solid #e0e0e0', fontSize: 14, outline: 'none' }}
+                      style={{ flex: 1, padding: '4px 8px', borderRadius: 6, border: '1px solid var(--panel-border)', fontSize: 14, outline: 'none' }}
                     />
-                    <button onClick={() => handleRename(video)} style={{ background: '#10b981', color: '#fff', border: 'none', borderRadius: 6, padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Check size={14}/></button>
-                    <button onClick={() => setEditModeId(null)} style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 6, padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><X size={14}/></button>
+                    <button onClick={() => handleRename(video)} style={{ background: '#10b981', color: 'var(--panel-bg)', border: 'none', borderRadius: 6, padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><Check size={14}/></button>
+                    <button onClick={() => setEditModeId(null)} style={{ background: '#ef4444', color: 'var(--panel-bg)', border: 'none', borderRadius: 6, padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><X size={14}/></button>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                    <div className="home-recent-title" style={{ flex: 1, minWidth: 0, fontWeight: 700, fontSize: 15, color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', paddingRight: 16, letterSpacing: '-0.3px' }}>{video.title}</div>
+                    <div className="home-recent-title" style={{ flex: 1, minWidth: 0, fontWeight: 700, fontSize: 15, color: 'var(--foreground)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', paddingRight: 16, letterSpacing: '-0.3px' }}>{video.title}</div>
                     <div style={{ position: 'relative', flexShrink: 0 }}>
-                      <button onClick={() => setMenuOpenId(menuOpenId === video.id ? null : video.id)} style={{ background: menuOpenId === video.id ? '#f1f5f9' : 'transparent', border: 'none', cursor: 'pointer', padding: 6, borderRadius: 8, color: '#64748b', display: 'flex', transition: 'all 0.2s' }}>
+                      <button onClick={() => setMenuOpenId(menuOpenId === video.id ? null : video.id)} style={{ background: menuOpenId === video.id ? 'var(--muted-bg)' : 'transparent', border: 'none', cursor: 'pointer', padding: 6, borderRadius: 8, color: 'var(--text-muted)', display: 'flex', transition: 'all 0.2s' }}>
                         <MoreVertical size={18} />
                       </button>
                       {menuOpenId === video.id && (
@@ -250,21 +250,21 @@ export default function VideosView() {
                             style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9 }}
                             onClick={(e) => { e.stopPropagation(); setMenuOpenId(null); }}
                           />
-                          <div style={{ position: 'absolute', right: 0, top: 36, background: '#fff', border: '1px solid #e0e0e0', borderRadius: 12, zIndex: 10, width: 180, overflow: 'hidden', padding: 4 }}>
+                          <div style={{ position: 'absolute', right: 0, top: 36, background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 12, zIndex: 10, width: 180, overflow: 'hidden', padding: 4 }}>
                           <div 
                             onClick={() => { setEditTitle(video.title); setEditModeId(video.id); setMenuOpenId(null); }}
-                            style={{ padding: '8px 12px', fontSize: 13, color: '#334155', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, borderRadius: 6 }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
+                            style={{ padding: '8px 12px', fontSize: 13, color: 'var(--foreground)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, borderRadius: 6 }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted-bg)'}
                             onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                           >
-                            <Edit2 size={14} color="#64748b" /> Rename
+                            <Edit2 size={14} color='var(--text-muted)' /> Rename
                           </div>
-                          <div style={{ margin: '4px 0', borderBottom: '1px solid #f1f5f9' }}></div>
-                          <div style={{ padding: '8px 12px', fontSize: 11, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5 }}>Download</div>
-                          <a href={`/api/videos/download?filename=${video.filename}&quality=original`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: '#334155', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>Original Quality</a>
-                          <a href={`/api/videos/download?filename=${video.filename}&quality=4k`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: '#334155', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>4K (UHD)</a>
-                          <a href={`/api/videos/download?filename=${video.filename}&quality=1080p`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: '#334155', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>1080p (HD)</a>
-                          <a href={`/api/videos/download?filename=${video.filename}&quality=720p`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: '#334155', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>720p (SD)</a>
+                          <div style={{ margin: '4px 0', borderBottom: '1px solid var(--muted-bg)' }}></div>
+                          <div style={{ padding: '8px 12px', fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5 }}>Download</div>
+                          <a href={`/api/videos/download?filename=${video.filename}&quality=original`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: 'var(--foreground)', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted-bg)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>Original Quality</a>
+                          <a href={`/api/videos/download?filename=${video.filename}&quality=4k`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: 'var(--foreground)', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted-bg)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>4K (UHD)</a>
+                          <a href={`/api/videos/download?filename=${video.filename}&quality=1080p`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: 'var(--foreground)', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted-bg)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>1080p (HD)</a>
+                          <a href={`/api/videos/download?filename=${video.filename}&quality=720p`} download style={{ display: 'block', padding: '8px 12px', fontSize: 13, color: 'var(--foreground)', textDecoration: 'none', borderRadius: 6, cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--muted-bg)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>720p (SD)</a>
                           <div 
                             onClick={() => { handleDelete(video, true); setMenuOpenId(null); }}
                             style={{ padding: '8px 12px', fontSize: 13, color: '#f59e0b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, borderRadius: 6 }}
@@ -287,8 +287,8 @@ export default function VideosView() {
                     </div>
                   </div>
                 )}
-                <div className="home-recent-meta" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#64748b', margin: 0, marginTop: 6, fontWeight: 500 }}>
-                  <Clock size={12} color="#94a3b8" />
+                <div className="home-recent-meta" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-muted)', margin: 0, marginTop: 6, fontWeight: 500 }}>
+                  <Clock size={12} color='var(--text-muted)' />
                   {new Date(video.edited).toLocaleDateString()} at {new Date(video.edited).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                 </div>
               </div>
@@ -310,27 +310,27 @@ export default function VideosView() {
               to { opacity: 1; transform: translateY(0) scale(1); }
             }
             .quality-radio:hover { border-color: #6366f1 !important; }
-            .cancel-btn:hover { background: #f8fafc !important; }
+            .cancel-btn:hover { background: var(--muted-bg) !important; }
             .download-btn:hover { background: #4338ca !important; }
           `}</style>
           
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(4px)' }} onClick={() => setPreviewVideo(null)} />
           
-          <div style={{ position: 'relative', width: '100%', maxWidth: 960, background: '#ffffff', borderRadius: 16, display: 'flex', flexDirection: 'column', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
+          <div style={{ position: 'relative', width: '100%', maxWidth: 960, background: 'var(--panel-bg)', borderRadius: 16, display: 'flex', flexDirection: 'column', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
             
             {/* Header */}
             <div style={{ padding: '24px 32px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.5px' }}>{previewVideo.title}</h3>
-                <div style={{ color: '#64748b', fontSize: 13, marginTop: 4, fontWeight: 500 }}>
+                <h3 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: 'var(--foreground)', letterSpacing: '-0.5px' }}>{previewVideo.title}</h3>
+                <div style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 4, fontWeight: 500 }}>
                   {new Date(previewVideo.edited).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} • {new Date(previewVideo.edited).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
                 </div>
               </div>
               <button 
                 onClick={() => setPreviewVideo(null)} 
-                style={{ background: '#f1f5f9', border: 'none', color: '#64748b', width: 36, height: 36, borderRadius: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }} 
-                onMouseEnter={(e) => e.currentTarget.style.background = '#e2e8f0'} 
-                onMouseLeave={(e) => e.currentTarget.style.background = '#f1f5f9'}
+                style={{ background: 'var(--muted-bg)', border: 'none', color: 'var(--text-muted)', width: 36, height: 36, borderRadius: 10, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }} 
+                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--panel-border)'} 
+                onMouseLeave={(e) => e.currentTarget.style.background = 'var(--muted-bg)'}
               >
                 <X size={18} />
               </button>
@@ -368,24 +368,24 @@ export default function VideosView() {
                         onClick={() => setDownloadQuality(option.id)}
                         style={{ 
                           display: 'flex', alignItems: 'center', gap: 16, padding: '16px', borderRadius: 12, 
-                          border: `1.5px solid ${isActive ? '#6366f1' : '#e2e8f0'}`, 
-                          background: isActive ? '#fefeff' : '#fff', 
+                          border: `1.5px solid ${isActive ? '#6366f1' : 'var(--panel-border)'}`, 
+                          background: isActive ? '#fefeff' : 'var(--panel-bg)', 
                           cursor: 'pointer', transition: 'all 0.2s',
                           boxShadow: isActive ? '0 4px 12px rgba(99, 102, 241, 0.1)' : 'none'
                         }}
                       >
                         {/* Custom Radio Button */}
-                        <div style={{ width: 20, height: 20, borderRadius: '50%', border: `2px solid ${isActive ? '#6366f1' : '#cbd5e1'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <div style={{ width: 20, height: 20, borderRadius: '50%', border: `2px solid ${isActive ? '#6366f1' : 'var(--panel-border)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                           {isActive && <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#6366f1' }} />}
                         </div>
                         <div style={{ flex: 1 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                            <span style={{ fontSize: 14, fontWeight: 700, color: isActive ? '#4f46e5' : '#1e293b' }}>{option.label}</span>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: isActive ? '#4f46e5' : 'var(--foreground)' }}>{option.label}</span>
                             {option.hd && (
-                              <span style={{ background: isActive ? '#6366f1' : '#3b82f6', color: '#fff', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, letterSpacing: 0.5 }}>HD</span>
+                              <span style={{ background: isActive ? '#6366f1' : '#3b82f6', color: 'var(--panel-bg)', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, letterSpacing: 0.5 }}>HD</span>
                             )}
                           </div>
-                          <div style={{ fontSize: 12, color: isActive ? '#6366f1' : '#64748b', opacity: isActive ? 0.8 : 1, fontWeight: 500 }}>{option.res}</div>
+                          <div style={{ fontSize: 12, color: isActive ? '#6366f1' : 'var(--text-muted)', opacity: isActive ? 0.8 : 1, fontWeight: 500 }}>{option.res}</div>
                         </div>
                       </div>
                     );
@@ -393,9 +393,9 @@ export default function VideosView() {
                 </div>
 
                 {/* Info Box */}
-                <div style={{ marginTop: 16, background: '#eff6ff', borderRadius: 12, padding: '12px 16px', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <div style={{ marginTop: 16, background: 'var(--muted-bg)', borderRadius: 12, padding: '12px 16px', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                   <Info size={16} color="#3b82f6" style={{ marginTop: 2, flexShrink: 0 }} />
-                  <div style={{ fontSize: 12, color: '#475569', lineHeight: 1.5, fontWeight: 500 }}>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5, fontWeight: 500 }}>
                     Higher quality videos may take longer to download and more storage space.
                   </div>
                 </div>
@@ -403,11 +403,11 @@ export default function VideosView() {
             </div>
 
             {/* Footer */}
-            <div style={{ padding: '20px 32px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fafafa' }}>
+            <div style={{ padding: '20px 32px', borderTop: '1px solid var(--panel-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fafafa' }}>
               <button 
                 className="cancel-btn"
                 onClick={() => setPreviewVideo(null)}
-                style={{ padding: '10px 24px', background: '#fff', border: '1px solid #e0e0e0', borderRadius: 10, fontSize: 14, fontWeight: 600, color: '#334155', cursor: 'pointer', transition: 'background 0.2s' }}
+                style={{ padding: '10px 24px', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 10, fontSize: 14, fontWeight: 600, color: 'var(--foreground)', cursor: 'pointer', transition: 'background 0.2s' }}
               >
                 Cancel
               </button>
@@ -415,7 +415,7 @@ export default function VideosView() {
                 href={`/api/videos/download?filename=${previewVideo.filename}&quality=${downloadQuality === '1080p' ? 'original' : downloadQuality}`}
                 download
                 className="download-btn"
-                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 24px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', textDecoration: 'none', transition: 'background 0.2s' }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 24px', background: '#4f46e5', color: 'var(--panel-bg)', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', textDecoration: 'none', transition: 'background 0.2s' }}
                 onClick={() => setPreviewVideo(null)}
               >
                 <Download size={16} /> 

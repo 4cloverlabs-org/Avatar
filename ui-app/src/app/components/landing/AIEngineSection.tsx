@@ -5,63 +5,63 @@ import { motion } from 'framer-motion';
 
 const SvgIdea = () => (
   <svg width="100%" height="100%" viewBox="0 0 120 120" fill="none">
-    <line x1="20" y1="60" x2="100" y2="60" stroke="#111827" strokeWidth="0.5" strokeDasharray="2 2" />
-    <line x1="60" y1="20" x2="60" y2="100" stroke="#111827" strokeWidth="0.5" strokeDasharray="2 2" />
-    <line x1="30" y1="90" x2="90" y2="30" stroke="#111827" strokeWidth="0.5" strokeDasharray="2 2" />
-    <ellipse cx="40" cy="60" rx="10" ry="25" stroke="#111827" strokeWidth="1" />
-    <line x1="40" y1="35" x2="60" y2="60" stroke="#111827" strokeWidth="1" />
-    <line x1="40" y1="85" x2="60" y2="60" stroke="#111827" strokeWidth="1" />
-    <ellipse cx="90" cy="60" rx="15" ry="35" stroke="#111827" strokeWidth="1" />
-    <line x1="90" y1="25" x2="60" y2="60" stroke="#111827" strokeWidth="1" />
-    <line x1="90" y1="95" x2="60" y2="60" stroke="#111827" strokeWidth="1" />
+    <line x1="20" y1="60" x2="100" y2="60" stroke="var(--foreground)" strokeWidth="0.5" strokeDasharray="2 2" />
+    <line x1="60" y1="20" x2="60" y2="100" stroke="var(--foreground)" strokeWidth="0.5" strokeDasharray="2 2" />
+    <line x1="30" y1="90" x2="90" y2="30" stroke="var(--foreground)" strokeWidth="0.5" strokeDasharray="2 2" />
+    <ellipse cx="40" cy="60" rx="10" ry="25" stroke="var(--foreground)" strokeWidth="1" />
+    <line x1="40" y1="35" x2="60" y2="60" stroke="var(--foreground)" strokeWidth="1" />
+    <line x1="40" y1="85" x2="60" y2="60" stroke="var(--foreground)" strokeWidth="1" />
+    <ellipse cx="90" cy="60" rx="15" ry="35" stroke="var(--foreground)" strokeWidth="1" />
+    <line x1="90" y1="25" x2="60" y2="60" stroke="var(--foreground)" strokeWidth="1" />
+    <line x1="90" y1="95" x2="60" y2="60" stroke="var(--foreground)" strokeWidth="1" />
   </svg>
 );
 
 const SvgScript = () => (
   <svg width="100%" height="100%" viewBox="0 0 120 120" fill="none">
-    <rect x="30" y="30" width="60" height="60" stroke="#111827" strokeWidth="1" />
-    <rect x="45" y="15" width="60" height="60" stroke="#111827" strokeWidth="1" />
-    <line x1="30" y1="30" x2="45" y2="15" stroke="#111827" strokeWidth="1" />
-    <line x1="90" y1="30" x2="105" y2="15" stroke="#111827" strokeWidth="1" />
-    <line x1="30" y1="90" x2="45" y2="75" stroke="#111827" strokeWidth="1" />
-    <line x1="90" y1="90" x2="105" y2="75" stroke="#111827" strokeWidth="1" />
-    <line x1="60" y1="30" x2="60" y2="90" stroke="#111827" strokeWidth="0.5" />
-    <line x1="30" y1="60" x2="90" y2="60" stroke="#111827" strokeWidth="0.5" />
-    <line x1="75" y1="15" x2="75" y2="75" stroke="#111827" strokeWidth="0.5" />
-    <line x1="45" y1="45" x2="105" y2="45" stroke="#111827" strokeWidth="0.5" />
-    <line x1="60" y1="30" x2="75" y2="15" stroke="#111827" strokeWidth="0.5" />
-    <line x1="60" y1="90" x2="75" y2="75" stroke="#111827" strokeWidth="0.5" />
-    <line x1="30" y1="60" x2="45" y2="45" stroke="#111827" strokeWidth="0.5" />
-    <line x1="90" y1="60" x2="105" y2="45" stroke="#111827" strokeWidth="0.5" />
-    <line x1="60" y1="60" x2="75" y2="45" stroke="#111827" strokeWidth="0.5" />
-    <line x1="30" y1="30" x2="105" y2="75" stroke="#111827" strokeWidth="0.5" strokeDasharray="2 2" />
-    <line x1="30" y1="90" x2="105" y2="15" stroke="#111827" strokeWidth="0.5" strokeDasharray="2 2" />
+    <rect x="30" y="30" width="60" height="60" stroke="var(--foreground)" strokeWidth="1" />
+    <rect x="45" y="15" width="60" height="60" stroke="var(--foreground)" strokeWidth="1" />
+    <line x1="30" y1="30" x2="45" y2="15" stroke="var(--foreground)" strokeWidth="1" />
+    <line x1="90" y1="30" x2="105" y2="15" stroke="var(--foreground)" strokeWidth="1" />
+    <line x1="30" y1="90" x2="45" y2="75" stroke="var(--foreground)" strokeWidth="1" />
+    <line x1="90" y1="90" x2="105" y2="75" stroke="var(--foreground)" strokeWidth="1" />
+    <line x1="60" y1="30" x2="60" y2="90" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="30" y1="60" x2="90" y2="60" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="75" y1="15" x2="75" y2="75" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="45" y1="45" x2="105" y2="45" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="60" y1="30" x2="75" y2="15" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="60" y1="90" x2="75" y2="75" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="30" y1="60" x2="45" y2="45" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="90" y1="60" x2="105" y2="45" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="60" y1="60" x2="75" y2="45" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="30" y1="30" x2="105" y2="75" stroke="var(--foreground)" strokeWidth="0.5" strokeDasharray="2 2" />
+    <line x1="30" y1="90" x2="105" y2="15" stroke="var(--foreground)" strokeWidth="0.5" strokeDasharray="2 2" />
   </svg>
 );
 
 const SvgVideo = () => (
   <svg width="100%" height="100%" viewBox="0 0 120 120" fill="none">
-    <circle cx="65" cy="60" r="45" stroke="#111827" strokeWidth="0.5" strokeDasharray="1 3" />
-    <circle cx="60" cy="60" r="40" stroke="#111827" strokeWidth="1" />
-    <circle cx="55" cy="60" r="35" stroke="#111827" strokeWidth="1" />
-    <circle cx="50" cy="60" r="30" stroke="#111827" strokeWidth="1" />
-    <circle cx="45" cy="60" r="25" stroke="#111827" strokeWidth="1" />
-    <circle cx="40" cy="60" r="20" stroke="#111827" strokeWidth="1" />
-    <circle cx="35" cy="60" r="15" stroke="#111827" strokeWidth="1" />
+    <circle cx="65" cy="60" r="45" stroke="var(--foreground)" strokeWidth="0.5" strokeDasharray="1 3" />
+    <circle cx="60" cy="60" r="40" stroke="var(--foreground)" strokeWidth="1" />
+    <circle cx="55" cy="60" r="35" stroke="var(--foreground)" strokeWidth="1" />
+    <circle cx="50" cy="60" r="30" stroke="var(--foreground)" strokeWidth="1" />
+    <circle cx="45" cy="60" r="25" stroke="var(--foreground)" strokeWidth="1" />
+    <circle cx="40" cy="60" r="20" stroke="var(--foreground)" strokeWidth="1" />
+    <circle cx="35" cy="60" r="15" stroke="var(--foreground)" strokeWidth="1" />
   </svg>
 );
 
 const SvgPublish = () => (
   <svg width="100%" height="100%" viewBox="0 0 120 120" fill="none">
-    <circle cx="60" cy="60" r="40" stroke="#111827" strokeWidth="1" />
-    <ellipse cx="60" cy="60" rx="15" ry="40" stroke="#111827" strokeWidth="1" />
-    <ellipse cx="60" cy="60" rx="40" ry="15" stroke="#111827" strokeWidth="1" />
-    <ellipse cx="60" cy="60" rx="6" ry="40" stroke="#111827" strokeWidth="0.5" strokeDasharray="2 2" />
-    <ellipse cx="60" cy="60" rx="40" ry="6" stroke="#111827" strokeWidth="0.5" strokeDasharray="2 2" />
-    <line x1="20" y1="60" x2="100" y2="60" stroke="#111827" strokeWidth="0.5" />
-    <line x1="60" y1="20" x2="60" y2="100" stroke="#111827" strokeWidth="0.5" />
-    <line x1="32" y1="32" x2="88" y2="88" stroke="#111827" strokeWidth="0.5" strokeDasharray="1 3" />
-    <line x1="32" y1="88" x2="88" y2="32" stroke="#111827" strokeWidth="0.5" strokeDasharray="1 3" />
+    <circle cx="60" cy="60" r="40" stroke="var(--foreground)" strokeWidth="1" />
+    <ellipse cx="60" cy="60" rx="15" ry="40" stroke="var(--foreground)" strokeWidth="1" />
+    <ellipse cx="60" cy="60" rx="40" ry="15" stroke="var(--foreground)" strokeWidth="1" />
+    <ellipse cx="60" cy="60" rx="6" ry="40" stroke="var(--foreground)" strokeWidth="0.5" strokeDasharray="2 2" />
+    <ellipse cx="60" cy="60" rx="40" ry="6" stroke="var(--foreground)" strokeWidth="0.5" strokeDasharray="2 2" />
+    <line x1="20" y1="60" x2="100" y2="60" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="60" y1="20" x2="60" y2="100" stroke="var(--foreground)" strokeWidth="0.5" />
+    <line x1="32" y1="32" x2="88" y2="88" stroke="var(--foreground)" strokeWidth="0.5" strokeDasharray="1 3" />
+    <line x1="32" y1="88" x2="88" y2="32" stroke="var(--foreground)" strokeWidth="0.5" strokeDasharray="1 3" />
   </svg>
 );
 
@@ -85,8 +85,8 @@ const PipelineCardUI = ({ title, desc, svg }: { title: string, desc: string, svg
          </div>
       </div>
       <div style={{ marginTop: 'auto' }}>
-         <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', margin: '0 0 0.4rem 0' }}>{title}</h4>
-         <p style={{ fontSize: '0.85rem', color: '#6B7280', margin: 0, lineHeight: 1.5 }}>{desc}</p>
+         <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--foreground)', margin: '0 0 0.4rem 0' }}>{title}</h4>
+         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>{desc}</p>
       </div>
    </motion.div>
 );

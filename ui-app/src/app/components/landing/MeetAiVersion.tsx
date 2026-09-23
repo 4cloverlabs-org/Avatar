@@ -73,7 +73,7 @@ export default function MeetAiVersion() {
         onClick={handleDrag}
       >
         {/* Real Video Layer */}
-        <div style={{ position: 'absolute', inset: 0, background: '#E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', padding: '4rem', color: 'var(--text-muted)', fontSize: '2.5rem', fontWeight: 600, fontFamily: 'var(--font-heading)' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', padding: '4rem', color: 'var(--text-muted)', fontSize: '2.5rem', fontWeight: 600, fontFamily: 'var(--font-heading)' }}>
            Real You
         </div>
         
@@ -88,7 +88,7 @@ export default function MeetAiVersion() {
           alignItems: 'center', 
           justifyContent: 'flex-start', 
           padding: '4rem', 
-          color: '#FFFFFF', 
+          color: 'var(--panel-bg)', 
           fontSize: '2.5rem',
           fontWeight: 600,
           fontFamily: 'var(--font-heading)',
@@ -104,7 +104,7 @@ export default function MeetAiVersion() {
           bottom: 0,
           left: `${sliderPosition}%`,
           width: '2px',
-          background: '#FFFFFF',
+          background: 'var(--panel-bg)',
           transform: 'translateX(-50%)',
           display: 'flex',
           alignItems: 'center',
@@ -115,7 +115,7 @@ export default function MeetAiVersion() {
             width: '48px',
             height: '48px',
             borderRadius: '50%',
-            background: '#FFFFFF',
+            background: 'var(--panel-bg)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

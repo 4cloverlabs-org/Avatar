@@ -9,6 +9,11 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Player } from '@remotion/player';
+import { CaptionStylePicker } from '../../components/CaptionStylePicker';
+import { whisperToCaptions } from '../../lib/whisperToCaptions';
+import { SAMPLE_WHISPER_WORDS, CaptionPreviewComposition } from '../../components/CaptionEditorExample';
+
 
 export type CanvasElement = {
   id: string;
@@ -147,6 +152,10 @@ export default function Dashboard() {
   const [selectedId, setSelectedId] = useState<string | null>(null); // 'main_video' or element id
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [autoCaptionsEnabled, setAutoCaptionsEnabled] = useState(false);
+  const [captionStyle, setCaptionStyle] = useState('hormozi');
+  const segments = React.useMemo(() => whisperToCaptions(SAMPLE_WHISPER_WORDS), []);
+
   const [playKey, setPlayKey] = useState('0');
   const [interactionState, setInteractionState] = useState<string>('none');
   const interactionStartRef = useRef({ startX: 0, startY: 0, initialBox: { x: 0, y: 0, width: 100, height: 100 }, elementId: '', initialFontSize: 24 });
@@ -741,6 +750,31 @@ export default function Dashboard() {
                   })}
                 </div>
               ) : null}
+
+              {/* Remotion Captions Overlay */}
+              {autoCaptionsEnabled && (
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  pointerEvents: 'none',
+                  zIndex: 9999
+                }}>
+                  <Player
+                    component={CaptionPreviewComposition}
+                    inputProps={{ segments, config: { styleId: captionStyle, position: 'bottom' } }}
+                    durationInFrames={90}
+                    fps={30}
+                    compositionWidth={720}
+                    compositionHeight={1280}
+                    style={{ width: '100%', height: '100%', opacity: 1, pointerEvents: 'none' }}
+                    playing={isPlaying}
+                  />
+                </div>
+              )}
+
 
               {/* Render Canvas Elements */}
               {elements.map((el) => {
@@ -1709,13 +1743,20 @@ export default function Dashboard() {
             </div>
           )}
 
-          {activeTool === 'Captions' && (
+                    {activeTool === 'Captions' && (
             <div className="syn-panel-section">
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
                 <span style={{ fontSize: 13, color: 'var(--foreground)' }}>Auto-Captions</span>
-                <div className={`syn-toggle-switch`} />
+                <div className={`syn-toggle-switch ${autoCaptionsEnabled ? 'on' : ''}`} onClick={() => setAutoCaptionsEnabled(!autoCaptionsEnabled)} />
               </div>
               <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Generate captions automatically from your script or audio.</span>
+              
+              {autoCaptionsEnabled && (
+                <div style={{ marginTop: 24 }}>
+                  <span style={{ fontSize: 12, color: 'var(--foreground)', display: 'block', marginBottom: 8, fontWeight: 500 }}>Caption Animation Style</span>
+                  <CaptionStylePicker selectedId={captionStyle} onSelect={setCaptionStyle} />
+                </div>
+              )}
             </div>
           )}
 

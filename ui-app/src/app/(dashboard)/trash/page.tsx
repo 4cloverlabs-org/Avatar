@@ -155,8 +155,8 @@ export default function TrashPage() {
               style={{ 
                 display: 'flex', 
                 flexDirection: 'column',
-                background: '#fff', 
-                border: '2px solid #F5F5F5', 
+                background: 'var(--panel-bg)', 
+                border: '2px solid var(--panel-border)', 
                 borderRadius: '8px',
                 position: 'relative',
                 transition: 'border-color 0.2s ease-in-out',
@@ -166,11 +166,11 @@ export default function TrashPage() {
                 e.currentTarget.style.borderColor = 'var(--accent)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = '#F5F5F5';
+                e.currentTarget.style.borderColor = 'var(--panel-border)';
               }}
             >
               {/* Edge-to-edge preview with perfect 16:9 aspect ratio */}
-              <div style={{ width: '100%', aspectRatio: '16/9', background: '#f8fafc', borderRadius: '6px 6px 0 0', overflow: 'hidden', position: 'relative' }}>
+              <div style={{ width: '100%', aspectRatio: '16/9', background: 'var(--muted-bg)', borderRadius: '6px 6px 0 0', overflow: 'hidden', position: 'relative' }}>
                 {item.type === 'Video' || item.type === 'Avatar' ? (
                   <video 
                     src={`/api/serve_video?type=trash&path=${encodeURIComponent(item.trashId)}#t=0.001`} 
@@ -191,18 +191,18 @@ export default function TrashPage() {
                       e.currentTarget.style.display = 'none';
                       if (e.currentTarget.parentElement) {
                         const fallback = document.createElement('div');
-                        fallback.style.cssText = 'width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #cbd5e1;';
+                        fallback.style.cssText = 'width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--panel-border);';
                         fallback.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
                         e.currentTarget.parentElement.appendChild(fallback);
                       }
                     }}
                   />
                 ) : (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1' }}>
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--panel-border)' }}>
                     <User size={32} />
                   </div>
                 )}
-                <div style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(4px)', color: '#fff', fontSize: '10px', fontWeight: 600, padding: '3px 8px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <div style={{ position: 'absolute', top: 8, left: 8, background: 'rgba(15, 23, 42, 0.7)', backdropFilter: 'blur(4px)', color: 'var(--panel-bg)', fontSize: '10px', fontWeight: 600, padding: '3px 8px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                   {item.type === 'Avatar' ? <User size={10} /> : <Video size={10} />}
                   {item.type}
                 </div>
@@ -266,7 +266,7 @@ export default function TrashPage() {
                       justifyContent: 'center',
                       gap: '6px',
                       padding: '6px 10px',
-                      background: '#eff6ff',
+                      background: 'var(--muted-bg)',
                       border: 'none',
                       borderRadius: '6px',
                       color: '#3b82f6',
@@ -279,7 +279,7 @@ export default function TrashPage() {
                       e.currentTarget.style.background = '#dbeafe';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#eff6ff';
+                      e.currentTarget.style.background = 'var(--muted-bg)';
                     }}
                   >
                     <RotateCcw size={14} />

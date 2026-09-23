@@ -85,7 +85,7 @@ export default function Navbar() {
             </div>
 
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-              <Link href="/login" className="navbar-links" style={{ textDecoration: 'none', background: '#111827', color: '#ffffff', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1.25rem', borderRadius: '100px', border: '1px solid rgba(255, 255, 255, 0.1)', transition: 'opacity 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }} onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'} onMouseOut={(e) => e.currentTarget.style.opacity = '1'}>
+              <Link href="/login" className="navbar-links" style={{ textDecoration: 'none', background: 'var(--foreground)', color: 'var(--panel-bg)', fontSize: '0.9rem', fontWeight: 500, padding: '0.5rem 1.25rem', borderRadius: '100px', border: '1px solid rgba(255, 255, 255, 0.1)', transition: 'opacity 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }} onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'} onMouseOut={(e) => e.currentTarget.style.opacity = '1'}>
                 Login
               </Link>
               <button
@@ -100,7 +100,7 @@ export default function Navbar() {
                   height: '44px',
                   borderRadius: '50%',
                   border: '1px solid rgba(0,0,0,0.08)',
-                  background: '#FFFFFF',
+                  background: 'var(--panel-bg)',
                   color: 'var(--text-main)',
                   cursor: 'pointer',
                   flexShrink: 0
@@ -144,8 +144,8 @@ export default function Navbar() {
                     onClick={() => setIsOpen(false)}
                     style={{
                       textDecoration: 'none',
-                      background: '#111827',
-                      color: '#ffffff',
+                      background: 'var(--foreground)',
+                      color: 'var(--panel-bg)',
                       fontSize: '1rem',
                       fontWeight: 500,
                       padding: '0.85rem 1rem',

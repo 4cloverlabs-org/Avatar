@@ -47,7 +47,7 @@ const ActionButton = ({ onClick, children, variant = 'secondary' }: any) => (
     onClick={onClick}
     style={{
       background: variant === 'primary' ? 'var(--accent)' : variant === 'danger' ? '#ef4444' : 'transparent',
-      color: variant === 'secondary' ? 'var(--accent)' : '#fff',
+      color: variant === 'secondary' ? 'var(--accent)' : 'var(--panel-bg)',
       border: variant === 'secondary' ? '1px solid var(--accent)' : 'none',
       padding: '6px 12px',
       borderRadius: '6px',
@@ -450,10 +450,10 @@ export default function SettingsPage() {
     return (
       <div style={{ padding: '48px 40px', maxWidth: '1200px', margin: '0 auto', width: '100%', display: 'flex', gap: '64px', alignItems: 'flex-start' }}>
         <div style={{ width: '220px', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ width: '100px', height: '14px', background: '#e2e8f0', borderRadius: '4px', animation: 'shimmer 1.5s infinite linear' }} />
+          <div style={{ width: '100px', height: '14px', background: 'var(--panel-border)', borderRadius: '4px', animation: 'shimmer 1.5s infinite linear' }} />
           <div style={{ borderLeft: '1px solid var(--panel-border)', paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} style={{ width: i % 2 === 0 ? '80px' : '110px', height: '14px', background: '#f1f5f9', borderRadius: '4px', animation: 'shimmer 1.5s infinite linear' }} />
+              <div key={i} style={{ width: i % 2 === 0 ? '80px' : '110px', height: '14px', background: 'var(--muted-bg)', borderRadius: '4px', animation: 'shimmer 1.5s infinite linear' }} />
             ))}
           </div>
         </div>
@@ -461,15 +461,15 @@ export default function SettingsPage() {
         <div style={{ flex: 1, maxWidth: '720px', display: 'flex', flexDirection: 'column', gap: '64px' }}>
           {[1, 2, 3].map((section) => (
             <div key={section} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ width: '140px', height: '24px', background: '#e2e8f0', borderRadius: '4px', animation: 'shimmer 1.5s infinite linear' }} />
+              <div style={{ width: '140px', height: '24px', background: 'var(--panel-border)', borderRadius: '4px', animation: 'shimmer 1.5s infinite linear' }} />
               
               {[1, 2].map((row) => (
                 <div key={row} style={{ display: 'flex', justifyContent: 'space-between', padding: '16px 0', borderBottom: '1px solid var(--panel-border)' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div style={{ width: '120px', height: '14px', background: '#e2e8f0', borderRadius: '4px', animation: 'shimmer 1.5s infinite linear' }} />
-                    <div style={{ width: '200px', height: '12px', background: '#f1f5f9', borderRadius: '4px', animation: 'shimmer 1.5s infinite linear' }} />
+                    <div style={{ width: '120px', height: '14px', background: 'var(--panel-border)', borderRadius: '4px', animation: 'shimmer 1.5s infinite linear' }} />
+                    <div style={{ width: '200px', height: '12px', background: 'var(--muted-bg)', borderRadius: '4px', animation: 'shimmer 1.5s infinite linear' }} />
                   </div>
-                  <div style={{ width: '60px', height: '28px', background: '#f1f5f9', borderRadius: '6px', animation: 'shimmer 1.5s infinite linear' }} />
+                  <div style={{ width: '60px', height: '28px', background: 'var(--muted-bg)', borderRadius: '6px', animation: 'shimmer 1.5s infinite linear' }} />
                 </div>
               ))}
             </div>
@@ -598,7 +598,7 @@ export default function SettingsPage() {
                 {user.image ? (
                   <img src={user.image} alt="User Avatar" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} referrerPolicy="no-referrer" />
                 ) : (
-                  <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'linear-gradient(45deg, var(--accent), #9333ea)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '18px', fontWeight: 600 }}>
+                  <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'linear-gradient(45deg, var(--accent), #9333ea)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--panel-bg)', fontSize: '18px', fontWeight: 600 }}>
                     {user.name?.charAt(0).toUpperCase() || 'U'}
                   </div>
                 )}
@@ -717,7 +717,7 @@ export default function SettingsPage() {
           </div>
           
           {newKey && (
-            <div style={{ background: '#f0fdf4', padding: '16px', borderRadius: '8px', border: '1px solid #e0e0e0', color: '#15803d', fontSize: '13px', marginBottom: '16px' }}>
+            <div style={{ background: '#f0fdf4', padding: '16px', borderRadius: '8px', border: '1px solid var(--panel-border)', color: '#15803d', fontSize: '13px', marginBottom: '16px' }}>
               <strong>Your new API key:</strong> <code style={{ background: 'rgba(255,255,255,0.5)', padding: '2px 4px', borderRadius: '4px' }}>{newKey}</code>
               <br/><br/>
               Please copy this key now. You will not be able to see it again!
@@ -768,7 +768,7 @@ export default function SettingsPage() {
             </div>
             
             {totpError && (
-              <div style={{ background: '#fef2f2', color: '#b91c1c', padding: '8px 12px', borderRadius: '6px', fontSize: '13px', marginBottom: '16px', border: '1px solid #e0e0e0' }}>
+              <div style={{ background: '#fef2f2', color: '#b91c1c', padding: '8px 12px', borderRadius: '6px', fontSize: '13px', marginBottom: '16px', border: '1px solid var(--panel-border)' }}>
                 {totpError}
               </div>
             )}
@@ -782,7 +782,7 @@ export default function SettingsPage() {
                 <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px' }}>
                   Scan this QR code with your authenticator app (like Google Authenticator, Authy, or 1Password).
                 </p>
-                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px', background: '#fff', padding: '16px', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px', background: 'var(--panel-bg)', padding: '16px', borderRadius: '8px' }}>
                   <QRCodeSVG value={totpUri} size={200} />
                 </div>
                 <div style={{ marginBottom: '24px' }}>
@@ -862,7 +862,7 @@ export default function SettingsPage() {
             </div>
             
             {passwordError && (
-              <div style={{ background: '#fef2f2', color: '#b91c1c', padding: '8px 12px', borderRadius: '6px', fontSize: '13px', marginBottom: '16px', border: '1px solid #e0e0e0' }}>
+              <div style={{ background: '#fef2f2', color: '#b91c1c', padding: '8px 12px', borderRadius: '6px', fontSize: '13px', marginBottom: '16px', border: '1px solid var(--panel-border)' }}>
                 {passwordError}
               </div>
             )}

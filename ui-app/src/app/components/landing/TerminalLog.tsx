@@ -57,7 +57,7 @@ export default function TerminalLog() {
     <div 
       style={{ 
         flex: 1,
-        backgroundColor: '#FFFFFF', 
+        backgroundColor: 'var(--panel-bg)', 
         color: 'var(--text-main)', 
         fontFamily: 'monospace',
         padding: '2rem',
