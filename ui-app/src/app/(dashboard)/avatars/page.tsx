@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, MoreVertical, Copy, Edit2, Trash, X } from 'lucide-react';
+import { Plus, MoreVertical, Copy, Edit2, Trash, X, ArrowLeft } from 'lucide-react';
 
 export default function AvatarsView() {
   const [avatarTab, setAvatarTab] = useState('My Avatars');
@@ -105,6 +105,8 @@ function MyAvatarsUI() {
   const [editName, setEditName] = useState("");
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [previewAvatar, setPreviewAvatar] = useState<any>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCloneHovered, setIsCloneHovered] = useState(false);
 
   const fetchAvatars = () => {
     fetch('/api/avatars', { cache: 'no-store' })
@@ -198,7 +200,7 @@ function MyAvatarsUI() {
           {/* Create New Card */}
           <div 
             style={{ border: '1px dashed var(--panel-border)', borderRadius: 12, overflow: 'hidden', background: 'var(--muted-bg)', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column' }}
-            onClick={() => router.push('/avatars/create')}
+            onClick={() => setIsCreateModalOpen(true)}
           >
             <div style={{ aspectRatio: '1/1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ width: 56, height: 56, background: '#e0e7ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
@@ -339,6 +341,52 @@ function MyAvatarsUI() {
       {/* POPUP PREVIEW for My Avatars */}
       {previewAvatar && (
         <QuickGenerateModal previewAvatar={previewAvatar} setPreviewAvatar={setPreviewAvatar} isSystemAvatar={false} router={router} />
+      )}
+
+      {/* CREATE AVATAR MODAL */}
+      {isCreateModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(1px)', padding: 24, animation: 'fadeIn 0.2s ease-out' }} onClick={() => setIsCreateModalOpen(false)}>
+          <div style={{ background: 'var(--panel-bg)', borderRadius: 20, width: '100%', maxWidth: 740, display: 'flex', overflow: 'hidden', position: 'relative', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255,255,255,0.1)', cursor: 'default', transform: 'scale(1)', transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }} onClick={e => e.stopPropagation()}>
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setIsCreateModalOpen(false)}
+              style={{ position: 'absolute', top: 20, right: 20, width: 36, height: 36, borderRadius: '50%', background: 'var(--muted-bg)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-muted)', zIndex: 10, transition: 'all 0.2s' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--panel-border)'; e.currentTarget.style.color = 'var(--foreground)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--muted-bg)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+            >
+              <X size={18} />
+            </button>
+            
+            {/* Left Side: Inset Image */}
+            <div style={{ width: '45%', position: 'relative', minHeight: 440, background: 'var(--panel-bg)', padding: '40px 0 40px 40px' }}>
+              <div style={{ width: '100%', height: '100%', position: 'relative', borderRadius: 16, overflow: 'hidden', boxShadow: '0 10px 24px -8px rgba(0,0,0,0.15)' }}>
+                <img src="/avatar.png" alt="Avatar reference" style={{ width: '100%', height: '100%', position: 'absolute', inset: 0, objectFit: 'cover' }} />
+                <div style={{ position: 'absolute', inset: 0, border: '1px solid rgba(0,0,0,0.05)', borderRadius: 16 }} />
+              </div>
+            </div>
+
+            {/* Right Side: Content */}
+            <div style={{ width: '55%', padding: '40px 48px 48px 48px', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
+                <h1 style={{ fontSize: 26, fontWeight: 800, color: 'var(--foreground)', marginBottom: 12, letterSpacing: '-0.02em' }}>Clone a real person</h1>
+                <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.6, fontWeight: 400, marginBottom: 24 }}>
+                  Use real video footage to create an AI identity that looks, moves, and sounds exactly like you in any outfit and setting.
+                </p>
+                
+                <button 
+                  onClick={() => router.push('/avatars/create/record')}
+                  style={{ background: '#4f46e5', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 20px', fontSize: 14, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', width: '100%', transition: 'all 0.2s', boxShadow: '0 4px 10px rgba(79, 70, 229, 0.3)' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 14px rgba(79, 70, 229, 0.4)'; e.currentTarget.style.background = '#4338ca'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 10px rgba(79, 70, 229, 0.3)'; e.currentTarget.style.background = '#4f46e5'; }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M23 7l-7 5 7 5V7z"></path><rect x="1" y="5" width="15" height="14" rx="3" ry="3"></rect></svg>
+                  Get Started
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -449,10 +449,11 @@ export default function Dashboard() {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
 
-  const handleGenerateVoice = async () => {
-    if (!scriptText.trim()) return alert("Please enter a script to generate voice");
-    if (!selectedVoiceId) return alert("Please select a voice from the dropdown");
+  const handleGenerateVoice = async (): Promise<File | null> => {
+    if (!scriptText.trim()) { alert("Please enter a script to generate voice"); return null; }
+    if (!selectedVoiceId) { alert("Please select a voice from the dropdown"); return null; }
     setIsGeneratingVoice(true);
+    let generatedFile: File | null = null;
     try {
       const formData = new FormData();
       formData.append('text', scriptText);
@@ -461,9 +462,9 @@ export default function Dashboard() {
       const res = await fetch('/api/tts', { method: 'POST', body: formData });
       if (res.ok) {
         const blob = await res.blob();
-        const file = new File([blob], 'generated_voice.wav', { type: 'audio/wav' });
-        setAudioFile(file);
-        setAudioPreview(URL.createObjectURL(file));
+        generatedFile = new File([blob], 'generated_voice.wav', { type: 'audio/wav' });
+        setAudioFile(generatedFile);
+        setAudioPreview(URL.createObjectURL(generatedFile));
       } else {
         const data = await res.json();
         alert(data.error || "Failed to generate voice");
@@ -472,6 +473,7 @@ export default function Dashboard() {
       alert("Error generating voice");
     }
     setIsGeneratingVoice(false);
+    return generatedFile;
   };
 
   const handlePrepareAvatar = async () => {
@@ -501,12 +503,19 @@ export default function Dashboard() {
 
   const handleGenerateVideo = async () => {
     if (!avatarId) return alert('Please build the avatar first.');
-    if (!audioFile) return alert('Please upload audio.');
+    
+    let currentAudioFile = audioFile;
+    if (!currentAudioFile && audioMode === 'clone' && scriptText.trim() && selectedVoiceId) {
+      currentAudioFile = await handleGenerateVoice();
+    }
+    
+    if (!currentAudioFile) return alert('Please upload or generate audio first.');
+    
     setIsGenerating(true);
     try {
       const formData = new FormData();
       formData.append('avatarId', avatarId);
-      formData.append('audio', audioFile);
+      formData.append('audio', currentAudioFile);
       formData.append('aspectRatio', projectAspectRatio);
 
       const res = await fetch('/api/generate_video', { method: 'POST', body: formData });
@@ -602,8 +611,8 @@ export default function Dashboard() {
           <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--panel-border)' }} onClick={() => alert("Invite a collaborator (Stub)")}>
             <Plus size={14} /> Invite
           </button>
-          <button className="syn-btn-primary" onClick={handleGenerateVideo} disabled={isGenerating || !avatarId || !audioFile}>
-            <Play size={14} fill="#fff" /> Generate
+          <button className="syn-btn-primary" onClick={handleGenerateVideo} disabled={isGenerating || !avatarId}>
+            <Play size={14} fill="#fff" /> {isGenerating ? "Generating..." : "Generate"}
           </button>
         </div>
       </header>
@@ -675,18 +684,7 @@ export default function Dashboard() {
               />
             )}
             
-            {!audioFile && (
-              <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', paddingTop: 10 }}>
-                <button 
-                  onClick={handleGenerateVoice} 
-                  disabled={isGeneratingVoice || !scriptText.trim()}
-                  className="syn-btn-primary" 
-                  style={{ fontSize: 12, padding: '6px 12px', background: 'var(--accent)', opacity: (!scriptText.trim() || isGeneratingVoice) ? 0.6 : 1 }}
-                >
-                  <Wand2 size={12} /> {isGeneratingVoice ? "Generating..." : "Generate Audio"}
-                </button>
-              </div>
-            )}
+
           </div>
 
           <div style={{ padding: 15, borderTop: '1px solid var(--panel-border)', display: 'flex', flexDirection: 'column', gap: 10 }}>

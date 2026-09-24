@@ -8,7 +8,7 @@ import { QRCodeSVG } from 'qrcode.react';
 
 export default function RecordAvatarPage() {
   const router = useRouter();
-  const [selectedMethod, setSelectedMethod] = useState<'webcam' | 'phone' | 'upload' | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<'webcam' | 'phone' | 'upload' | null>('webcam');
   const [currentUrl, setCurrentUrl] = useState('');
 
   useEffect(() => {
@@ -355,13 +355,24 @@ export default function RecordAvatarPage() {
         videoRef.current.setAttribute('autoplay', 'true');
         videoRef.current.srcObject = stream;
         // iOS Safari strictly requires an explicit play() call for media streams, autoPlay is not enough
-        videoRef.current.play().catch(e => console.error('Play error on startCamera:', e));
+        videoRef.current.play().catch(e => {
+          if (e.name !== 'AbortError') console.error('Play error on startCamera:', e);
+        });
       }
     } catch (err) {
       console.error("Error accessing media devices.", err);
       alert("Could not access camera/microphone. Please check permissions.");
     }
   };
+
+  const mountCameraStartedRef = useRef(false);
+
+  useEffect(() => {
+    if (!mountCameraStartedRef.current) {
+      mountCameraStartedRef.current = true;
+      startCamera();
+    }
+  }, []);
 
   const handleMethodSelect = async (method: 'webcam' | 'phone') => {
     setSelectedMethod(method);
@@ -564,7 +575,7 @@ export default function RecordAvatarPage() {
           {/* Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <button onClick={() => { stopCamera(); setSelectedMethod(null); }} style={{ width: 44, height: 44, borderRadius: 22, background: '#f3f4f6', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+              <button onClick={() => { stopCamera(); router.push('/avatars'); }} style={{ width: 44, height: 44, borderRadius: 22, background: '#f3f4f6', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                 <ArrowLeft size={20} color="var(--foreground)" />
               </button>
               <div>
@@ -576,7 +587,7 @@ export default function RecordAvatarPage() {
               <div style={{ background: 'var(--muted-bg)', padding: '10px 20px', borderRadius: 24, fontSize: 13, fontWeight: 500, color: 'var(--foreground)' }}>
                 <span style={{ fontWeight: 600 }}>System</span> is ready for recording
               </div>
-              <button onClick={() => { stopCamera(); setSelectedMethod(null); }} style={{ width: 44, height: 44, borderRadius: 22, background: '#df6c62', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--panel-bg)' }}>
+              <button onClick={() => { stopCamera(); router.push('/avatars'); }} style={{ width: 44, height: 44, borderRadius: 22, background: '#df6c62', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--panel-bg)' }}>
                 <X size={20} />
               </button>
               <button onClick={handleReadyClick} disabled={!recordedVideoUrl || isUploading} style={{ width: 44, height: 44, borderRadius: 22, background: 'var(--foreground)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: (!recordedVideoUrl || isUploading) ? 'not-allowed' : 'pointer', color: 'var(--panel-bg)', opacity: (!recordedVideoUrl || isUploading) ? 0.5 : 1 }}>
@@ -764,7 +775,7 @@ export default function RecordAvatarPage() {
       `}</style>
       
       <button
-        onClick={() => { stopCamera(); router.push('/avatars/create'); }}
+        onClick={() => { stopCamera(); router.push('/avatars'); }}
         style={{ position: 'absolute', top: 40, left: 60, background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, padding: '8px 16px', borderRadius: '20px', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.02)', width: 'fit-content' }}
         onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.borderColor = 'var(--panel-border)'; }}
         onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--panel-border)'; }}
