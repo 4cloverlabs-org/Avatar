@@ -8,7 +8,7 @@ import { QRCodeSVG } from 'qrcode.react';
 
 export default function RecordAvatarPage() {
   const router = useRouter();
-  const [selectedMethod, setSelectedMethod] = useState<'webcam' | 'phone' | 'upload' | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<'webcam' | 'phone' | 'upload' | null>('webcam');
   const [currentUrl, setCurrentUrl] = useState('');
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function RecordAvatarPage() {
           canvasCtx.filter = 'none';
           canvasCtx.drawImage(officeImg, 0, 0, canvas.width, canvas.height);
         } else {
-          canvasCtx.fillStyle = '#1e293b';
+          canvasCtx.fillStyle = 'var(--foreground)';
           canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
         }
       } else if (backgroundMode === 'Gradient') {
@@ -355,13 +355,24 @@ export default function RecordAvatarPage() {
         videoRef.current.setAttribute('autoplay', 'true');
         videoRef.current.srcObject = stream;
         // iOS Safari strictly requires an explicit play() call for media streams, autoPlay is not enough
-        videoRef.current.play().catch(e => console.error('Play error on startCamera:', e));
+        videoRef.current.play().catch(e => {
+          if (e.name !== 'AbortError') console.error('Play error on startCamera:', e);
+        });
       }
     } catch (err) {
       console.error("Error accessing media devices.", err);
       alert("Could not access camera/microphone. Please check permissions.");
     }
   };
+
+  const mountCameraStartedRef = useRef(false);
+
+  useEffect(() => {
+    if (!mountCameraStartedRef.current) {
+      mountCameraStartedRef.current = true;
+      startCamera();
+    }
+  }, []);
 
   const handleMethodSelect = async (method: 'webcam' | 'phone') => {
     setSelectedMethod(method);
@@ -531,18 +542,18 @@ export default function RecordAvatarPage() {
   if (uploadSuccess) {
     return (
       <div className="home-content">
-        <div style={{ maxWidth: 600, margin: '80px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: '#fff', padding: '64px 32px', borderRadius: 24, boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid #e0e0e0' }}>
+        <div style={{ maxWidth: 600, margin: '80px auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: 'var(--panel-bg)', padding: '64px 32px', borderRadius: 24, boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid var(--panel-border)' }}>
           <div style={{ width: 80, height: 80, borderRadius: 40, border: '4px solid #e0e7ff', borderTopColor: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24, animation: 'spin 1s linear infinite' }}>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
-          <h1 style={{ fontSize: 32, fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>Cloning your Avatar...</h1>
+          <h1 style={{ fontSize: 32, fontWeight: 700, color: 'var(--foreground)', marginBottom: 16 }}>Cloning your Avatar...</h1>
           <p style={{ fontSize: 16, color: '#4f46e5', fontWeight: 600, marginBottom: 16 }}>
             {generationProgress}%
           </p>
-          <div style={{ width: '100%', maxWidth: 400, height: 8, background: '#e2e8f0', borderRadius: 4, overflow: 'hidden', marginBottom: 32 }}>
+          <div style={{ width: '100%', maxWidth: 400, height: 8, background: 'var(--panel-border)', borderRadius: 4, overflow: 'hidden', marginBottom: 32 }}>
             <div style={{ width: `${generationProgress}%`, height: '100%', background: '#4f46e5', transition: 'width 0.5s ease-out' }} />
           </div>
-          <p style={{ fontSize: 15, color: '#64748b', maxWidth: 400, lineHeight: 1.6 }}>
+          <p style={{ fontSize: 15, color: 'var(--text-muted)', maxWidth: 400, lineHeight: 1.6 }}>
             The AI is processing your video and creating a perfect digital clone. You will be redirected to your dashboard automatically when it finishes.
           </p>
         </div>
@@ -564,22 +575,22 @@ export default function RecordAvatarPage() {
           {/* Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <button onClick={() => { stopCamera(); setSelectedMethod(null); }} style={{ width: 44, height: 44, borderRadius: 22, background: '#f3f4f6', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                <ArrowLeft size={20} color="#111" />
+              <button onClick={() => { stopCamera(); router.push('/avatars'); }} style={{ width: 44, height: 44, borderRadius: 22, background: '#f3f4f6', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <ArrowLeft size={20} color="var(--foreground)" />
               </button>
               <div>
-                <h1 style={{ margin: 0, fontSize: 20, fontWeight: 600, color: '#111' }}>Avatar Recording Session</h1>
-                <p style={{ margin: 0, fontSize: 13, color: '#666' }}>Custom AI Avatar Pipeline</p>
+                <h1 style={{ margin: 0, fontSize: 20, fontWeight: 600, color: 'var(--foreground)' }}>Avatar Recording Session</h1>
+                <p style={{ margin: 0, fontSize: 13, color: 'var(--text-muted)' }}>Custom AI Avatar Pipeline</p>
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ background: '#f8fafc', padding: '10px 20px', borderRadius: 24, fontSize: 13, fontWeight: 500, color: '#333' }}>
+              <div style={{ background: 'var(--muted-bg)', padding: '10px 20px', borderRadius: 24, fontSize: 13, fontWeight: 500, color: 'var(--foreground)' }}>
                 <span style={{ fontWeight: 600 }}>System</span> is ready for recording
               </div>
-              <button onClick={() => { stopCamera(); setSelectedMethod(null); }} style={{ width: 44, height: 44, borderRadius: 22, background: '#df6c62', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}>
+              <button onClick={() => { stopCamera(); router.push('/avatars'); }} style={{ width: 44, height: 44, borderRadius: 22, background: '#df6c62', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--panel-bg)' }}>
                 <X size={20} />
               </button>
-              <button onClick={handleReadyClick} disabled={!recordedVideoUrl || isUploading} style={{ width: 44, height: 44, borderRadius: 22, background: '#111', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: (!recordedVideoUrl || isUploading) ? 'not-allowed' : 'pointer', color: '#fff', opacity: (!recordedVideoUrl || isUploading) ? 0.5 : 1 }}>
+              <button onClick={handleReadyClick} disabled={!recordedVideoUrl || isUploading} style={{ width: 44, height: 44, borderRadius: 22, background: 'var(--foreground)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: (!recordedVideoUrl || isUploading) ? 'not-allowed' : 'pointer', color: 'var(--panel-bg)', opacity: (!recordedVideoUrl || isUploading) ? 0.5 : 1 }}>
                 {isUploading ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
               </button>
             </div>
@@ -592,7 +603,7 @@ export default function RecordAvatarPage() {
               {/* Main Video */}
               <div style={{ position: 'relative', width: '100%', height: '100%', borderRadius: 32, overflow: 'hidden', background: '#000', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {!streamRef.current && !recordedVideoUrl && (
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--panel-bg)' }}>
                     <Loader2 size={32} className="animate-spin" />
                   </div>
                 )}
@@ -607,63 +618,47 @@ export default function RecordAvatarPage() {
                 
                 {/* Overlays */}
 
-                <div style={{ position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', padding: '6px 16px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 8, color: '#fff', fontSize: 13, fontWeight: 500 }}>
+                <div style={{ position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', padding: '6px 16px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--panel-bg)', fontSize: 13, fontWeight: 500 }}>
                   <div style={{ width: 8, height: 8, borderRadius: 4, background: isRecording ? '#ef4444' : '#10b981', animation: isRecording ? 'pulse 1.5s infinite' : 'none' }} />
                   {isRecording ? `Recording... 00:${recordingTime.toString().padStart(2, '0')}` : 'Ready to Record'}
                 </div>
 
-                <div style={{ position: 'absolute', top: '70%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', padding: '16px 24px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 16, color: '#fff', width: '80%', maxWidth: 500 }}>
-                  <div style={{ display: 'flex', gap: 3, height: 24, alignItems: 'center' }}>
-                     <div style={{ width: 3, height: '40%', background: '#fff', borderRadius: 2, animation: isSpeaking ? 'soundPulse 0.5s infinite ease-in-out alternate' : 'none' }} />
-                     <div style={{ width: 3, height: '80%', background: '#fff', borderRadius: 2, animation: isSpeaking ? 'soundPulse 0.7s infinite ease-in-out alternate 0.2s' : 'none' }} />
-                     <div style={{ width: 3, height: '100%', background: '#fff', borderRadius: 2, animation: isSpeaking ? 'soundPulse 0.4s infinite ease-in-out alternate 0.1s' : 'none' }} />
-                     <div style={{ width: 3, height: '60%', background: '#fff', borderRadius: 2, animation: isSpeaking ? 'soundPulse 0.6s infinite ease-in-out alternate 0.3s' : 'none' }} />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 18, lineHeight: 1.5, opacity: 0.9, display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                      {scriptWords.map((word, i) => (
-                        <span key={i} style={{ color: highlightedWordIndex >= i ? '#60a5fa' : '#fff', transition: 'color 0.2s ease' }}>
-                          {word}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+
 
                 <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 12 }}>
-                  <button onClick={toggleMic} style={{ width: 44, height: 44, borderRadius: 22, background: isMicMuted ? '#df6c62' : 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                  <button onClick={toggleMic} style={{ width: 44, height: 44, borderRadius: 22, background: isMicMuted ? '#df6c62' : 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', border: 'none', color: 'var(--panel-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                     {isMicMuted ? <MicOff size={18} /> : <Mic size={18} />}
                   </button>
-                  <button onClick={toggleCamera} style={{ width: 44, height: 44, borderRadius: 22, background: isCameraOff ? '#df6c62' : 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                  <button onClick={toggleCamera} style={{ width: 44, height: 44, borderRadius: 22, background: isCameraOff ? '#df6c62' : 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', border: 'none', color: 'var(--panel-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                     {isCameraOff ? <VideoOff size={18} /> : <Video size={18} />}
                   </button>
                   
                   {!recordedVideoUrl ? (
                     isRecording ? (
-                      <button onClick={handleStopRecording} style={{ width: 44, height: 44, borderRadius: 22, background: '#df6c62', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 12px rgba(223,108,98,0.4)' }}><Square size={16} fill="#fff" /></button>
+                      <button onClick={handleStopRecording} style={{ width: 44, height: 44, borderRadius: 22, background: '#df6c62', border: 'none', color: 'var(--panel-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 4px 12px rgba(223,108,98,0.4)' }}><Square size={16} fill='var(--panel-bg)' /></button>
                     ) : (
-                      <button onClick={handleStartRecording} style={{ width: 44, height: 44, borderRadius: 22, background: 'rgba(255,255,255,0.3)', backdropFilter: 'blur(10px)', border: '2px solid #fff', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><div style={{width: 14, height: 14, borderRadius: 7, background: '#ef4444'}}/></button>
+                      <button onClick={handleStartRecording} style={{ width: 44, height: 44, borderRadius: 22, background: 'rgba(255,255,255,0.3)', backdropFilter: 'blur(10px)', border: '2px solid var(--panel-bg)', color: 'var(--panel-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><div style={{width: 14, height: 14, borderRadius: 7, background: '#ef4444'}}/></button>
                     )
                   ) : (
-                    <button onClick={handleRetake} style={{ width: 44, height: 44, borderRadius: 22, background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><ArrowLeft size={18} /></button>
+                    <button onClick={handleRetake} style={{ width: 44, height: 44, borderRadius: 22, background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', border: 'none', color: 'var(--panel-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}><ArrowLeft size={18} /></button>
                   )}
                 </div>
 
                 <div style={{ position: 'absolute', bottom: 20, right: 20, display: 'flex', gap: 12 }}>
-                   <button onClick={() => setShowSettings(!showSettings)} style={{ width: 36, height: 36, borderRadius: 18, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', border: 'none', color: showSettings ? '#60a5fa' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}><Settings size={16} /></button>
+                   <button onClick={() => setShowSettings(!showSettings)} style={{ width: 36, height: 36, borderRadius: 18, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', border: 'none', color: showSettings ? '#60a5fa' : 'var(--panel-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}><Settings size={16} /></button>
                 </div>
                 {showSettings && (
-                  <div style={{ position: 'absolute', bottom: 64, right: 20, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(20px)', borderRadius: 16, padding: 16, width: 280, color: '#fff', border: '1px solid #e0e0e0', animation: 'fadeIn 0.2s ease-out' }}>
+                  <div style={{ position: 'absolute', bottom: 64, right: 20, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(20px)', borderRadius: 16, padding: 16, width: 280, color: 'var(--panel-bg)', border: '1px solid var(--panel-border)', animation: 'fadeIn 0.2s ease-out' }}>
                     <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, opacity: 0.8, textTransform: 'uppercase', letterSpacing: 1 }}>Studio Lighting</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
                       {['Normal', 'Studio Warm', 'Studio Cool', 'Cinematic'].map(mode => (
-                        <button key={mode} onClick={() => setLightingMode(mode)} style={{ background: lightingMode === mode ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)', border: lightingMode === mode ? '1px solid rgba(255,255,255,0.4)' : '1px solid transparent', borderRadius: 8, padding: '8px', color: '#fff', fontSize: 12, cursor: 'pointer', transition: 'all 0.2s' }}>{mode}</button>
+                        <button key={mode} onClick={() => setLightingMode(mode)} style={{ background: lightingMode === mode ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)', border: lightingMode === mode ? '1px solid rgba(255,255,255,0.4)' : '1px solid transparent', borderRadius: 8, padding: '8px', color: 'var(--panel-bg)', fontSize: 12, cursor: 'pointer', transition: 'all 0.2s' }}>{mode}</button>
                       ))}
                     </div>
                     <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, opacity: 0.8, textTransform: 'uppercase', letterSpacing: 1 }}>Background</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                       {['Original', 'Blur', 'Office', 'Gradient'].map(mode => (
-                        <button key={mode} onClick={() => setBackgroundMode(mode)} style={{ background: backgroundMode === mode ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)', border: backgroundMode === mode ? '1px solid rgba(255,255,255,0.4)' : '1px solid transparent', borderRadius: 8, padding: '8px', color: '#fff', fontSize: 12, cursor: 'pointer', transition: 'all 0.2s' }}>{mode}</button>
+                        <button key={mode} onClick={() => setBackgroundMode(mode)} style={{ background: backgroundMode === mode ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)', border: backgroundMode === mode ? '1px solid rgba(255,255,255,0.4)' : '1px solid transparent', borderRadius: 8, padding: '8px', color: 'var(--panel-bg)', fontSize: 12, cursor: 'pointer', transition: 'all 0.2s' }}>{mode}</button>
                       ))}
                     </div>
                   </div>
@@ -673,64 +668,15 @@ export default function RecordAvatarPage() {
 
             {/* Right Col: Sidebar */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 }}>
-               {/* Top Cards */}
-               <div style={{ display: 'flex', gap: 16 }}>
-                 <div style={{ flex: 1, background: '#d1e5db', borderRadius: 20, padding: 16, position: 'relative' }}>
-                    <div style={{ fontWeight: 600, fontSize: 13, color: '#111', marginBottom: 10 }}>Recording Tips</div>
-                    <p style={{ fontSize: 11, color: '#333', lineHeight: 1.5, margin: 0 }}>Ensure you are in a well-lit room. Speak clearly and maintain eye contact with the lens to achieve the best AI training results.</p>
-                 </div>
-                 <div style={{ flex: 1, background: '#000', borderRadius: 20, padding: 16, color: '#fff', position: 'relative' }}>
-                    <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 10 }}>Checklist</div>
-                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: scriptText.trim().length > 0 ? '#a7f3d0' : '#888' }}>{scriptText.trim().length > 0 ? <CheckCircle2 size={14} /> : <Circle size={14} />} Script Prepared</div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: hasAudioPassed ? '#a7f3d0' : '#888' }}>{hasAudioPassed ? <CheckCircle2 size={14} /> : <Circle size={14} />} Clear Audio / No Background Noise</div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: recordingTime >= 15 ? '#a7f3d0' : '#888' }}>{recordingTime >= 15 ? <CheckCircle2 size={14} /> : <Circle size={14} />} 15s Minimum Duration</div>
-                     </div>
-                 </div>
-               </div>
-
-               {/* Avatar Profile Form */}
-               <div style={{ flex: 1, background: '#f1f5f9', borderRadius: 24, padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
-                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                    <div style={{ fontWeight: 600, fontSize: 15, color: '#0f172a' }}>Avatar Profile</div>
-                    <div style={{ background: '#e2e8f0', padding: '4px 10px', borderRadius: 8, fontSize: 10, fontWeight: 700, color: '#64748b', letterSpacing: 0.5 }}>METADATA</div>
-                 </div>
-                 
-                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Avatar Name</label>
-                    <input 
-                      type="text"
-                      value={avatarName}
-                      onChange={(e) => setAvatarName(e.target.value)}
-                      placeholder="e.g. Sales Representative AI"
-                      style={{ width: '100%', height: 44, background: '#ffffff', border: 'none', borderRadius: 12, padding: '0 16px', fontSize: 13, color: '#0f172a', outline: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}
-                    />
-                 </div>
-
-                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Primary Language</label>
-                    <select value={primaryLanguage} onChange={(e) => setPrimaryLanguage(e.target.value)} style={{ width: '100%', height: 44, background: '#ffffff', border: 'none', borderRadius: 12, padding: '0 16px', fontSize: 13, color: '#0f172a', outline: 'none', appearance: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                      <option>English (US)</option>
-                      <option>English (UK)</option>
-                      <option>Spanish</option>
-                      <option>French</option>
-                      <option>German</option>
-                    </select>
-                 </div>
-
-                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>Speaking Style</label>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                       {['Professional', 'Casual', 'Energetic'].map((style) => (
-                         <div 
-                           key={style} 
-                           onClick={() => setSpeakingStyle(style)}
-                           style={{ flex: 1, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', background: speakingStyle === style ? '#0f172a' : '#ffffff', color: speakingStyle === style ? '#ffffff' : '#64748b', border: 'none', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                           {style}
-                         </div>
-                       ))}
-                    </div>
-                 </div>
+               <div style={{ flex: 1, background: 'var(--muted-bg)', borderRadius: 24, padding: 32, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 20, flexShrink: 0 }}>Reading Script</div>
+                  <div style={{ fontSize: 20, lineHeight: 1.5, fontWeight: 500, display: 'flex', flexWrap: 'wrap', gap: '5px', overflowY: 'auto', alignContent: 'flex-start', flex: 1, paddingRight: 8 }}>
+                    {scriptWords.map((word, i) => (
+                      <span key={i} style={{ color: highlightedWordIndex >= i ? 'var(--foreground)' : 'var(--text-muted)', opacity: highlightedWordIndex >= i ? 1 : 0.6, transition: 'all 0.2s ease' }}>
+                        {word}
+                      </span>
+                    ))}
+                  </div>
                </div>
             </div>
           </div>
@@ -746,10 +692,10 @@ export default function RecordAvatarPage() {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       width: '100%',
       minHeight: 'calc(100vh - 120px)',
-      backgroundColor: '#ffffff',
+      backgroundColor: 'var(--panel-bg)',
       borderRadius: '32px',
       animation: 'fadeIn 0.5s ease-out',
-      color: '#111',
+      color: 'var(--foreground)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -764,33 +710,33 @@ export default function RecordAvatarPage() {
       `}</style>
       
       <button
-        onClick={() => { stopCamera(); router.push('/avatars/create'); }}
-        style={{ position: 'absolute', top: 40, left: 60, background: '#fff', border: '1px solid #e0e0e0', cursor: 'pointer', color: '#64748b', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, padding: '8px 16px', borderRadius: '20px', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.02)', width: 'fit-content' }}
-        onMouseEnter={(e) => { e.currentTarget.style.color = '#0f172a'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderColor = '#e2e8f0'; }}
+        onClick={() => { stopCamera(); router.push('/avatars'); }}
+        style={{ position: 'absolute', top: 40, left: 60, background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, padding: '8px 16px', borderRadius: '20px', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.02)', width: 'fit-content' }}
+        onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--foreground)'; e.currentTarget.style.borderColor = 'var(--panel-border)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--panel-border)'; }}
       >
         <ArrowLeft size={16} /> Back
       </button>
 
       <div style={{ width: '100%', maxWidth: 800, marginTop: 40 }}>
 
-        <h1 style={{ fontSize: 42, fontWeight: 400, color: '#111', marginBottom: 12, letterSpacing: '-1px' }}>
-          Create your Avatar in <span style={{ color: '#888' }}>15 seconds</span>
+        <h1 style={{ fontSize: 42, fontWeight: 400, color: 'var(--foreground)', marginBottom: 12, letterSpacing: '-1px' }}>
+          Create your Avatar in <span style={{ color: 'var(--text-muted)' }}>15 seconds</span>
         </h1>
-        <p style={{ fontSize: 16, color: '#666', marginBottom: 48, lineHeight: 1.5 }}>
+        <p style={{ fontSize: 16, color: 'var(--text-muted)', marginBottom: 48, lineHeight: 1.5 }}>
           Record your motion once, then reuse it across any look for this avatar. Or upload footage.
         </p>
 
         {/* Methods */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 40 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 24, marginBottom: 40 }}>
           <div 
             onClick={() => handleMethodSelect('webcam')}
             style={{ 
               padding: 24, 
-              border: '2px solid #F5F5F5', 
+              border: '2px solid var(--panel-border)', 
               borderRadius: 16, 
               cursor: 'pointer', 
-              background: '#fff',
+              background: 'var(--panel-bg)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -803,96 +749,50 @@ export default function RecordAvatarPage() {
             <div style={{ width: 48, height: 48, borderRadius: 12, background: '#fff5f3', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
               <Monitor size={24} color="#d86450" />
             </div>
-            <div style={{ fontWeight: 600, fontSize: 14, color: '#0f172a', textAlign: 'center' }}>
+            <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--foreground)', textAlign: 'center' }}>
               Record via webcam
             </div>
           </div>
 
-          <div 
-            onClick={() => handleMethodSelect('phone')}
-            style={{ 
-              padding: 24, 
-              border: `2px solid ${selectedMethod === 'phone' ? '#d86450' : '#F5F5F5'}`, 
-              borderRadius: 16, 
-              cursor: 'pointer', 
-              background: '#fff',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 16,
-              transition: 'all 0.2s',
-              transform: selectedMethod === 'phone' ? 'translateY(-2px)' : 'translateY(0)'
-            }}
-          >
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: selectedMethod === 'phone' ? '#d86450' : '#fff5f3', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
-              <Smartphone size={24} color={selectedMethod === 'phone' ? '#fff' : '#d86450'} />
-            </div>
-            <div style={{ fontWeight: 600, fontSize: 14, color: '#0f172a', textAlign: 'center' }}>
-              Record via phone
-            </div>
-          </div>
         </div>
 
-        {selectedMethod !== 'phone' && (
-          <div style={{ border: '2px solid #F5F5F5', borderRadius: 16, padding: 32, marginBottom: 40, background: '#fff' }}>
+          <div style={{ border: '2px solid var(--panel-border)', borderRadius: 16, padding: 32, marginBottom: 40, background: 'var(--panel-bg)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
               <div style={{ display: 'flex', gap: -8 }}>
-                <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Video size={18} color="#64748b" /></div>
-                <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: -8, border: '2px solid #fff' }}><Mic size={18} color="#64748b" /></div>
+                <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--muted-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Video size={18} color='var(--text-muted)' /></div>
+                <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--muted-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: -8, border: '2px solid var(--panel-bg)' }}><Mic size={18} color='var(--text-muted)' /></div>
               </div>
-              <div style={{ fontWeight: 600, fontSize: 18, color: '#0f172a' }}>Enable Camera & Microphone</div>
+              <div style={{ fontWeight: 600, fontSize: 18, color: 'var(--foreground)' }}>Enable Camera & Microphone</div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, background: '#f8fafc', padding: '16px 24px', borderRadius: 12, border: '2px solid #F5F5F5' }}>
-              <div style={{ fontSize: 15, color: '#475569', fontWeight: 500 }}>We'll provide a script on screen in</div>
-              <select style={{ padding: '8px 32px 8px 12px', border: '1px solid #e0e0e0', borderRadius: 8, background: '#fff', fontWeight: 600, fontSize: 14, color: '#0f172a', cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px top 50%', backgroundSize: '10px auto', transition: 'border-color 0.2s' }} onMouseEnter={e => e.currentTarget.style.borderColor = '#d86450'} onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, background: 'var(--muted-bg)', padding: '16px 24px', borderRadius: 12, border: '2px solid var(--panel-border)' }}>
+              <div style={{ fontSize: 15, color: 'var(--text-muted)', fontWeight: 500 }}>We'll provide a script on screen in</div>
+              <select style={{ padding: '8px 32px 8px 12px', border: '1px solid var(--panel-border)', borderRadius: 8, background: 'var(--panel-bg)', fontWeight: 600, fontSize: 14, color: 'var(--foreground)', cursor: 'pointer', appearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px top 50%', backgroundSize: '10px auto', transition: 'border-color 0.2s' }} onMouseEnter={e => e.currentTarget.style.borderColor = '#d86450'} onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--panel-border)'}>
                 <option>English</option>
                 <option>Spanish</option>
                 <option>French</option>
               </select>
             </div>
           </div>
-        )}
-
-        {selectedMethod === 'phone' && (
-          <div style={{ border: '2px solid #F5F5F5', borderRadius: 16, padding: 48, marginBottom: 40, background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <h2 style={{ fontSize: 24, fontWeight: 600, color: '#0f172a', marginBottom: 16 }}>Scan to Record on Phone</h2>
-            <p style={{ color: '#64748b', marginBottom: 32, textAlign: 'center', maxWidth: 400, lineHeight: 1.5 }}>
-              Scan this QR code with your phone's camera. It will open this page on your mobile device, allowing you to record your avatar easily.
-            </p>
-            {currentUrl ? (
-              <div style={{ padding: 24, background: '#fff', borderRadius: 24, border: '2px solid #e2e8f0', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)', display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
-                <QRCodeSVG value={currentUrl} size={220} level="H" />
-              </div>
-            ) : (
-              <div style={{ width: 220, height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', borderRadius: 16 }}>
-                <Loader2 className="animate-spin" size={32} color="#94a3b8" />
-              </div>
-            )}
-          </div>
-        )}
 
         {/* Actions */}
-        {selectedMethod !== 'phone' && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16 }}>
-            <button
-              onClick={() => { stopCamera(); router.push('/avatars/create'); }}
-              style={{ padding: '0 24px', height: 48, background: '#fff', border: '2px solid #F5F5F5', color: '#64748b', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: 'pointer', transition: 'all 0.2s' }}
-              disabled={isUploading}
-            >
-              Back
-            </button>
-            <button
-              onClick={handleReadyClick}
-              disabled={!selectedFile || isUploading}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 32px', height: 48, background: (!selectedFile || isUploading) ? '#e2e8f0' : '#d86450', color: (!selectedFile || isUploading) ? '#94a3b8' : '#fff', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: (!selectedFile || isUploading) ? 'not-allowed' : 'pointer', transition: 'all 0.2s' }}
-            >
-              {isUploading && <Loader2 size={16} className="animate-spin" />}
-              I'm ready
-            </button>
-          </div>
-        )}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 16 }}>
+          <button
+            onClick={() => { stopCamera(); router.push('/avatars/create'); }}
+            style={{ padding: '0 24px', height: 48, background: 'var(--panel-bg)', border: '2px solid var(--panel-border)', color: 'var(--text-muted)', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: 'pointer', transition: 'all 0.2s' }}
+            disabled={isUploading}
+          >
+            Back
+          </button>
+          <button
+            onClick={handleReadyClick}
+            disabled={!selectedFile || isUploading}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 32px', height: 48, background: (!selectedFile || isUploading) ? 'var(--panel-border)' : '#d86450', color: (!selectedFile || isUploading) ? 'var(--text-muted)' : 'var(--panel-bg)', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: (!selectedFile || isUploading) ? 'not-allowed' : 'pointer', transition: 'all 0.2s' }}
+          >
+            {isUploading && <Loader2 size={16} className="animate-spin" />}
+            I'm ready
+          </button>
+        </div>
 
       </div>
     </div>

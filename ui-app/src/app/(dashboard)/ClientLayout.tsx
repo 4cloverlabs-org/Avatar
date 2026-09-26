@@ -192,7 +192,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         justifyContent: 'center',
         gap: 0,
         outline: 'none',
-        background: active ? '#ffffff' : 'transparent',
+        background: active ? 'var(--panel-bg)' : 'transparent',
         boxShadow: 'none',
         border: 'none',
         position: 'relative' as const
@@ -264,8 +264,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               left: '38px',
               top: '50%',
               transform: 'translateY(-50%)',
-              background: '#0f172a',
-              color: '#ffffff',
+              background: 'var(--foreground)',
+              color: 'var(--panel-bg)',
               padding: '5px 9px',
               borderRadius: '6px',
               fontSize: '11px',
@@ -284,7 +284,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 transform: 'translateY(-50%) rotate(45deg)',
                 width: '6px',
                 height: '6px',
-                background: '#0f172a'
+                background: 'var(--foreground)'
               }} />
             </div>
           )}
@@ -322,36 +322,36 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 width: '100%',
                 height: '52px',
                 padding: '0 12px',
-                background: isWorkspaceDropdownOpen ? '#f1f5f9' : 'transparent',
+                background: isWorkspaceDropdownOpen ? 'var(--muted-bg)' : 'transparent',
                 border: 'none',
                 borderRadius: '8px',
                 cursor: 'pointer',
                 transition: 'background 0.2s',
                 outline: 'none'
               }}
-              onMouseEnter={(e) => { if (!isWorkspaceDropdownOpen) e.currentTarget.style.backgroundColor = '#f8fafc' }}
+              onMouseEnter={(e) => { if (!isWorkspaceDropdownOpen) e.currentTarget.style.backgroundColor = 'var(--muted-bg)' }}
               onMouseLeave={(e) => { if (!isWorkspaceDropdownOpen) e.currentTarget.style.backgroundColor = 'transparent' }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 28, height: 28, background: '#0f172a', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 'bold', flexShrink: 0 }}>
+                <div style={{ width: 28, height: 28, background: 'var(--foreground)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--panel-bg)', fontSize: 13, fontWeight: 'bold', flexShrink: 0 }}>
                   {activeWorkspace?.name?.charAt(0).toUpperCase() || 'W'}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--foreground)', letterSpacing: '-0.2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100px' }}>
                     {activeWorkspace?.name || 'Workspace'}
                   </span>
-                  <span style={{ fontSize: 10, color: '#64748b', fontWeight: 600 }}>{activeWorkspace?.plan || 'FREE'} PLAN</span>
+                  <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>{activeWorkspace?.plan || 'FREE'} PLAN</span>
                 </div>
               </div>
               
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <ChevronDown size={16} color="#64748b" style={{ transform: isWorkspaceDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+                <ChevronDown size={16} color='var(--text-muted)' style={{ transform: isWorkspaceDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
                 <button 
                   className="mobile-close-btn" 
                   onClick={(e) => { e.stopPropagation(); setIsMobileMenuOpen(false); }}
                   style={{ display: isMobileMenuOpen ? 'flex' : 'none' }}
                 >
-                  <X size={20} color="#4b5563" />
+                  <X size={20} color="var(--text-muted)" />
                 </button>
               </div>
             </div>
@@ -368,16 +368,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   left: 0,
                   width: '100%',
                   minWidth: '220px',
-                  background: '#ffffff',
+                  background: 'var(--panel-bg)',
                   borderRadius: '12px',
                   boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-                  border: '1px solid #e0e0e0',
+                  border: '1px solid var(--panel-border)',
                   zIndex: 100,
                   overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column'
                 }}>
-                  <div style={{ padding: '8px 12px', fontSize: '11px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  <div style={{ padding: '8px 12px', fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                     Your Workspaces
                   </div>
                   
@@ -401,21 +401,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                           cursor: 'pointer',
                           textAlign: 'left'
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                          <div style={{ width: 24, height: 24, background: '#f1f5f9', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#334155', fontSize: 12, fontWeight: 'bold' }}>
+                          <div style={{ width: 24, height: 24, background: 'var(--muted-bg)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--foreground)', fontSize: 12, fontWeight: 'bold' }}>
                             {ws.name.charAt(0).toUpperCase()}
                           </div>
-                          <span style={{ fontSize: 13, fontWeight: 500, color: '#1e293b' }}>{ws.name}</span>
+                          <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--foreground)' }}>{ws.name}</span>
                         </div>
                         {activeWorkspace?.id === ws.id && <Check size={16} color="#3b82f6" />}
                       </button>
                     ))}
                   </div>
 
-                  <div style={{ height: 1, background: '#e2e8f0', margin: '4px 0' }} />
+                  <div style={{ height: 1, background: 'var(--panel-border)', margin: '4px 0' }} />
                   
                   <button
                     onClick={() => {
@@ -435,7 +435,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       fontSize: 13,
                       fontWeight: 500
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#eff6ff'}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <Plus size={16} />
@@ -455,7 +455,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             marginBottom: 12,
             width: '100%'
           }}>
-            <div style={{ width: 26, height: 26, background: '#0f172a', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 'bold', flexShrink: 0 }}>
+            <div style={{ width: 26, height: 26, background: 'var(--foreground)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--panel-bg)', fontSize: 13, fontWeight: 'bold', flexShrink: 0 }}>
               {activeWorkspace?.name?.charAt(0).toUpperCase() || 'W'}
             </div>
           </div>
@@ -470,7 +470,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {!isCollapsed ? (
             <div className="home-sidebar-title">Videos</div>
           ) : (
-            <div style={{ height: 1, background: '#f1f5f9', margin: '6px 6px' }} />
+            <div style={{ height: 1, background: 'var(--muted-bg)', margin: '6px 6px' }} />
           )}
           <NavItem href="/videos" icon={Video} label="Videos" />
         </div>
@@ -480,7 +480,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {!isCollapsed ? (
             <div className="home-sidebar-title">Assets</div>
           ) : (
-            <div style={{ height: 1, background: '#f1f5f9', margin: '6px 6px' }} />
+            <div style={{ height: 1, background: 'var(--muted-bg)', margin: '6px 6px' }} />
           )}
           <NavItem href="/avatars" icon={Users} label="Avatars" />
           <NavItem href="/voices" icon={Mic} label="Voices" />
@@ -494,7 +494,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div style={{ 
           marginTop: 'auto',
           padding: isCollapsed ? '12px 6px' : '12px 12px',
-          borderTop: '1px solid #f1f5f9',
+          borderTop: '1px solid var(--muted-bg)',
           display: 'flex',
           justifyContent: isCollapsed ? 'center' : 'flex-start',
           width: '100%'
@@ -505,7 +505,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               background: 'transparent', 
               border: 'none', 
               cursor: 'pointer', 
-              color: '#64748b',
+              color: 'var(--text-muted)',
               width: isCollapsed ? 28 : 'auto',
               height: 28,
               borderRadius: 8,
@@ -518,7 +518,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               outline: 'none',
               boxShadow: 'none'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
             {isCollapsed ? (
@@ -539,7 +539,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* HEADER */}
         <div className="home-header">
           <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(true)}>
-            <Menu size={24} color="#0f172a" />
+            <Menu size={24} color='var(--foreground)' />
           </button>
           <div className="home-search">
             <Search size={16} />
@@ -551,13 +551,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <button 
                 onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
                 style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px', borderRadius: '50%', outline: 'none' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               >
                 <div style={{ position: 'relative' }}>
-                  <Bell size={20} color="#64748b" />
+                  <Bell size={20} color='var(--text-muted)' />
                   {unreadCount > 0 && (
-                    <div style={{ position: 'absolute', top: -2, right: -2, width: 8, height: 8, background: '#ef4444', borderRadius: '50%', border: '2px solid #ffffff' }} />
+                    <div style={{ position: 'absolute', top: -2, right: -2, width: 8, height: 8, background: '#ef4444', borderRadius: '50%', border: '2px solid var(--panel-bg)' }} />
                   )}
                 </div>
               </button>
@@ -571,7 +571,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     top: 0,
                     bottom: 0,
                     width: '380px',
-                    background: '#ffffff',
+                    background: 'var(--panel-bg)',
                     boxShadow: '-10px 0 25px rgba(0, 0, 0, 0.1)',
                     zIndex: 999,
                     display: 'flex',
@@ -584,16 +584,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         to { transform: translateX(0); }
                       }
                     `}</style>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: '1px solid #f1f5f9' }}>
-                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '18px' }}>Notifications</div>
-                      <button onClick={() => setIsNotificationDropdownOpen(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', borderRadius: '50%' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: '1px solid var(--muted-bg)' }}>
+                      <div style={{ fontWeight: 700, color: 'var(--foreground)', fontSize: '18px' }}>Notifications</div>
+                      <button onClick={() => setIsNotificationDropdownOpen(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', borderRadius: '50%' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                         <X size={20} />
                       </button>
                     </div>
                     
                     <div style={{ flex: 1, overflowY: 'auto' }}>
                       <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ fontSize: '13px', fontWeight: 600, color: '#64748b' }}>Recent</div>
+                        <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-muted)' }}>Recent</div>
                         {unreadCount > 0 && (
                           <button onClick={handleMarkAllAsRead} style={{ background: 'transparent', border: 'none', fontSize: '13px', color: 'var(--accent)', cursor: 'pointer', fontWeight: 500 }}>
                             Mark all as read
@@ -602,7 +602,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       </div>
 
                       {notifications.length === 0 ? (
-                        <div style={{ padding: '40px 24px', textAlign: 'center', color: '#94a3b8' }}>
+                        <div style={{ padding: '40px 24px', textAlign: 'center', color: 'var(--text-muted)' }}>
                           You have no notifications.
                         </div>
                       ) : (
@@ -614,28 +614,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                               onClick={(e) => isUnread ? handleMarkAsRead(notif.id, e) : null}
                               style={{ 
                                 padding: '16px 24px', 
-                                borderBottom: '1px solid #f1f5f9', 
-                                background: isUnread ? '#eff6ff' : 'transparent', 
+                                borderBottom: '1px solid var(--muted-bg)', 
+                                background: isUnread ? 'var(--muted-bg)' : 'transparent', 
                                 display: 'flex', 
                                 gap: '16px', 
                                 cursor: isUnread ? 'pointer' : 'default',
                                 transition: 'background-color 0.2s'
                               }}
-                              onMouseEnter={(e) => { if (!isUnread) e.currentTarget.style.backgroundColor = '#f8fafc' }}
+                              onMouseEnter={(e) => { if (!isUnread) e.currentTarget.style.backgroundColor = 'var(--muted-bg)' }}
                               onMouseLeave={(e) => { if (!isUnread) e.currentTarget.style.backgroundColor = 'transparent' }}
                             >
                               <div style={{ 
                                 width: 40, height: 40, 
-                                background: isUnread ? '#bfdbfe' : '#f1f5f9', 
+                                background: isUnread ? '#bfdbfe' : 'var(--muted-bg)', 
                                 borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, 
-                                color: isUnread ? '#2563eb' : '#64748b' 
+                                color: isUnread ? '#2563eb' : 'var(--text-muted)' 
                               }}>
                                 {notif.type === 'video' ? <Video size={20} /> : notif.type === 'avatar' ? <User size={20} /> : <Sparkles size={20} />}
                               </div>
                               <div>
-                                <div style={{ fontSize: '14px', fontWeight: isUnread ? 600 : 500, color: '#0f172a', marginBottom: '4px' }}>{notif.title}</div>
-                                <div style={{ fontSize: '13px', color: '#475569', lineHeight: '1.4' }}>{notif.message}</div>
-                                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '8px', fontWeight: 500 }}>
+                                <div style={{ fontSize: '14px', fontWeight: isUnread ? 600 : 500, color: 'var(--foreground)', marginBottom: '4px' }}>{notif.title}</div>
+                                <div style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.4' }}>{notif.message}</div>
+                                <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px', fontWeight: 500 }}>
                                   {new Date(notif.createdAt).toLocaleDateString()} at {new Date(notif.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </div>
                               </div>
@@ -651,7 +651,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {(() => {
               const displayUser = session?.user || cachedUser;
               if (isSessionLoading && !cachedUser) {
-                return <div style={{ width: 32, height: 32, background: 'linear-gradient(110deg, #e2e8f0 30%, #f1f5f9 50%, #e2e8f0 70%)', backgroundSize: '200% 100%', borderRadius: '50%', animation: 'shimmer 1.5s infinite' }} />;
+                return <div style={{ width: 32, height: 32, background: 'linear-gradient(110deg, var(--panel-border) 30%, var(--muted-bg) 50%, var(--panel-border) 70%)', backgroundSize: '200% 100%', borderRadius: '50%', animation: 'shimmer 1.5s infinite' }} />;
               }
               if (!displayUser) {
                 return <div style={{ width: 32, height: 32, background: '#d1d5db', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 600 }}>U</div>;
@@ -673,7 +673,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     width: 32, 
                     height: 32, 
                     background: '#4f46e5', 
-                    color: '#fff', 
+                    color: 'var(--panel-bg)', 
                     borderRadius: '50%', 
                     display: 'flex', 
                     alignItems: 'center', 
@@ -708,8 +708,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       right: 0,
                       top: '40px',
                       width: '240px',
-                      background: '#ffffff',
-                      border: '1px solid #e0e0e0',
+                      background: 'var(--panel-bg)',
+                      border: '1px solid var(--panel-border)',
                       boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
                       borderRadius: '12px',
                       padding: '12px',
@@ -719,15 +719,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       gap: '4px'
                     }}>
                       <div style={{ padding: '6px 8px' }}>
-                        <div style={{ fontWeight: 600, color: '#0f172a', fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        <div style={{ fontWeight: 600, color: 'var(--foreground)', fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {displayUser.name}
                         </div>
-                        <div style={{ color: '#64748b', fontSize: '11px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '2px' }}>
+                        <div style={{ color: 'var(--text-muted)', fontSize: '11px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginTop: '2px' }}>
                           {displayUser.email}
                         </div>
                       </div>
                       
-                      <div style={{ height: '1px', background: '#f1f5f9', margin: '6px 0' }} />
+                      <div style={{ height: '1px', background: 'var(--muted-bg)', margin: '6px 0' }} />
 
                       <Link
                         href="/settings"
@@ -735,7 +735,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         style={{
                           background: 'transparent',
                           border: 'none',
-                          color: '#334155',
+                          color: 'var(--foreground)',
                           padding: '8px 10px',
                           textAlign: 'left',
                           fontSize: '13px',
@@ -749,7 +749,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                           textDecoration: 'none'
                         }}
                       >
-                        <Settings size={15} color="#475569" />
+                        <Settings size={15} color='var(--text-muted)' />
                         Account Settings
                       </Link>
 
@@ -803,7 +803,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            background: '#ffffff',
+            background: 'var(--panel-bg)',
             borderRadius: '16px',
             boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
             width: '90%',
@@ -813,17 +813,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             animation: 'modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: '#0f172a' }}>Create Workspace</h2>
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: 'var(--foreground)' }}>Create Workspace</h2>
               <button 
                 onClick={() => setIsCreateWorkspaceModalOpen(false)}
-                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#64748b' }}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
               >
                 <X size={20} />
               </button>
             </div>
 
             <div style={{ marginBottom: '24px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '8px' }}>
                 Workspace Name
               </label>
               <input 
@@ -836,13 +836,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   width: '100%',
                   padding: '12px 16px',
                   borderRadius: '8px',
-                  border: '1px solid #e0e0e0',
+                  border: '1px solid var(--panel-border)',
                   fontSize: '14px',
                   outline: 'none',
                   transition: 'border-color 0.2s, box-shadow 0.2s'
                 }}
                 onFocus={(e) => { e.currentTarget.style.borderColor = '#3b82f6'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'; }}
-                onBlur={(e) => { e.currentTarget.style.borderColor = '#cbd5e1'; e.currentTarget.style.boxShadow = 'none'; }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--panel-border)'; e.currentTarget.style.boxShadow = 'none'; }}
               />
             </div>
 
@@ -854,7 +854,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   borderRadius: '8px',
                   border: 'none',
                   background: 'transparent',
-                  color: '#64748b',
+                  color: 'var(--text-muted)',
                   fontSize: '14px',
                   fontWeight: 600,
                   cursor: 'pointer'
@@ -869,8 +869,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   padding: '10px 20px',
                   borderRadius: '8px',
                   border: 'none',
-                  background: (!newWorkspaceName.trim() || isCreatingWorkspace) ? '#94a3b8' : '#0f172a',
-                  color: '#ffffff',
+                  background: (!newWorkspaceName.trim() || isCreatingWorkspace) ? 'var(--text-muted)' : 'var(--foreground)',
+                  color: 'var(--panel-bg)',
                   fontSize: '14px',
                   fontWeight: 600,
                   cursor: (!newWorkspaceName.trim() || isCreatingWorkspace) ? 'not-allowed' : 'pointer',

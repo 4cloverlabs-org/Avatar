@@ -49,7 +49,7 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div style={{ padding: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-        <div style={{ color: '#64748b', fontSize: 16, fontWeight: 500 }}>Loading analytics data...</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500 }}>Loading analytics data...</div>
       </div>
     );
   }
@@ -119,17 +119,17 @@ export default function AnalyticsPage() {
       flex: 1,
       overflowY: 'auto',
       backgroundColor: 'transparent',
-      color: '#111',
+      color: 'var(--foreground)',
       display: 'flex',
       flexDirection: 'column'
     }}>
       <style>{`
         .glass-card {
-          background: #ffffff;
+          background: var(--panel-bg);
           border-radius: 24px;
           padding: 24px;
           box-shadow: 0 4px 24px rgba(100, 100, 111, 0.05);
-          border: 1px solid #e0e0e0;
+          border: 1px solid var(--panel-border);
           display: flex;
           flex-direction: column;
         }
@@ -184,18 +184,18 @@ export default function AnalyticsPage() {
           gap: 12px;
           padding: 12px;
           border-radius: 12px;
-          border: 1px solid #e0e0e0;
-          background: #fff;
+          border: 1px solid var(--panel-border);
+          background: var(--panel-bg);
           cursor: pointer;
           transition: all 0.2s;
           font-weight: 600;
           font-size: 13px;
-          color: #334155;
+          color: var(--foreground);
           box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .action-btn:hover {
-          background: #f8fafc;
-          border-color: #e0e0e0;
+          background: var(--muted-bg);
+          border-color: var(--panel-border);
           box-shadow: 0 4px 8px rgba(0,0,0,0.04);
         }
         .card-header {
@@ -207,22 +207,22 @@ export default function AnalyticsPage() {
         .card-title {
           font-size: 17px;
           font-weight: 700;
-          color: #1e293b;
+          color: var(--foreground);
         }
         .card-subtitle {
           font-size: 13px;
-          color: #94a3b8;
+          color: var(--text-muted);
           margin-top: 6px;
           font-weight: 500;
         }
         .badge-btn {
           padding: 6px 12px;
           border-radius: 20px;
-          border: 1px solid #e0e0e0;
+          border: 1px solid var(--panel-border);
           font-size: 12px;
           font-weight: 600;
-          color: #64748b;
-          background: #fff;
+          color: var(--text-muted);
+          background: var(--panel-bg);
           display: flex;
           align-items: center;
           gap: 4px;
@@ -232,8 +232,8 @@ export default function AnalyticsPage() {
           width: 24px;
           height: 24px;
           border-radius: 50%;
-          background: #f8fafc;
-          border: 1px solid #e0e0e0;
+          background: var(--muted-bg);
+          border: 1px solid var(--panel-border);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -259,30 +259,30 @@ export default function AnalyticsPage() {
             </div>
             
             <div style={{ display: 'flex', gap: 24, alignItems: 'center', marginBottom: 24, marginTop: 12 }}>
-              <div style={{ fontSize: 54, fontWeight: 700, lineHeight: 1, color: '#1e293b', letterSpacing: '-2px' }}>{data?.planProgress?.completed || 0}<span style={{ fontSize: 24, color: '#94a3b8', letterSpacing: '0' }}>/{data?.planProgress?.total || 100}</span></div>
-              <div style={{ fontSize: 12, color: '#64748b', maxWidth: 80, lineHeight: 1.5, fontWeight: 500 }}>Posts in current cycle</div>
+              <div style={{ fontSize: 54, fontWeight: 700, lineHeight: 1, color: 'var(--foreground)', letterSpacing: '-2px' }}>{data?.planProgress?.completed || 0}<span style={{ fontSize: 24, color: 'var(--text-muted)', letterSpacing: '0' }}>/{data?.planProgress?.total || 100}</span></div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', maxWidth: 80, lineHeight: 1.5, fontWeight: 500 }}>Posts in current cycle</div>
             </div>
 
-            <div style={{ width: '100%', height: 16, background: '#f8fafc', border: '1px solid #e0e0e0', borderRadius: 8, marginBottom: 32, position: 'relative' }}>
+            <div style={{ width: '100%', height: 16, background: 'var(--muted-bg)', border: '1px solid var(--panel-border)', borderRadius: 8, marginBottom: 32, position: 'relative' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${data?.planProgress?.completed || 0}%`, background: '#bfdbfe', borderRadius: 8 }}></div>
               <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${(data?.planProgress?.completed || 0) * 0.75}%`, background: '#60a5fa', borderRadius: 8 }}></div>
               {/* The vertical divider inside the bar */}
               <div style={{ position: 'absolute', top: -4, left: `${(data?.planProgress?.completed || 0) * 0.75}%`, width: 2, height: 24, background: '#3b82f6' }}></div>
             </div>
 
-            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 16, color: '#1e293b' }}>Indicators:</div>
+            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 16, color: 'var(--foreground)' }}>Indicators:</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                <span style={{ color: '#64748b', fontWeight: 500 }}>Days Remaining</span>
-                <span style={{ fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6' }}></div> {data?.planProgress?.daysRemaining || 0} Days</span>
+                <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Days Remaining</span>
+                <span style={{ fontWeight: 700, color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6' }}></div> {data?.planProgress?.daysRemaining || 0} Days</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                <span style={{ color: '#64748b', fontWeight: 500 }}>Failed Posts</span>
-                <span style={{ fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }}></div> {data?.planProgress?.errors || 0} Errors</span>
+                <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Failed Posts</span>
+                <span style={{ fontWeight: 700, color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }}></div> {data?.planProgress?.errors || 0} Errors</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                <span style={{ color: '#64748b', fontWeight: 500 }}>Platform Health</span>
-                <span style={{ fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6' }}></div> All Connected</span>
+                <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Platform Health</span>
+                <span style={{ fontWeight: 700, color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: 8 }}><div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6' }}></div> All Connected</span>
               </div>
             </div>
           </div>
@@ -294,19 +294,19 @@ export default function AnalyticsPage() {
                 <div className="card-title">Avatar Usage</div>
                 <div className="card-subtitle">Which avatar/voice pairings were used.</div>
               </div>
-              <MoreVertical size={16} color="#94a3b8" />
+              <MoreVertical size={16} color='var(--text-muted)' />
             </div>
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flex: 1, marginTop: 12 }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
                 {(data?.avatarUsage || []).map((avatar: any, i: number) => (
                   <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                    <div style={{ width: 40, height: 40, background: i === 0 ? '#eff6ff' : '#f5f3ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: 40, height: 40, background: i === 0 ? 'var(--muted-bg)' : '#f5f3ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {i === 0 ? <Target size={18} color="#3b82f6" /> : <Activity size={18} color="#8b5cf6" />}
                     </div>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b' }}>{avatar.name}</div>
-                      <div style={{ fontSize: 13, color: '#94a3b8', fontWeight: 500 }}><span style={{ color: i === 0 ? '#3b82f6' : '#8b5cf6', fontWeight: 700 }}>• {avatar.percentage}%</span> / {avatar.count} videos</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--foreground)' }}>{avatar.name}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 500 }}><span style={{ color: i === 0 ? '#3b82f6' : '#8b5cf6', fontWeight: 700 }}>• {avatar.percentage}%</span> / {avatar.count} videos</div>
                     </div>
                   </div>
                 ))}
@@ -328,7 +328,7 @@ export default function AnalyticsPage() {
                 <div className="card-subtitle">See your automated scheduled posts.</div>
               </div>
               <div style={{ display: 'flex', gap: 12 }}>
-                <div className="badge-btn" style={{ color: '#0f172a', whiteSpace: 'nowrap' }}>
+                <div className="badge-btn" style={{ color: 'var(--foreground)', whiteSpace: 'nowrap' }}>
                   <Calendar size={14} /> 7 Feb 2024 - 10 Feb 2024
                 </div>
               </div>
@@ -336,7 +336,7 @@ export default function AnalyticsPage() {
 
             <div style={{ position: 'relative', height: '100%' }}>
               {/* Timeline axis text */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#cbd5e1', fontSize: 11, fontWeight: 600, padding: '0 16px', marginBottom: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--panel-border)', fontSize: 11, fontWeight: 600, padding: '0 16px', marginBottom: 16 }}>
                 <div>07:00</div><div>7:15</div><div>7:30</div><div>7:45</div><div>8:00</div><div>8:15</div><div>8:30</div>
               </div>
 
@@ -352,20 +352,20 @@ export default function AnalyticsPage() {
                       Today <div style={{ flex: 1, height: 1, borderTop: '2px dashed #bfdbfe' }}></div>
                     </div>
                   ) : (
-                    <div style={{ fontSize: 12, color: '#94a3b8', fontWeight: 600, marginBottom: 16 }}>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 16 }}>
                       {post.date}
                     </div>
                   )}
 
-                  <div style={{ display: 'flex', alignItems: 'center', background: i === 0 ? '#eff6ff' : '#fffbeb', padding: '16px', borderRadius: '16px', marginBottom: 24, border: `1px solid ${i === 0 ? '#bfdbfe' : '#fde68a'}`, gap: 16 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: '12px', background: i === 0 ? '#3b82f6' : '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', background: i === 0 ? 'var(--muted-bg)' : '#fffbeb', padding: '16px', borderRadius: '16px', marginBottom: 24, border: `1px solid ${i === 0 ? '#bfdbfe' : '#fde68a'}`, gap: 16 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: '12px', background: i === 0 ? '#3b82f6' : '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--panel-bg)', flexShrink: 0 }}>
                       {i === 0 ? <Play size={18} /> : <Video size={18} />}
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 700, fontSize: 14, color: '#1e293b', marginBottom: 4 }}>{post.title}</div>
-                      <div style={{ fontSize: 12, color: '#64748b', fontWeight: 500 }}>{post.time}</div>
+                      <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--foreground)', marginBottom: 4 }}>{post.title}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>{post.time}</div>
                     </div>
-                    <MoreVertical size={16} color={i === 0 ? '#94a3b8' : '#fcd34d'} />
+                    <MoreVertical size={16} color={i === 0 ? 'var(--text-muted)' : '#fcd34d'} />
                   </div>
                 </React.Fragment>
               ))}
@@ -393,7 +393,7 @@ export default function AnalyticsPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, color: '#3b82f6', fontSize: 12, fontWeight: 700 }}>
                     ▲ +6.3%
                   </div>
-                  <div style={{ fontSize: 32, fontWeight: 700, color: '#1e293b', letterSpacing: '-1px' }}>{data?.metrics?.totalViews || '0'}</div>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--foreground)', letterSpacing: '-1px' }}>{data?.metrics?.totalViews || '0'}</div>
                 </div>
                 
                 {/* Exact Mini Line Chart visual */}
@@ -401,7 +401,7 @@ export default function AnalyticsPage() {
                    <div style={{ fontSize: 12, color: '#3b82f6', fontWeight: 600, textAlign: 'right', marginBottom: 4 }}>{data?.metrics?.totalViews || '0'}+</div>
                    <svg viewBox="0 0 100 40" style={{ width: '100%', height: 20 }}>
                      <path d="M0,20 Q20,20 30,10 T60,15 T100,0" fill="none" stroke="#93c5fd" strokeWidth="3" />
-                     <path d="M0,20 Q20,20 30,10 T60,15 T100,0 L100,40 L0,40 Z" fill="#eff6ff" />
+                     <path d="M0,20 Q20,20 30,10 T60,15 T100,0 L100,40 L0,40 Z" fill="var(--muted-bg)" />
                    </svg>
                 </div>
               </div>
@@ -422,13 +422,13 @@ export default function AnalyticsPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, color: '#ef4444', fontSize: 12, fontWeight: 700 }}>
                     ▼ -2%
                   </div>
-                  <div style={{ fontSize: 32, fontWeight: 700, color: '#1e293b', letterSpacing: '-1px' }}>{data?.metrics?.videosPublished || 0}</div>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--foreground)', letterSpacing: '-1px' }}>{data?.metrics?.videosPublished || 0}</div>
                 </div>
                 
                 {/* Mini Bars Exact */}
                 <div style={{ display: 'flex', gap: 6, height: 40, alignItems: 'flex-end', position: 'relative' }}>
-                  <div style={{ width: 6, height: '40%', background: '#f8fafc', border: '1px solid #e0e0e0', borderRadius: 4 }}></div>
-                  <div style={{ width: 6, height: '60%', background: '#f8fafc', border: '1px solid #e0e0e0', borderRadius: 4 }}></div>
+                  <div style={{ width: 6, height: '40%', background: 'var(--muted-bg)', border: '1px solid var(--panel-border)', borderRadius: 4 }}></div>
+                  <div style={{ width: 6, height: '60%', background: 'var(--muted-bg)', border: '1px solid var(--panel-border)', borderRadius: 4 }}></div>
                   
                   {/* Highlighted bar */}
                   <div style={{ position: 'relative' }}>
@@ -436,8 +436,8 @@ export default function AnalyticsPage() {
                     <div style={{ width: 6, height: '100%', background: '#fcd34d', borderRadius: 4 }}></div>
                   </div>
 
-                  <div style={{ width: 6, height: '30%', background: '#f8fafc', border: '1px solid #e0e0e0', borderRadius: 4 }}></div>
-                  <div style={{ width: 6, height: '50%', background: '#f8fafc', border: '1px solid #e0e0e0', borderRadius: 4 }}></div>
+                  <div style={{ width: 6, height: '30%', background: 'var(--muted-bg)', border: '1px solid var(--panel-border)', borderRadius: 4 }}></div>
+                  <div style={{ width: 6, height: '50%', background: 'var(--muted-bg)', border: '1px solid var(--panel-border)', borderRadius: 4 }}></div>
                 </div>
               </div>
             </div>
@@ -457,13 +457,13 @@ export default function AnalyticsPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, color: '#3b82f6', fontSize: 12, fontWeight: 700 }}>
                     ▲ +12%
                   </div>
-                  <div style={{ fontSize: 32, fontWeight: 700, color: '#1e293b', letterSpacing: '-1px' }}>{data?.metrics?.avgEngagement || '0%'}</div>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: 'var(--foreground)', letterSpacing: '-1px' }}>{data?.metrics?.avgEngagement || '0%'}</div>
                 </div>
                 
                 {/* Exact Horizontal Marker line */}
                 <div style={{ width: 90, display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 10 }}>
                    <div style={{ fontSize: 12, color: '#3b82f6', fontWeight: 600, textAlign: 'right', paddingRight: '15%' }}>15%</div>
-                   <div style={{ width: '100%', height: 2, background: '#f1f5f9', position: 'relative' }}>
+                   <div style={{ width: '100%', height: 2, background: 'var(--muted-bg)', position: 'relative' }}>
                      <div style={{ position: 'absolute', top: -3, left: '60%', width: 2, height: 8, background: '#93c5fd' }}></div>
                      <div style={{ position: 'absolute', top: -3, left: '85%', width: 2, height: 8, background: '#93c5fd' }}></div>
                      <div style={{ position: 'absolute', top: 0, left: '60%', width: '25%', height: 2, background: '#3b82f6' }}></div>
@@ -483,32 +483,32 @@ export default function AnalyticsPage() {
                 <div style={{ display: 'flex', gap: 12, marginTop: 16, flexWrap: 'nowrap', overflowX: 'auto', paddingBottom: 4 }}>
                   <div 
                     onClick={() => toggleLine('revenue')}
-                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: hiddenLines.revenue ? '#cbd5e1' : '#64748b', cursor: 'pointer', transition: 'all 0.2s', opacity: hiddenLines.revenue ? 0.5 : 1, whiteSpace: 'nowrap' }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: hiddenLines.revenue ? '#cbd5e1' : '#93c5fd', flexShrink: 0 }}></div> 
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: hiddenLines.revenue ? 'var(--panel-border)' : 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s', opacity: hiddenLines.revenue ? 0.5 : 1, whiteSpace: 'nowrap' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: hiddenLines.revenue ? 'var(--panel-border)' : '#93c5fd', flexShrink: 0 }}></div> 
                     <span>Instagram Views</span>
                   </div>
                   <div 
                     onClick={() => toggleLine('clickRate')}
-                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: hiddenLines.clickRate ? '#cbd5e1' : '#64748b', cursor: 'pointer', transition: 'all 0.2s', opacity: hiddenLines.clickRate ? 0.5 : 1, whiteSpace: 'nowrap' }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: hiddenLines.clickRate ? '#cbd5e1' : '#f87171', flexShrink: 0 }}></div> 
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: hiddenLines.clickRate ? 'var(--panel-border)' : 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s', opacity: hiddenLines.clickRate ? 0.5 : 1, whiteSpace: 'nowrap' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: hiddenLines.clickRate ? 'var(--panel-border)' : '#f87171', flexShrink: 0 }}></div> 
                     <span>YouTube Views</span>
                   </div>
                   <div 
                     onClick={() => toggleLine('unsubscribes')}
-                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: hiddenLines.unsubscribes ? '#cbd5e1' : '#64748b', cursor: 'pointer', transition: 'all 0.2s', opacity: hiddenLines.unsubscribes ? 0.5 : 1, whiteSpace: 'nowrap' }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: hiddenLines.unsubscribes ? '#cbd5e1' : '#818cf8', flexShrink: 0 }}></div> 
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: hiddenLines.unsubscribes ? 'var(--panel-border)' : 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s', opacity: hiddenLines.unsubscribes ? 0.5 : 1, whiteSpace: 'nowrap' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: hiddenLines.unsubscribes ? 'var(--panel-border)' : '#818cf8', flexShrink: 0 }}></div> 
                     <span>TikTok Views</span>
                   </div>
                   <div 
                     onClick={() => toggleLine('twitter')}
-                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: hiddenLines.twitter ? '#cbd5e1' : '#64748b', cursor: 'pointer', transition: 'all 0.2s', opacity: hiddenLines.twitter ? 0.5 : 1, whiteSpace: 'nowrap' }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: hiddenLines.twitter ? '#cbd5e1' : '#94a3b8', flexShrink: 0 }}></div> 
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: hiddenLines.twitter ? 'var(--panel-border)' : 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s', opacity: hiddenLines.twitter ? 0.5 : 1, whiteSpace: 'nowrap' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: hiddenLines.twitter ? 'var(--panel-border)' : 'var(--text-muted)', flexShrink: 0 }}></div> 
                     <span>Twitter/X Views</span>
                   </div>
                   <div 
                     onClick={() => toggleLine('facebook')}
-                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: hiddenLines.facebook ? '#cbd5e1' : '#64748b', cursor: 'pointer', transition: 'all 0.2s', opacity: hiddenLines.facebook ? 0.5 : 1, whiteSpace: 'nowrap' }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: hiddenLines.facebook ? '#cbd5e1' : '#34d399', flexShrink: 0 }}></div> 
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: hiddenLines.facebook ? 'var(--panel-border)' : 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s', opacity: hiddenLines.facebook ? 0.5 : 1, whiteSpace: 'nowrap' }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: hiddenLines.facebook ? 'var(--panel-border)' : '#34d399', flexShrink: 0 }}></div> 
                     <span>Facebook Views</span>
                   </div>
                 </div>
@@ -522,14 +522,14 @@ export default function AnalyticsPage() {
                 >
                   {timeframe} ▾
                   {isTimeframeDropdownOpen && (
-                    <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: 8, background: '#fff', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '1px solid #e0e0e0', zIndex: 10, minWidth: 140, overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: 8, background: 'var(--panel-bg)', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '1px solid var(--panel-border)', zIndex: 10, minWidth: 140, overflow: 'hidden' }}>
                       {['Last 07 days', 'Last 14 days', 'Last 30 days'].map(tf => (
                         <div 
                           key={tf} 
                           onClick={(e) => { e.stopPropagation(); setTimeframe(tf); setIsTimeframeDropdownOpen(false); }}
-                          style={{ padding: '8px 16px', fontSize: 13, color: tf === timeframe ? '#3b82f6' : '#475569', fontWeight: tf === timeframe ? 600 : 500, cursor: 'pointer', background: tf === timeframe ? '#eff6ff' : '#fff' }}
-                          onMouseEnter={(e) => { e.currentTarget.style.background = tf === timeframe ? '#eff6ff' : '#f8fafc' }}
-                          onMouseLeave={(e) => { e.currentTarget.style.background = tf === timeframe ? '#eff6ff' : '#fff' }}
+                          style={{ padding: '8px 16px', fontSize: 13, color: tf === timeframe ? '#3b82f6' : 'var(--text-muted)', fontWeight: tf === timeframe ? 600 : 500, cursor: 'pointer', background: tf === timeframe ? 'var(--muted-bg)' : 'var(--panel-bg)' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = tf === timeframe ? 'var(--muted-bg)' : 'var(--muted-bg)' }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = tf === timeframe ? 'var(--muted-bg)' : 'var(--panel-bg)' }}
                         >
                           {tf}
                         </div>
@@ -547,8 +547,8 @@ export default function AnalyticsPage() {
                   <defs>
                     {/* Linear fades for each colored stripe */}
                     <linearGradient id="fadeSlate" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#94a3b8" stopOpacity={0.6} />
-                      <stop offset="100%" stopColor="#94a3b8" stopOpacity={0} />
+                      <stop offset="0%" stopColor='var(--text-muted)' stopOpacity={0.6} />
+                      <stop offset="100%" stopColor='var(--text-muted)' stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="fadePurple" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#a5b4fc" stopOpacity={0.6} />
@@ -591,12 +591,12 @@ export default function AnalyticsPage() {
                   </defs>
                   
                   {/* Horizontal dashed grid lines only */}
-                  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
+                  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke='var(--muted-bg)' />
                   
-                  <XAxis dataKey="uniqueKey" ticks={activeTicks} tickFormatter={(val) => activeChartData.find((d: any) => d.uniqueKey === val)?.date || ''} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} dy={10} />
+                  <XAxis dataKey="uniqueKey" ticks={activeTicks} tickFormatter={(val) => activeChartData.find((d: any) => d.uniqueKey === val)?.date || ''} axisLine={{ stroke: 'var(--panel-border)' }} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }} dy={10} />
                   
                   {/* YAxis on the right side */}
-                  <YAxis orientation="right" width={45} axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 500 }} dx={10} tickFormatter={(v) => v === 0 ? '0' : `${v/1000}k`} />
+                  <YAxis orientation="right" width={45} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }} dx={10} tickFormatter={(v) => v === 0 ? '0' : `${v/1000}k`} />
                   
                   <Tooltip 
                     cursor={{ stroke: '#a5b4fc', strokeWidth: 2 }}
@@ -604,14 +604,14 @@ export default function AnalyticsPage() {
                       if (active && payload && payload.length) {
                         const originalDate = payload[0].payload.date;
                         return (
-                          <div style={{ background: '#0a0a0a', color: '#fff', padding: '12px', borderRadius: '8px', fontSize: 13, fontWeight: 500, display: 'flex', flexDirection: 'column', gap: 6, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)' }}>
-                            <div style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, marginBottom: 4 }}>{originalDate}</div>
+                          <div style={{ background: '#0a0a0a', color: 'var(--panel-bg)', padding: '12px', borderRadius: '8px', fontSize: 13, fontWeight: 500, display: 'flex', flexDirection: 'column', gap: 6, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)' }}>
+                            <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, marginBottom: 4 }}>{originalDate}</div>
                             {payload.map((p: any, i: number) => {
                               const displayName = p.name === 'twitter' ? 'Twitter/X' : p.name === 'facebook' ? 'Facebook' : p.name === 'unsubscribes' ? 'TikTok' : p.name === 'clickRate' ? 'YouTube' : 'Instagram';
                               return (
                                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: p.color }}></div>
-                                  <span style={{ color: '#cbd5e1' }}>{displayName}:</span>
+                                  <span style={{ color: 'var(--panel-border)' }}>{displayName}:</span>
                                   <span>{p.value}</span>
                                 </div>
                               );
@@ -624,11 +624,11 @@ export default function AnalyticsPage() {
                   />
                   
                   {/* The actual overlapping striped areas, conditionally rendered */}
-                  {!hiddenLines.twitter && <Area type="linear" dataKey="twitter" stroke="#94a3b8" strokeWidth={2} fillOpacity={1} fill="url(#stripeSlate)" activeDot={{ r: 6, fill: "#ffffff", stroke: "#94a3b8", strokeWidth: 2 }} />}
-                  {!hiddenLines.unsubscribes && <Area type="linear" dataKey="unsubscribes" stroke="#818cf8" strokeWidth={2} fillOpacity={1} fill="url(#stripePurple)" activeDot={{ r: 6, fill: "#ffffff", stroke: "#a5b4fc", strokeWidth: 2 }} />}
-                  {!hiddenLines.clickRate && <Area type="linear" dataKey="clickRate" stroke="#fca5a5" strokeWidth={2} fillOpacity={1} fill="url(#stripeRed)" activeDot={{ r: 6, fill: "#ffffff", stroke: "#fca5a5", strokeWidth: 2 }} />}
-                  {!hiddenLines.facebook && <Area type="linear" dataKey="facebook" stroke="#34d399" strokeWidth={2} fillOpacity={1} fill="url(#stripeEmerald)" activeDot={{ r: 6, fill: "#ffffff", stroke: "#34d399", strokeWidth: 2 }} />}
-                  {!hiddenLines.revenue && <Area type="linear" dataKey="revenue" stroke="#93c5fd" strokeWidth={2} fillOpacity={1} fill="url(#stripeBlue)" activeDot={{ r: 6, fill: "#ffffff", stroke: "#93c5fd", strokeWidth: 2 }} />}
+                  {!hiddenLines.twitter && <Area type="linear" dataKey="twitter" stroke='var(--text-muted)' strokeWidth={2} fillOpacity={1} fill="url(#stripeSlate)" activeDot={{ r: 6, fill: 'var(--panel-bg)', stroke: 'var(--text-muted)', strokeWidth: 2 }} />}
+                  {!hiddenLines.unsubscribes && <Area type="linear" dataKey="unsubscribes" stroke="#818cf8" strokeWidth={2} fillOpacity={1} fill="url(#stripePurple)" activeDot={{ r: 6, fill: 'var(--panel-bg)', stroke: "#a5b4fc", strokeWidth: 2 }} />}
+                  {!hiddenLines.clickRate && <Area type="linear" dataKey="clickRate" stroke="#fca5a5" strokeWidth={2} fillOpacity={1} fill="url(#stripeRed)" activeDot={{ r: 6, fill: 'var(--panel-bg)', stroke: "#fca5a5", strokeWidth: 2 }} />}
+                  {!hiddenLines.facebook && <Area type="linear" dataKey="facebook" stroke="#34d399" strokeWidth={2} fillOpacity={1} fill="url(#stripeEmerald)" activeDot={{ r: 6, fill: 'var(--panel-bg)', stroke: "#34d399", strokeWidth: 2 }} />}
+                  {!hiddenLines.revenue && <Area type="linear" dataKey="revenue" stroke="#93c5fd" strokeWidth={2} fillOpacity={1} fill="url(#stripeBlue)" activeDot={{ r: 6, fill: 'var(--panel-bg)', stroke: "#93c5fd", strokeWidth: 2 }} />}
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -640,8 +640,8 @@ export default function AnalyticsPage() {
             <div className="card-header" style={{ marginBottom: 32 }}>
               <div className="card-title" style={{ fontSize: 20 }}>Publishing Activity</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ fontSize: 13, color: '#1e293b', fontWeight: 500 }}>Timeframe</span>
-                <div className="badge-btn" style={{ color: '#0f172a', padding: '8px 16px', borderRadius: '8px', gap: 8 }}>
+                <span style={{ fontSize: 13, color: 'var(--foreground)', fontWeight: 500 }}>Timeframe</span>
+                <div className="badge-btn" style={{ color: 'var(--foreground)', padding: '8px 16px', borderRadius: '8px', gap: 8 }}>
                   <Calendar size={14} /> 
                   {(() => {
                     if (!data?.publishingActivity?.length) return '4 Jan - 31 Jul';
@@ -655,9 +655,9 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Heatmap Grid Area */}
-            <div style={{ border: '1px solid #e0e0e0', borderRadius: '16px', padding: '24px 32px', marginBottom: 16 }}>
+            <div style={{ border: '1px solid var(--panel-border)', borderRadius: '16px', padding: '24px 32px', marginBottom: 16 }}>
               {/* Months Header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, paddingRight: 40, fontSize: 13, fontWeight: 500, color: '#1e293b' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, paddingRight: 40, fontSize: 13, fontWeight: 500, color: 'var(--foreground)' }}>
                 <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
               </div>
               
@@ -694,7 +694,7 @@ export default function AnalyticsPage() {
 
             {/* Heatmap Legend */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#1e293b', fontWeight: 500 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--foreground)', fontWeight: 500 }}>
                 Less
                 <div style={{ width: 14, height: 14, borderRadius: 4, background: '#e0f2fe' }}></div>
                 <div style={{ width: 14, height: 14, borderRadius: 4, background: '#c7d2fe' }}></div>

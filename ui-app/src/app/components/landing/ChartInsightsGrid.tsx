@@ -93,7 +93,7 @@ export default function ChartInsightsGrid({
           font-family: var(--font-heading, inherit);
           font-weight: 700;
           font-size: 1.125rem;
-          color: #111827; /* Tailwind gray-900 */
+          color: var(--foreground); /* Tailwind gray-900 */
           margin: 0 0 0.5rem 0;
           line-height: 1.4;
         }
@@ -101,7 +101,7 @@ export default function ChartInsightsGrid({
         .insight-text {
           font-family: var(--font-body, inherit);
           font-size: 0.95rem;
-          color: #4B5563; /* Tailwind gray-600 */
+          color: var(--text-muted); /* Tailwind gray-600 */
           line-height: 1.6;
           margin: 0;
           max-width: 400px;

@@ -9,6 +9,11 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Player } from '@remotion/player';
+import { CaptionsAiPicker } from '../../components/captions/CaptionsAiPicker';
+import { whisperToCaptions } from '../../lib/whisperToCaptions';
+import { SAMPLE_WHISPER_WORDS, CaptionPreviewComposition } from '../../components/CaptionEditorExample';
+
 
 export type CanvasElement = {
   id: string;
@@ -147,6 +152,13 @@ export default function Dashboard() {
   const [selectedId, setSelectedId] = useState<string | null>(null); // 'main_video' or element id
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [autoCaptionsEnabled, setAutoCaptionsEnabled] = useState(false);
+  const [captionStyle, setCaptionStyle] = useState('pulse');
+  const [captionCharsPerLine, setCaptionCharsPerLine] = useState(30);
+  const [captionWordSpacing, setCaptionWordSpacing] = useState('normal');
+  const [captionPosition, setCaptionPosition] = useState<'top' | 'middle' | 'bottom'>('bottom');
+  const segments = React.useMemo(() => whisperToCaptions(SAMPLE_WHISPER_WORDS), []);
+
   const [playKey, setPlayKey] = useState('0');
   const [interactionState, setInteractionState] = useState<string>('none');
   const interactionStartRef = useRef({ startX: 0, startY: 0, initialBox: { x: 0, y: 0, width: 100, height: 100 }, elementId: '', initialFontSize: 24 });
@@ -440,10 +452,11 @@ export default function Dashboard() {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
 
-  const handleGenerateVoice = async () => {
-    if (!scriptText.trim()) return alert("Please enter a script to generate voice");
-    if (!selectedVoiceId) return alert("Please select a voice from the dropdown");
+  const handleGenerateVoice = async (): Promise<File | null> => {
+    if (!scriptText.trim()) { alert("Please enter a script to generate voice"); return null; }
+    if (!selectedVoiceId) { alert("Please select a voice from the dropdown"); return null; }
     setIsGeneratingVoice(true);
+    let generatedFile: File | null = null;
     try {
       const formData = new FormData();
       formData.append('text', scriptText);
@@ -452,9 +465,9 @@ export default function Dashboard() {
       const res = await fetch('/api/tts', { method: 'POST', body: formData });
       if (res.ok) {
         const blob = await res.blob();
-        const file = new File([blob], 'generated_voice.wav', { type: 'audio/wav' });
-        setAudioFile(file);
-        setAudioPreview(URL.createObjectURL(file));
+        generatedFile = new File([blob], 'generated_voice.wav', { type: 'audio/wav' });
+        setAudioFile(generatedFile);
+        setAudioPreview(URL.createObjectURL(generatedFile));
       } else {
         const data = await res.json();
         alert(data.error || "Failed to generate voice");
@@ -463,6 +476,7 @@ export default function Dashboard() {
       alert("Error generating voice");
     }
     setIsGeneratingVoice(false);
+    return generatedFile;
   };
 
   const handlePrepareAvatar = async () => {
@@ -492,12 +506,19 @@ export default function Dashboard() {
 
   const handleGenerateVideo = async () => {
     if (!avatarId) return alert('Please build the avatar first.');
-    if (!audioFile) return alert('Please upload audio.');
+    
+    let currentAudioFile = audioFile;
+    if (!currentAudioFile && audioMode === 'clone' && scriptText.trim() && selectedVoiceId) {
+      currentAudioFile = await handleGenerateVoice();
+    }
+    
+    if (!currentAudioFile) return alert('Please upload or generate audio first.');
+    
     setIsGenerating(true);
     try {
       const formData = new FormData();
       formData.append('avatarId', avatarId);
-      formData.append('audio', audioFile);
+      formData.append('audio', currentAudioFile);
       formData.append('aspectRatio', projectAspectRatio);
 
       const res = await fetch('/api/generate_video', { method: 'POST', body: formData });
@@ -593,8 +614,8 @@ export default function Dashboard() {
           <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--panel-border)' }} onClick={() => alert("Invite a collaborator (Stub)")}>
             <Plus size={14} /> Invite
           </button>
-          <button className="syn-btn-primary" onClick={handleGenerateVideo} disabled={isGenerating || !avatarId || !audioFile}>
-            <Play size={14} fill="#fff" /> Generate
+          <button className="syn-btn-primary" onClick={handleGenerateVideo} disabled={isGenerating || !avatarId}>
+            <Play size={14} fill="#fff" /> {isGenerating ? "Generating..." : "Generate"}
           </button>
         </div>
       </header>
@@ -666,18 +687,7 @@ export default function Dashboard() {
               />
             )}
             
-            {!audioFile && (
-              <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', paddingTop: 10 }}>
-                <button 
-                  onClick={handleGenerateVoice} 
-                  disabled={isGeneratingVoice || !scriptText.trim()}
-                  className="syn-btn-primary" 
-                  style={{ fontSize: 12, padding: '6px 12px', background: 'var(--accent)', opacity: (!scriptText.trim() || isGeneratingVoice) ? 0.6 : 1 }}
-                >
-                  <Wand2 size={12} /> {isGeneratingVoice ? "Generating..." : "Generate Audio"}
-                </button>
-              </div>
-            )}
+
           </div>
 
           <div style={{ padding: 15, borderTop: '1px solid var(--panel-border)', display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -741,6 +751,31 @@ export default function Dashboard() {
                   })}
                 </div>
               ) : null}
+
+              {/* Remotion Captions Overlay */}
+              {autoCaptionsEnabled && (
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  pointerEvents: 'none',
+                  zIndex: 9999
+                }}>
+                  <Player
+                    component={CaptionPreviewComposition}
+                    inputProps={{ segments, config: { styleId: captionStyle, position: captionPosition, charsPerLine: captionCharsPerLine, wordSpacing: captionWordSpacing } }}
+                    durationInFrames={90}
+                    fps={30}
+                    compositionWidth={720}
+                    compositionHeight={1280}
+                    style={{ width: '100%', height: '100%', opacity: 1, pointerEvents: 'none' }}
+                    playing={isPlaying}
+                  />
+                </div>
+              )}
+
 
               {/* Render Canvas Elements */}
               {elements.map((el) => {
@@ -1709,13 +1744,62 @@ export default function Dashboard() {
             </div>
           )}
 
-          {activeTool === 'Captions' && (
+                    {activeTool === 'Captions' && (
             <div className="syn-panel-section">
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
                 <span style={{ fontSize: 13, color: 'var(--foreground)' }}>Auto-Captions</span>
-                <div className={`syn-toggle-switch`} />
+                <div className={`syn-toggle-switch ${autoCaptionsEnabled ? 'on' : ''}`} onClick={() => setAutoCaptionsEnabled(!autoCaptionsEnabled)} />
               </div>
               <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Generate captions automatically from your script or audio.</span>
+              
+              {autoCaptionsEnabled && (
+                <div style={{ marginTop: 24 }}>
+                  <div style={{ marginBottom: 16 }}>
+                    <span style={{ fontSize: 12, color: 'var(--foreground)', display: 'block', marginBottom: 8, fontWeight: 500 }}>Max Characters Per Line</span>
+                    <select
+                      style={{ width: '100%', padding: 6, borderRadius: 4, background: '#fff', border: '1px solid var(--panel-border)', fontSize: 12, color: 'var(--foreground)' }}
+                      value={captionCharsPerLine}
+                      onChange={(e) => setCaptionCharsPerLine(Number(e.target.value))}
+                    >
+                      <option value={10}>10 (Word by word, approx)</option>
+                      <option value={20}>20</option>
+                      <option value={30}>30 (Default)</option>
+                      <option value={40}>40</option>
+                    </select>
+                  </div>
+
+                  <div style={{ marginBottom: 16 }}>
+                    <span style={{ fontSize: 12, color: 'var(--foreground)', display: 'block', marginBottom: 8, fontWeight: 500 }}>Word Spacing</span>
+                    <select
+                      style={{ width: '100%', padding: 6, borderRadius: 4, background: '#fff', border: '1px solid var(--panel-border)', fontSize: 12, color: 'var(--foreground)' }}
+                      value={captionWordSpacing}
+                      onChange={(e) => setCaptionWordSpacing(e.target.value)}
+                    >
+                      <option value="normal">Normal</option>
+                      <option value="0.2em">Spaced (0.2em)</option>
+                      <option value="0.4em">Wide (0.4em)</option>
+                    </select>
+                  </div>
+
+                  <div style={{ marginBottom: 24 }}>
+                    <span style={{ fontSize: 12, color: 'var(--foreground)', display: 'block', marginBottom: 8, fontWeight: 500 }}>Position</span>
+                    <select
+                      style={{ width: '100%', padding: 6, borderRadius: 4, background: '#fff', border: '1px solid var(--panel-border)', fontSize: 12, color: 'var(--foreground)' }}
+                      value={captionPosition}
+                      onChange={(e) => setCaptionPosition(e.target.value as any)}
+                    >
+                      <option value="top">Top</option>
+                      <option value="middle">Middle</option>
+                      <option value="bottom">Bottom</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <span style={{ fontSize: 12, color: 'var(--foreground)', display: 'block', marginBottom: 8, fontWeight: 500 }}>Caption Animation Style</span>
+                    <CaptionsAiPicker selectedId={captionStyle} onSelect={setCaptionStyle} />
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

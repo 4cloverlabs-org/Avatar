@@ -63,12 +63,12 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: '340px', display: 'flex', flexDirection: 'column', fontFamily: 'var(--font-body, sans-serif)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', padding: '0 24px' }}>
-        <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 500, color: '#111827' }}>User Statistics</h3>
+        <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 500, color: 'var(--foreground)' }}>User Statistics</h3>
         <button style={{ 
           display: 'flex', alignItems: 'center', gap: '8px', 
           padding: '6px 12px', borderRadius: '6px', 
-          border: '1px solid #E5E7EB', backgroundColor: '#FFFFFF',
-          fontSize: '0.875rem', color: '#4B5563', cursor: 'pointer'
+          border: '1px solid #E5E7EB', backgroundColor: 'var(--panel-bg)',
+          fontSize: '0.875rem', color: 'var(--text-muted)', cursor: 'pointer'
         }}>
           Last 7 Days
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
@@ -164,7 +164,7 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
                 cx={c.cx}
                 cy={c.cy}
                 r={c.isTooltip ? 5 : 4}
-                fill="#FFFFFF"
+                fill='var(--panel-bg)'
                 stroke="#ff6b35"
                 strokeWidth={2}
                 initial={{ scale: 0, opacity: 0 }}
@@ -191,7 +191,7 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: 'var(--panel-bg)',
                     boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
                     padding: '8px 16px',
                     borderRadius: '8px',
@@ -199,10 +199,10 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
                     width: 'max-content',
                   }}
                 >
-                  <div style={{ fontSize: '1.25rem', fontWeight: 600, color: '#111827', lineHeight: 1.2 }}>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--foreground)', lineHeight: 1.2 }}>
                     4.990K
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '2px', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px', whiteSpace: 'nowrap' }}>
                     Monday 18, September
                   </div>
                   {/* Tooltip Arrow */}
@@ -213,7 +213,7 @@ export default function ViewerRetentionChart({ inView }: { inView: boolean }) {
                     transform: 'translateX(-50%) rotate(45deg)',
                     width: '12px',
                     height: '12px',
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: 'var(--panel-bg)',
                     borderRight: '1px solid #E5E7EB',
                     borderBottom: '1px solid #E5E7EB',
                   }} />

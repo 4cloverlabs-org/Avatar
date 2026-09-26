@@ -36,7 +36,7 @@ export default function AudioWaveform() {
       ref={containerRef}
       style={{ 
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'var(--panel-bg)',
         padding: '2rem',
         display: 'flex',
         flexDirection: 'column',

@@ -158,7 +158,7 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
           <div className="soc-field-group">
             <label>Select Generated Video</label>
             {loadingVideos ? (
-              <div style={{ padding: '10px 14px', border: '1px solid var(--panel-border)', borderRadius: 8, background: '#f8fafc', fontSize: 13, color: 'var(--text-muted)' }}>
+              <div style={{ padding: '10px 14px', border: '1px solid var(--panel-border)', borderRadius: 8, background: 'var(--muted-bg)', fontSize: 13, color: 'var(--text-muted)' }}>
                 Loading Library Videos...
               </div>
             ) : (
@@ -178,14 +178,14 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  background: '#f8fafc', 
-                  border: '1px solid #e0e0e0',
+                  background: 'var(--muted-bg)', 
+                  border: '1px solid var(--panel-border)',
                   padding: '0 20px', 
                   borderRadius: '8px', 
                   cursor: isUploadingLocal ? 'not-allowed' : 'pointer',
                   fontWeight: 600,
                   fontSize: '14px',
-                  color: '#334155',
+                  color: 'var(--foreground)',
                   transition: 'all 0.2s',
                   opacity: isUploadingLocal ? 0.6 : 1
                 }}>
@@ -296,7 +296,7 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
           disabled={isPublishing || (lockedPlatform === 'youtube' && !ytConnected) || (lockedPlatform === 'instagram' && !igConnected) || (!lockedPlatform && !ytConnected && !igConnected)}
           style={{
             background: '#d86450',
-            color: '#ffffff',
+            color: 'var(--panel-bg)',
             border: 'none',
             borderRadius: '8px',
             padding: '12px 24px',
@@ -324,14 +324,14 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
 
         {/* Uploader progress box */}
         {isPublishing && (
-          <div style={{ marginTop: 16, background: '#f8fafc', padding: 16, borderRadius: 8, border: '1px solid var(--panel-border)' }}>
+          <div style={{ marginTop: 16, background: 'var(--muted-bg)', padding: 16, borderRadius: 8, border: '1px solid var(--panel-border)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 600, color: 'var(--foreground)', marginBottom: 6 }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <RefreshCw className="pers-anim-pulse" size={12} /> {publishStep}
               </span>
               <span>{publishProgress}%</span>
             </div>
-            <div style={{ height: 6, background: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
+            <div style={{ height: 6, background: 'var(--panel-border)', borderRadius: 3, overflow: 'hidden' }}>
               <div style={{ width: `${publishProgress}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.3s' }}></div>
             </div>
           </div>
@@ -339,9 +339,9 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
       </div>
 
       {/* Video preview pane */}
-      <div style={{ borderLeft: '1px solid #e2e8f0', paddingLeft: 32, display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, color: '#334155' }}>Selected Video Preview</div>
-        <div style={{ background: '#0f172a', borderRadius: 12, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', border: '1px solid #e0e0e0' }}>
+      <div style={{ borderLeft: '1px solid var(--panel-border)', paddingLeft: 32, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>Selected Video Preview</div>
+        <div style={{ background: 'var(--foreground)', borderRadius: 12, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', border: '1px solid var(--panel-border)' }}>
           {selectedVideoFile ? (
             <video 
               src={`/api/videos/${selectedVideoFile}`}
@@ -350,7 +350,7 @@ export default function PublisherWidget({ lockedPlatform, initialPlatform, ytCon
               playsInline
             />
           ) : (
-            <div style={{ color: '#475569', fontSize: 13, textAlign: 'center', padding: 20 }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: 13, textAlign: 'center', padding: 20 }}>
               No video selected.
             </div>
           )}

@@ -41,7 +41,7 @@ const contentVariants = {
 };
 
 const cardStyle = {
-  background: '#FFFFFF',
+  background: 'var(--panel-bg)',
   borderRadius: '20px',
   padding: '3.5rem 3rem',
   boxShadow: '0 12px 48px -12px rgba(0,0,0,0.04)',
@@ -63,7 +63,7 @@ const labelStyle = {
 const ReelPreview = () => (
   <div style={cardStyle}>
     <div style={labelStyle}>REEL SCRIPT</div>
-    <h3 style={{ fontSize: '1.75rem', fontWeight: 400, color: '#111', lineHeight: 1.25, margin: '0 0 3.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+    <h3 style={{ fontSize: '1.75rem', fontWeight: 400, color: 'var(--foreground)', lineHeight: 1.25, margin: '0 0 3.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
       "Still doing 100 crunches for abs?"
     </h3>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
@@ -72,7 +72,7 @@ const ReelPreview = () => (
         { step: '02', name: 'Leg Raises', time: '30s' },
         { step: '03', name: 'Bicycle Crunches', time: '30s' },
       ].map((item, i) => (
-        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', color: '#111', fontSize: '1rem', fontWeight: 400 }}>
+        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--foreground)', fontSize: '1rem', fontWeight: 400 }}>
           <div style={{ display: 'flex', gap: '2rem' }}>
             <span style={{color: '#B3B3B3', fontSize: '0.9rem'}}>{item.step}</span>
             <span>{item.name}</span>
@@ -81,7 +81,7 @@ const ReelPreview = () => (
         </div>
       ))}
     </div>
-    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: 'var(--foreground)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       Save this workout <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
     </div>
   </div>
@@ -93,7 +93,7 @@ const CarouselPreview = () => (
       <div style={labelStyle}>CAROUSEL</div>
       <div style={{ fontSize: '0.75rem', color: '#A3A3A3', letterSpacing: '0.1em', marginBottom: '2.5rem' }}>01 / 05</div>
     </div>
-    <h3 style={{ fontSize: '1.85rem', fontWeight: 400, color: '#111', lineHeight: 1.25, margin: '0 0 3.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+    <h3 style={{ fontSize: '1.85rem', fontWeight: 400, color: 'var(--foreground)', lineHeight: 1.25, margin: '0 0 3.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
       5 Money Habits<br/>That Keep You Broke
     </h3>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', flex: 1 }}>
@@ -102,13 +102,13 @@ const CarouselPreview = () => (
         { step: '02', name: 'No emergency fund' },
         { step: '03', name: 'Ignoring compound interest' },
       ].map((item, i) => (
-        <div key={i} style={{ display: 'flex', gap: '2rem', color: '#111', fontSize: '1.05rem', alignItems: 'flex-start' }}>
+        <div key={i} style={{ display: 'flex', gap: '2rem', color: 'var(--foreground)', fontSize: '1.05rem', alignItems: 'flex-start' }}>
           <span style={{color: '#B3B3B3', fontSize: '0.9rem', marginTop: '0.15rem'}}>{item.step}</span>
           <span style={{ fontWeight: 400, lineHeight: 1.4 }}>{item.name}</span>
         </div>
       ))}
     </div>
-    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: 'var(--foreground)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       Swipe <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
     </div>
   </div>
@@ -118,7 +118,7 @@ const PropertyPreview = () => (
   <div style={cardStyle}>
     <div style={labelStyle}>PROPERTY POST</div>
     <div style={{ width: '100%', height: '140px', background: '#F7F7F5', borderRadius: '12px', marginBottom: '2.5rem' }} />
-    <h3 style={{ fontSize: '1.5rem', fontWeight: 400, color: '#111', margin: '0 0 0.75rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.01em' }}>
+    <h3 style={{ fontSize: '1.5rem', fontWeight: 400, color: 'var(--foreground)', margin: '0 0 0.75rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.01em' }}>
       $1.2M MODERN VILLA
     </h3>
     <div style={{ fontSize: '0.75rem', color: '#A3A3A3', letterSpacing: '0.1em', marginBottom: '2.5rem' }}>4 BED &nbsp;&nbsp; 3 BATH &nbsp;&nbsp; 2,850 SQ FT</div>
@@ -126,12 +126,12 @@ const PropertyPreview = () => (
       {[
         'Open-plan living', 'Private pool & garden', 'Smart home integrated'
       ].map((item, i) => (
-        <div key={i} style={{ color: '#666', fontSize: '0.95rem', fontWeight: 400 }}>
+        <div key={i} style={{ color: 'var(--text-muted)', fontSize: '0.95rem', fontWeight: 400 }}>
           {item}
         </div>
       ))}
     </div>
-    <div style={{ marginTop: '2.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    <div style={{ marginTop: '2.5rem', fontSize: '0.95rem', color: 'var(--foreground)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       View Property <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
     </div>
   </div>
@@ -140,23 +140,23 @@ const PropertyPreview = () => (
 const ProductLaunchPreview = () => (
   <div style={cardStyle}>
     <div style={labelStyle}>PRODUCT UPDATE</div>
-    <h3 style={{ fontSize: '1.85rem', fontWeight: 400, color: '#111', lineHeight: 1.25, margin: '0 0 1.25rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+    <h3 style={{ fontSize: '1.85rem', fontWeight: 400, color: 'var(--foreground)', lineHeight: 1.25, margin: '0 0 1.25rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
       AI Automations
     </h3>
-    <p style={{ color: '#666', fontSize: '1.1rem', margin: '0 0 3.5rem 0', lineHeight: 1.6, fontWeight: 400 }}>
+    <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', margin: '0 0 3.5rem 0', lineHeight: 1.6, fontWeight: 400 }}>
       Turn repetitive workflows into automated actions seamlessly.
     </p>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
       {[
         'Save 8+ hours per week', 'No-code visual setup', 'Native tool integrations'
       ].map((item, i) => (
-        <div key={i} style={{ display: 'flex', gap: '1.5rem', color: '#111', fontSize: '1.05rem', fontWeight: 400 }}>
+        <div key={i} style={{ display: 'flex', gap: '1.5rem', color: 'var(--foreground)', fontSize: '1.05rem', fontWeight: 400 }}>
           <span style={{color: '#D4D4D4'}}>—</span>
           <span>{item}</span>
         </div>
       ))}
     </div>
-    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: 'var(--foreground)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       Read Announcement <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
     </div>
   </div>
@@ -166,19 +166,19 @@ const ProductAdPreview = () => (
   <div style={cardStyle}>
     <div style={labelStyle}>PRODUCT CAMPAIGN</div>
     <div style={{ width: '100%', height: '140px', background: '#F7F7F5', borderRadius: '12px', marginBottom: '2.5rem' }} />
-    <h3 style={{ fontSize: '1.6rem', fontWeight: 400, color: '#111', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.01em' }}>
+    <h3 style={{ fontSize: '1.6rem', fontWeight: 400, color: 'var(--foreground)', margin: '0 0 1rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.01em' }}>
       SUMMER ESSENTIALS
     </h3>
-    <p style={{ color: '#666', fontSize: '1.05rem', margin: '0 0 2.5rem 0', lineHeight: 1.6, flex: 1, fontWeight: 400 }}>
+    <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', margin: '0 0 2.5rem 0', lineHeight: 1.6, flex: 1, fontWeight: 400 }}>
       Minimal. Lightweight.<br/>Made for everyday wear.
     </p>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '1rem' }}>
       <div>
-        <div style={{ fontSize: '1.5rem', color: '#111', fontWeight: 400, marginBottom: '0.35rem', fontFamily: 'var(--font-heading)' }}>$49</div>
+        <div style={{ fontSize: '1.5rem', color: 'var(--foreground)', fontWeight: 400, marginBottom: '0.35rem', fontFamily: 'var(--font-heading)' }}>$49</div>
         <div style={{ fontSize: '0.75rem', color: '#A3A3A3', letterSpacing: '0.08em' }}>20% OFF THIS WEEK</div>
       </div>
     </div>
-    <div style={{ marginTop: '2.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    <div style={{ marginTop: '2.5rem', fontSize: '0.95rem', color: 'var(--foreground)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       Shop Collection <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
     </div>
   </div>
@@ -187,10 +187,10 @@ const ProductAdPreview = () => (
 const ThoughtLeadershipPreview = () => (
   <div style={cardStyle}>
     <div style={labelStyle}>THOUGHT LEADERSHIP</div>
-    <h3 style={{ fontSize: '1.75rem', fontWeight: 400, color: '#111', lineHeight: 1.3, margin: '0 0 1.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+    <h3 style={{ fontSize: '1.75rem', fontWeight: 400, color: 'var(--foreground)', lineHeight: 1.3, margin: '0 0 1.5rem 0', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
       YOU DON'T NEED<br/>MORE MOTIVATION.
     </h3>
-    <p style={{ color: '#666', fontSize: '1.1rem', margin: '0 0 3.5rem 0', lineHeight: 1.6, fontWeight: 400 }}>
+    <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', margin: '0 0 3.5rem 0', lineHeight: 1.6, fontWeight: 400 }}>
       You need a system you can follow on the days motivation disappears.
     </p>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
@@ -199,13 +199,13 @@ const ThoughtLeadershipPreview = () => (
         { step: '02', name: 'Make it repeatable' },
         { step: '03', name: 'Track the process' },
       ].map((item, i) => (
-        <div key={i} style={{ display: 'flex', gap: '2rem', color: '#111', fontSize: '1.05rem', alignItems: 'center', fontWeight: 400 }}>
+        <div key={i} style={{ display: 'flex', gap: '2rem', color: 'var(--foreground)', fontSize: '1.05rem', alignItems: 'center', fontWeight: 400 }}>
           <span style={{color: '#B3B3B3', fontSize: '0.9rem'}}>{item.step}</span>
           <span>{item.name}</span>
         </div>
       ))}
     </div>
-    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: '#111', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
+    <div style={{ marginTop: '3.5rem', fontSize: '0.95rem', color: 'var(--foreground)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}>
       3 ways to build one <span style={{fontSize: '1.25rem', fontWeight: 300}}>→</span>
     </div>
   </div>
@@ -246,7 +246,7 @@ const NicheButton = ({ niche, isActive, onClick }: { niche: NicheData, isActive:
         fontSize: '0.95rem',
         fontFamily: 'var(--font-body)',
         fontWeight: isActive ? 500 : 400,
-        color: isActive ? '#111' : isHovered ? '#111' : '#888',
+        color: isActive ? 'var(--foreground)' : isHovered ? 'var(--foreground)' : 'var(--text-muted)',
         transition: 'all 0.3s ease',
         borderRadius: '12px',
         width: '100%'
@@ -257,7 +257,7 @@ const NicheButton = ({ niche, isActive, onClick }: { niche: NicheData, isActive:
           width: '6px',
           height: '6px',
           borderRadius: '50%',
-          background: isActive ? '#111' : '#A3A3A3',
+          background: isActive ? 'var(--foreground)' : '#A3A3A3',
           opacity: isActive ? 1 : isHovered ? 0.6 : 0,
           transform: isActive ? 'scale(1)' : isHovered ? 'scale(0.9)' : 'scale(0.8)',
           transition: 'all 0.3s ease'
@@ -280,12 +280,12 @@ export default function UseCases() {
       {/* Top Section */}
       <div className="col-12" style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '5rem', alignItems: 'flex-start' }}>
         <div style={{ flex: '1 1 50%', minWidth: '300px' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '3.25rem', fontWeight: 500, lineHeight: '1.1', color: '#111', margin: 0, letterSpacing: '-0.02em' }}>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '3.25rem', fontWeight: 500, lineHeight: '1.1', color: 'var(--foreground)', margin: 0, letterSpacing: '-0.02em' }}>
             Built For Every Niche
           </h2>
         </div>
         <div style={{ flex: '1 1 40%', minWidth: '300px', paddingTop: '0.75rem' }}>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '1.15rem', lineHeight: '1.6', color: '#666', margin: 0, fontWeight: 400 }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '1.15rem', lineHeight: '1.6', color: 'var(--text-muted)', margin: 0, fontWeight: 400 }}>
             Our platform adapts to your industry. Automatically generate high-performing content tailored specifically for your target audience.
           </p>
         </div>
@@ -330,10 +330,10 @@ export default function UseCases() {
                    <ActivePreview />
 
                    <div style={{ marginTop: '3rem', textAlign: 'center' }}>
-                     <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 500, color: '#111', margin: '0 0 0.5rem 0' }}>
+                     <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: 500, color: 'var(--foreground)', margin: '0 0 0.5rem 0' }}>
                        {currentNiche.label}
                      </h4>
-                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.95rem', color: '#666', margin: 0, lineHeight: 1.6 }}>
+                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.95rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>
                        {currentNiche.description}
                      </p>
                    </div>

@@ -124,7 +124,7 @@ export default function InstagramProfilePage() {
             <div style={{ flex: 1, minWidth: 280, display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
                 <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: 'var(--foreground)' }}>@workspace_avatar_ai</h1>
-                <div style={{ background: '#f1f5f9', color: '#475569', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
+                <div style={{ background: 'var(--muted-bg)', color: 'var(--text-muted)', fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
                   <UserCheck size={12} /> BUSINESS
                 </div>
               </div>
@@ -163,7 +163,7 @@ export default function InstagramProfilePage() {
           </div>
 
           <div className="pers-stat-card">
-            <div className="pers-stat-icon-wrapper" style={{ background: '#eff6ff' }}>
+            <div className="pers-stat-icon-wrapper" style={{ background: 'var(--muted-bg)' }}>
               <Eye size={22} color="#3b82f6" />
             </div>
             <div>
@@ -222,10 +222,10 @@ export default function InstagramProfilePage() {
                 {/* Hover overlay with engagement */}
                 <div className="ig-grid-overlay">
                   <div className="ig-metric">
-                    <Heart size={16} fill="#fff" /> {post.likes}
+                    <Heart size={16} fill='var(--panel-bg)' /> {post.likes}
                   </div>
                   <div className="ig-metric">
-                    <MessageSquare size={16} fill="#fff" /> {post.comments}
+                    <MessageSquare size={16} fill='var(--panel-bg)' /> {post.comments}
                   </div>
                   <div className="ig-metric">
                     <Eye size={16} /> {post.views}
@@ -245,14 +245,14 @@ export default function InstagramProfilePage() {
             
             {/* Left side: Post visual mock */}
             <div style={{ flex: 1, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: 380 }}>
-              <Play size={40} color="#fff" fill="#fff" style={{ opacity: 0.8 }} />
-              <div style={{ position: 'absolute', bottom: 16, left: 16, right: 16, background: 'rgba(0,0,0,0.6)', padding: 12, borderRadius: 6, color: '#fff', fontSize: 12 }}>
+              <Play size={40} color='var(--panel-bg)' fill='var(--panel-bg)' style={{ opacity: 0.8 }} />
+              <div style={{ position: 'absolute', bottom: 16, left: 16, right: 16, background: 'rgba(0,0,0,0.6)', padding: 12, borderRadius: 6, color: 'var(--panel-bg)', fontSize: 12 }}>
                 {selectedPost.caption}
               </div>
             </div>
 
             {/* Right side: Stats */}
-            <div style={{ width: 280, padding: 24, display: 'flex', flexDirection: 'column', gap: 16, background: '#fff' }}>
+            <div style={{ width: 280, padding: 24, display: 'flex', flexDirection: 'column', gap: 16, background: 'var(--panel-bg)' }}>
               
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--panel-border)', paddingBottom: 12 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--foreground)' }}>Reel Analytics</div>
@@ -266,23 +266,23 @@ export default function InstagramProfilePage() {
 
               {/* Stats details */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', paddingBottom: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--muted-bg)', paddingBottom: 8 }}>
                   <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Likes count</span>
                   <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: 4 }}>
                     <Heart size={12} fill="#ef4444" color="#ef4444" /> {selectedPost.likes}
                   </span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', paddingBottom: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--muted-bg)', paddingBottom: 8 }}>
                   <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Comments</span>
                   <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <MessageSquare size={12} fill="#cbd5e1" color="#475569" /> {selectedPost.comments}
+                    <MessageSquare size={12} fill="var(--panel-border)" color='var(--text-muted)' /> {selectedPost.comments}
                   </span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', paddingBottom: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--muted-bg)', paddingBottom: 8 }}>
                   <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Total reach</span>
                   <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--foreground)' }}>{selectedPost.reach} accounts</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', paddingBottom: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--muted-bg)', paddingBottom: 8 }}>
                   <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Engagement rate</span>
                   <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--foreground)' }}>{selectedPost.engagement}</span>
                 </div>

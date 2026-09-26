@@ -32,7 +32,6 @@ export default function RootLayout({
         <Script
           id="theme-script"
           strategy="beforeInteractive"
-          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `
               try {

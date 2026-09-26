@@ -169,7 +169,7 @@ export default function Testimonials() {
                   onHoverEnd={() => setIsHovered(false)}
                   style={{
                     width: '100%',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--panel-bg)',
                     borderRadius: '16px',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.05), 0 0 1px rgba(0,0,0,0.1)',
                     padding: '2rem',
@@ -195,10 +195,10 @@ export default function Testimonials() {
                         }} 
                       />
                       <div>
-                        <h4 style={{ fontWeight: '600', color: '#111827', margin: 0, fontSize: '1.1rem' }}>
+                        <h4 style={{ fontWeight: '600', color: 'var(--foreground)', margin: 0, fontSize: '1.1rem' }}>
                           {testimonial.name}
                         </h4>
-                        <p style={{ fontSize: '0.9rem', color: '#6b7280', margin: 0 }}>
+                        <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', margin: 0 }}>
                           {testimonial.title}
                         </p>
                       </div>
@@ -210,7 +210,7 @@ export default function Testimonials() {
                         style={{ 
                           padding: '0.5rem', 
                           backgroundColor: 'transparent',
-                          color: '#111827',
+                          color: 'var(--foreground)',
                           display: 'flex',
                           flexShrink: 0
                         }}
@@ -224,7 +224,7 @@ export default function Testimonials() {
                   {/* Text */}
                   <div style={{ marginTop: '1rem' }}>
                     <p style={{ 
-                      color: '#4b5563', 
+                      color: 'var(--text-muted)', 
                       fontSize: '1rem', 
                       lineHeight: '1.6', 
                       margin: 0, 
@@ -245,7 +245,7 @@ export default function Testimonials() {
           <h2 style={{ fontSize: '4rem', fontWeight: 500, letterSpacing: '-0.03em', color: '#1f2937', margin: '0 0 1.5rem 0', lineHeight: 1.1 }}>
             Loved by <br/>creators.
           </h2>
-          <p style={{ fontSize: '1.25rem', color: '#6B7280', maxWidth: '42rem' }}>
+          <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)', maxWidth: '42rem' }}>
             See how professionals are using Avatar to scale their content without stepping into a studio.
           </p>
         </div>

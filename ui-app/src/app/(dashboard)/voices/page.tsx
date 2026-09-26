@@ -10,7 +10,7 @@ export default function VoicesView() {
   return (
     <div className="home-content">
       {/* TABS */}
-      <div style={{ display: 'flex', gap: 24, borderBottom: '1px solid #e2e8f0', marginBottom: 24 }}>
+      <div style={{ display: 'flex', gap: 24, borderBottom: '1px solid var(--panel-border)', marginBottom: 24 }}>
         {['My Voices', 'System Voices'].map(tab => (
           <div 
             key={tab}
@@ -20,8 +20,8 @@ export default function VoicesView() {
               cursor: 'pointer', 
               fontSize: 14, 
               fontWeight: 500,
-              color: voiceTab === tab ? '#0f172a' : '#64748b',
-              borderBottom: voiceTab === tab ? '2px solid #0f172a' : '2px solid transparent',
+              color: voiceTab === tab ? 'var(--foreground)' : 'var(--text-muted)',
+              borderBottom: voiceTab === tab ? '2px solid var(--foreground)' : '2px solid transparent',
               transition: 'all 0.2s'
             }}
           >
@@ -158,7 +158,7 @@ function MyVoicesUI() {
           return (
             <div 
               key={i} 
-              style={{ width: 4, height: `${height}px`, background: '#e2e8f0', borderRadius: 4 }}
+              style={{ width: 4, height: `${height}px`, background: 'var(--panel-border)', borderRadius: 4 }}
             />
           );
         })}
@@ -170,7 +170,7 @@ function MyVoicesUI() {
     <>
       {/* HERO BANNER */}
       <div style={{ 
-        background: 'linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%)', 
+        background: 'linear-gradient(135deg, var(--muted-bg) 0%, #e0e7ff 100%)', 
         borderRadius: 16, 
         padding: '40px 48px', 
         marginBottom: 40,
@@ -178,13 +178,13 @@ function MyVoicesUI() {
         overflow: 'hidden'
       }}>
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 500 }}>
-          <h2 style={{ fontSize: 32, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>Next-level voice cloning</h2>
-          <p style={{ color: '#475569', fontSize: 15, lineHeight: 1.5, marginBottom: 24 }}>
+          <h2 style={{ fontSize: 32, fontWeight: 700, color: 'var(--foreground)', marginBottom: 12 }}>Next-level voice cloning</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: 15, lineHeight: 1.5, marginBottom: 24 }}>
             Clone your voice in minutes. Pair it with any Avatar to make videos that sound just like you.
           </p>
           <button 
             onClick={() => setIsModalOpen(true)}
-            style={{ background: '#4f46e5', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+            style={{ background: '#4f46e5', color: 'var(--panel-bg)', border: 'none', padding: '10px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
           >
             Clone New Voice
           </button>
@@ -195,9 +195,9 @@ function MyVoicesUI() {
       {isModalOpen && (
         <>
           <div onClick={() => !isUploading && setIsModalOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.6)', zIndex: 998, backdropFilter: 'blur(4px)' }} />
-          <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: '#fff', padding: 32, borderRadius: 16, width: '90%', maxWidth: 450, zIndex: 999 }}>
+          <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'var(--panel-bg)', padding: 32, borderRadius: 16, width: '90%', maxWidth: 450, zIndex: 999 }}>
             <h3 style={{ margin: '0 0 8px 0', fontSize: 20 }}>Clone a Voice</h3>
-            <p style={{ margin: '0 0 24px 0', color: '#64748b', fontSize: 14 }}>Upload a clear 10-30 second audio sample with no background noise.</p>
+            <p style={{ margin: '0 0 24px 0', color: 'var(--text-muted)', fontSize: 14 }}>Upload a clear 10-30 second audio sample with no background noise.</p>
             
             <label style={{ display: 'block', marginBottom: 8, fontSize: 14, fontWeight: 600 }}>Voice Name</label>
             <input 
@@ -205,7 +205,7 @@ function MyVoicesUI() {
               placeholder="e.g. My Studio Voice" 
               value={newVoiceName}
               onChange={(e) => setNewVoiceName(e.target.value)}
-              style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid #e0e0e0', marginBottom: 20, outline: 'none' }}
+              style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--panel-border)', marginBottom: 20, outline: 'none' }}
             />
 
             <label style={{ display: 'block', marginBottom: 8, fontSize: 14, fontWeight: 600 }}>Audio Sample (.wav or .mp3)</label>
@@ -223,22 +223,22 @@ function MyVoicesUI() {
             <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
               <div 
                 onClick={() => !isRecording && fileInputRef.current?.click()}
-                style={{ flex: 1, padding: '24px', border: '2px dashed #e2e8f0', borderRadius: 8, textAlign: 'center', cursor: isRecording ? 'not-allowed' : 'pointer', background: '#f8fafc', opacity: isRecording ? 0.5 : 1 }}
+                style={{ flex: 1, padding: '24px', border: '2px dashed var(--panel-border)', borderRadius: 8, textAlign: 'center', cursor: isRecording ? 'not-allowed' : 'pointer', background: 'var(--muted-bg)', opacity: isRecording ? 0.5 : 1 }}
               >
                 {audioFile ? (
                   <div style={{ color: '#4f46e5', fontWeight: 600 }}>Audio Ready</div>
                 ) : (
-                  <div style={{ color: '#64748b' }}>Click to upload audio file</div>
+                  <div style={{ color: 'var(--text-muted)' }}>Click to upload audio file</div>
                 )}
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ color: '#94a3b8', fontSize: 13, fontWeight: 500 }}>OR</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 500 }}>OR</div>
               </div>
 
               <div 
                 onClick={isRecording ? handleStopRecording : handleStartRecording}
-                style={{ flex: 1, padding: '24px', border: `2px dashed ${isRecording ? '#ef4444' : '#e2e8f0'}`, borderRadius: 8, textAlign: 'center', cursor: 'pointer', background: isRecording ? '#fef2f2' : '#f8fafc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+                style={{ flex: 1, padding: '24px', border: `2px dashed ${isRecording ? '#ef4444' : 'var(--panel-border)'}`, borderRadius: 8, textAlign: 'center', cursor: 'pointer', background: isRecording ? '#fef2f2' : 'var(--muted-bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}
               >
                 {isRecording ? (
                   <>
@@ -247,17 +247,17 @@ function MyVoicesUI() {
                   </>
                 ) : (
                   <>
-                    <Mic size={20} color="#64748b" />
-                    <div style={{ color: '#64748b', fontSize: 13 }}>Record from mic</div>
+                    <Mic size={20} color='var(--text-muted)' />
+                    <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>Record from mic</div>
                   </>
                 )}
               </div>
             </div>
 
             {audioFile && (
-              <div style={{ marginBottom: 24, padding: '12px', background: '#f1f5f9', borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ marginBottom: 24, padding: '12px', background: 'var(--muted-bg)', borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#334155' }}>Preview Audio:</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>Preview Audio:</div>
                   <div 
                     onClick={() => setAudioFile(null)}
                     style={{ fontSize: 12, color: '#ef4444', cursor: 'pointer', fontWeight: 500 }}
@@ -273,14 +273,14 @@ function MyVoicesUI() {
               <button 
                 onClick={() => setIsModalOpen(false)}
                 disabled={isUploading}
-                style={{ padding: '10px 16px', borderRadius: 8, border: '1px solid #e0e0e0', background: '#fff', cursor: 'pointer', fontWeight: 600 }}
+                style={{ padding: '10px 16px', borderRadius: 8, border: '1px solid var(--panel-border)', background: 'var(--panel-bg)', cursor: 'pointer', fontWeight: 600 }}
               >
                 Cancel
               </button>
               <button 
                 onClick={handleCloneVoice}
                 disabled={isUploading || !audioFile}
-                style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: '#4f46e5', color: '#fff', cursor: (isUploading || !audioFile) ? 'not-allowed' : 'pointer', fontWeight: 600, opacity: (isUploading || !audioFile) ? 0.7 : 1 }}
+                style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: '#4f46e5', color: 'var(--panel-bg)', cursor: (isUploading || !audioFile) ? 'not-allowed' : 'pointer', fontWeight: 600, opacity: (isUploading || !audioFile) ? 0.7 : 1 }}
               >
                 {isUploading ? 'Cloning Voice...' : 'Clone Voice'}
               </button>
@@ -291,28 +291,28 @@ function MyVoicesUI() {
 
       {/* EXAMPLES SECTION */}
       <div style={{ marginBottom: 24 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', margin: '0 0 4px 0' }}>Your Voices</h3>
-        <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>Use these voices to generate video content in the AI Studio.</p>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--foreground)', margin: '0 0 4px 0' }}>Your Voices</h3>
+        <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0 }}>Use these voices to generate video content in the AI Studio.</p>
       </div>
 
       {/* CARDS GRID */}
       {voices.length === 0 ? (
-        <div style={{ padding: 40, textAlign: 'center', background: '#f8fafc', borderRadius: 12, color: '#94a3b8' }}>
+        <div style={{ padding: 40, textAlign: 'center', background: 'var(--muted-bg)', borderRadius: 12, color: 'var(--text-muted)' }}>
           You haven't cloned any voices yet.
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
           {voices.map(voice => (
-            <div key={voice.id} style={{ background: '#f8fafc', borderRadius: 12, overflow: 'hidden', padding: '24px 0 0 0', border: '1px solid #e0e0e0' }}>
+            <div key={voice.id} style={{ background: 'var(--muted-bg)', borderRadius: 12, overflow: 'hidden', padding: '24px 0 0 0', border: '1px solid var(--panel-border)' }}>
               {renderWaveform()}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 20px 20px', marginTop: 10 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 40, height: 40, background: '#cbd5e1', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <User size={20} color="#fff" />
+                  <div style={{ width: 40, height: 40, background: 'var(--panel-border)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <User size={20} color='var(--panel-bg)' />
                   </div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>{voice.name}</div>
-                    <div style={{ fontSize: 12, color: '#64748b' }}>Custom Voice</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--foreground)' }}>{voice.name}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Custom Voice</div>
                   </div>
                 </div>
                 <button 
@@ -320,9 +320,9 @@ function MyVoicesUI() {
                   style={{ width: 36, height: 36, background: '#4f46e5', borderRadius: 8, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                 >
                   {playingId === voice.id ? (
-                    <Square size={16} color="#fff" fill="#fff" />
+                    <Square size={16} color='var(--panel-bg)' fill='var(--panel-bg)' />
                   ) : (
-                    <Play size={16} color="#fff" fill="#fff" />
+                    <Play size={16} color='var(--panel-bg)' fill='var(--panel-bg)' />
                   )}
                 </button>
               </div>
@@ -397,56 +397,56 @@ function SystemVoicesUI() {
   return (
     <div>
       {/* Featured Voices */}
-      <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>Featured voices</h3>
+      <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--foreground)', marginBottom: 16 }}>Featured voices</h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 40 }}>
         {/* Card 1 */}
         <div style={{ background: 'linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%)', height: 160, borderRadius: 12, position: 'relative', overflow: 'hidden', padding: 16, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div style={{ background: '#fff', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, width: 'fit-content', color: '#0f172a' }}>EN</div>
-          <div style={{ color: '#fff' }}>
+          <div style={{ background: 'var(--panel-bg)', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, width: 'fit-content', color: 'var(--foreground)' }}>EN</div>
+          <div style={{ color: 'var(--panel-bg)' }}>
             <div style={{ fontSize: 14, fontWeight: 700 }}>Clint</div>
             <div style={{ fontSize: 12, opacity: 0.9 }}>Sincere</div>
           </div>
           <div style={{ position: 'absolute', right: -15, bottom: -15, width: 110, height: 110, background: 'rgba(255,255,255,0.15)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <User size={60} color="#fff" strokeWidth={1.5} />
+            <User size={60} color='var(--panel-bg)' strokeWidth={1.5} />
           </div>
         </div>
         {/* Card 2 */}
         <div style={{ background: 'linear-gradient(135deg, #f9a8d4 0%, #f472b6 100%)', height: 160, borderRadius: 12, position: 'relative', overflow: 'hidden', padding: 16, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div style={{ background: '#fff', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, width: 'fit-content', color: '#0f172a' }}>EN</div>
-          <div style={{ color: '#fff' }}>
+          <div style={{ background: 'var(--panel-bg)', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, width: 'fit-content', color: 'var(--foreground)' }}>EN</div>
+          <div style={{ color: 'var(--panel-bg)' }}>
             <div style={{ fontSize: 14, fontWeight: 700 }}>Liv</div>
             <div style={{ fontSize: 12, opacity: 0.9 }}>Welcoming</div>
           </div>
           <div style={{ position: 'absolute', right: -15, bottom: -15, width: 110, height: 110, background: 'rgba(255,255,255,0.15)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <User size={60} color="#fff" strokeWidth={1.5} />
+            <User size={60} color='var(--panel-bg)' strokeWidth={1.5} />
           </div>
         </div>
         {/* Card 3 */}
         <div style={{ background: 'linear-gradient(135deg, #fdba74 0%, #fb923c 100%)', height: 160, borderRadius: 12, position: 'relative', overflow: 'hidden', padding: 16, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div style={{ background: '#fff', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, width: 'fit-content', color: '#0f172a' }}>EN</div>
-          <div style={{ color: '#fff' }}>
+          <div style={{ background: 'var(--panel-bg)', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, width: 'fit-content', color: 'var(--foreground)' }}>EN</div>
+          <div style={{ color: 'var(--panel-bg)' }}>
             <div style={{ fontSize: 14, fontWeight: 700 }}>Finlay</div>
             <div style={{ fontSize: 12, opacity: 0.9 }}>Focused</div>
           </div>
           <div style={{ position: 'absolute', right: -15, bottom: -15, width: 110, height: 110, background: 'rgba(255,255,255,0.15)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <User size={60} color="#fff" strokeWidth={1.5} />
+            <User size={60} color='var(--panel-bg)' strokeWidth={1.5} />
           </div>
         </div>
         {/* Card 4 */}
         <div style={{ background: 'linear-gradient(135deg, #bef264 0%, #a3e635 100%)', height: 160, borderRadius: 12, position: 'relative', overflow: 'hidden', padding: 16, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div style={{ background: '#fff', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, width: 'fit-content', color: '#0f172a' }}>EN</div>
-          <div style={{ color: '#fff' }}>
+          <div style={{ background: 'var(--panel-bg)', fontSize: 10, fontWeight: 700, padding: '2px 6px', borderRadius: 4, width: 'fit-content', color: 'var(--foreground)' }}>EN</div>
+          <div style={{ color: 'var(--panel-bg)' }}>
             <div style={{ fontSize: 14, fontWeight: 700 }}>Mira</div>
             <div style={{ fontSize: 12, opacity: 0.9 }}>Radiant</div>
           </div>
           <div style={{ position: 'absolute', right: -15, bottom: -15, width: 110, height: 110, background: 'rgba(255,255,255,0.15)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <User size={60} color="#fff" strokeWidth={1.5} />
+            <User size={60} color='var(--panel-bg)' strokeWidth={1.5} />
           </div>
         </div>
       </div>
 
       {/* Popular languages */}
-      <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>Popular languages</h3>
+      <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--foreground)', marginBottom: 16 }}>Popular languages</h3>
       <div style={{ display: 'flex', gap: 16, overflowX: 'auto', paddingBottom: 16, marginBottom: 24 }}>
         {languages.map((lang) => (
           <div 
@@ -459,8 +459,8 @@ function SystemVoicesUI() {
               gap: 16, 
               padding: '12px 20px', 
               borderRadius: 12, 
-              border: activeLanguage === lang.langCode ? '2px solid #4f46e5' : '1px solid #e2e8f0', 
-              background: activeLanguage === lang.langCode ? '#f8fafc' : '#fff', 
+              border: activeLanguage === lang.langCode ? '2px solid #4f46e5' : '1px solid var(--panel-border)', 
+              background: activeLanguage === lang.langCode ? 'var(--muted-bg)' : 'var(--panel-bg)', 
               cursor: 'pointer', 
               minWidth: 200, 
               justifyContent: 'space-between',
@@ -470,22 +470,22 @@ function SystemVoicesUI() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ fontSize: 24 }}>{lang.flag}</div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#0f172a' }}>{lang.name}</div>
-                <div style={{ fontSize: 11, color: '#64748b' }}>{lang.count} voices</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>{lang.name}</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{lang.count} voices</div>
               </div>
             </div>
-            <ChevronRight size={14} color={activeLanguage === lang.langCode ? '#4f46e5' : '#94a3b8'} />
+            <ChevronRight size={14} color={activeLanguage === lang.langCode ? '#4f46e5' : 'var(--text-muted)'} />
           </div>
         ))}
       </div>
 
       {/* All voices */}
-      <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>All voices</h3>
+      <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--foreground)', marginBottom: 16 }}>All voices</h3>
       
       {/* Filter Bar */}
       <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f1f5f9', padding: '8px 12px', borderRadius: 8, flex: 1, minWidth: 200, maxWidth: 300 }}>
-          <Search size={14} color="#94a3b8" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--muted-bg)', padding: '8px 12px', borderRadius: 8, flex: 1, minWidth: 200, maxWidth: 300 }}>
+          <Search size={14} color='var(--text-muted)' />
           <input 
             type="text" 
             placeholder="Search..." 
@@ -496,7 +496,7 @@ function SystemVoicesUI() {
         </div>
         
         <div 
-          style={{ display: 'flex', alignItems: 'center', gap: 6, background: selectedLangObj ? '#eff6ff' : '#fff', border: selectedLangObj ? '1px solid #eff6ff' : '1px solid #e2e8f0', padding: '6px 12px', borderRadius: 8, color: selectedLangObj ? '#3b82f6' : '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, background: selectedLangObj ? 'var(--muted-bg)' : 'var(--panel-bg)', border: selectedLangObj ? '1px solid var(--muted-bg)' : '1px solid var(--panel-border)', padding: '6px 12px', borderRadius: 8, color: selectedLangObj ? '#3b82f6' : 'var(--text-muted)', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}
           onClick={() => { if(selectedLangObj) setActiveLanguage(null); }}
         >
           <span style={{ fontSize: 14 }}>A</span> {selectedLangObj ? selectedLangObj.langFull : 'Language'} 
@@ -504,16 +504,16 @@ function SystemVoicesUI() {
         </div>
 
         {selectedLangObj?.region ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#eff6ff', padding: '6px 12px', borderRadius: 8, color: '#3b82f6', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--muted-bg)', padding: '6px 12px', borderRadius: 8, color: '#3b82f6', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
             {selectedLangObj.region}
           </div>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #e0e0e0', padding: '6px 12px', borderRadius: 8, color: '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', padding: '6px 12px', borderRadius: 8, color: 'var(--text-muted)', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
             Region
           </div>
         )}
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid #e0e0e0', padding: '6px 12px', borderRadius: 8, color: '#64748b', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', padding: '6px 12px', borderRadius: 8, color: 'var(--text-muted)', fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>
           Gender
         </div>
       </div>
@@ -521,27 +521,27 @@ function SystemVoicesUI() {
       {/* Voices Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: 16 }}>
         {filteredVoices.map(voice => (
-          <div key={voice.id} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#fff', border: '1px solid #e0e0e0', padding: '16px', borderRadius: 12 }}>
+          <div key={voice.id} style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', padding: '16px', borderRadius: 12 }}>
             <div 
               onClick={() => handlePlayVoice(voice.id)}
-              style={{ width: 32, height: 32, borderRadius: '50%', background: playingId === voice.id ? '#4f46e5' : '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}
+              style={{ width: 32, height: 32, borderRadius: '50%', background: playingId === voice.id ? '#4f46e5' : 'var(--muted-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, cursor: 'pointer' }}
             >
               {playingId === voice.id ? (
-                <Square size={12} color="#fff" fill="#fff" />
+                <Square size={12} color='var(--panel-bg)' fill='var(--panel-bg)' />
               ) : (
-                <Play size={12} color={playingId === voice.id ? "#fff" : "#64748b"} fill={playingId === voice.id ? "#fff" : "#64748b"} />
+                <Play size={12} color={playingId === voice.id ? 'var(--panel-bg)' : 'var(--text-muted)'} fill={playingId === voice.id ? 'var(--panel-bg)' : 'var(--text-muted)'} />
               )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{voice.name}</div>
-              <div style={{ fontSize: 12, color: '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{voice.desc}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--foreground)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{voice.name}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{voice.desc}</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#0f172a', background: '#f1f5f9', padding: '2px 4px', borderRadius: 4 }}>{voice.lang}</div>
-                <div style={{ fontSize: 11, color: '#64748b' }}>{voice.langFull}</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--foreground)', background: 'var(--muted-bg)', padding: '2px 4px', borderRadius: 4 }}>{voice.lang}</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{voice.langFull}</div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: '#0f172a' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--foreground)' }}>
                 <User size={12} /> {voice.gender}
               </div>
             </div>

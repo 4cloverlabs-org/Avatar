@@ -31,7 +31,7 @@ export default function HeroSection() {
         }
         
         .pill-button {
-          background: #FFFFFF;
+          background: var(--panel-bg);
           border: 1px solid rgba(0, 0, 0, 0.08);
           padding: 0.5rem 1rem;
           border-radius: 100px;
@@ -65,7 +65,7 @@ export default function HeroSection() {
         }
         
         .media-inner {
-          background: #FFFFFF;
+          background: var(--panel-bg);
           border-radius: 12px;
           width: 100%;
           height: 450px;

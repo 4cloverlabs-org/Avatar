@@ -37,7 +37,7 @@ export default function DeepAnalysisPage() {
   if (loading) {
     return (
       <div style={{ padding: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-        <div style={{ color: '#64748b', fontSize: 16, fontWeight: 500 }}>Loading detailed analysis...</div>
+        <div style={{ color: 'var(--text-muted)', fontSize: 16, fontWeight: 500 }}>Loading detailed analysis...</div>
       </div>
     );
   }
@@ -81,7 +81,7 @@ export default function DeepAnalysisPage() {
     { key: 'revenue', name: 'Instagram', color: '#93c5fd' },
     { key: 'clickRate', name: 'YouTube', color: '#f87171' },
     { key: 'unsubscribes', name: 'TikTok', color: '#818cf8' },
-    { key: 'twitter', name: 'Twitter/X', color: '#94a3b8' },
+    { key: 'twitter', name: 'Twitter/X', color: 'var(--text-muted)' },
     { key: 'facebook', name: 'Facebook', color: '#34d399' }
   ];
 
@@ -123,26 +123,26 @@ export default function DeepAnalysisPage() {
       flex: 1,
       overflowY: 'auto',
       backgroundColor: 'transparent',
-      color: '#111',
+      color: 'var(--foreground)',
       display: 'flex',
       flexDirection: 'column'
     }}>
       <style>{`
         .glass-card {
-          background: #ffffff;
+          background: var(--panel-bg);
           border-radius: 24px;
           padding: 32px;
           box-shadow: 0 4px 24px rgba(100, 100, 111, 0.05);
-          border: 1px solid #e0e0e0;
+          border: 1px solid var(--panel-border);
           display: flex;
           flex-direction: column;
         }
         .summary-card {
-          background: #ffffff;
+          background: var(--panel-bg);
           border-radius: 20px;
           padding: 24px;
           box-shadow: 0 4px 20px rgba(100, 100, 111, 0.04);
-          border: 1px solid #e0e0e0;
+          border: 1px solid var(--panel-border);
           display: flex;
           align-items: center;
           gap: 20px;
@@ -159,7 +159,7 @@ export default function DeepAnalysisPage() {
           display: flex;
           align-items: center;
           gap: 8px;
-          color: #64748b;
+          color: var(--text-muted);
           font-weight: 600;
           font-size: 14px;
           cursor: pointer;
@@ -167,7 +167,7 @@ export default function DeepAnalysisPage() {
           transition: color 0.2s;
         }
         .back-btn:hover {
-          color: #1e293b;
+          color: var(--foreground);
         }
         table {
           width: 100%;
@@ -177,16 +177,16 @@ export default function DeepAnalysisPage() {
         th, td {
           text-align: left;
           padding: 16px;
-          border-bottom: 1px solid #f1f5f9;
+          border-bottom: 1px solid var(--muted-bg);
         }
         th {
           font-weight: 600;
-          color: #64748b;
+          color: var(--text-muted);
           font-size: 13px;
         }
         td {
           font-weight: 500;
-          color: #1e293b;
+          color: var(--foreground);
           font-size: 14px;
         }
         .clickable-row {
@@ -194,7 +194,7 @@ export default function DeepAnalysisPage() {
           transition: background 0.2s;
         }
         .clickable-row:hover {
-          background: #f8fafc;
+          background: var(--muted-bg);
         }
         .grid-row-1 {
           display: grid;
@@ -218,19 +218,19 @@ export default function DeepAnalysisPage() {
         <ArrowLeft size={18} /> Back to Overview
       </div>
 
-      <div style={{ fontSize: 28, fontWeight: 800, color: '#1e293b', marginBottom: 32, letterSpacing: '-0.5px' }}>
+      <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--foreground)', marginBottom: 32, letterSpacing: '-0.5px' }}>
         Detailed Analysis: {metricTitle}
       </div>
 
       {/* SUMMARY ROW */}
       <div className="grid-row-1">
         <div className="summary-card">
-          <div className="icon-box" style={{ background: '#eff6ff', color: '#3b82f6' }}>
+          <div className="icon-box" style={{ background: 'var(--muted-bg)', color: '#3b82f6' }}>
             <Activity size={24} />
           </div>
           <div>
-            <div style={{ color: '#64748b', fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Total {metricTitle}</div>
-            <div style={{ fontSize: 24, fontWeight: 800, color: '#1e293b' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Total {metricTitle}</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--foreground)' }}>
               {metric === 'engagement' ? (grandTotal / chartData.length).toFixed(1) + '%' : grandTotal.toLocaleString()}
             </div>
           </div>
@@ -241,8 +241,8 @@ export default function DeepAnalysisPage() {
             <Star size={24} />
           </div>
           <div>
-            <div style={{ color: '#64748b', fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Top Platform</div>
-            <div style={{ fontSize: 24, fontWeight: 800, color: '#1e293b' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Top Platform</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--foreground)' }}>
               {topPlatform?.name}
             </div>
           </div>
@@ -253,7 +253,7 @@ export default function DeepAnalysisPage() {
             <TrendingUp size={24} />
           </div>
           <div>
-            <div style={{ color: '#64748b', fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Period Growth</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 600, marginBottom: 4 }}>Period Growth</div>
             <div style={{ fontSize: 24, fontWeight: 800, color: overallGrowth.startsWith('-') ? '#ef4444' : '#10b981' }}>
               {overallGrowth}
             </div>
@@ -265,7 +265,7 @@ export default function DeepAnalysisPage() {
       <div className="grid-row-2">
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#1e293b' }}>Performance Over Time</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--foreground)' }}>Performance Over Time</div>
           </div>
           <div style={{ height: 350, width: '100%', position: 'relative' }}>
             <ResponsiveContainer width="100%" height="100%">
@@ -278,22 +278,22 @@ export default function DeepAnalysisPage() {
                     </linearGradient>
                   ))}
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="date" axisLine={{ stroke: '#e2e8f0' }} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 500 }} dx={-10} tickFormatter={yAxisFormatter} />
+                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke='var(--muted-bg)' />
+                <XAxis dataKey="date" axisLine={{ stroke: 'var(--panel-border)' }} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }} dx={-10} tickFormatter={yAxisFormatter} />
                 <RechartsTooltip 
                   cursor={{ stroke: '#a5b4fc', strokeWidth: 2 }}
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <div style={{ background: '#0a0a0a', color: '#fff', padding: '12px', borderRadius: '8px', fontSize: 13, fontWeight: 500, display: 'flex', flexDirection: 'column', gap: 6, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)' }}>
-                          <div style={{ color: '#94a3b8', fontSize: 11, fontWeight: 700, marginBottom: 4 }}>{label || 'Date'}</div>
+                        <div style={{ background: '#0a0a0a', color: 'var(--panel-bg)', padding: '12px', borderRadius: '8px', fontSize: 13, fontWeight: 500, display: 'flex', flexDirection: 'column', gap: 6, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)' }}>
+                          <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, marginBottom: 4 }}>{label || 'Date'}</div>
                           {payload.map((p: any, i: number) => {
                             const plt = platforms.find(pl => pl.key === p.name);
                             return (
                               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: plt?.color || p.color }}></div>
-                                <span style={{ color: '#cbd5e1' }}>{plt?.name || p.name}:</span>
+                                <span style={{ color: 'var(--panel-border)' }}>{plt?.name || p.name}:</span>
                                 <span>{tooltipFormatter(p.value)}</span>
                               </div>
                             );
@@ -313,7 +313,7 @@ export default function DeepAnalysisPage() {
         </div>
 
         <div className="glass-card">
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#1e293b', marginBottom: 24 }}>Distribution</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--foreground)', marginBottom: 24 }}>Distribution</div>
           <div style={{ height: 260, width: '100%', position: 'relative' }}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -345,7 +345,7 @@ export default function DeepAnalysisPage() {
             {totals.slice(0, 4).map(t => (
               <div key={t.key} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: t.color }}></div>
-                <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>{t.name}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>{t.name}</div>
               </div>
             ))}
           </div>
@@ -355,8 +355,8 @@ export default function DeepAnalysisPage() {
       {/* TABLES ROW */}
       <div className="grid-row-2">
         <div className="glass-card">
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#1e293b', marginBottom: 8 }}>Platform Breakdown</div>
-          <div style={{ fontSize: 14, color: '#64748b', marginBottom: 24 }}>Detailed totals across all channels.</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--foreground)', marginBottom: 8 }}>Platform Breakdown</div>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 24 }}>Detailed totals across all channels.</div>
           
           <table>
             <thead>
@@ -404,20 +404,20 @@ export default function DeepAnalysisPage() {
         </div>
 
         <div className="glass-card">
-          <div style={{ fontSize: 18, fontWeight: 700, color: '#1e293b', marginBottom: 8 }}>Top Performing Videos</div>
-          <div style={{ fontSize: 14, color: '#64748b', marginBottom: 24 }}>Highest {metricTitle.toLowerCase()} this period.</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--foreground)', marginBottom: 8 }}>Top Performing Videos</div>
+          <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 24 }}>Highest {metricTitle.toLowerCase()} this period.</div>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {topVideos.map((vid: any, i: number) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e0e0e0' }}>
-                <div style={{ width: 40, height: 40, borderRadius: '8px', background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px', background: 'var(--muted-bg)', borderRadius: '12px', border: '1px solid var(--panel-border)' }}>
+                <div style={{ width: 40, height: 40, borderRadius: '8px', background: 'var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                   <Play size={18} fill="currentColor" />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--foreground)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {vid.title}
                   </div>
-                  <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2 }}>{new Date(vid.edited).toLocaleDateString()}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{new Date(vid.edited).toLocaleDateString()}</div>
                 </div>
                 <div style={{ fontWeight: 700, fontSize: 14, color: '#3b82f6' }}>
                   {typeof vid.displayValue === 'number' ? vid.displayValue.toLocaleString() : vid.displayValue}

@@ -270,10 +270,10 @@ export default function ContentSchedulerPage() {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       width: '100%',
       minHeight: '100%',
-      backgroundColor: '#ffffff',
+      backgroundColor: 'var(--panel-bg)',
       borderRadius: '32px',
       animation: 'fadeIn 0.5s ease-out',
-      color: '#111'
+      color: 'var(--foreground)'
     }}>
       <style>{`
         @keyframes fadeIn {
@@ -289,14 +289,14 @@ export default function ContentSchedulerPage() {
           font-weight: 400;
           letter-spacing: -1px;
           margin: 0 0 8px 0;
-          color: #111;
+          color: var(--foreground);
         }
         .header-title span {
-          color: #888;
+          color: var(--text-muted);
         }
         .header-subtitle {
           font-size: 16px;
-          color: #666;
+          color: var(--text-muted);
           margin-bottom: 40px;
         }
         .dashboard-grid {
@@ -311,10 +311,10 @@ export default function ContentSchedulerPage() {
           }
         }
         .dash-card {
-          background-color: #ffffff;
+          background-color: var(--panel-bg);
           border-radius: 12px;
           padding: 24px;
-          border: 1px solid #e0e0e0;
+          border: 1px solid var(--panel-border);
           box-shadow: none; 
           display: flex;
           flex-direction: column;
@@ -324,44 +324,44 @@ export default function ContentSchedulerPage() {
           align-items: center;
           gap: 12px;
           margin-bottom: 24px;
-          border-bottom: 1px dashed #e2e8f0;
+          border-bottom: 1px dashed var(--panel-border);
           padding-bottom: 16px;
         }
         .icon-wrapper {
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #64748b;
+          color: var(--text-muted);
         }
         .card-title {
           font-size: 16px;
           font-weight: 600;
-          color: #111;
+          color: var(--foreground);
         }
         .input-element {
           width: 100%;
           padding: 12px 16px;
           border-radius: 8px;
-          border: 1px solid #e0e0e0;
-          background-color: #ffffff;
+          border: 1px solid var(--panel-border);
+          background-color: var(--panel-bg);
           font-size: 14px;
           font-weight: 500;
-          color: #0f172a;
+          color: var(--foreground);
           outline: none;
           transition: all 0.2s;
         }
         .input-element:focus {
-          border-color: #e0e0e0;
+          border-color: var(--panel-border);
         }
         .custom-dropdown-btn {
           width: 100%;
           padding: 12px 16px;
           border-radius: 8px;
-          border: 1px solid #e0e0e0;
-          background-color: #ffffff;
+          border: 1px solid var(--panel-border);
+          background-color: var(--panel-bg);
           font-size: 14px;
           font-weight: 500;
-          color: #0f172a;
+          color: var(--foreground);
           outline: none;
           display: flex;
           align-items: center;
@@ -370,15 +370,15 @@ export default function ContentSchedulerPage() {
           transition: all 0.2s;
         }
         .custom-dropdown-btn:hover, .custom-dropdown-btn.active {
-          background-color: #f8fafc;
+          background-color: var(--muted-bg);
         }
         .custom-dropdown-menu {
           position: absolute;
           top: calc(100% + 8px);
           left: 0;
           width: 100%;
-          background: #ffffff;
-          border: 1px solid #e0e0e0;
+          background: var(--panel-bg);
+          border: 1px solid var(--panel-border);
           border-radius: 16px;
           box-shadow: 0 10px 30px rgba(0,0,0,0.08);
           z-index: 100;
@@ -391,12 +391,12 @@ export default function ContentSchedulerPage() {
           padding: 14px 20px;
           font-size: 14px;
           font-weight: 500;
-          color: #333;
+          color: var(--foreground);
           cursor: pointer;
           transition: background-color 0.15s;
         }
         .custom-dropdown-item:hover {
-          background-color: #f7f7f7;
+          background-color: var(--muted-bg);
           color: #d86450;
         }
         .custom-dropdown-item.selected {
@@ -405,8 +405,8 @@ export default function ContentSchedulerPage() {
           font-weight: 600;
         }
         .primary-btn {
-          background-color: #0f172a;
-          color: #ffffff;
+          background-color: var(--foreground);
+          color: var(--panel-bg);
           border: none;
           border-radius: 8px;
           padding: 10px 20px;
@@ -420,7 +420,7 @@ export default function ContentSchedulerPage() {
           transition: background-color 0.2s;
         }
         .primary-btn:hover {
-          background-color: #1e293b;
+          background-color: var(--foreground);
         }
         .primary-btn:active {
           transform: translateY(1px);
@@ -429,10 +429,10 @@ export default function ContentSchedulerPage() {
           padding: 16px;
           border-radius: 8px;
           border: none;
-          background-color: #ffffff;
+          background-color: var(--panel-bg);
           font-size: 14px;
           font-weight: 500;
-          color: #475569;
+          color: var(--text-muted);
           cursor: pointer;
           transition: all 0.2s;
           display: flex;
@@ -441,15 +441,15 @@ export default function ContentSchedulerPage() {
           width: 100%;
         }
         .platform-pill:hover {
-          background-color: #f8fafc;
+          background-color: var(--muted-bg);
         }
         .platform-pill.selected {
-          background-color: #ffffff;
+          background-color: var(--panel-bg);
         }
         .secondary-btn {
           background-color: transparent;
-          color: #666;
-          border: 2px dashed #e2e2e2;
+          color: var(--text-muted);
+          border: 2px dashed var(--panel-border);
           border-radius: 16px;
           padding: 16px 24px;
           font-size: 15px;
@@ -463,7 +463,7 @@ export default function ContentSchedulerPage() {
           width: 100%;
         }
         .secondary-btn:hover {
-          border-color: #e0e0e0;
+          border-color: var(--panel-border);
           color: #d86450;
           background-color: #fff1f0;
         }
@@ -483,11 +483,11 @@ export default function ContentSchedulerPage() {
         .strategy-title {
           font-size: 20px;
           font-weight: 700;
-          color: #111;
+          color: var(--foreground);
         }
         .remove-btn {
-          background: #fff;
-          border: 1px solid #e0e0e0;
+          background: var(--panel-bg);
+          border: 1px solid var(--panel-border);
           color: #ef4444;
           width: 36px;
           height: 36px;
@@ -500,7 +500,7 @@ export default function ContentSchedulerPage() {
         }
         .remove-btn:hover {
           background: #fef2f2;
-          border-color: #e0e0e0;
+          border-color: var(--panel-border);
         }
         
         /* Premium Detail View Styles */
@@ -515,9 +515,9 @@ export default function ContentSchedulerPage() {
           }
         }
         .premium-card {
-          background: #ffffff;
+          background: var(--panel-bg);
           border-radius: 12px;
-          border: 1px solid #e0e0e0;
+          border: 1px solid var(--panel-border);
           padding: 20px 24px;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
           display: flex;
@@ -527,7 +527,7 @@ export default function ContentSchedulerPage() {
         .premium-card-title {
           font-size: 16px;
           font-weight: 600;
-          color: #111827;
+          color: var(--foreground);
           margin-bottom: 16px;
           display: flex;
           align-items: center;
@@ -547,21 +547,21 @@ export default function ContentSchedulerPage() {
           gap: 6px;
           padding: 6px 12px;
           border-radius: 100px;
-          border: 1px solid #e0e0e0;
-          background: #ffffff;
-          color: #4b5563;
+          border: 1px solid var(--panel-border);
+          background: var(--panel-bg);
+          color: var(--text-muted);
           font-weight: 500;
           font-size: 13px;
           cursor: pointer;
           transition: all 0.2s ease;
         }
         .premium-pill:hover {
-          border-color: #e0e0e0;
+          border-color: var(--panel-border);
         }
         .premium-pill.active {
-          border-color: #e0e0e0;
+          border-color: var(--panel-border);
           color: #3b82f6;
-          background: #eff6ff;
+          background: var(--muted-bg);
         }
         
         .platform-grid {
@@ -570,7 +570,7 @@ export default function ContentSchedulerPage() {
           gap: 12px;
         }
         .platform-box {
-          border: 1px solid #e0e0e0;
+          border: 1px solid var(--panel-border);
           border-radius: 8px;
           padding: 12px;
           display: flex;
@@ -579,11 +579,11 @@ export default function ContentSchedulerPage() {
           gap: 8px;
           cursor: pointer;
           transition: all 0.2s ease;
-          background: #ffffff;
+          background: var(--panel-bg);
           position: relative;
         }
         .platform-box:hover {
-          border-color: #e0e0e0;
+          border-color: var(--panel-border);
         }
         .platform-box .check-icon {
           position: absolute;
@@ -595,8 +595,8 @@ export default function ContentSchedulerPage() {
           color: #3b82f6;
         }
         .platform-box.active-tiktok, .platform-box.active-youtube, .platform-box.active-instagram {
-          border-color: #e0e0e0;
-          background: #eff6ff;
+          border-color: var(--panel-border);
+          background: var(--muted-bg);
         }
         .platform-box[class*="active-"] .check-icon {
           opacity: 1;
@@ -606,13 +606,13 @@ export default function ContentSchedulerPage() {
         .premium-input-group {
           display: flex;
           align-items: center;
-          background: #ffffff;
-          border: 1px solid #e0e0e0;
+          background: var(--panel-bg);
+          border: 1px solid var(--panel-border);
           border-radius: 6px;
           transition: border-color 0.2s;
         }
         .premium-input-group:focus-within, .premium-input-group.active {
-          border-color: #e0e0e0;
+          border-color: var(--panel-border);
         }
         .premium-input {
           background: transparent;
@@ -620,7 +620,7 @@ export default function ContentSchedulerPage() {
           padding: 8px 12px;
           font-size: 14px;
           font-weight: 500;
-          color: #111827;
+          color: var(--foreground);
           outline: none;
           width: 100%;
         }
@@ -630,8 +630,8 @@ export default function ContentSchedulerPage() {
           align-items: center;
           gap: 12px;
           padding: 8px 12px;
-          background: #ffffff;
-          border: 1px solid #e0e0e0;
+          background: var(--panel-bg);
+          border: 1px solid var(--panel-border);
           border-radius: 6px;
           margin-bottom: 8px;
         }
@@ -639,7 +639,7 @@ export default function ContentSchedulerPage() {
           margin-bottom: 0;
         }
         .time-row:focus-within {
-          border-color: #e0e0e0;
+          border-color: var(--panel-border);
         }
         .time-dot {
           display: none;
@@ -653,14 +653,14 @@ export default function ContentSchedulerPage() {
           outline: none;
           font-size: 14px;
           font-weight: 600;
-          color: #111827;
+          color: var(--foreground);
           cursor: pointer;
           padding: 6px 8px;
           border-radius: 4px;
           text-align: center;
         }
         .time-select:hover {
-          background: #f1f5f9;
+          background: var(--muted-bg);
         }
         .time-select.ampm {
           color: #10b981;
@@ -688,9 +688,9 @@ export default function ContentSchedulerPage() {
         <div className="strategy-list" style={{ paddingBottom: '64px' }}>
 
           {strategies.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '64px 24px', background: '#fff', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
-              <div style={{ fontSize: '18px', fontWeight: 600, color: '#334155', marginBottom: '8px' }}>No strategies yet</div>
-              <p style={{ color: '#64748b', marginBottom: '24px', fontSize: '14px' }}>Create your first content strategy to get started.</p>
+            <div style={{ textAlign: 'center', padding: '64px 24px', background: 'var(--panel-bg)', borderRadius: '12px', border: '1px dashed var(--panel-border)' }}>
+              <div style={{ fontSize: '18px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '8px' }}>No strategies yet</div>
+              <p style={{ color: 'var(--text-muted)', marginBottom: '24px', fontSize: '14px' }}>Create your first content strategy to get started.</p>
               <button className="primary-btn" onClick={addStrategy}>
                 <Plus size={18} /> Create Strategy
               </button>
@@ -704,14 +704,14 @@ export default function ContentSchedulerPage() {
                   height: 220px;
                   cursor: pointer;
                   transition: transform 0.2s;
-                  --folder-bg: #f8fafc;
-                  --folder-text: #0f172a;
-                  --folder-label: #64748b;
+                  --folder-bg: var(--muted-bg);
+                  --folder-text: var(--foreground);
+                  --folder-label: var(--text-muted);
                 }
                 
                 .folder-card.primary-folder {
                   --folder-bg: #2563eb; 
-                  --folder-text: #ffffff;
+                  --folder-text: var(--panel-bg);
                   --folder-label: rgba(255, 255, 255, 0.8);
                 }
 
@@ -766,18 +766,18 @@ export default function ContentSchedulerPage() {
 
                 .primary-folder .folder-pill {
                   background: rgba(255, 255, 255, 0.2);
-                  color: #fff;
+                  color: var(--panel-bg);
                   border: none;
                 }
 
                 .primary-folder .folder-pill-dot {
-                  background: #fff;
+                  background: var(--panel-bg);
                 }
 
                 .folder-card:not(.primary-folder) .folder-pill {
-                  background: #fff;
+                  background: var(--panel-bg);
                   color: #166534;
-                  border: 1px solid #e0e0e0;
+                  border: 1px solid var(--panel-border);
                 }
 
                 .folder-card:not(.primary-folder) .folder-pill-dot {
@@ -830,7 +830,7 @@ export default function ContentSchedulerPage() {
               style={{ 
                 background: 'transparent', 
                 border: 'none', 
-                color: '#6b7280',
+                color: 'var(--text-muted)',
                 padding: '8px 0', 
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -840,8 +840,8 @@ export default function ContentSchedulerPage() {
                 cursor: 'pointer',
                 transition: 'all 0.2s',
               }}
-              onMouseOver={e => e.currentTarget.style.color = '#111827'}
-              onMouseOut={e => e.currentTarget.style.color = '#6b7280'}
+              onMouseOver={e => e.currentTarget.style.color = 'var(--foreground)'}
+              onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}
             >
               <ArrowLeft size={16} />
               Back to Strategies
@@ -853,32 +853,32 @@ export default function ContentSchedulerPage() {
               
               {/* Section 1: Strategy Preferences */}
               <div className="settings-section">
-                <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>Strategy Preferences</h2>
-                <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 24px 0' }}>Define the core subject and timeframe of your automated content.</p>
+                <h2 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--foreground)', margin: '0 0 8px 0' }}>Strategy Preferences</h2>
+                <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: '0 0 24px 0' }}>Define the core subject and timeframe of your automated content.</p>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {/* Niche */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--panel-bg)', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                         <Target size={20} />
                       </div>
                       <div>
-                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Niche</div>
-                        <div style={{ fontSize: '12px', color: '#6b7280' }}>The main topic for your videos.</div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '2px' }}>Niche</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>The main topic for your videos.</div>
                       </div>
                     </div>
                     <div style={{ width: '220px', position: 'relative' }}>
                       <div 
                         className={`premium-input-group ${openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'active' : ''}`}
                         onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'niche' }); }}
-                        style={{ cursor: 'pointer', background: '#ffffff' }}
+                        style={{ cursor: 'pointer', background: 'var(--panel-bg)' }}
                       >
-                        <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: '#111827' }}>
+                        <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: 'var(--foreground)' }}>
                           {strat.niche}
                         </div>
                         <div style={{ padding: '0 12px' }}>
-                          <ChevronDown size={16} color="#94a3b8" style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                          <ChevronDown size={16} color='var(--text-muted)' style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
                         </div>
                       </div>
                       {openDropdown?.stratId === strat.id && openDropdown?.type === 'niche' && (
@@ -894,24 +894,24 @@ export default function ContentSchedulerPage() {
                   </div>
 
                   {/* Campaign Duration */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--panel-bg)', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                         <Calendar size={20} />
                       </div>
                       <div>
-                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Campaign Duration</div>
-                        <div style={{ fontSize: '12px', color: '#6b7280' }}>How long the automation runs.</div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '2px' }}>Campaign Duration</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>How long the automation runs.</div>
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: '8px', width: '220px' }}>
-                      <div className="premium-input-group" style={{ flex: 1, background: '#ffffff' }}>
+                      <div className="premium-input-group" style={{ flex: 1, background: 'var(--panel-bg)' }}>
                         <input type="number" className="premium-input" value={strat.durationValue} onChange={(e) => updateStrategy(strat.id, 'durationValue', e.target.value)} style={{ padding: '10px 14px', fontSize: '14px' }} />
                       </div>
                       <div style={{ flex: 1, position: 'relative' }}>
-                        <div className="premium-input-group" onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'duration' }); }} style={{ cursor: 'pointer', height: '100%', background: '#ffffff' }}>
-                          <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: '#111827' }}>{strat.durationUnit}</div>
-                          <div style={{ padding: '0 12px' }}><ChevronDown size={16} color="#94a3b8" /></div>
+                        <div className="premium-input-group" onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'duration' }); }} style={{ cursor: 'pointer', height: '100%', background: 'var(--panel-bg)' }}>
+                          <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: 'var(--foreground)' }}>{strat.durationUnit}</div>
+                          <div style={{ padding: '0 12px' }}><ChevronDown size={16} color='var(--text-muted)' /></div>
                         </div>
                         {openDropdown?.stratId === strat.id && openDropdown?.type === 'duration' && (
                           <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
@@ -925,26 +925,26 @@ export default function ContentSchedulerPage() {
                   </div>
 
                   {/* Avatar */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--panel-bg)', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                         <Users size={20} />
                       </div>
                       <div>
-                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Avatar</div>
-                        <div style={{ fontSize: '12px', color: '#6b7280' }}>The visual persona for your videos.</div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '2px' }}>Avatar</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>The visual persona for your videos.</div>
                       </div>
                     </div>
                     <div style={{ width: '220px' }}>
                       <button 
                         className="premium-input-group"
                         onClick={() => setAvatarModalStratId(strat.id)}
-                        style={{ cursor: 'pointer', background: '#ffffff', width: '100%', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                        style={{ cursor: 'pointer', background: 'var(--panel-bg)', width: '100%', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
                       >
-                        <div style={{ flex: 1, padding: '8px 12px', fontSize: '14px', fontWeight: 500, color: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '12px', minWidth: 0 }}>
+                        <div style={{ flex: 1, padding: '8px 12px', fontSize: '14px', fontWeight: 500, color: 'var(--foreground)', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '12px', minWidth: 0 }}>
                           {strat.avatarId ? (
                             <>
-                              <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', background: '#e2e8f0', flexShrink: 0, border: '2px solid #f1f5f9', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                              <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', background: 'var(--panel-border)', flexShrink: 0, border: '2px solid var(--muted-bg)', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                                 <video 
                                   src={`/api/avatars/${strat.avatarId}/preview#t=0.001`} 
                                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
@@ -961,23 +961,23 @@ export default function ContentSchedulerPage() {
                   </div>
 
                   {/* Voice */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--panel-bg)', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2c-1.7 0-3 1.2-3 2.8v6.4c0 1.6 1.3 2.8 3 2.8s3-1.2 3-2.8V4.8C15 3.2 13.7 2 12 2z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                       </div>
                       <div>
-                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Voice</div>
-                        <div style={{ fontSize: '12px', color: '#6b7280' }}>The voice generating your script.</div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '2px' }}>Voice</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>The voice generating your script.</div>
                       </div>
                     </div>
                     <div style={{ width: '220px' }}>
                       <button 
                         className="premium-input-group"
                         onClick={() => setVoiceModalStratId(strat.id)}
-                        style={{ cursor: 'pointer', background: '#ffffff', width: '100%', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                        style={{ cursor: 'pointer', background: 'var(--panel-bg)', width: '100%', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
                       >
-                        <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'left', minWidth: 0 }}>
+                        <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: 'var(--foreground)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'left', minWidth: 0 }}>
                           {strat.voiceId ? (voices.find(v => v.id === strat.voiceId)?.name || 'Select Voice') : 'Select Voice'}
                         </div>
                       </button>
@@ -989,25 +989,25 @@ export default function ContentSchedulerPage() {
 
               {/* Section 2: Platforms & Style */}
               <div className="settings-section">
-                <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>Platforms & Style</h2>
-                <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 24px 0' }}>Choose where to publish and the tone of your videos.</p>
+                <h2 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--foreground)', margin: '0 0 8px 0' }}>Platforms & Style</h2>
+                <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: '0 0 24px 0' }}>Choose where to publish and the tone of your videos.</p>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {/* Content Style */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--panel-bg)', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                         <Sparkles size={20} />
                       </div>
                       <div>
-                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Content Style</div>
-                        <div style={{ fontSize: '12px', color: '#6b7280' }}>The tone of the generated videos.</div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '2px' }}>Content Style</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>The tone of the generated videos.</div>
                       </div>
                     </div>
                     <div style={{ width: '220px', position: 'relative' }}>
-                      <div className="premium-input-group" onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'style' }); }} style={{ cursor: 'pointer', background: '#ffffff' }}>
-                        <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: '#111827' }}>{strat.contentStyle}</div>
-                        <div style={{ padding: '0 12px' }}><ChevronDown size={16} color="#94a3b8" /></div>
+                      <div className="premium-input-group" onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'style' }); }} style={{ cursor: 'pointer', background: 'var(--panel-bg)' }}>
+                        <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: 'var(--foreground)' }}>{strat.contentStyle}</div>
+                        <div style={{ padding: '0 12px' }}><ChevronDown size={16} color='var(--text-muted)' /></div>
                       </div>
                       {openDropdown?.stratId === strat.id && openDropdown?.type === 'style' && (
                         <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
@@ -1023,14 +1023,14 @@ export default function ContentSchedulerPage() {
                   {['TikTok', 'YouTube Shorts', 'Instagram Reels'].map(plat => {
                     const isSelected = strat.platforms.includes(plat);
                     return (
-                      <div key={plat} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px' }}>
+                      <div key={plat} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--panel-bg)', borderRadius: '12px', padding: '16px 20px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                             {plat === 'TikTok' ? <TikTokIcon size={20} /> : plat === 'YouTube Shorts' ? <YouTubeIcon size={20} /> : <InstagramIcon size={20} />}
                           </div>
                           <div>
-                            <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>{plat}</div>
-                            <div style={{ fontSize: '12px', color: '#6b7280' }}>Publish to {plat}.</div>
+                            <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '2px' }}>{plat}</div>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Publish to {plat}.</div>
                           </div>
                         </div>
                         <div 
@@ -1041,7 +1041,7 @@ export default function ContentSchedulerPage() {
                           }}
                         >
                           <div style={{
-                            width: '20px', height: '20px', borderRadius: '50%', background: '#fff',
+                            width: '20px', height: '20px', borderRadius: '50%', background: 'var(--panel-bg)',
                             position: 'absolute', top: '2px', left: isSelected ? '22px' : '2px',
                             transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
                           }} />
@@ -1054,19 +1054,19 @@ export default function ContentSchedulerPage() {
 
               {/* Section 3: Schedule */}
               <div className="settings-section">
-                <h2 style={{ fontSize: '24px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>Schedule</h2>
-                <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 24px 0' }}>Configure when your videos go live.</p>
+                <h2 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--foreground)', margin: '0 0 8px 0' }}>Schedule</h2>
+                <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: '0 0 24px 0' }}>Configure when your videos go live.</p>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {/* Frequency */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--panel-bg)', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                         <Activity size={20} />
                       </div>
                       <div>
-                        <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>Upload Frequency</div>
-                        <div style={{ fontSize: '12px', color: '#6b7280' }}>Number of videos per day.</div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '2px' }}>Upload Frequency</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Number of videos per day.</div>
                       </div>
                     </div>
                     
@@ -1080,8 +1080,8 @@ export default function ContentSchedulerPage() {
                             onClick={() => handleFrequencyChange(strat.id, freqLabel)}
                             style={{
                               padding: '6px 16px', fontSize: '13px', fontWeight: 500, borderRadius: '6px', cursor: 'pointer',
-                              background: isActive ? '#ffffff' : 'transparent',
-                              color: isActive ? '#059669' : '#4b5563',
+                              background: isActive ? 'var(--panel-bg)' : 'transparent',
+                              color: isActive ? '#059669' : 'var(--text-muted)',
                               boxShadow: isActive ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
                               transition: 'all 0.2s'
                             }}
@@ -1103,21 +1103,21 @@ export default function ContentSchedulerPage() {
                     const displayHour = hNum.toString().padStart(2, '0');
 
                     return (
-                      <div key={`time-${idx}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f9fafb', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                      <div key={`time-${idx}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--panel-bg)', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563' }}>
+                          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                             <Clock size={20} />
                           </div>
                           <div>
-                            <div style={{ fontSize: '14px', fontWeight: 600, color: '#111827', marginBottom: '2px' }}>
+                            <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '2px' }}>
                               Video {idx + 1} Time
                             </div>
-                            <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                            <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                               Scheduled publishing time.
                             </div>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', background: '#ffffff', border: '1px solid #e0e0e0', borderRadius: '8px', padding: '4px', transition: 'border-color 0.2s', position: 'relative' }}
+                        <div style={{ display: 'flex', alignItems: 'center', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: '8px', padding: '4px', transition: 'border-color 0.2s', position: 'relative' }}
                              onFocus={(e) => e.currentTarget.style.borderColor = '#10b981'}
                              onBlur={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
                         >
@@ -1133,7 +1133,7 @@ export default function ContentSchedulerPage() {
                           >
                             {Array.from({length: 12}).map((_, i) => <option key={i+1} value={(i+1).toString().padStart(2, '0')}>{(i+1).toString().padStart(2, '0')}</option>)}
                           </select>
-                          <span style={{ fontWeight: 600, color: '#111827', margin: '0 2px' }}>:</span>
+                          <span style={{ fontWeight: 600, color: 'var(--foreground)', margin: '0 2px' }}>:</span>
                           <select 
                             value={mStr} 
                             onChange={(e) => handleTimeChange(strat.id, idx, `${hStr}:${e.target.value}`)} 
@@ -1181,7 +1181,7 @@ export default function ContentSchedulerPage() {
               className="primary-btn"
               onClick={() => handleGenerate(activeStrategyId!)}
               style={{ 
-                padding: '12px 32px', fontSize: '14px', borderRadius: '8px', background: '#111827', color: '#ffffff',
+                padding: '12px 32px', fontSize: '14px', borderRadius: '8px', background: 'var(--foreground)', color: 'var(--panel-bg)',
                 fontWeight: 600, border: 'none', cursor: 'pointer', transition: 'background 0.2s'
               }}
             >
@@ -1198,25 +1198,25 @@ export default function ContentSchedulerPage() {
       )}
       {showConnectModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
-          <div style={{ background: '#fff', padding: 32, borderRadius: 16, width: 400, maxWidth: '90%', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
-            <div style={{ width: 64, height: 64, background: '#f8fafc', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+          <div style={{ background: 'var(--panel-bg)', padding: 32, borderRadius: 16, width: 400, maxWidth: '90%', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+            <div style={{ width: 64, height: 64, background: 'var(--muted-bg)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
               {showConnectModal === 'TikTok' && <TikTokIcon size={32} />}
               {showConnectModal === 'YouTube Shorts' && <YouTubeIcon size={32} />}
               {showConnectModal === 'Instagram Reels' && <InstagramIcon size={32} />}
-              {!['TikTok', 'YouTube Shorts', 'Instagram Reels'].includes(showConnectModal || '') && <Target size={32} color="#64748b" />}
+              {!['TikTok', 'YouTube Shorts', 'Instagram Reels'].includes(showConnectModal || '') && <Target size={32} color='var(--text-muted)' />}
             </div>
-            <h3 style={{ fontSize: 20, fontWeight: 600, color: '#0f172a', marginBottom: 8 }}>Account Not Connected</h3>
-            <p style={{ fontSize: 14, color: '#64748b', marginBottom: 24, lineHeight: 1.5 }}>
+            <h3 style={{ fontSize: 20, fontWeight: 600, color: 'var(--foreground)', marginBottom: 8 }}>Account Not Connected</h3>
+            <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 24, lineHeight: 1.5 }}>
               You need to connect your <strong>{showConnectModal}</strong> account in the Socials tab before you can automatically schedule content to it.
             </p>
             <div style={{ display: 'flex', gap: 12 }}>
               <button 
                 onClick={() => setShowConnectModal(null)}
-                style={{ flex: 1, padding: '10px 0', borderRadius: 8, background: '#f1f5f9', color: '#475569', fontWeight: 600, border: 'none', cursor: 'pointer' }}
+                style={{ flex: 1, padding: '10px 0', borderRadius: 8, background: 'var(--muted-bg)', color: 'var(--text-muted)', fontWeight: 600, border: 'none', cursor: 'pointer' }}
               >Cancel</button>
               <button 
                 onClick={() => router.push('/socials')}
-                style={{ flex: 1, padding: '10px 0', borderRadius: 8, background: 'var(--accent)', color: '#fff', fontWeight: 600, border: 'none', cursor: 'pointer' }}
+                style={{ flex: 1, padding: '10px 0', borderRadius: 8, background: 'var(--accent)', color: 'var(--panel-bg)', fontWeight: 600, border: 'none', cursor: 'pointer' }}
               >Connect Now</button>
             </div>
           </div>
@@ -1225,24 +1225,24 @@ export default function ContentSchedulerPage() {
 
       {avatarModalStratId && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)' }} onClick={() => setAvatarModalStratId(null)}>
-          <div style={{ background: '#fff', padding: 32, borderRadius: 16, width: 700, maxWidth: '90%', maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }} onClick={e => e.stopPropagation()}>
+          <div style={{ background: 'var(--panel-bg)', padding: 32, borderRadius: 16, width: 700, maxWidth: '90%', maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>Select Avatar</h2>
-              <button onClick={() => setAvatarModalStratId(null)} style={{ background: '#f1f5f9', border: 'none', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+              <button onClick={() => setAvatarModalStratId(null)} style={{ background: 'var(--muted-bg)', border: 'none', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                 ✕
               </button>
             </div>
             
-            <div style={{ display: 'flex', gap: 16, borderBottom: '1px solid #e2e8f0', marginBottom: 20 }}>
+            <div style={{ display: 'flex', gap: 16, borderBottom: '1px solid var(--panel-border)', marginBottom: 20 }}>
               <button 
                 onClick={() => setActiveAvatarTab('custom')} 
-                style={{ background: 'transparent', border: 'none', borderBottom: activeAvatarTab === 'custom' ? '2px solid #3b82f6' : '2px solid transparent', color: activeAvatarTab === 'custom' ? '#3b82f6' : '#64748b', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
+                style={{ background: 'transparent', border: 'none', borderBottom: activeAvatarTab === 'custom' ? '2px solid #3b82f6' : '2px solid transparent', color: activeAvatarTab === 'custom' ? '#3b82f6' : 'var(--text-muted)', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
               >
                 Your Custom Avatars
               </button>
               <button 
                 onClick={() => setActiveAvatarTab('system')} 
-                style={{ background: 'transparent', border: 'none', borderBottom: activeAvatarTab === 'system' ? '2px solid #3b82f6' : '2px solid transparent', color: activeAvatarTab === 'system' ? '#3b82f6' : '#64748b', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
+                style={{ background: 'transparent', border: 'none', borderBottom: activeAvatarTab === 'system' ? '2px solid #3b82f6' : '2px solid transparent', color: activeAvatarTab === 'system' ? '#3b82f6' : 'var(--text-muted)', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
               >
                 From Us
               </button>
@@ -1251,7 +1251,7 @@ export default function ContentSchedulerPage() {
             <div style={{ overflowY: 'auto', flex: 1, paddingRight: 8 }} className="custom-scrollbar">
               {activeAvatarTab === 'custom' && (
                 avatars.length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: 40, color: '#64748b' }}>No custom avatars found. Create one first!</div>
+                  <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>No custom avatars found. Create one first!</div>
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 16 }}>
                     {avatars.map(avatar => {
@@ -1260,7 +1260,7 @@ export default function ContentSchedulerPage() {
                         <div 
                           key={avatar.id}
                           onClick={() => { updateStrategy(avatarModalStratId!, 'avatarId', avatar.id); setAvatarModalStratId(null); }}
-                          style={{ border: `2px solid ${isSelected ? '#3b82f6' : '#e2e8f0'}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}
+                          style={{ border: `2px solid ${isSelected ? '#3b82f6' : 'var(--panel-border)'}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}
                         >
                           <div style={{ aspectRatio: '9/16', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                             <video 
@@ -1271,11 +1271,11 @@ export default function ContentSchedulerPage() {
                               onMouseLeave={e => { e.currentTarget.pause(); e.currentTarget.currentTime = 0.001; }}
                             />
                           </div>
-                          <div style={{ padding: '8px 12px', background: isSelected ? '#eff6ff' : '#fff', color: isSelected ? '#1d4ed8' : '#111827', fontWeight: 600, fontSize: 13, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          <div style={{ padding: '8px 12px', background: isSelected ? 'var(--muted-bg)' : 'var(--panel-bg)', color: isSelected ? 'var(--accent-hover)' : 'var(--foreground)', fontWeight: 600, fontSize: 13, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                             {avatar.name}
                           </div>
                           {isSelected && (
-                            <div style={{ position: 'absolute', top: 8, right: 8, background: '#3b82f6', color: '#fff', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ position: 'absolute', top: 8, right: 8, background: '#3b82f6', color: 'var(--panel-bg)', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                               ✓
                             </div>
                           )}
@@ -1302,9 +1302,9 @@ export default function ContentSchedulerPage() {
                       <div 
                         key={avatar.id}
                         onClick={() => { updateStrategy(avatarModalStratId!, 'avatarId', avatar.id); setAvatarModalStratId(null); }}
-                        style={{ border: `2px solid ${isSelected ? '#3b82f6' : '#e2e8f0'}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}
+                        style={{ border: `2px solid ${isSelected ? '#3b82f6' : 'var(--panel-border)'}`, borderRadius: 12, overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s', position: 'relative' }}
                       >
-                        <div style={{ aspectRatio: '9/16', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                        <div style={{ aspectRatio: '9/16', background: 'var(--muted-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                           <img 
                             src={avatar.image} 
                             alt={avatar.name}
@@ -1312,11 +1312,11 @@ export default function ContentSchedulerPage() {
                             onError={(e) => e.currentTarget.style.display = 'none'}
                           />
                         </div>
-                        <div style={{ padding: '8px 12px', background: isSelected ? '#eff6ff' : '#fff', color: isSelected ? '#1d4ed8' : '#111827', fontWeight: 600, fontSize: 13, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        <div style={{ padding: '8px 12px', background: isSelected ? 'var(--muted-bg)' : 'var(--panel-bg)', color: isSelected ? 'var(--accent-hover)' : 'var(--foreground)', fontWeight: 600, fontSize: 13, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                           {avatar.name}
                         </div>
                         {isSelected && (
-                          <div style={{ position: 'absolute', top: 8, right: 8, background: '#3b82f6', color: '#fff', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ position: 'absolute', top: 8, right: 8, background: '#3b82f6', color: 'var(--panel-bg)', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             ✓
                           </div>
                         )}
@@ -1332,24 +1332,24 @@ export default function ContentSchedulerPage() {
 
       {voiceModalStratId && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)' }} onClick={() => setVoiceModalStratId(null)}>
-          <div style={{ background: '#fff', padding: 32, borderRadius: 16, width: 500, maxWidth: '90%', maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }} onClick={e => e.stopPropagation()}>
+          <div style={{ background: 'var(--panel-bg)', padding: 32, borderRadius: 16, width: 500, maxWidth: '90%', maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
               <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>Select Voice</h2>
-              <button onClick={() => setVoiceModalStratId(null)} style={{ background: '#f1f5f9', border: 'none', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+              <button onClick={() => setVoiceModalStratId(null)} style={{ background: 'var(--muted-bg)', border: 'none', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
                 ✕
               </button>
             </div>
             
-            <div style={{ display: 'flex', gap: 16, borderBottom: '1px solid #e2e8f0', marginBottom: 20 }}>
+            <div style={{ display: 'flex', gap: 16, borderBottom: '1px solid var(--panel-border)', marginBottom: 20 }}>
               <button 
                 onClick={() => setActiveVoiceTab('custom')} 
-                style={{ background: 'transparent', border: 'none', borderBottom: activeVoiceTab === 'custom' ? '2px solid #3b82f6' : '2px solid transparent', color: activeVoiceTab === 'custom' ? '#3b82f6' : '#64748b', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
+                style={{ background: 'transparent', border: 'none', borderBottom: activeVoiceTab === 'custom' ? '2px solid #3b82f6' : '2px solid transparent', color: activeVoiceTab === 'custom' ? '#3b82f6' : 'var(--text-muted)', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
               >
                 My Voices
               </button>
               <button 
                 onClick={() => setActiveVoiceTab('system')} 
-                style={{ background: 'transparent', border: 'none', borderBottom: activeVoiceTab === 'system' ? '2px solid #3b82f6' : '2px solid transparent', color: activeVoiceTab === 'system' ? '#3b82f6' : '#64748b', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
+                style={{ background: 'transparent', border: 'none', borderBottom: activeVoiceTab === 'system' ? '2px solid #3b82f6' : '2px solid transparent', color: activeVoiceTab === 'system' ? '#3b82f6' : 'var(--text-muted)', fontWeight: 600, fontSize: 14, padding: '0 4px 12px', cursor: 'pointer', transition: 'all 0.2s' }}
               >
                 System Voices
               </button>
@@ -1358,7 +1358,7 @@ export default function ContentSchedulerPage() {
             <div style={{ overflowY: 'auto', flex: 1, paddingRight: 8 }} className="custom-scrollbar">
               {activeVoiceTab === 'custom' && (
                 voices.filter(v => v.type !== 'system').length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: 40, color: '#64748b' }}>No custom voices found.</div>
+                  <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>No custom voices found.</div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {voices.filter(v => v.type !== 'system').map(voice => {
@@ -1368,7 +1368,7 @@ export default function ContentSchedulerPage() {
                         <div 
                           key={voice.id}
                           onClick={() => { updateStrategy(voiceModalStratId!, 'voiceId', voice.id); setVoiceModalStratId(null); }}
-                          style={{ border: `2px solid ${isSelected ? '#3b82f6' : '#e2e8f0'}`, borderRadius: 12, padding: '16px', cursor: 'pointer', transition: 'all 0.2s', background: isSelected ? '#eff6ff' : '#fff', display: 'flex', alignItems: 'center', gap: 16 }}
+                          style={{ border: `2px solid ${isSelected ? '#3b82f6' : 'var(--panel-border)'}`, borderRadius: 12, padding: '16px', cursor: 'pointer', transition: 'all 0.2s', background: isSelected ? 'var(--muted-bg)' : 'var(--panel-bg)', display: 'flex', alignItems: 'center', gap: 16 }}
                         >
                           <button 
                             onClick={(e) => {
@@ -1381,7 +1381,7 @@ export default function ContentSchedulerPage() {
                                 setTimeout(() => audioRef.current?.play().catch(console.error), 50);
                               }
                             }}
-                            style={{ width: 40, height: 40, borderRadius: '50%', background: isPlaying ? '#3b82f6' : '#f1f5f9', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isPlaying ? '#fff' : '#64748b', cursor: 'pointer' }}
+                            style={{ width: 40, height: 40, borderRadius: '50%', background: isPlaying ? '#3b82f6' : 'var(--muted-bg)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isPlaying ? 'var(--panel-bg)' : 'var(--text-muted)', cursor: 'pointer' }}
                           >
                             {isPlaying ? (
                               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
@@ -1390,8 +1390,8 @@ export default function ContentSchedulerPage() {
                             )}
                           </button>
                           <div style={{ flex: 1 }}>
-                            <div style={{ fontWeight: 600, color: isSelected ? '#1d4ed8' : '#111827', fontSize: 15 }}>{voice.name}</div>
-                            <div style={{ fontSize: 12, color: isSelected ? '#3b82f6' : '#64748b' }}>Custom Voice</div>
+                            <div style={{ fontWeight: 600, color: isSelected ? 'var(--accent-hover)' : 'var(--foreground)', fontSize: 15 }}>{voice.name}</div>
+                            <div style={{ fontSize: 12, color: isSelected ? '#3b82f6' : 'var(--text-muted)' }}>Custom Voice</div>
                           </div>
                           {isSelected && (
                             <div style={{ color: '#3b82f6' }}>✓</div>
@@ -1405,7 +1405,7 @@ export default function ContentSchedulerPage() {
 
               {activeVoiceTab === 'system' && (
                 voices.filter(v => v.type === 'system').length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: 40, color: '#64748b' }}>No system voices available.</div>
+                  <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>No system voices available.</div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {voices.filter(v => v.type === 'system').map(voice => {
@@ -1415,7 +1415,7 @@ export default function ContentSchedulerPage() {
                         <div 
                           key={voice.id}
                           onClick={() => { updateStrategy(voiceModalStratId!, 'voiceId', voice.id); setVoiceModalStratId(null); }}
-                          style={{ border: `2px solid ${isSelected ? '#3b82f6' : '#e2e8f0'}`, borderRadius: 12, padding: '16px', cursor: 'pointer', transition: 'all 0.2s', background: isSelected ? '#eff6ff' : '#fff', display: 'flex', alignItems: 'center', gap: 16 }}
+                          style={{ border: `2px solid ${isSelected ? '#3b82f6' : 'var(--panel-border)'}`, borderRadius: 12, padding: '16px', cursor: 'pointer', transition: 'all 0.2s', background: isSelected ? 'var(--muted-bg)' : 'var(--panel-bg)', display: 'flex', alignItems: 'center', gap: 16 }}
                         >
                           <button 
                             onClick={(e) => {
@@ -1428,7 +1428,7 @@ export default function ContentSchedulerPage() {
                                 setTimeout(() => audioRef.current?.play().catch(console.error), 50);
                               }
                             }}
-                            style={{ width: 40, height: 40, borderRadius: '50%', background: isPlaying ? '#3b82f6' : '#f1f5f9', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isPlaying ? '#fff' : '#64748b', cursor: 'pointer' }}
+                            style={{ width: 40, height: 40, borderRadius: '50%', background: isPlaying ? '#3b82f6' : 'var(--muted-bg)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isPlaying ? 'var(--panel-bg)' : 'var(--text-muted)', cursor: 'pointer' }}
                           >
                             {isPlaying ? (
                               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
@@ -1437,8 +1437,8 @@ export default function ContentSchedulerPage() {
                             )}
                           </button>
                           <div style={{ flex: 1 }}>
-                            <div style={{ fontWeight: 600, color: isSelected ? '#1d4ed8' : '#111827', fontSize: 15 }}>{voice.name}</div>
-                            <div style={{ fontSize: 12, color: isSelected ? '#3b82f6' : '#64748b' }}>System Voice</div>
+                            <div style={{ fontWeight: 600, color: isSelected ? 'var(--accent-hover)' : 'var(--foreground)', fontSize: 15 }}>{voice.name}</div>
+                            <div style={{ fontSize: 12, color: isSelected ? '#3b82f6' : 'var(--text-muted)' }}>System Voice</div>
                           </div>
                           {isSelected && (
                             <div style={{ color: '#3b82f6' }}>✓</div>

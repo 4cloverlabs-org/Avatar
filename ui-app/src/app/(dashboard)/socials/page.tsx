@@ -123,7 +123,7 @@ export default function SocialsPage() {
   };
 
   if (loadingAccounts) {
-    return <div style={{ padding: 40, color: '#64748b' }}>Loading connected accounts...</div>;
+    return <div style={{ padding: 40, color: 'var(--text-muted)' }}>Loading connected accounts...</div>;
   }
 
   const integrations = [
@@ -166,10 +166,10 @@ export default function SocialsPage() {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       width: '100%',
       minHeight: '100%',
-      backgroundColor: '#ffffff',
+      backgroundColor: 'var(--panel-bg)',
       borderRadius: '32px',
       animation: 'fadeIn 0.5s ease-out',
-      color: '#111'
+      color: 'var(--foreground)'
     }}>
       <style>{`
         @keyframes fadeIn {
@@ -179,23 +179,23 @@ export default function SocialsPage() {
         .header-title {
           font-size: 20px;
           font-weight: 600;
-          color: #000;
+          color: var(--foreground);
           margin: 0 0 4px 0;
         }
         .header-subtitle {
-          color: #666;
+          color: var(--text-muted);
           font-size: 15px;
           margin: 0 0 24px 0;
         }
         .divider {
           height: 1px;
-          background: #eaeaea;
+          background: var(--panel-border);
           margin-bottom: 24px;
           width: 100%;
         }
         .section-label {
           font-size: 16px;
-          color: #333;
+          color: var(--foreground);
           margin-bottom: 16px;
           font-weight: 400;
         }
@@ -205,15 +205,15 @@ export default function SocialsPage() {
           gap: 16px;
         }
         .integration-card {
-          border: 1px solid #e0e0e0;
+          border: 1px solid var(--panel-border);
           border-radius: 12px;
           padding: 16px;
           display: flex;
           flex-direction: column;
-          background: #fff;
+          background: var(--panel-bg);
         }
         .unconnected-card:hover {
-          border-color: #e0e0e0;
+          border-color: var(--panel-border);
         }
         .card-top {
           display: flex;
@@ -229,13 +229,13 @@ export default function SocialsPage() {
         .platform-name {
           font-weight: 500;
           font-size: 15px;
-          color: #000;
+          color: var(--foreground);
         }
         .toggle-switch {
           position: relative;
           width: 44px;
           height: 24px;
-          background: #e4e4e4;
+          background: var(--panel-border);
           border-radius: 12px;
           cursor: pointer;
           transition: background 0.3s;
@@ -249,7 +249,7 @@ export default function SocialsPage() {
           left: 2px;
           width: 20px;
           height: 20px;
-          background: #fff;
+          background: var(--panel-bg);
           border-radius: 50%;
           transition: transform 0.3s;
           box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -259,7 +259,7 @@ export default function SocialsPage() {
         }
         .card-desc {
           font-size: 14px;
-          color: #666;
+          color: var(--text-muted);
           margin-bottom: 16px;
           line-height: 1.4;
         }
@@ -270,15 +270,15 @@ export default function SocialsPage() {
           margin-top: auto;
         }
         .status-badge {
-          background: #f4f4f4;
-          color: #000;
+          background: var(--muted-bg);
+          color: var(--foreground);
           font-size: 13px;
           font-weight: 500;
           padding: 6px 12px;
           border-radius: 16px;
         }
         .settings-btn {
-          color: #666;
+          color: var(--text-muted);
           cursor: pointer;
           transition: color 0.2s;
           display: flex;
@@ -287,7 +287,7 @@ export default function SocialsPage() {
           padding: 4px;
         }
         .settings-btn:hover {
-          color: #000;
+          color: var(--foreground);
         }
 
         /* Modal Styles */
@@ -302,7 +302,7 @@ export default function SocialsPage() {
           animation: fadeIn 0.2s ease-out;
         }
         .modal-content {
-          background: #fff;
+          background: var(--panel-bg);
           border-radius: 16px;
           padding: 24px;
           width: 90%;
@@ -321,18 +321,18 @@ export default function SocialsPage() {
         }
         .modal-close {
           cursor: pointer;
-          color: #666;
+          color: var(--text-muted);
           padding: 4px;
         }
         .modal-close:hover {
-          color: #000;
+          color: var(--foreground);
         }
         .account-item {
           display: flex;
           align-items: center;
           justify-content: space-between;
           padding: 12px 0;
-          border-bottom: 1px solid #eee;
+          border-bottom: 1px solid var(--panel-border);
         }
         .account-item-left {
           display: flex;
@@ -343,7 +343,7 @@ export default function SocialsPage() {
           width: 32px;
           height: 32px;
           border-radius: 50%;
-          background: #eee;
+          background: var(--muted-bg);
           object-fit: cover;
         }
         .account-name {
@@ -357,11 +357,11 @@ export default function SocialsPage() {
           cursor: pointer;
           padding: 4px 8px;
           border-radius: 4px;
-          background: #fef2f2;
+          background: rgba(220, 38, 38, 0.1);
           transition: background 0.2s;
         }
         .disconnect-btn:hover {
-          background: #fee2e2;
+          background: rgba(220, 38, 38, 0.2);
         }
         .add-account-btn {
           margin-top: 20px;
@@ -371,9 +371,9 @@ export default function SocialsPage() {
           align-items: center;
           justify-content: center;
           gap: 8px;
-          background: #f8fafc;
-          border: 1px dashed #cbd5e1;
-          color: #334155;
+          background: var(--muted-bg);
+          border: 1px dashed var(--panel-border);
+          color: var(--foreground);
           border-radius: 8px;
           font-size: 14px;
           font-weight: 500;
@@ -381,15 +381,15 @@ export default function SocialsPage() {
           transition: all 0.2s;
         }
         .add-account-btn:hover {
-          background: #f1f5f9;
-          border-color: #e0e0e0;
+          background: var(--muted-bg);
+          border-color: var(--panel-border);
         }
         .top-add-btn {
           display: flex;
           align-items: center;
           gap: 6px;
-          background: #0f172a;
-          color: #fff;
+          background: var(--foreground);
+          color: var(--panel-bg);
           border: none;
           padding: 8px 16px;
           border-radius: 8px;
@@ -399,22 +399,22 @@ export default function SocialsPage() {
           transition: background 0.2s;
         }
         .top-add-btn:hover {
-          background: #334155;
+          background: var(--foreground);
         }
         .platform-select-item {
           display: flex;
           align-items: center;
           justify-content: space-between;
           padding: 12px;
-          border: 1px solid #e0e0e0;
+          border: 1px solid var(--panel-border);
           border-radius: 8px;
           margin-bottom: 8px;
           cursor: pointer;
           transition: all 0.2s;
         }
         .platform-select-item:hover {
-          background: #f8fafc;
-          border-color: #e0e0e0;
+          background: var(--muted-bg);
+          border-color: var(--panel-border);
         }
       `}</style>
       

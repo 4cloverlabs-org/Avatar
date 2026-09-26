@@ -9,7 +9,7 @@ export default function VideoShowcase() {
   const categories = ['All', 'Creators', 'Education', 'Marketing', 'Product', 'Social'];
 
   return (
-    <section className="editorial-section grid-container" style={{ background: '#FFFFFF' }}>
+    <section className="editorial-section grid-container" style={{ background: 'var(--panel-bg)' }}>
       <div className="col-12 mb-4">
         <h2 className="editorial-h2" style={{ textAlign: 'center' }}>See what your AI can create.</h2>
       </div>
@@ -20,8 +20,8 @@ export default function VideoShowcase() {
               key={c}
               onClick={() => setFilter(c)}
               style={{
-                background: filter === c ? 'var(--text-main)' : '#F1F5F9',
-                color: filter === c ? '#fff' : 'var(--text-muted)',
+                background: filter === c ? 'var(--text-main)' : 'var(--muted-bg)',
+                color: filter === c ? 'var(--panel-bg)' : 'var(--text-muted)',
                 border: 'none',
                 padding: '0.5rem 1.5rem',
                 borderRadius: '100px',
@@ -49,7 +49,7 @@ export default function VideoShowcase() {
               className="premium-glass-card"
               style={{ 
                 aspectRatio: '9/16', 
-                background: '#F8FAFC', 
+                background: 'var(--muted-bg)', 
                 borderRadius: '16px',
                 position: 'relative',
                 overflow: 'hidden',
@@ -75,7 +75,7 @@ export default function VideoShowcase() {
                  className="template-btn"
                  style={{ 
                    position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                   background: '#000000', color: '#FFFFFF', padding: '0.75rem 1.5rem',
+                   background: '#000000', color: 'var(--panel-bg)', padding: '0.75rem 1.5rem',
                    borderRadius: '100px', fontWeight: 600, opacity: 0, transition: 'opacity 0.2s',
                    whiteSpace: 'nowrap', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
                  }}

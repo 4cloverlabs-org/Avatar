@@ -85,10 +85,10 @@ export default function Pricing() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '4rem' }}>
         <h2 className="editorial-h2" style={{ textAlign: 'center' }}>Simple Pricing</h2>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', backgroundColor: '#E5E7EB', padding: '0.25rem', borderRadius: '100px', marginTop: '1rem' }}>
-           <button onClick={() => setIsYearly(false)} style={{ background: !isYearly ? '#FFFFFF' : 'transparent', color: 'var(--text-main)', border: 'none', borderRadius: '100px', padding: '0.5rem 1.25rem', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', boxShadow: !isYearly ? '0 2px 8px rgba(0,0,0,0.1)' : 'none', transition: 'all 0.2s ease' }}>Monthly</button>
-           <button onClick={() => setIsYearly(true)} style={{ background: isYearly ? '#FFFFFF' : 'transparent', color: 'var(--text-main)', border: 'none', borderRadius: '100px', padding: '0.5rem 1.25rem', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', boxShadow: isYearly ? '0 2px 8px rgba(0,0,0,0.1)' : 'none', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+           <button onClick={() => setIsYearly(false)} style={{ background: !isYearly ? 'var(--panel-bg)' : 'transparent', color: 'var(--text-main)', border: 'none', borderRadius: '100px', padding: '0.5rem 1.25rem', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', boxShadow: !isYearly ? '0 2px 8px rgba(0,0,0,0.1)' : 'none', transition: 'all 0.2s ease' }}>Monthly</button>
+           <button onClick={() => setIsYearly(true)} style={{ background: isYearly ? 'var(--panel-bg)' : 'transparent', color: 'var(--text-main)', border: 'none', borderRadius: '100px', padding: '0.5rem 1.25rem', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', boxShadow: isYearly ? '0 2px 8px rgba(0,0,0,0.1)' : 'none', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
              Yearly
-             <span style={{ backgroundColor: '#000000', color: '#FFF', padding: '2px 8px', borderRadius: '100px', fontSize: '0.7rem' }}>Save 20%</span>
+             <span style={{ backgroundColor: '#000000', color: 'var(--panel-bg)', padding: '2px 8px', borderRadius: '100px', fontSize: '0.7rem' }}>Save 20%</span>
            </button>
         </div>
       </div>
@@ -107,7 +107,7 @@ export default function Pricing() {
           }}
         >
           {plan.tag && (
-             <div style={{ position: 'absolute', top: '-0.75rem', right: '1rem', background: '#000000', color: '#FFFFFF', padding: '4px 10px', fontSize: '0.7rem', fontWeight: 600, borderRadius: '100px', zIndex: 20 }}>
+             <div style={{ position: 'absolute', top: '-0.75rem', right: '1rem', background: '#000000', color: 'var(--panel-bg)', padding: '4px 10px', fontSize: '0.7rem', fontWeight: 600, borderRadius: '100px', zIndex: 20 }}>
                {plan.tag}
              </div>
           )}
@@ -126,7 +126,7 @@ export default function Pricing() {
               borderBottomLeftRadius: '0px',
               borderBottomRightRadius: '0px',
               position: 'relative',
-              backgroundColor: '#F9FAFB',
+              backgroundColor: 'var(--panel-bg)',
               borderBottomColor: 'rgba(249, 250, 251, 0)',
               color: '#000000',
               zIndex: 2
@@ -163,7 +163,7 @@ export default function Pricing() {
                 cursor: 'pointer',
                 marginTop: 'auto',
                 backgroundColor: '#000000',
-                color: '#FFFFFF'
+                color: 'var(--panel-bg)'
               }}
             >
               {plan.ctaText}
@@ -176,7 +176,7 @@ export default function Pricing() {
               width: '100%',
               padding: '2rem', 
               paddingTop: '1rem',
-              backgroundColor: '#F9FAFB',
+              backgroundColor: 'var(--panel-bg)',
               color: '#000000',
               borderBottomLeftRadius: '24px',
               borderBottomRightRadius: '24px',
