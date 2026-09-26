@@ -1,89 +1,90 @@
-import { CaptionStyleToken } from '../../types/captions';
+export type HighlightMode = 'box' | 'color' | 'none';
 
-export const CAPTION_STYLES: CaptionStyleToken[] = [
+export interface CaptionVariant {
+  id: string;
+  name: string;
+  highlightMode: HighlightMode;
+  highlightColor: string;
+  activeTextColor: string;
+  textColor: string;
+  strokeColor: string;
+}
+
+export const CAPTION_VARIANTS: CaptionVariant[] = [
   {
     id: 'none',
     name: 'None',
-    animationType: 'none',
-    fontFamily: 'Inter, sans-serif',
-    fontWeight: 700,
+    highlightMode: 'none',
+    highlightColor: 'transparent',
+    activeTextColor: '#ffffff',
     textColor: '#ffffff',
-    accentColor: '#3a3a3d',
+    strokeColor: '#000000',
   },
   {
-    id: 'hormozi',
-    name: 'Bellatrix',
-    animationType: 'hormoziPop', 
-    fontFamily: 'Inter, sans-serif',
-    fontWeight: 900,
-    textColor: '#39ff14',
-    accentColor: '#39ff14',
-    italic: true,
-    uppercase: true,
-  },
-  {
-    id: 'karaoke',
-    name: 'Alvcone Blue',
-    animationType: 'karaokeSweep',
-    fontFamily: 'Inter, sans-serif',
-    fontWeight: 900,
-    textColor: '#7e22ce',
-    accentColor: '#7e22ce',
-    italic: true,
-    uppercase: true,
-  },
-  {
-    id: 'bounce',
-    name: 'Pacific',
-    animationType: 'bouncingBox', 
-    fontFamily: 'Inter, sans-serif',
-    fontWeight: 800,
+    id: 'energy',
+    name: 'Energy',
+    highlightMode: 'box',
+    highlightColor: '#39FF6A',
+    activeTextColor: '#0a0a0a',
     textColor: '#ffffff',
-    background: '#3730a3',
-    accentColor: '#ffffff',
-    uppercase: true,
+    strokeColor: '#000000',
   },
   {
-    id: 'slide',
-    name: 'Cartwheel Blue',
-    animationType: 'slidingBox',
-    fontFamily: 'Inter, sans-serif',
-    fontWeight: 900,
-    textColor: '#000000',
-    background: '#34d399',
-    accentColor: '#000000',
-    uppercase: true,
-  },
-  {
-    id: 'typewriter',
-    name: 'Nova',
-    animationType: 'typewriterFade',
-    fontFamily: 'var(--font-poppins), sans-serif',
-    fontWeight: 600,
-    textColor: '#ffffff',
-    accentColor: '#ffffff',
-  },
-  {
-    id: 'highlight',
+    id: 'vitamin-b',
     name: 'Vitamin B',
-    animationType: 'wordHighlight',
-    fontFamily: 'Inter, sans-serif',
-    fontWeight: 800,
+    highlightMode: 'box',
+    highlightColor: '#FFE619',
+    activeTextColor: '#0a0a0a',
     textColor: '#ffffff',
-    background: '#3b82f6',
-    accentColor: '#3b82f6',
-    uppercase: true,
+    strokeColor: '#000000',
   },
   {
-    id: 'cinematic',
-    name: 'Quintessence',
-    animationType: 'cinematicFade',
-    fontFamily: 'serif',
-    fontWeight: 400,
-    textColor: '#eab308',
-    accentColor: '#eab308',
+    id: 'arion-pink',
+    name: 'Arion Pink',
+    highlightMode: 'box',
+    highlightColor: '#FF4FA3',
+    activeTextColor: '#ffffff',
+    textColor: '#ffffff',
+    strokeColor: '#000000',
+  },
+  {
+    id: 'pacific',
+    name: 'Pacific',
+    highlightMode: 'box',
+    highlightColor: '#3FA9FF',
+    activeTextColor: '#0a0a0a',
+    textColor: '#ffffff',
+    strokeColor: '#000000',
+  },
+  {
+    id: 'cartwheel-black',
+    name: 'Cartwheel Black',
+    highlightMode: 'box',
+    highlightColor: '#ffffff',
+    activeTextColor: '#0a0a0a',
+    textColor: '#ffffff',
+    strokeColor: '#000000',
+  },
+  {
+    id: 'nova',
+    name: 'Nova',
+    highlightMode: 'color',
+    highlightColor: 'transparent',
+    activeTextColor: '#39FF6A',
+    textColor: '#ffffff',
+    strokeColor: '#000000',
+  },
+  {
+    id: 'sirius',
+    name: 'Sirius',
+    highlightMode: 'color',
+    highlightColor: 'transparent',
+    activeTextColor: '#FFE619',
+    textColor: '#ffffff',
+    strokeColor: '#000000',
   },
 ];
 
-export const getCaptionStyle = (id: string): CaptionStyleToken =>
-  CAPTION_STYLES.find((s) => s.id === id) ?? CAPTION_STYLES[0];
+export const getCaptionVariant = (id: string): CaptionVariant =>
+  CAPTION_VARIANTS.find((v) => v.id === id) ?? CAPTION_VARIANTS[1];
+

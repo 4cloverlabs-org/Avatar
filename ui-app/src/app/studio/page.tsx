@@ -10,7 +10,7 @@ import {
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Player } from '@remotion/player';
-import { CaptionStylePicker } from '../../components/CaptionStylePicker';
+import { CaptionsAiPicker } from '../../components/captions/CaptionsAiPicker';
 import { whisperToCaptions } from '../../lib/whisperToCaptions';
 import { SAMPLE_WHISPER_WORDS, CaptionPreviewComposition } from '../../components/CaptionEditorExample';
 
@@ -153,7 +153,10 @@ export default function Dashboard() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [autoCaptionsEnabled, setAutoCaptionsEnabled] = useState(false);
-  const [captionStyle, setCaptionStyle] = useState('hormozi');
+  const [captionStyle, setCaptionStyle] = useState('pulse');
+  const [captionCharsPerLine, setCaptionCharsPerLine] = useState(30);
+  const [captionWordSpacing, setCaptionWordSpacing] = useState('normal');
+  const [captionPosition, setCaptionPosition] = useState<'top' | 'middle' | 'bottom'>('bottom');
   const segments = React.useMemo(() => whisperToCaptions(SAMPLE_WHISPER_WORDS), []);
 
   const [playKey, setPlayKey] = useState('0');
@@ -762,7 +765,7 @@ export default function Dashboard() {
                 }}>
                   <Player
                     component={CaptionPreviewComposition}
-                    inputProps={{ segments, config: { styleId: captionStyle, position: 'bottom' } }}
+                    inputProps={{ segments, config: { styleId: captionStyle, position: captionPosition, charsPerLine: captionCharsPerLine, wordSpacing: captionWordSpacing } }}
                     durationInFrames={90}
                     fps={30}
                     compositionWidth={720}
@@ -1751,8 +1754,50 @@ export default function Dashboard() {
               
               {autoCaptionsEnabled && (
                 <div style={{ marginTop: 24 }}>
-                  <span style={{ fontSize: 12, color: 'var(--foreground)', display: 'block', marginBottom: 8, fontWeight: 500 }}>Caption Animation Style</span>
-                  <CaptionStylePicker selectedId={captionStyle} onSelect={setCaptionStyle} />
+                  <div style={{ marginBottom: 16 }}>
+                    <span style={{ fontSize: 12, color: 'var(--foreground)', display: 'block', marginBottom: 8, fontWeight: 500 }}>Max Characters Per Line</span>
+                    <select
+                      style={{ width: '100%', padding: 6, borderRadius: 4, background: '#fff', border: '1px solid var(--panel-border)', fontSize: 12, color: 'var(--foreground)' }}
+                      value={captionCharsPerLine}
+                      onChange={(e) => setCaptionCharsPerLine(Number(e.target.value))}
+                    >
+                      <option value={10}>10 (Word by word, approx)</option>
+                      <option value={20}>20</option>
+                      <option value={30}>30 (Default)</option>
+                      <option value={40}>40</option>
+                    </select>
+                  </div>
+
+                  <div style={{ marginBottom: 16 }}>
+                    <span style={{ fontSize: 12, color: 'var(--foreground)', display: 'block', marginBottom: 8, fontWeight: 500 }}>Word Spacing</span>
+                    <select
+                      style={{ width: '100%', padding: 6, borderRadius: 4, background: '#fff', border: '1px solid var(--panel-border)', fontSize: 12, color: 'var(--foreground)' }}
+                      value={captionWordSpacing}
+                      onChange={(e) => setCaptionWordSpacing(e.target.value)}
+                    >
+                      <option value="normal">Normal</option>
+                      <option value="0.2em">Spaced (0.2em)</option>
+                      <option value="0.4em">Wide (0.4em)</option>
+                    </select>
+                  </div>
+
+                  <div style={{ marginBottom: 24 }}>
+                    <span style={{ fontSize: 12, color: 'var(--foreground)', display: 'block', marginBottom: 8, fontWeight: 500 }}>Position</span>
+                    <select
+                      style={{ width: '100%', padding: 6, borderRadius: 4, background: '#fff', border: '1px solid var(--panel-border)', fontSize: 12, color: 'var(--foreground)' }}
+                      value={captionPosition}
+                      onChange={(e) => setCaptionPosition(e.target.value as any)}
+                    >
+                      <option value="top">Top</option>
+                      <option value="middle">Middle</option>
+                      <option value="bottom">Bottom</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <span style={{ fontSize: 12, color: 'var(--foreground)', display: 'block', marginBottom: 8, fontWeight: 500 }}>Caption Animation Style</span>
+                    <CaptionsAiPicker selectedId={captionStyle} onSelect={setCaptionStyle} />
+                  </div>
                 </div>
               )}
             </div>

@@ -1264,7 +1264,7 @@ button {
 }
 
 .syn-sidebar-right {
-  width: 255px;
+  width: 320px;
   background: var(--panel-bg);
   border-left: 1px solid var(--panel-border);
   box-shadow: -2px 0 12px rgba(0,0,0,0.02);

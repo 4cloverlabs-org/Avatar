@@ -1,34 +1,23 @@
 import React from 'react';
-import { CAPTION_STYLES } from '../remotion/captions/styleTokens';
+import { CAPTION_VARIANTS } from '../remotion/captions/styleTokens';
 import styles from './CaptionStylePicker.module.css';
- 
+
 interface CaptionStylePickerProps {
   selectedId: string;
   onSelect: (styleId: string) => void;
 }
- 
-/** Short sample text shown inside each tile — kept generic on purpose. */
-const previewText: Record<string, string> = {
-  'hormozi': 'BAKERY',
-  'karaoke': 'BAKERY',
-  'bounce': 'BAKERY',
-  'slide': 'BAKERY',
-  'typewriter': 'Hey, did you',
-  'highlight': 'WILLOW CREEK',
-  'cinematic': 'Bakery',
-};
- 
+
 export const CaptionStylePicker: React.FC<CaptionStylePickerProps> = ({ selectedId, onSelect }) => (
   <div className={styles.grid}>
-    {CAPTION_STYLES.map((token) => {
-      const isSelected = token.id === selectedId;
-      const isNone = token.id === 'none';
+    {CAPTION_VARIANTS.map((variant) => {
+      const isSelected = variant.id === selectedId;
+      const isNone = variant.id === 'none';
       return (
         <button
-          key={token.id}
+          key={variant.id}
           type="button"
           className={`${styles.tile} ${isSelected ? styles.selected : ''}`}
-          onClick={() => onSelect(token.id)}
+          onClick={() => onSelect(variant.id)}
           aria-pressed={isSelected}
         >
           <div className={styles.previewArea}>
@@ -36,22 +25,23 @@ export const CaptionStylePicker: React.FC<CaptionStylePickerProps> = ({ selected
               <span className={styles.noneIcon} aria-hidden="true" />
             ) : (
               <span
-                className={`${styles.previewText} ${styles[token.animationType]}`}
+                className={`${styles.previewText}`}
                 style={{
-                  fontFamily: token.fontFamily,
-                  fontWeight: token.fontWeight,
-                  color: token.textColor,
-                  background: token.background,
-                  fontStyle: token.italic ? 'italic' : 'normal',
-                  textTransform: token.uppercase ? 'uppercase' : 'none',
-                  WebkitTextStroke: token.strokeColor ? `1.5px ${token.strokeColor}` : undefined,
+                  fontFamily: '"Arial Black", Inter, sans-serif',
+                  fontWeight: 900,
+                  color: variant.activeTextColor,
+                  background: variant.highlightMode === 'box' ? variant.highlightColor : 'transparent',
+                  padding: variant.highlightMode === 'box' ? '0.1em 0.3em' : 0,
+                  borderRadius: 6,
+                  textTransform: 'uppercase',
+                  WebkitTextStroke: variant.strokeColor && variant.highlightMode === 'color' ? `1px ${variant.strokeColor}` : undefined,
                 }}
               >
-                {previewText[token.id] ?? token.name}
+                BAKERY
               </span>
             )}
           </div>
-          <span className={styles.label}>{token.name}</span>
+          <span className={styles.label}>{variant.name}</span>
         </button>
       );
     })}

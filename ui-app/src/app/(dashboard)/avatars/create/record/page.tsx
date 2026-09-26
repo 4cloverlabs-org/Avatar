@@ -623,23 +623,7 @@ export default function RecordAvatarPage() {
                   {isRecording ? `Recording... 00:${recordingTime.toString().padStart(2, '0')}` : 'Ready to Record'}
                 </div>
 
-                <div style={{ position: 'absolute', top: '70%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', padding: '16px 24px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 16, color: 'var(--panel-bg)', width: '80%', maxWidth: 500 }}>
-                  <div style={{ display: 'flex', gap: 3, height: 24, alignItems: 'center' }}>
-                     <div style={{ width: 3, height: '40%', background: 'var(--panel-bg)', borderRadius: 2, animation: isSpeaking ? 'soundPulse 0.5s infinite ease-in-out alternate' : 'none' }} />
-                     <div style={{ width: 3, height: '80%', background: 'var(--panel-bg)', borderRadius: 2, animation: isSpeaking ? 'soundPulse 0.7s infinite ease-in-out alternate 0.2s' : 'none' }} />
-                     <div style={{ width: 3, height: '100%', background: 'var(--panel-bg)', borderRadius: 2, animation: isSpeaking ? 'soundPulse 0.4s infinite ease-in-out alternate 0.1s' : 'none' }} />
-                     <div style={{ width: 3, height: '60%', background: 'var(--panel-bg)', borderRadius: 2, animation: isSpeaking ? 'soundPulse 0.6s infinite ease-in-out alternate 0.3s' : 'none' }} />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 18, lineHeight: 1.5, opacity: 0.9, display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                      {scriptWords.map((word, i) => (
-                        <span key={i} style={{ color: highlightedWordIndex >= i ? '#60a5fa' : 'var(--panel-bg)', transition: 'color 0.2s ease' }}>
-                          {word}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+
 
                 <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 12 }}>
                   <button onClick={toggleMic} style={{ width: 44, height: 44, borderRadius: 22, background: isMicMuted ? '#df6c62' : 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', border: 'none', color: 'var(--panel-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
@@ -684,64 +668,15 @@ export default function RecordAvatarPage() {
 
             {/* Right Col: Sidebar */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 }}>
-               {/* Top Cards */}
-               <div style={{ display: 'flex', gap: 16 }}>
-                 <div style={{ flex: 1, background: '#d1e5db', borderRadius: 20, padding: 16, position: 'relative' }}>
-                    <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--foreground)', marginBottom: 10 }}>Recording Tips</div>
-                    <p style={{ fontSize: 11, color: 'var(--foreground)', lineHeight: 1.5, margin: 0 }}>Ensure you are in a well-lit room. Speak clearly and maintain eye contact with the lens to achieve the best AI training results.</p>
-                 </div>
-                 <div style={{ flex: 1, background: '#000', borderRadius: 20, padding: 16, color: 'var(--panel-bg)', position: 'relative' }}>
-                    <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 10 }}>Checklist</div>
-                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: scriptText.trim().length > 0 ? '#a7f3d0' : 'var(--text-muted)' }}>{scriptText.trim().length > 0 ? <CheckCircle2 size={14} /> : <Circle size={14} />} Script Prepared</div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: hasAudioPassed ? '#a7f3d0' : 'var(--text-muted)' }}>{hasAudioPassed ? <CheckCircle2 size={14} /> : <Circle size={14} />} Clear Audio / No Background Noise</div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: recordingTime >= 15 ? '#a7f3d0' : 'var(--text-muted)' }}>{recordingTime >= 15 ? <CheckCircle2 size={14} /> : <Circle size={14} />} 15s Minimum Duration</div>
-                     </div>
-                 </div>
-               </div>
-
-               {/* Avatar Profile Form */}
-               <div style={{ flex: 1, background: 'var(--muted-bg)', borderRadius: 24, padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
-                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                    <div style={{ fontWeight: 600, fontSize: 15, color: 'var(--foreground)' }}>Avatar Profile</div>
-                    <div style={{ background: 'var(--panel-border)', padding: '4px 10px', borderRadius: 8, fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: 0.5 }}>METADATA</div>
-                 </div>
-                 
-                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Avatar Name</label>
-                    <input 
-                      type="text"
-                      value={avatarName}
-                      onChange={(e) => setAvatarName(e.target.value)}
-                      placeholder="e.g. Sales Representative AI"
-                      style={{ width: '100%', height: 44, background: 'var(--panel-bg)', border: 'none', borderRadius: 12, padding: '0 16px', fontSize: 13, color: 'var(--foreground)', outline: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}
-                    />
-                 </div>
-
-                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Primary Language</label>
-                    <select value={primaryLanguage} onChange={(e) => setPrimaryLanguage(e.target.value)} style={{ width: '100%', height: 44, background: 'var(--panel-bg)', border: 'none', borderRadius: 12, padding: '0 16px', fontSize: 13, color: 'var(--foreground)', outline: 'none', appearance: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                      <option>English (US)</option>
-                      <option>English (UK)</option>
-                      <option>Spanish</option>
-                      <option>French</option>
-                      <option>German</option>
-                    </select>
-                 </div>
-
-                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>Speaking Style</label>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                       {['Professional', 'Casual', 'Energetic'].map((style) => (
-                         <div 
-                           key={style} 
-                           onClick={() => setSpeakingStyle(style)}
-                           style={{ flex: 1, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', background: speakingStyle === style ? 'var(--foreground)' : 'var(--panel-bg)', color: speakingStyle === style ? 'var(--panel-bg)' : 'var(--text-muted)', border: 'none', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-                           {style}
-                         </div>
-                       ))}
-                    </div>
-                 </div>
+               <div style={{ flex: 1, background: 'var(--muted-bg)', borderRadius: 24, padding: 32, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 20, flexShrink: 0 }}>Reading Script</div>
+                  <div style={{ fontSize: 20, lineHeight: 1.5, fontWeight: 500, display: 'flex', flexWrap: 'wrap', gap: '5px', overflowY: 'auto', alignContent: 'flex-start', flex: 1, paddingRight: 8 }}>
+                    {scriptWords.map((word, i) => (
+                      <span key={i} style={{ color: highlightedWordIndex >= i ? 'var(--foreground)' : 'var(--text-muted)', opacity: highlightedWordIndex >= i ? 1 : 0.6, transition: 'all 0.2s ease' }}>
+                        {word}
+                      </span>
+                    ))}
+                  </div>
                </div>
             </div>
           </div>
