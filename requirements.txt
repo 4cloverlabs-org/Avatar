@@ -2,7 +2,7 @@ diffusers
 accelerate
 torchvision
 numpy<2.0.0
-opencv-python
+opencv-python-headless
 soundfile
 transformers
 huggingface_hub
