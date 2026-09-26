@@ -13,27 +13,27 @@ pip install gdown
 
 
 # Download MuseTalk V1.0 weights
-hf download TMElyralab/MuseTalk musetalk/musetalk.json musetalk/pytorch_model.bin \
+huggingface-cli download TMElyralab/MuseTalk musetalk/musetalk.json musetalk/pytorch_model.bin \
   --local-dir $CheckpointsDir
 
 # Download MuseTalk V1.5 weights (unet.pth)
-hf download TMElyralab/MuseTalk musetalkV15/musetalk.json musetalkV15/unet.pth \
+huggingface-cli download TMElyralab/MuseTalk musetalkV15/musetalk.json musetalkV15/unet.pth \
   --local-dir $CheckpointsDir
 
 # Download SD VAE weights
-hf download stabilityai/sd-vae-ft-mse config.json diffusion_pytorch_model.bin \
+huggingface-cli download stabilityai/sd-vae-ft-mse config.json diffusion_pytorch_model.bin \
   --local-dir $CheckpointsDir/sd-vae
 
 # Download Whisper weights
-hf download openai/whisper-tiny config.json pytorch_model.bin preprocessor_config.json \
+huggingface-cli download openai/whisper-tiny config.json pytorch_model.bin preprocessor_config.json \
   --local-dir $CheckpointsDir/whisper
 
 # Download DWPose weights
-hf download yzd-v/DWPose dw-ll_ucoco_384.pth \
+huggingface-cli download yzd-v/DWPose dw-ll_ucoco_384.pth \
   --local-dir $CheckpointsDir/dwpose
 
 # Download SyncNet weights
-hf download ByteDance/LatentSync latentsync_syncnet.pt \
+huggingface-cli download ByteDance/LatentSync latentsync_syncnet.pt \
   --local-dir $CheckpointsDir/syncnet
 
 # Download Face Parse Bisent weights
