@@ -771,7 +771,7 @@ export default function Dashboard() {
                     compositionWidth={720}
                     compositionHeight={1280}
                     style={{ width: '100%', height: '100%', opacity: 1, pointerEvents: 'none' }}
-                    playing={isPlaying}
+                    
                   />
                 </div>
               )}

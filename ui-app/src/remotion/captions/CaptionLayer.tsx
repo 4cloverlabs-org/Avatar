@@ -1,7 +1,7 @@
 import React from 'react';
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
 import { CaptionSegment, CaptionStyleToken, CaptionTrackConfig } from '../../types/captions';
-import { getCaptionStyle } from './styleTokens';
+import { getCaptionVariant } from './styleTokens';
  
 interface CaptionLayerProps {
   segments: CaptionSegment[];
@@ -26,7 +26,7 @@ export const CaptionLayer: React.FC<CaptionLayerProps> = ({ segments, config }) 
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;
-  const token = getCaptionStyle(config.styleId);
+  const token = getCaptionVariant(config.styleId) as any;
  
   if (token.animationType === 'none') return null;
  
