@@ -700,7 +700,7 @@ export default function ContentSchedulerPage() {
               <style>{`
                 .folder-card {
                   position: relative;
-                  width: 280px;
+                  width: 100%;
                   height: 220px;
                   cursor: pointer;
                   transition: transform 0.2s;
@@ -785,7 +785,7 @@ export default function ContentSchedulerPage() {
                 }
               `}</style>
               
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '32px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
                 {strategies.map((strat, index) => {
                   const isPrimary = index === 0; // First one is blue like the image
                   return (
@@ -806,7 +806,7 @@ export default function ContentSchedulerPage() {
                           </span>
                         </div>
                         
-                        <div>
+                        <div style={{ marginTop: 'auto' }}>
                           <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--folder-label)', marginBottom: '4px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                             Strategy {index + 1}
                           </div>
