@@ -8,6 +8,7 @@ import {
   real,
   index,
   uniqueIndex,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -441,26 +442,34 @@ export const sessionHandoff = pgTable(
 );
 
 // ── Content Pipeline ─────────────────────────────────────────────────
-export const topicPool = pgTable(
-  "topic_pool",
-  {
-    id: text("id").primaryKey(),
-    niche: text("niche").notNull(),
-    title: text("title").notNull(),
-    source: text("source").notNull(), // "YouTube", "NewsAPI"
-    url: text("url").notNull(),
-    engagementSignal: integer("engagement_signal").default(0).notNull(),
-    crossPlatform: boolean("cross_platform").default(false).notNull(),
-    recencyScore: real("recency_score").default(0).notNull(),
-    velocityScore: real("velocity_score").default(0).notNull(),
-    totalScore: real("total_score").default(0).notNull(),
-    status: text("status").default("available").notNull(), // available, rejected
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-  },
-  (table) => [
-    index("topic_pool_niche_idx").on(table.niche)
-  ]
-);
+export const topicPool = pgTable("topic_pool", {
+  id: text("id").primaryKey(),
+  niche: text("niche").notNull(),
+  title: text("title").notNull(),
+  sourceUrl: text("source_url"),
+  summary: text("summary").notNull(),
+  engagement: integer("engagement").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const topicClaim = pgTable("topic_claim", {
+  id: text("id").primaryKey(),
+  topicId: text("topic_id").notNull(),
+  userId: text("user_id").notNull(),
+  niche: text("niche").notNull(),
+  angle: jsonb("angle").notNull(), // { perspective, tone, format }
+  claimedAt: timestamp("claimed_at").defaultNow().notNull(),
+});
+
+export const scriptEmbedding = pgTable("script_embedding", {
+  id: text("id").primaryKey(),
+  generatedScriptId: text("generated_script_id").notNull(),
+  userId: text("user_id").notNull(),
+  niche: text("niche").notNull(),
+  embedding: jsonb("embedding").notNull(), // number[]
+  hookSummary: text("hook_summary").notNull(), // short excerpt, used for regen feedback
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
 
 export const generatedScript = pgTable(
   "generated_script",

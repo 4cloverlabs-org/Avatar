@@ -16,7 +16,11 @@ export async function generateScript(
   durationValue: string,
   durationUnit: string,
   platforms: string[],
-  qaFeedback?: string // Used during retries
+  qaFeedback?: string, // Used during retries
+  topicOptions?: {
+    angle: { perspective: string; tone: string; format: string };
+    avoidSimilarTo?: string;
+  }
 ): Promise<GeneratedScriptPayload> {
   console.log(`Generating script for topic: ${brief.topic}...`);
 
@@ -32,9 +36,23 @@ export async function generateScript(
     };
   }
 
+  let angleInstruction = "";
+  let avoidInstruction = "";
+  if (topicOptions) {
+    angleInstruction = `
+Take the ${topicOptions.angle.perspective} perspective on this topic.
+Tone: ${topicOptions.angle.tone}. Structure: ${topicOptions.angle.format}.
+Commit fully to this angle — do not hedge toward a generic take.
+`;
+    if (topicOptions.avoidSimilarTo) {
+      avoidInstruction = `\nIMPORTANT: Do not make this similar to: ${topicOptions.avoidSimilarTo}`;
+    }
+  }
+
   let prompt = `
 You are an expert short-form video scriptwriter. 
 Generate a script constrained strictly to the facts provided in the research brief.
+${angleInstruction}${avoidInstruction}
 
 Research Brief:
 ${JSON.stringify(brief, null, 2)}

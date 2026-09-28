@@ -15,7 +15,10 @@ const globalForDb = globalThis as unknown as {
 };
 
 const pool = globalForDb.conn ?? new Pool({
-  connectionString: connectionString || "postgresql://mock:mock@localhost:5432/mock"
+  connectionString: connectionString || "postgresql://mock:mock@localhost:5432/mock",
+  max: 10,
+  idleTimeoutMillis: 10000,
+  connectionTimeoutMillis: 5000,
 });
 
 if (process.env.NODE_ENV !== 'production') {
