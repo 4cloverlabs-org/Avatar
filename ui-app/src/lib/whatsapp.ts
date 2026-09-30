@@ -76,3 +76,35 @@ export async function sendWhatsAppVideoApproval(
     return false;
   }
 }
+
+export async function sendWhatsAppText(phoneNumber: string, text: string) {
+  const WHATSAPP_API_URL = process.env.WHATSAPP_API_URL;
+  const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN;
+
+  if (!WHATSAPP_API_URL || !WHATSAPP_ACCESS_TOKEN) return false;
+
+  const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+
+  const payload = {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: cleanPhone,
+    type: "text",
+    text: { body: text }
+  };
+
+  try {
+    const res = await fetch(WHATSAPP_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${WHATSAPP_ACCESS_TOKEN}`
+      },
+      body: JSON.stringify(payload)
+    });
+    return res.ok;
+  } catch (err) {
+    console.error("Failed to send WhatsApp text", err);
+    return false;
+  }
+}

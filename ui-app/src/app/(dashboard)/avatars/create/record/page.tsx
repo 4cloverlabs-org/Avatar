@@ -563,7 +563,7 @@ export default function RecordAvatarPage() {
 
   let computedFilter = 'none';
   if (lightingMode === 'Studio Warm') computedFilter = 'brightness(1.1) sepia(0.3) saturate(1.2)';
-  else if (lightingMode === 'Studio Cool') computedFilter = 'brightness(1.1) contrast(1.1) saturate(0.9) hue-rotate(180deg)'; // Slight blue tint
+  else if (lightingMode === 'Studio Cool') computedFilter = 'brightness(1.05) contrast(1.1) saturate(0.85)';
   else if (lightingMode === 'Cinematic') computedFilter = 'contrast(1.25) saturate(1.1) brightness(0.9)';
 
   // Blur is now handled by MediaPipe segmentation, so we don't apply CSS blur to the whole container anymore.
@@ -596,12 +596,11 @@ export default function RecordAvatarPage() {
             </div>
           </div>
 
-          {/* Main Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 20, flex: 1, minHeight: 0 }}>
-            {/* Left Col: Videos */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 }}>
-              {/* Main Video */}
-              <div style={{ position: 'relative', width: '100%', height: '100%', borderRadius: 32, overflow: 'hidden', background: '#000', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Main Container */}
+          <div style={{ position: 'relative', display: 'flex', flex: 1, minHeight: 0, width: '100%', borderRadius: 32, overflow: 'hidden', background: '#000', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
+            
+            {/* Main Video */}
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {!streamRef.current && !recordedVideoUrl && (
                   <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--panel-bg)' }}>
                     <Loader2 size={32} className="animate-spin" />
@@ -618,14 +617,14 @@ export default function RecordAvatarPage() {
                 
                 {/* Overlays */}
 
-                <div style={{ position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', padding: '6px 16px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--panel-bg)', fontSize: 13, fontWeight: 500 }}>
+                <div style={{ position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', padding: '6px 16px', borderRadius: 20, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--panel-bg)', fontSize: 13, fontWeight: 500, zIndex: 10 }}>
                   <div style={{ width: 8, height: 8, borderRadius: 4, background: isRecording ? '#ef4444' : '#10b981', animation: isRecording ? 'pulse 1.5s infinite' : 'none' }} />
                   {isRecording ? `Recording... 00:${recordingTime.toString().padStart(2, '0')}` : 'Ready to Record'}
                 </div>
 
 
 
-                <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 12 }}>
+                <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 12, zIndex: 10 }}>
                   <button onClick={toggleMic} style={{ width: 44, height: 44, borderRadius: 22, background: isMicMuted ? '#df6c62' : 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', border: 'none', color: 'var(--panel-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                     {isMicMuted ? <MicOff size={18} /> : <Mic size={18} />}
                   </button>
@@ -644,11 +643,11 @@ export default function RecordAvatarPage() {
                   )}
                 </div>
 
-                <div style={{ position: 'absolute', bottom: 20, right: 20, display: 'flex', gap: 12 }}>
+                <div style={{ position: 'absolute', bottom: 20, left: 20, display: 'flex', gap: 12, zIndex: 10 }}>
                    <button onClick={() => setShowSettings(!showSettings)} style={{ width: 36, height: 36, borderRadius: 18, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(10px)', border: 'none', color: showSettings ? '#60a5fa' : 'var(--panel-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}><Settings size={16} /></button>
                 </div>
                 {showSettings && (
-                  <div style={{ position: 'absolute', bottom: 64, right: 20, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(20px)', borderRadius: 16, padding: 16, width: 280, color: 'var(--panel-bg)', border: '1px solid var(--panel-border)', animation: 'fadeIn 0.2s ease-out' }}>
+                  <div style={{ position: 'absolute', bottom: 64, left: 20, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(20px)', borderRadius: 16, padding: 16, width: 280, color: 'var(--panel-bg)', border: '1px solid var(--panel-border)', animation: 'fadeIn 0.2s ease-out', zIndex: 10 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, opacity: 0.8, textTransform: 'uppercase', letterSpacing: 1 }}>Studio Lighting</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
                       {['Normal', 'Studio Warm', 'Studio Cool', 'Cinematic'].map(mode => (
@@ -663,22 +662,20 @@ export default function RecordAvatarPage() {
                     </div>
                   </div>
                 )}
-              </div>
             </div>
 
-            {/* Right Col: Sidebar */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 }}>
-               <div style={{ flex: 1, background: 'var(--muted-bg)', borderRadius: 24, padding: 32, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 20, flexShrink: 0 }}>Reading Script</div>
-                  <div style={{ fontSize: 20, lineHeight: 1.5, fontWeight: 500, display: 'flex', flexWrap: 'wrap', gap: '5px', overflowY: 'auto', alignContent: 'flex-start', flex: 1, paddingRight: 8 }}>
-                    {scriptWords.map((word, i) => (
-                      <span key={i} style={{ color: highlightedWordIndex >= i ? 'var(--foreground)' : 'var(--text-muted)', opacity: highlightedWordIndex >= i ? 1 : 0.6, transition: 'all 0.2s ease' }}>
-                        {word}
-                      </span>
-                    ))}
-                  </div>
-               </div>
+            {/* Floating Teleprompter */}
+            <div style={{ position: 'absolute', top: 32, right: 32, width: 340, background: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(20px)', borderRadius: 24, padding: 32, display: 'flex', flexDirection: 'column', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', zIndex: 10, border: '1px solid rgba(255, 255, 255, 0.4)' }}>
+                <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 20, flexShrink: 0 }}>Reading Script</div>
+                <div style={{ fontSize: 20, lineHeight: 1.5, fontWeight: 500, display: 'flex', flexWrap: 'wrap', gap: '5px', alignContent: 'flex-start', flex: 1 }}>
+                  {scriptWords.map((word, i) => (
+                    <span key={i} style={{ color: highlightedWordIndex >= i ? '#1e293b' : '#64748b', opacity: highlightedWordIndex >= i ? 1 : 0.6, transition: 'all 0.2s ease' }}>
+                      {word}
+                    </span>
+                  ))}
+                </div>
             </div>
+            
           </div>
         </div>
       </>

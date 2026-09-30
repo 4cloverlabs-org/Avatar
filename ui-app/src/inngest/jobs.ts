@@ -90,10 +90,13 @@ export const generateContentStrategy = inngest.createFunction(
     triggers: [{ event: "strategy/generate.requested" }]
   },
   async ({ event, step }) => {
-    const { strategyId, userId, niche, style, durationValue, durationUnit, platforms, uploadTimes, voiceId, avatarId } = event.data as any;
+    const { strategyId, userId, niche, style, durationValue, durationUnit, platforms, uploadTimes, voiceId, avatarId, customTopic } = event.data as any;
 
     // Step 1: Select Topic (Repetition Guard)
     const topic = await step.run("select-topic", async () => {
+      if (customTopic) {
+        return { title: customTopic, url: "" };
+      }
       const { selectNextTopicForStrategy } = await import("../lib/services/scraper");
       const selected = await selectNextTopicForStrategy(strategyId, userId, niche);
       if (!selected) throw new Error(`No available topics for niche: ${niche}`);
