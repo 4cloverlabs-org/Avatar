@@ -90,15 +90,17 @@ export const generateContentStrategy = inngest.createFunction(
     triggers: [{ event: "strategy/generate.requested" }]
   },
   async ({ event, step }) => {
-    const { strategyId, userId, niche, style, durationValue, durationUnit, platforms, uploadTimes, voiceId, avatarId, customTopic } = event.data as any;
+    const { strategyId, userId, niche, style, durationValue, durationUnit, platforms, uploadTimes, voiceId, avatarId } = event.data as any;
 
     // Step 1: Select Topic (Repetition Guard)
     const topic = await step.run("select-topic", async () => {
-      if (customTopic) {
-        return { title: customTopic, url: "" };
+      const { leaseTopicForNiche } = await import("../lib/services/topic-pool");
+      let selected = await leaseTopicForNiche(niche, userId);
+      if (!selected) {
+        const { runScraperForNiche } = await import("../lib/services/scraper");
+        await runScraperForNiche(niche);
+        selected = await leaseTopicForNiche(niche, userId);
       }
-      const { selectNextTopicForStrategy } = await import("../lib/services/scraper");
-      const selected = await selectNextTopicForStrategy(strategyId, userId, niche);
       if (!selected) throw new Error(`No available topics for niche: ${niche}`);
       return selected;
     });
@@ -106,18 +108,22 @@ export const generateContentStrategy = inngest.createFunction(
     // Step 2: Research & Verification
     const researchBrief = await step.run("research-topic", async () => {
       const { generateResearchBrief } = await import("../lib/services/research");
-      return await generateResearchBrief(topic.title, topic.url);
+      return await generateResearchBrief(topic.title, topic.url || "");
     });
 
     // Step 3-4: Generate & QA Loop (Max 3 retries)
     let script: any = null;
     let qaPassed = false;
     let qaFeedback: string | undefined = undefined;
+    let similarityFeedback: string | undefined = undefined;
 
     for (let i = 0; i < 3; i++) {
       script = await step.run(`generate-script-attempt-${i+1}`, async () => {
         const { generateScript } = await import("../lib/services/generation");
-        return await generateScript(researchBrief, style, durationValue, durationUnit, platforms, qaFeedback);
+        return await generateScript(researchBrief, style, durationValue, durationUnit, platforms, qaFeedback, {
+          angle: topic.angle,
+          avoidSimilarTo: similarityFeedback
+        });
       });
 
       const qaResult = await step.run(`qa-script-attempt-${i+1}`, async () => {
@@ -125,18 +131,44 @@ export const generateContentStrategy = inngest.createFunction(
         return await runScriptQA(researchBrief, script);
       });
 
-      if (qaResult.passed) {
-        qaPassed = true;
-        break;
+      if (!qaResult.passed) {
+        qaFeedback = qaResult.feedback || "Unknown QA failure";
+        continue;
       }
-      qaFeedback = qaResult.feedback || "Unknown QA failure";
+
+      const simResult = await step.run(`similarity-check-attempt-${i+1}`, async () => {
+        const { checkScriptSimilarity } = await import("../lib/services/similarity");
+        return await checkScriptSimilarity(JSON.stringify(script), userId, niche);
+      });
+
+      if (simResult.passed) {
+        qaPassed = true;
+        
+        await step.run("store-script-embedding", async () => {
+          const { storeScriptEmbedding } = await import("../lib/services/similarity");
+          await storeScriptEmbedding(`gen_${Date.now()}`, userId, niche, JSON.stringify(script));
+        });
+        
+        break;
+      } else {
+        similarityFeedback = simResult.nearestMatchSummary;
+      }
     }
 
     // Save state to DB
     await step.run("save-generated-script", async () => {
       const { db } = await import("../lib/db");
-      const { generatedScript } = await import("../db/schema");
-      
+      const { generatedScript, contentStrategy } = await import("../db/schema");
+      const { eq } = await import("drizzle-orm");
+
+      const strategyExists = await db.query.contentStrategy.findFirst({
+        where: eq(contentStrategy.id, strategyId)
+      });
+      if (!strategyExists) {
+        console.warn(`Strategy ${strategyId} not found, skipping save to generated_script.`);
+        return;
+      }
+
       await db.insert(generatedScript).values({
         id: `gen_${Date.now()}`,
         strategyId,
@@ -184,44 +216,6 @@ export const generateContentStrategy = inngest.createFunction(
     }
 
     const { video_path } = videoGenerationEvent.data;
-
-    // Step 6.5: Send WhatsApp message and wait for approval
-    const whatsappSent = await step.run("send-whatsapp-approval", async () => {
-      const { db } = await import("../lib/db");
-      const { user } = await import("../db/schema");
-      const { eq } = await import("drizzle-orm");
-      const { sendWhatsAppVideoApproval } = await import("../lib/whatsapp");
-      
-      const u = await db.query.user.findFirst({
-        where: eq(user.id, userId)
-      });
-      
-      if (u?.phoneNumber) {
-        // Video path might be local, but we need a public URL for Meta API.
-        // Assuming video_path is accessible or mapped in production. 
-        // For testing, we send a generic video URL.
-        const publicVideoUrl = "https://www.w3schools.com/html/mov_bbb.mp4"; // Placeholder
-        await sendWhatsAppVideoApproval(u.phoneNumber, strategyId, publicVideoUrl, topic.title);
-        return true;
-      }
-      return false; // Skip if no phone number
-    });
-
-    if (whatsappSent) {
-      const whatsappEvent = await step.waitForEvent("wait-for-whatsapp-approval", {
-        event: "whatsapp/approval.received",
-        timeout: "24h",
-        match: "data.strategyId"
-      });
-
-      if (!whatsappEvent) {
-        throw new Error("WhatsApp approval timed out");
-      }
-
-      if (!whatsappEvent.data.approved) {
-        throw new Error("Video rejected by user via WhatsApp");
-      }
-    }
 
     // Step 7: Sleep until target upload time
     if (uploadTimes && uploadTimes.length > 0) {
