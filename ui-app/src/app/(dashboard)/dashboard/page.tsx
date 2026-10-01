@@ -44,7 +44,7 @@ export default function HomeDashboard() {
       .then(res => res.json())
       .then(data => {
         if (data.success && data.videos) {
-          const generatedOnly = data.videos.filter((v: any) => v.status !== 'UPLOADED' && !v.id.startsWith('pub-'));
+          const generatedOnly = data.videos.filter((v: any) => v.status !== 'UPLOADED' && !v.id.startsWith('pub-')).slice(0, 6);
           setVideos(generatedOnly);
           
           // Asynchronously fetch video durations
@@ -72,11 +72,7 @@ export default function HomeDashboard() {
         if (data.success && data.avatars) {
           const readyAvatars = data.avatars.filter((a: any) => a.status === 'ready');
           setAvailableAvatars(readyAvatars);
-          if (readyAvatars.length > 0) {
-            const defaultId = readyAvatars[readyAvatars.length - 1].id;
-            setSelectedAvatar(defaultId);
-            localStorage.setItem('ai_assistant_avatar', defaultId);
-          }
+          // Do not auto-select to show default placeholder
         }
       })
       .catch(console.error);
@@ -87,9 +83,7 @@ export default function HomeDashboard() {
       .then(data => {
         if (data.success && data.voices) {
           setAvailableVoices(data.voices);
-          if (data.voices.length > 0) {
-            setSelectedVoice(data.voices[0].id);
-          }
+          // Do not auto-select to show default placeholder
         }
       })
       .catch(console.error);
@@ -133,137 +127,71 @@ export default function HomeDashboard() {
         What do you want to create?
       </h1>
 
-      {/* Console Box */}
-      <div style={{
-        background: 'var(--panel-bg)',
-        borderRadius: 12,
-        border: '1px solid var(--panel-border)',
-        padding: '20px 24px',
-        textAlign: 'left',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 16,
-        position: 'relative',
-        marginBottom: 48
-      }}>
-        {/* Top Pills Row */}
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', position: 'relative' }}>
+      <div style={{ background: '#F8F8F8', borderRadius: 24, padding: '16px 16px 0 16px' }}>
 
-          {/* Avatar Selector Pill */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              background: 'var(--muted-bg)',
-              border: 'none',
-              borderRadius: 8,
-              padding: '8px 16px',
-              fontSize: 12,
-              color: 'var(--foreground)',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsAvatarOpen(!isAvatarOpen);
-              setIsAspectOpen(false);
-              setIsVoiceOpen(false);
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
-          >
-            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
-              <User size={18} color='var(--text-muted)' style={{ position: 'absolute' }} />
-              {selectedAvatar && (
-                selectedAvatar.includes('tpdne') || selectedAvatar.length < 20 ? (
-                  <img src={`/avatars/${selectedAvatar}.jpg`} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} onError={(e) => e.currentTarget.style.display = 'none'} />
-                ) : (
-                  <video src={`/api/serve_video?type=av&path=${selectedAvatar}#t=0.001`} style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'relative', zIndex: 1 }} preload="metadata" muted playsInline onError={(e) => e.currentTarget.style.display = 'none'} />
-                )
-              )}
-            </div>
-            <div>
-              <div style={{ fontSize: 9, color: 'var(--text-muted)', lineHeight: 1 }}>Avatar</div>
-              <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
-                {getSelectedAvatarName()}
-              </div>
-            </div>
-          </div>
-
-          {/* Voice Pill */}
+      {/* YOUR LATEST PROJECTS section */}
+      <div style={{ marginBottom: 16 }}>
+        
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          
+          {/* Card 1 */}
           <div 
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsVoiceOpen(!isVoiceOpen);
-              setIsAvatarOpen(false);
-              setIsAspectOpen(false);
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              background: 'var(--muted-bg)',
-              border: 'none',
-              borderRadius: 8,
-              padding: '8px 16px',
-              fontSize: 12,
-              color: 'var(--foreground)',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
+            onClick={(e) => { e.stopPropagation(); setIsAvatarOpen(!isAvatarOpen); setIsAspectOpen(false); setIsVoiceOpen(false); }}
+            style={{ background: '#ffffff', border: '1px solid #EEEEEE', borderRadius: 12, padding: '6px 12px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)', cursor: 'pointer', transition: 'border-color 0.2s' }}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = '#cbd5e1'}
+            onMouseLeave={(e) => e.currentTarget.style.borderColor = '#EEEEEE'}
           >
-            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Mic size={18} color='var(--text-muted)' />
-            </div>
-            <div>
-              <div style={{ fontSize: 9, color: 'var(--text-muted)', lineHeight: 1 }}>Voice</div>
-              <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
-                {selectedVoice ? (availableVoices.find(v => v.id === selectedVoice)?.name || "Custom Voice") : "Auto Voice"}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 24, height: 24, borderRadius: '50%', overflow: 'hidden', background: '#EEEEEE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {selectedAvatar ? (
+                  availableAvatars.find(a => a.id === selectedAvatar)?.type === 'system' ? (
+                    <img src={availableAvatars.find(a => a.id === selectedAvatar)?.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => e.currentTarget.style.display = 'none'} />
+                  ) : (
+                    <video src={`/api/serve_video?type=av&path=${selectedAvatar}#t=0.001`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} preload="metadata" muted playsInline onError={(e) => e.currentTarget.style.display = 'none'} />
+                  )
+                ) : (
+                  <video src="/api/serve_video?type=av&path=ffb5f45b-9420-4727-a4cc-06d20ae3d63c#t=0.001" style={{ width: '100%', height: '100%', objectFit: 'cover' }} preload="metadata" muted playsInline onError={(e) => e.currentTarget.style.display = 'none'} />
+                )}
               </div>
+              <h3 style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>{selectedAvatar ? getSelectedAvatarName() : "Custom Avatar ffb5"}</h3>
             </div>
+            <ChevronDown size={14} color="#475569" />
           </div>
 
-          {/* Aspect Ratio Pill */}
-          <div
-            style={{
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              background: 'var(--muted-bg)',
-              border: 'none',
-              borderRadius: 8,
-              padding: '8px 16px',
-              fontSize: 12,
-              color: 'var(--foreground)',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsAspectOpen(!isAspectOpen);
-              setIsAvatarOpen(false);
-              setIsVoiceOpen(false);
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
+          {/* Card 2 */}
+          <div 
+            onClick={(e) => { e.stopPropagation(); setIsVoiceOpen(!isVoiceOpen); setIsAvatarOpen(false); setIsAspectOpen(false); }}
+            style={{ background: '#ffffff', border: '1px solid #EEEEEE', borderRadius: 12, padding: '6px 12px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)', cursor: 'pointer', transition: 'border-color 0.2s' }}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = '#cbd5e1'}
+            onMouseLeave={(e) => e.currentTarget.style.borderColor = '#EEEEEE'}
           >
-            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Monitor size={18} color='var(--text-muted)' />
-            </div>
-            <div>
-              <div style={{ fontSize: 9, color: 'var(--text-muted)', lineHeight: 1 }}>Aspect Ratio</div>
-              <div style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
-                {selectedAspect === '16/9' ? '16:9 Landscape' : selectedAspect === '9/16' ? '9:16 Portrait' : '1:1 Square'} <ChevronDown size={10} color='var(--text-muted)' style={{ transform: isAspectOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#EEEEEE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Mic size={12} color="#475569" />
               </div>
+              <h3 style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>{selectedVoice ? (availableVoices.find(v => v.id === selectedVoice)?.name || "Rachel (Professional)") : "Rachel (Professional)"}</h3>
             </div>
+            <ChevronDown size={14} color="#475569" />
+          </div>
 
+          {/* Card 3 */}
+          <div 
+            onClick={(e) => { e.stopPropagation(); setIsAspectOpen(!isAspectOpen); setIsAvatarOpen(false); setIsVoiceOpen(false); }}
+            style={{ position: 'relative', background: '#ffffff', border: '1px solid #EEEEEE', borderRadius: 12, padding: '6px 12px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)', cursor: 'pointer', transition: 'border-color 0.2s' }}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = '#cbd5e1'}
+            onMouseLeave={(e) => e.currentTarget.style.borderColor = '#EEEEEE'}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#EEEEEE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {selectedAspect === '16/9' ? <Monitor size={12} color="#475569" /> : selectedAspect === '9/16' ? <Smartphone size={12} color="#475569" /> : <Square size={12} color="#475569" />}
+              </div>
+              <h3 style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>{selectedAspect === '16/9' ? '16:9' : selectedAspect === '9/16' ? '9:16' : '1:1'}</h3>
+            </div>
+            <ChevronDown size={14} color="#475569" />
+            
             {/* Aspect Dropdown List overlay */}
             {isAspectOpen && (
-              <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: 8, width: 160, background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 8, padding: 6, zIndex: 100, display: 'flex', flexDirection: 'column', gap: 4, boxShadow: '0 10px 25px rgba(0,0,0,0.08)' }}>
+              <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: 8, width: 140, background: '#fff', border: '1px solid #EEEEEE', borderRadius: 12, padding: 6, zIndex: 100, display: 'flex', flexDirection: 'column', gap: 4, boxShadow: '0 10px 25px rgba(0,0,0,0.08)' }}>
                 {[
                   { val: '16/9', label: '16:9 Landscape' },
                   { val: '9/16', label: '9:16 Portrait' },
@@ -271,14 +199,14 @@ export default function HomeDashboard() {
                 ].map(opt => (
                   <div
                     key={opt.val}
-                    style={{ padding: '8px 12px', fontSize: 11, cursor: 'pointer', background: selectedAspect === opt.val ? 'var(--accent)' : 'transparent', color: selectedAspect === opt.val ? 'var(--panel-bg)' : 'var(--foreground)', borderRadius: 6, fontWeight: selectedAspect === opt.val ? 600 : 400 }}
+                    style={{ padding: '8px 12px', fontSize: 12, cursor: 'pointer', background: selectedAspect === opt.val ? '#EEEEEE' : 'transparent', color: '#1e293b', borderRadius: 8, fontWeight: selectedAspect === opt.val ? 600 : 400 }}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedAspect(opt.val);
                       localStorage.setItem('ai_assistant_aspect', opt.val);
                       setIsAspectOpen(false);
                     }}
-                    onMouseEnter={(e) => { if (selectedAspect !== opt.val) e.currentTarget.style.background = 'var(--background)'; }}
+                    onMouseEnter={(e) => { if (selectedAspect !== opt.val) e.currentTarget.style.background = '#f8fafc'; }}
                     onMouseLeave={(e) => { if (selectedAspect !== opt.val) e.currentTarget.style.background = 'transparent'; }}
                   >
                     {opt.label}
@@ -287,12 +215,70 @@ export default function HomeDashboard() {
               </div>
             )}
           </div>
+        </div>
+
+
+      </div>
+
+      {/* Console Box */}
+      <div style={{
+        background: '#ffffff',
+        borderRadius: 24,
+        border: '1px solid #EEEEEE',
+        padding: '16px 20px',
+        textAlign: 'left',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+        position: 'relative',
+        marginBottom: 0,
+        marginLeft: -16,
+        marginRight: -16,
+        boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+      }}>
+        
+        {/* Prompt input field */}
+        <textarea
+          ref={textareaRef}
+          placeholder="How can I help you?"
+          value={promptText}
+          onChange={(e) => setPromptText(e.target.value)}
+          rows={1}
+          style={{
+            width: '100%',
+            background: 'transparent',
+            border: 'none',
+            outline: 'none',
+            resize: 'none',
+            fontSize: 13,
+            fontWeight: 400,
+            color: 'var(--foreground)',
+            height: '60px',
+            minHeight: '60px',
+            maxHeight: '300px',
+            fontFamily: 'inherit',
+            lineHeight: '24px',
+            overflowY: 'hidden',
+            padding: 0,
+            margin: 0
+          }}
+        />
+
+        {/* Bottom Row - Pills and Controls */}
+        <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '8px', alignItems: 'center' }}>
+        
+        {/* Left: Pills */}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', position: 'relative', alignItems: 'center' }}>
+          
+          <button style={{ width: 24, height: 24, borderRadius: '50%', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #EEEEEE', color: '#475569', cursor: 'pointer' }}>
+            <Plus size={16} />
+          </button>
 
           {/* Avatar Modal Overlay */}
           {isAvatarOpen && (
             <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }} onClick={() => setIsAvatarOpen(false)}>
               <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 12, padding: 20, width: 480, maxWidth: '90vw', maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }} onClick={(e) => e.stopPropagation()}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '8px', alignItems: 'center', marginBottom: 20 }}>
                   <h3 style={{ margin: 0, fontSize: 18, color: 'var(--foreground)' }}>Select an Avatar</h3>
                   <button onClick={() => setIsAvatarOpen(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><X size={20} /></button>
                 </div>
@@ -387,13 +373,11 @@ export default function HomeDashboard() {
             </div>
           )}
 
-
-
           {/* Voice Modal Overlay */}
           {isVoiceOpen && (
             <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }} onClick={() => setIsVoiceOpen(false)}>
               <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 12, padding: 20, width: 480, maxWidth: '90vw', maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }} onClick={(e) => e.stopPropagation()}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '8px', alignItems: 'center', marginBottom: 20 }}>
                   <h3 style={{ margin: 0, fontSize: 18, color: 'var(--foreground)' }}>Select a Voice</h3>
                   <button onClick={() => setIsVoiceOpen(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><X size={20} /></button>
                 </div>
@@ -427,7 +411,7 @@ export default function HomeDashboard() {
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600, fontSize: 14, color: selectedVoice === v.id ? 'var(--accent)' : 'var(--foreground)' }}>
-                          <Mic size={16} /> {v.name}
+                          <Mic size={12} /> {v.name}
                         </div>
                         <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Click to set as default</div>
                       </div>
@@ -454,7 +438,7 @@ export default function HomeDashboard() {
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600, fontSize: 14, color: selectedVoice === v.id ? 'var(--accent)' : 'var(--foreground)' }}>
-                            <Mic size={16} /> {v.name}
+                            <Mic size={12} /> {v.name}
                           </div>
                           <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Click to set as default</div>
                         </div>
@@ -467,241 +451,92 @@ export default function HomeDashboard() {
           )}
         </div>
 
-        {/* Prompt input field */}
-        <textarea
-          ref={textareaRef}
-          placeholder="Ask for a video, an avatar, or anything in between I can get you started."
-          value={promptText}
-          onChange={(e) => setPromptText(e.target.value)}
-          rows={1}
+        {/* Right: Submit Button */}
+        <button
+          onClick={handlePromptSubmit}
+          disabled={!promptText.trim()}
           style={{
-            width: '100%',
-            background: 'transparent',
-            border: 'none',
-            outline: 'none',
-            resize: 'none',
-            fontSize: 14,
-            color: 'var(--foreground)',
-            height: '24px',
-            minHeight: '24px',
-            maxHeight: '200px',
-            fontFamily: 'inherit',
-            lineHeight: '24px',
-            overflowY: 'hidden',
-            padding: 0,
-            margin: 0
+            width: 32,
+            height: 32,
+            borderRadius: '50%',
+            background: promptText.trim() ? '#4f46e5' : '#ffffff',
+            border: promptText.trim() ? 'none' : '1px solid #e2e8f0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: promptText.trim() ? '#ffffff' : '#EEEEEE',
+            cursor: promptText.trim() ? 'pointer' : 'not-allowed',
+            transition: 'all 0.2s ease-in-out',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
           }}
-        />
-
-        {/* Bottom actions row */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', borderTop: 'none', paddingTop: 12 }}>
-
-          {/* Right button */}
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-
-            <button
-              onClick={handlePromptSubmit}
-              disabled={!promptText.trim()}
-              style={{
-                background: 'var(--accent)',
-                color: 'var(--panel-bg)',
-                border: 'none',
-                borderRadius: 8,
-                padding: '8px 24px',
-                fontSize: 13,
-                fontWeight: 700,
-                cursor: (promptText.trim()) ? 'pointer' : 'not-allowed',
-                opacity: (promptText.trim()) ? 1 : 0.5,
-                transition: 'all 0.2s ease-in-out'
-              }}
-              onMouseEnter={(e) => { if (promptText.trim()) e.currentTarget.style.backgroundColor = 'var(--accent-hover)'; }}
-              onMouseLeave={(e) => { if (promptText.trim()) e.currentTarget.style.backgroundColor = 'var(--accent)'; }}
-            >
-              Submit
-            </button>
-          </div>
+          onMouseEnter={(e) => { if (promptText.trim()) e.currentTarget.style.backgroundColor = '#4338ca'; else e.currentTarget.style.backgroundColor = '#f8fafc'; }}
+          onMouseLeave={(e) => { if (promptText.trim()) e.currentTarget.style.backgroundColor = '#4f46e5'; else e.currentTarget.style.backgroundColor = '#ffffff'; }}
+        >
+          <ArrowRight size={16} style={{ transform: 'rotate(-90deg)' }} />
+        </button>
         </div>
       </div>
 
-      {/* Recents section */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <div className="home-section-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Clock size={18} color='var(--text-muted)' /> Recent Videos
-        </div>
-        <div style={{ display: 'flex', gap: 4, background: 'var(--muted-bg)', padding: 3, borderRadius: 8 }}>
-          <div
-            style={{
-              padding: '4px 8px',
-              background: viewMode === 'grid' ? 'var(--panel-bg)' : 'transparent',
-              borderRadius: 6,
-              cursor: 'pointer',
-              boxShadow: viewMode === 'grid' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
-              transition: '0.2s'
-            }}
-            onClick={() => setViewMode('grid')}
-          >
-            <LayoutGrid size={14} color={viewMode === 'grid' ? 'var(--foreground)' : 'var(--text-muted)'} />
-          </div>
-          <div
-            style={{
-              padding: '4px 8px',
-              background: viewMode === 'list' ? 'var(--panel-bg)' : 'transparent',
-              borderRadius: 6,
-              cursor: 'pointer',
-              boxShadow: viewMode === 'list' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
-              transition: '0.2s'
-            }}
-            onClick={() => setViewMode('list')}
-          >
-            <List size={14} color={viewMode === 'list' ? 'var(--foreground)' : 'var(--text-muted)'} />
-          </div>
-        </div>
+
       </div>
 
-      {/* Grid or List content */}
-      {videos.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 20px', background: 'var(--panel-bg)', borderRadius: 20, border: '1px solid var(--panel-border)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: 64, height: 64, borderRadius: 32, background: 'var(--muted-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-            <Video size={28} color='var(--text-muted)' strokeWidth={1.5} />
+      {/* Recent Videos Section */}
+      <div style={{ marginTop: 48, marginBottom: 48 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 24, color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Clock size={20} color="var(--accent)" /> Recent Videos
+        </h2>
+        
+        {isLoading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+            <div className="spinner"></div>
+            <style>{`.spinner { width: 40px; height: 40px; border: 4px solid var(--panel-border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }`}</style>
           </div>
-          <div style={{ color: 'var(--foreground)', fontSize: 17, fontWeight: 600, letterSpacing: '-0.01em' }}>No recent videos</div>
-        </div>
-      ) : viewMode === 'grid' ? (
-        <div className="home-recents grid">
-
-
-          {/* Dynamic Generated Videos */}
-          {videos.map((vid, idx) => (
-            <div
-              key={idx}
-              className="home-recent-card"
-              onClick={() => setPreviewVideo(vid)}
-              style={{ minHeight: 240, borderRadius: 12, border: '1px solid var(--panel-border)', overflow: 'hidden', transition: 'transform 0.2s ease-in-out, border-color 0.2s ease-in-out' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = 'none';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.borderColor = 'var(--text-muted)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = 'none';
-                e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.borderColor = 'var(--panel-border)';
-              }}
-            >
-              <div className="home-recent-img" style={{ background: 'var(--foreground)', position: 'relative' }}>
-                <video 
-                  src={`${vid.url}#t=0.001`} 
-                  preload="metadata" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                  muted 
-                  playsInline 
-                />
-                <div className="home-recent-play">
-                  <Play size={20} color='var(--panel-bg)' fill='var(--panel-bg)' style={{ marginLeft: 3 }} />
+        ) : videos.length === 0 ? (
+          <div style={{ background: 'var(--panel-bg)', border: '1px dashed var(--panel-border)', borderRadius: 16, padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+            <Video size={32} style={{ margin: '0 auto 12px', opacity: 0.5 }} />
+            <div style={{ fontSize: 13, fontWeight: 500 }}>No videos yet</div>
+            <div style={{ fontSize: 13, marginTop: 4 }}>Your generated videos will appear here.</div>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+            {videos.map(video => (
+              <div 
+                key={video.id} 
+                style={{ background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 16, overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}
+                onClick={() => setPreviewVideo(video)}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.06)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.02)'; }}
+              >
+                <div style={{ width: '100%', aspectRatio: '16/9', position: 'relative', background: 'var(--muted-bg)' }}>
+                  {video.thumbnail ? (
+                    <img src={video.thumbnail} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={video.title} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  ) : (
+                    <video src={video.url + '#t=0.001'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} preload="metadata" muted playsInline onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                  )}
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.2)', opacity: 0, transition: 'opacity 0.2s' }} className="play-overlay">
+                    <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                      <Play size={20} fill="#000" color="#000" style={{ marginLeft: 4 }} />
+                    </div>
+                  </div>
+                  <style>{`.play-overlay:hover { opacity: 1 !important; }`}</style>
+                  {videoDurations[video.id] && (
+                    <div style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 11, fontWeight: 600, padding: '2px 6px', borderRadius: 6, backdropFilter: 'blur(4px)' }}>
+                      {videoDurations[video.id]}
+                    </div>
+                  )}
                 </div>
-                <div className="home-recent-duration">{videoDurations[vid.id] || '00:00'}</div>
-              </div>
-              <div className="home-recent-info">
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="home-recent-title">{vid.title}</div>
-                  <div className="home-recent-meta">
-                    <Clock size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} /> {new Date(vid.edited).toLocaleDateString()} at {new Date(vid.edited).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                <div style={{ padding: 16 }}>
+                  <h3 style={{ margin: 0, fontSize: 13, fontWeight: 600, color: 'var(--foreground)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{video.title}</h3>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4, display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <span>{new Date(video.edited).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Video size={12} /> {video.url.endsWith('.mp4') ? 'Video' : 'Media'}</span>
                   </div>
                 </div>
-                <button 
-                  onClick={async (e) => { 
-                    e.stopPropagation(); 
-                    if (confirm("Move this video to trash?")) {
-                      try {
-                        const res = await fetch(`/api/videos`, { 
-                          method: 'DELETE',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ filename: vid.filename, id: vid.id, trash: true })
-                        });
-                        if (res.ok) {
-                          setVideos(videos.filter(v => v.filename !== vid.filename));
-                        } else {
-                          alert('Failed to move video to trash');
-                        }
-                      } catch (err) {
-                        console.error(err);
-                      }
-                    }
-                  }} 
-                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, color: 'var(--text-muted)' }}
-                  title="Move to Trash"
-                >
-                  <Trash size={16} />
-                </button>
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', borderRadius: 12, overflow: 'hidden' }}>
-          {/* Header Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', padding: '12px 20px', borderBottom: '1px solid var(--panel-border)', background: 'var(--muted-bg)', fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>
-            <div>Name</div>
-            <div>Duration</div>
-            <div>Date Created</div>
-            <div>Status</div>
-            <div>Actions</div>
+            ))}
           </div>
-
-          {/* Dynamic list items */}
-          {videos.map((vid, idx) => (
-            <div
-              key={idx}
-              onClick={() => setPreviewVideo(vid)}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '2fr 1fr 1fr 1fr auto',
-                padding: '16px 20px',
-                borderBottom: idx === videos.length - 1 ? 'none' : '1px solid var(--panel-border)',
-                alignItems: 'center',
-                fontSize: 13,
-                cursor: 'pointer',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--muted-bg)'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontWeight: 600, color: 'var(--foreground)' }}>
-                <Video size={16} color="#10b981" />
-                {vid.title}
-              </div>
-              <div style={{ color: 'var(--text-muted)' }}>{videoDurations[vid.id] || '00:00'}</div>
-              <div style={{ color: 'var(--text-muted)' }}>{new Date(vid.edited).toLocaleDateString()} at {new Date(vid.edited).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-              <div style={{ color: 'var(--text-muted)' }}>AI Generated</div>
-              <button 
-                onClick={async (e) => { 
-                  e.stopPropagation(); 
-                  if (confirm("Move this video to trash?")) {
-                    try {
-                      const res = await fetch(`/api/videos`, { 
-                        method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ filename: vid.filename, id: vid.id, trash: true })
-                      });
-                      if (res.ok) {
-                        setVideos(videos.filter(v => v.filename !== vid.filename));
-                      } else {
-                        alert('Failed to move video to trash');
-                      }
-                    } catch (err) {
-                      console.error(err);
-                    }
-                  }
-                }} 
-                style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4, color: 'var(--text-muted)' }}
-                title="Move to Trash"
-              >
-                <Trash size={16} />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Video Preview Modal */}
       {previewVideo && (
@@ -725,7 +560,7 @@ export default function HomeDashboard() {
           <div style={{ position: 'relative', width: '100%', maxWidth: 960, background: 'var(--panel-bg)', borderRadius: 16, display: 'flex', flexDirection: 'column', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
             
             {/* Header */}
-            <div style={{ padding: '24px 32px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ padding: '24px 32px 20px', display: 'flex', justifyContent: 'flex-start', gap: '8px', alignItems: 'flex-start' }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: 'var(--foreground)', letterSpacing: '-0.5px' }}>{previewVideo.title}</h3>
                 <div style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 4, fontWeight: 500 }}>
@@ -799,7 +634,7 @@ export default function HomeDashboard() {
                 </div>
 
                 {/* Info Box */}
-                <div style={{ marginTop: 16, background: 'var(--muted-bg)', borderRadius: 12, padding: '12px 16px', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <div style={{ marginTop: 16, background: 'var(--muted-bg)', borderRadius: 12, padding: '6px 12px', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                   <Info size={16} color="#3b82f6" style={{ marginTop: 2, flexShrink: 0 }} />
                   <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5, fontWeight: 500 }}>
                     Higher quality videos may take longer to download and more storage space.
@@ -809,7 +644,7 @@ export default function HomeDashboard() {
             </div>
 
             {/* Footer */}
-            <div style={{ padding: '20px 32px', borderTop: '1px solid var(--panel-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fafafa' }}>
+            <div style={{ padding: '20px 32px', borderTop: '1px solid var(--panel-border)', display: 'flex', justifyContent: 'flex-start', gap: '8px', alignItems: 'center', background: '#fafafa' }}>
               <button 
                 className="cancel-btn"
                 onClick={() => setPreviewVideo(null)}

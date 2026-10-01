@@ -47,6 +47,7 @@ type StrategyConfig = {
   platforms: string[];
   avatarId?: string;
   voiceId?: string;
+  aspectRatio: string;
 };
 
 export default function ContentSchedulerPage() {
@@ -148,7 +149,8 @@ export default function ContentSchedulerPage() {
       uploadTimes: ['15:00'],
       platforms: ['Instagram Reels'],
       avatarId: avatars.length > 0 ? avatars[0].id : '',
-      voiceId: voices.length > 0 ? voices[0].id : ''
+      voiceId: voices.length > 0 ? voices[0].id : '',
+      aspectRatio: '9:16'
     };
     
     // Optimistic update
@@ -983,6 +985,43 @@ export default function ContentSchedulerPage() {
                       </button>
                     </div>
                   </div>
+
+                  {/* Aspect Ratio */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--panel-bg)', borderRadius: '12px', padding: '16px 20px', position: 'relative' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--panel-bg)', border: '1px solid var(--panel-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><line x1="4" y1="12" x2="20" y2="12"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--foreground)', marginBottom: '2px' }}>Aspect Ratio</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>The format of your generated videos.</div>
+                      </div>
+                    </div>
+                    <div style={{ width: '220px', position: 'relative' }}>
+                      <div 
+                        className={`premium-input-group ${openDropdown?.stratId === strat.id && openDropdown?.type === 'aspectRatio' ? 'active' : ''}`}
+                        onClick={(e) => { e.stopPropagation(); setOpenDropdown({ stratId: strat.id, type: 'aspectRatio' }); }}
+                        style={{ cursor: 'pointer', background: 'var(--panel-bg)' }}
+                      >
+                        <div style={{ flex: 1, padding: '10px 14px', fontSize: '14px', fontWeight: 500, color: 'var(--foreground)' }}>
+                          {strat.aspectRatio}
+                        </div>
+                        <div style={{ padding: '0 12px' }}>
+                          <ChevronDown size={16} color='var(--text-muted)' style={{ transform: openDropdown?.stratId === strat.id && openDropdown?.type === 'aspectRatio' ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                        </div>
+                      </div>
+                      {openDropdown?.stratId === strat.id && openDropdown?.type === 'aspectRatio' && (
+                        <div className="custom-dropdown-menu" style={{ top: 'calc(100% + 8px)' }}>
+                          {['9:16', '16:9', '1:1'].map(r => (
+                            <div key={r} className={`custom-dropdown-item ${r === strat.aspectRatio ? 'selected' : ''}`} onClick={() => { updateStrategy(strat.id, 'aspectRatio', r); setOpenDropdown(null); }}>
+                              {r}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
 
                 </div>
               </div>

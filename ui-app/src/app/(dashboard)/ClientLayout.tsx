@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { authClient } from '../../lib/auth-client';
 import { 
   Home, Video, Trash, Mic, User, Settings, Sparkles, BookOpen, 
-  Share2, Users, Bell, Search, Plus, Menu, X, PanelLeftClose, PanelLeftOpen, BarChart2, Megaphone, ChevronDown, Check, Loader2, FileText
+  Share2, Users, Bell, Search, Plus, Menu, X, PanelLeftClose, PanelLeftOpen, BarChart2, Megaphone, ChevronDown, Check, Loader2, FileText, Activity
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -464,6 +464,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <NavItem href="/dashboard" icon={Home} label="Home" />
         <NavItem href="/content" icon={FileText} label="Content" />
         <NavItem href="/analytics" icon={BarChart2} label="Analytics" />
+        <NavItem href="/insights" icon={Activity} label="Insights" />
 
         {/* Videos Section */}
         <div className="home-sidebar-section" style={{ marginTop: isCollapsed ? 8 : 16, marginBottom: isCollapsed ? 4 : 16, width: '100%' }}>
